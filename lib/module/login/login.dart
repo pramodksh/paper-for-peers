@@ -45,6 +45,7 @@ class _LoginState extends State<Login> {
           labelStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
+            color: Colors.black
             // height: 4
           )),
     );
@@ -81,6 +82,7 @@ class _LoginState extends State<Login> {
                     style: GoogleFonts.ptSans(
                       fontSize: 35,
                       fontWeight: FontWeight.w400,
+                      color: Colors.black
                     ),
                   ),
                   SizedBox(
@@ -152,6 +154,7 @@ class _LoginState extends State<Login> {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w400,
+                          color: Colors.black
                         ),
                       ),
                     ),
