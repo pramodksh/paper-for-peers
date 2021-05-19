@@ -109,7 +109,7 @@ class _LoginState extends State<Login> {
                   // ),
 
                   SizedBox(
-                    height: 30,
+                    height: 40,
                   ),
                   // TextButton(
                   //   child: Text(
