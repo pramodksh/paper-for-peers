@@ -1,3 +1,4 @@
+import 'package:papers_for_peers/module/login/forgotPassword.dart';
 import 'package:papers_for_peers/module/login/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +36,15 @@ class _LoginState extends State<Login> {
 
     return Stack(
       children: [
-        Image.asset(
-          'assets\\images\\appBackground.png',
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
+        Container(
+          // TODO : Reduce the opacity of background
 
+          child: Image.asset(
+            'assets\\images\\appBackground.png',
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+          ),
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
@@ -85,12 +89,24 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        child: Text('Forgot Password',
+                        child: Text('Forgot Password?',
                           style: TextStyle(
                             color: Colors.black38
                           ),
                         ),
-                        onPressed: (){},
+                        onPressed: (){
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //   builder: (context) => forgotPassword(),
+                          // ));
+
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              transitionDuration: Duration(seconds: 5),
+                              pageBuilder: (context, animation, secondaryAnimation) => forgotPassword(),
+                            )
+                          );
+
+                        },
                       ),
                     ],
                   ):Container() ,
@@ -98,27 +114,7 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     width: 350,
                     height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.black12),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(28.0),
-                                    side: BorderSide(
-                                        color: Colors.transparent,
-                                        width: 200))),
-                      ),
-                      child: Text(
-                        _isLogIn ? "Sign In" : 'Sign Up',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black),
-                      ),
-                    ),
+                    child: customButton(buttonText: _isLogIn? "Sign In" : 'Sign Up' )
                   ),
                   SizedBox(height: 35,),
                   getOrDivider(),
@@ -170,3 +166,5 @@ class _LoginState extends State<Login> {
     );
   }
 }
+
+

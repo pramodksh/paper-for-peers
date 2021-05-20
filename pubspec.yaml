@@ -52,6 +52,7 @@ flutter:
   assets:
     - assets\images\appBackground.png
     - assets\images\welcomeScreen1.png
+    - assets\images\lock-image.png
     - assets\logo\mainLogo.png
     - assets\logo\google-icon.png
   #   - images/a_dot_burr.jpeg
