@@ -32,6 +32,7 @@ Widget customButton({@required String buttonText, @required Function onPressed, 
   Widget button = ElevatedButton(
     onPressed: onPressed,
     style: ButtonStyle(
+      overlayColor: MaterialStateProperty.all(Colors.blue.withOpacity(0.3)),
       padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: verticalPadding)),
       backgroundColor: MaterialStateProperty.all(Colors.white38),
       shape: MaterialStateProperty.all<RoundedRectangleBorder>(

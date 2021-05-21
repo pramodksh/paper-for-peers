@@ -21,7 +21,7 @@ class _LoginState extends State<Login> {
       ),
       Container(
         margin: EdgeInsets.symmetric(horizontal: 3.0),
-        child: Text("OR", style: TextStyle(color: Colors.black)),
+        child: Text("OR", style: TextStyle(color: Colors.white)),
       ),
       Expanded(
         child: Container(
@@ -67,14 +67,7 @@ class _LoginState extends State<Login> {
                     alignment: Alignment.center,
                   ),
                   SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    _isLogIn ? 'Sign In' : 'Sign Up',
-                    style: GoogleFonts.ptSans(
-                        fontSize: 35,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black38),
+                    height: 50,
                   ),
                   getSizedBox(),
                   customTextField(inputBoxText: 'Email Address'),
@@ -122,6 +115,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 35,),
                   getOrDivider(),
+                  SizedBox(height: 10,),
                   TextButton(
                     onPressed: () {},
                     child: Row(
@@ -135,10 +129,7 @@ class _LoginState extends State<Login> {
                           height: 15,
                           color: Colors.red,
                         ),
-                        SizedBox(
-                          width: 15,
-                          height: 50,
-                        ),
+                        SizedBox(width: 15,),
                         Text(
                           'Continue from Google',
                           style: TextStyle(color: Colors.white, fontSize: 18),
@@ -146,9 +137,7 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
+                  SizedBox(height: 10,),
 
                   RichText(
                     text: TextSpan(
