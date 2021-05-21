@@ -32,9 +32,6 @@ class _LoginState extends State<Login> {
     ],
   );
 
-  Widget getSizedBox() => SizedBox(
-    height: 20,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -69,13 +66,13 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: 50,
                   ),
-                  getSizedBox(),
+                  SizedBox(height: 20,),
                   customTextField(inputBoxText: 'Email Address'),
-                  getSizedBox(),
+                  SizedBox(height: 20,),
                   customTextField(inputBoxText: 'Password', obscureText: true),
-                  _isLogIn ? Container() : getSizedBox(),
+                  _isLogIn ? Container() : SizedBox(height: 20,),
                   _isLogIn
-                    ? Container()
+                    ? SizedBox(height: 5,)
                     : customTextField(inputBoxText: 'Confirm Password', obscureText: false
                   ),
                   _isLogIn ?  Row(
@@ -104,6 +101,7 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ):Container() ,
+                  SizedBox(height: 20,),
                   _isLogIn ? Container():SizedBox(height: 40,) ,
                   SizedBox(
                     width: 350,
@@ -115,7 +113,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 35,),
                   getOrDivider(),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 30,),
                   TextButton(
                     onPressed: () {},
                     child: Row(
@@ -125,10 +123,7 @@ class _LoginState extends State<Login> {
                           DefaultAssets.googleIconPath,
                           height: 30,
                         ),
-                        Divider(
-                          height: 15,
-                          color: Colors.red,
-                        ),
+
                         SizedBox(width: 15,),
                         Text(
                           'Continue from Google',
@@ -137,7 +132,7 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 20,),
 
                   RichText(
                     text: TextSpan(
