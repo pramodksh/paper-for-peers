@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
                   _isLogIn ? Container() : getSizedBox(),
                   _isLogIn
                     ? Container()
-                    : customTextField(inputBoxText: 'Confirm Password', obscureText: true
+                    : customTextField(inputBoxText: 'Confirm Password', obscureText: false
                   ),
                   _isLogIn ?  Row(
                     mainAxisAlignment: MainAxisAlignment.end,
