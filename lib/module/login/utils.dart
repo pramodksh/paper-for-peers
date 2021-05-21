@@ -4,40 +4,36 @@ import 'package:papers_for_peers/module/login/login.dart';
 
 Widget customTextField({String inputBoxText, bool obscureText = false}) {
   return TextField(
+    style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
-    // textInputAction: ,
     decoration: InputDecoration(
-      // contentPadding: EdgeInsets.symmetric(vertical: 10),
+      hintStyle: TextStyle(color: Colors.white, fontSize: 18),
       isDense: true,
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),
+          borderSide: BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(15.0),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black26),
+          borderSide: BorderSide(color: Colors.white24),
           borderRadius: BorderRadius.circular(15.0),
         ),
-
         labelText: inputBoxText,
         labelStyle: TextStyle(
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w400,
-            color: Colors.black
+            color: Colors.white
           // height: 4
         )
     ),
   );
 }
 
-
-
-
-Widget customButton({@required String buttonText, @required Function onPressed, double width, double verticalPadding = 5 ,Color textColor = Colors.black}){
+Widget customButton({@required String buttonText, @required Function onPressed, double width, double verticalPadding = 5 ,Color textColor = Colors.white}){
   Widget button = ElevatedButton(
     onPressed: onPressed,
     style: ButtonStyle(
       padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: verticalPadding)),
-      backgroundColor: MaterialStateProperty.all(Colors.black12),
+      backgroundColor: MaterialStateProperty.all(Colors.white38),
       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(28.0),

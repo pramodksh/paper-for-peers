@@ -10,6 +10,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        // fontFamily: "Mulish",
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: TextTheme(
+          // bodyText1: TextStyle(fontFamily: "Mulish"),
+          // bodyText2: TextStyle(fontFamily: "Mulish"),
+        ).apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
+        ),
+      ),
       // initialRoute: '/',
         // routes: {
         // '/': (context) => Loading(),

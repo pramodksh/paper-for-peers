@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/module/login/forgotPassword.dart';
 import 'package:papers_for_peers/module/login/utils.dart';
@@ -14,22 +15,26 @@ class _LoginState extends State<Login> {
   bool _isLogIn = true;
 
   Widget getOrDivider() => Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(height: 2.0, color: Colors.grey),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 3.0),
-            child: Text("OR", style: TextStyle(color: Colors.black)),
-          ),
-          Expanded(
-            child: Container(
-              height: 2.0,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      );
+    children: <Widget>[
+      Expanded(
+        child: Container(height: 2.0, color: Colors.grey),
+      ),
+      Container(
+        margin: EdgeInsets.symmetric(horizontal: 3.0),
+        child: Text("OR", style: TextStyle(color: Colors.black)),
+      ),
+      Expanded(
+        child: Container(
+          height: 2.0,
+          color: Colors.grey,
+        ),
+      ),
+    ],
+  );
+
+  Widget getSizedBox() => SizedBox(
+    height: 20,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +43,13 @@ class _LoginState extends State<Login> {
     return Stack(
       children: [
         Container(
-          // TODO : Reduce the opacity of background
-
-          child: Image.asset(
-            DefaultAssets.appBackgroundPath,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            fit: BoxFit.cover,
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.1),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
+              image: AssetImage(DefaultAssets.appBackgroundPath),
+            ),
           ),
         ),
         Scaffold(
@@ -71,41 +76,36 @@ class _LoginState extends State<Login> {
                         fontWeight: FontWeight.w600,
                         color: Colors.black38),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  getSizedBox(),
                   customTextField(inputBoxText: 'Email Address'),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  getSizedBox(),
                   customTextField(inputBoxText: 'Password', obscureText: true),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  _isLogIn ? Container() : getSizedBox(),
                   _isLogIn
-                      ? Container()
-                      : customTextField(
-                          inputBoxText: 'Confirm Password', obscureText: true),
+                    ? Container()
+                    : customTextField(inputBoxText: 'Confirm Password', obscureText: true
+                  ),
                   _isLogIn ?  Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
                         child: Text('Forgot Password?',
                           style: TextStyle(
-                            color: Colors.black38
+                            color: Colors.white,
+                            fontSize: 16
                           ),
                         ),
                         onPressed: (){
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //   builder: (context) => forgotPassword(),
-                          // ));
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ForgotPassword(),
+                          ));
 
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              transitionDuration: Duration(seconds: 5),
-                              pageBuilder: (context, animation, secondaryAnimation) => ForgotPassword(),
-                            )
-                          );
+                          // Navigator.of(context).push(
+                          //   PageRouteBuilder(
+                          //     transitionDuration: Duration(seconds: 5),
+                          //     pageBuilder: (context, animation, secondaryAnimation) => ForgotPassword(),
+                          //   )
+                          // );
 
                         },
                       ),
@@ -141,7 +141,7 @@ class _LoginState extends State<Login> {
                         ),
                         Text(
                           'Continue from Google',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
                     ),
@@ -149,18 +149,38 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     height: 5,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLogIn = !_isLogIn;
-                      });
-                    },
-                    child: Text(
-                      _isLogIn
-                          ? 'Already a Member? Sign In'
-                          : "New Member ? Create Account",
+
+                  RichText(
+                    text: TextSpan(
+                      // text: _isLogIn ? "Already a Member" : "New Member",
+                      style: TextStyle(fontSize: 18),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: _isLogIn ? "Already a Member? " : "New Member? ",
+                        ),
+                        TextSpan(
+                          recognizer: TapGestureRecognizer()..onTap = () {
+                            setState(() { _isLogIn = !_isLogIn; });
+                          },
+                          text: _isLogIn ? "Sign In" : "Create Account",
+                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)
+                        ),
+                      ],
                     ),
-                  ),
+                  )
+
+                  // TextButton(
+                  //   onPressed: () {
+                  //     setState(() {
+                  //       _isLogIn = !_isLogIn;
+                  //     });
+                  //   },
+                  //   child: Text(
+                  //     _isLogIn
+                  //         ? 'Already a Member? Sign In'
+                  //         : "New Member ? Create Account",
+                  //   ),
+                  // ),
                 ],
               ),
             ),

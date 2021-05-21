@@ -12,11 +12,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Image.asset(
-          DefaultAssets.appBackgroundPath,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.1),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
+              image: AssetImage(DefaultAssets.appBackgroundPath),
+            ),
+          ),
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
@@ -31,6 +35,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   Image.asset(
                     DefaultAssets.lockImagePath,
                     height: 60,
+                    color: Colors.white,
                   ),
                   SizedBox(
                     height: 50,
@@ -39,7 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     "Forgot Password?",
                     style: TextStyle(
                         fontSize: 25,
-                        color: Colors.black,
+                        color: Colors.white,
                         decoration: TextDecoration.none),
                   ),
                   SizedBox(
@@ -47,7 +52,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   Text(
                     'We just need your registered email address send you password reset',
-                    style: TextStyle(fontSize: 15),
+                    style: TextStyle(fontSize: 15, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
