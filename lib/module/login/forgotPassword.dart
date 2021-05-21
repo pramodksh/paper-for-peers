@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/module/login/utils.dart';
 
-class forgotPassword extends StatefulWidget {
+class ForgotPassword extends StatefulWidget {
   @override
-  _forgotPasswordState createState() => _forgotPasswordState();
+  _ForgotPasswordState createState() => _ForgotPasswordState();
 }
 
-class _forgotPasswordState extends State<forgotPassword> {
+class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Image.asset(
-          'assets\\images\\appBackground.png',
+          DefaultAssets.appBackgroundPath,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           fit: BoxFit.cover,
@@ -20,14 +21,15 @@ class _forgotPasswordState extends State<forgotPassword> {
         Scaffold(
           backgroundColor: Colors.transparent,
             body: Container(
-          width: MediaQuery.of(context).size.width,
-          child: Container(
-            padding: EdgeInsets.fromLTRB(50, 130, 50, 80),
-            child: SingleChildScrollView(
+              width: MediaQuery.of(context).size.width,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                child: SingleChildScrollView(
               child: Column(
                 children: [
+                  SizedBox(height:40,),
                   Image.asset(
-                    'assets\\images\\lock-image.png',
+                    DefaultAssets.lockImagePath,
                     height: 60,
                   ),
                   SizedBox(
@@ -63,12 +65,15 @@ class _forgotPasswordState extends State<forgotPassword> {
                       onPressed: () {
                         print("FORGOT PASSWORD");
                         Navigator.pop(context);
-                      })
+                      }
+                  ),
+                  SizedBox(height:40,),
                 ],
               ),
             ),
+             ),
           ),
-        )),
+        ),
       ],
     );
   }

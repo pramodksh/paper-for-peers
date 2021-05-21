@@ -1,3 +1,4 @@
+import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/module/login/forgotPassword.dart';
 import 'package:papers_for_peers/module/login/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,7 +41,7 @@ class _LoginState extends State<Login> {
           // TODO : Reduce the opacity of background
 
           child: Image.asset(
-            'assets\\images\\appBackground.png',
+            DefaultAssets.appBackgroundPath,
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
@@ -56,7 +57,7 @@ class _LoginState extends State<Login> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets\\logo\\mainLogo.png',
+                    DefaultAssets.mainLogoPath,
                     height: 110,
                     alignment: Alignment.center,
                   ),
@@ -102,7 +103,7 @@ class _LoginState extends State<Login> {
                           Navigator.of(context).push(
                             PageRouteBuilder(
                               transitionDuration: Duration(seconds: 5),
-                              pageBuilder: (context, animation, secondaryAnimation) => forgotPassword(),
+                              pageBuilder: (context, animation, secondaryAnimation) => ForgotPassword(),
                             )
                           );
 
@@ -114,7 +115,10 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     width: 350,
                     height: 50,
-                    child: customButton(buttonText: _isLogIn? "Sign In" : 'Sign Up' )
+                    child: customButton(
+                      buttonText: _isLogIn? "Sign In" : 'Sign Up',
+                      onPressed: () {},
+                    ),
                   ),
                   SizedBox(height: 35,),
                   getOrDivider(),
@@ -124,7 +128,7 @@ class _LoginState extends State<Login> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
-                          'assets\\logo\\google-icon.png',
+                          DefaultAssets.googleIconPath,
                           height: 30,
                         ),
                         Divider(
