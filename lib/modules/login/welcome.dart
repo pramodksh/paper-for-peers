@@ -74,7 +74,6 @@
 //---------------------------End Here--------------------------
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:page_indicator/page_indicator.dart';
 
 class Carousel extends StatefulWidget {
@@ -103,13 +102,19 @@ class _CarouselState extends State<Carousel>
               // width: MediaQuery.of(context).size.width * 0.75,
               child: Text(
                 'We Provide you the Feature of Downloading Notes and Question Paper.',
-                style: GoogleFonts.poiretOne(
+                style: TextStyle(
                   decoration: TextDecoration.none,
                   fontSize: 22,
                   fontWeight: FontWeight.w600, color: Colors.black,
-                  // wordSpacing: 2,
                   letterSpacing: 1.5,
                 ),
+                // style: GoogleFonts.poiretOne(
+                //   decoration: TextDecoration.none,
+                //   fontSize: 22,
+                //   fontWeight: FontWeight.w600, color: Colors.black,
+                //   // wordSpacing: 2,
+                //   letterSpacing: 1.5,
+                // ),
                 
                 textAlign: TextAlign.center,
               ),
