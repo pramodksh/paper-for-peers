@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
-import 'package:papers_for_peers/module/login/forgotPassword.dart';
-import 'package:papers_for_peers/module/login/utils.dart';
+import 'package:papers_for_peers/modules/login/forgotPassword.dart';
+import 'package:papers_for_peers/modules/login/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

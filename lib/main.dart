@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/module/login/forgotPassword.dart';
-import 'package:papers_for_peers/module/login/login.dart';
-import 'package:papers_for_peers/module/login/welcome.dart';
+import 'package:papers_for_peers/modules/login/forgotPassword.dart';
+import 'package:papers_for_peers/modules/login/login.dart';
+import 'package:papers_for_peers/modules/login/welcome.dart';
 void main(){
   runApp(MyApp());
 }

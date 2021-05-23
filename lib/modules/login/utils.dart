@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/module/login/login.dart';
+import 'package:papers_for_peers/modules/login/login.dart';
 
 Widget customTextField({String inputBoxText, bool obscureText = false}) {
   return TextField(

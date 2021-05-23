@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
-import 'package:papers_for_peers/module/login/utils.dart';
+import 'package:papers_for_peers/modules/login/utils.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
