@@ -7,7 +7,6 @@ Widget customTextField({String inputBoxText, bool obscureText = false}) {
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
-      hintStyle: TextStyle(color: Colors.white, fontSize: 18),
       isDense: true,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white),
@@ -18,12 +17,12 @@ Widget customTextField({String inputBoxText, bool obscureText = false}) {
           borderRadius: BorderRadius.circular(15.0),
         ),
         labelText: inputBoxText,
-        labelStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w400,
-            color: Colors.white
-          // height: 4
-        )
+        // labelStyle: TextStyle(
+        //     fontSize: 18,
+        //     fontWeight: FontWeight.w400,
+        //     color: Colors.white
+        //   // height: 4
+        // )
     ),
   );
 }

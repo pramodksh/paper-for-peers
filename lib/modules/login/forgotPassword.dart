@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/login/utils.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -51,8 +52,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     height: 70,
                   ),
                   Text(
-                    'We just need your registered email address send you password reset',
-                    style: TextStyle(fontSize: 15, color: Colors.white),
+                    'We just need your registered email address send you password reset email',
+                    style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
+                    // style: TextStyle(fontSize: 15,),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(

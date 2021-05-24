@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class CustomTextStyle {
 
-  final TextStyle regularTextStyle = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w400,
-    color: Colors.red,
+  static const TextStyle appBarTextStyle = TextStyle(
+    fontFamily: "Montserrat",
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    fontSize: 25,
+  );
+
+  static const TextStyle bodyTextStyle = TextStyle(
+    fontFamily: "Montserrat",
+    color: Colors.white,
   );
 
 }

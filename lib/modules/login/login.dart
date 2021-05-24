@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/login/forgotPassword.dart';
 import 'package:papers_for_peers/modules/login/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +22,7 @@ class _LoginState extends State<Login> {
       ),
       Container(
         margin: EdgeInsets.symmetric(horizontal: 3.0),
-        child: Text("OR", style: TextStyle(color: Colors.white)),
+        child: Text("OR", style: CustomTextStyle.bodyTextStyle.copyWith(letterSpacing: 4),),
       ),
       Expanded(
         child: Container(
@@ -77,12 +78,7 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        child: Text('Forgot Password?',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16
-                          ),
-                        ),
+                        child: Text('Forgot Password?', style: TextStyle(color: Colors.white, fontSize: 18),),
                         onPressed: (){
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ForgotPassword(),
@@ -117,7 +113,7 @@ class _LoginState extends State<Login> {
                         SizedBox(width: 15,),
                         Text(
                           'Continue from Google',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),
@@ -126,8 +122,7 @@ class _LoginState extends State<Login> {
 
                   RichText(
                     text: TextSpan(
-                      // text: _isLogIn ? "Already a Member" : "New Member",
-                      style: TextStyle(fontSize: 18),
+                      style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
                       children: <TextSpan>[
                         TextSpan(
                             text: _isLogIn ? "Already a Member? " : "New Member? ",
