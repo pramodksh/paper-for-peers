@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:papers_for_peers/modules/login/forgotPassword.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/modules/login/welcome.dart';
+import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
 import 'package:papers_for_peers/modules/testing_screens/pdf_view.dart';
 void main(){
   runApp(MyApp());
@@ -23,26 +24,14 @@ class MyApp extends StatelessWidget {
           displayColor: Colors.white,
         ),
       ),
-      // initialRoute: '/',
-        // routes: {
-        // '/': (context) => Loading(),
-        // '/homePage': (context) => HomePage(),
-        // '/chooseLocation': (context) => ChooseLocation(),
 
-      // initialRoute: '/',
-      // routes: {
-      //   '/' :(context) => Login(),
-      //   '/'
-      // },
-
-
-      // home: Login(),
+      home: Login(),
       // home: welcomeScreens(),
       // home: Carousel(),
       // home: forgotPassword(),
       
-      home: PDFScreen(),
-      
+      // home: PDFScreen(),
+      // home: ClipPathScreen(),
     );
   }
 }

@@ -11,6 +11,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
   bool _isLogIn = true;
 
   Widget getOrDivider() => Row(
@@ -34,8 +35,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    print("LOGIN? ${_isLogIn}");
-
     return Stack(
       children: [
         Container(
@@ -88,14 +87,6 @@ class _LoginState extends State<Login> {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ForgotPassword(),
                           ));
-
-                          // Navigator.of(context).push(
-                          //   PageRouteBuilder(
-                          //     transitionDuration: Duration(seconds: 5),
-                          //     pageBuilder: (context, animation, secondaryAnimation) => ForgotPassword(),
-                          //   )
-                          // );
-
                         },
                       ),
                     ],
@@ -151,19 +142,6 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                   )
-
-                  // TextButton(
-                  //   onPressed: () {
-                  //     setState(() {
-                  //       _isLogIn = !_isLogIn;
-                  //     });
-                  //   },
-                  //   child: Text(
-                  //     _isLogIn
-                  //         ? 'Already a Member? Sign In'
-                  //         : "New Member ? Create Account",
-                  //   ),
-                  // ),
                 ],
               ),
             ),
