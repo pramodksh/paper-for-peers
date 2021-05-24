@@ -13,12 +13,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // fontFamily: "PorientOne",
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: Colors.black,
         textTheme: TextTheme(
-          bodyText1: TextStyle(fontFamily: "PorientOne"),
-          bodyText2: TextStyle(fontFamily: "PorientOne"),
+          bodyText1: TextStyle(fontFamily: "Montserrat",),
+          bodyText2: TextStyle(fontFamily: "Montserrat",),
         ).apply(
           bodyColor: Colors.white,
           displayColor: Colors.white,

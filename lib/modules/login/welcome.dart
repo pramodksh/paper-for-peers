@@ -108,14 +108,6 @@ class _CarouselState extends State<Carousel>
                   fontWeight: FontWeight.w600, color: Colors.black,
                   letterSpacing: 1.5,
                 ),
-                // style: GoogleFonts.poiretOne(
-                //   decoration: TextDecoration.none,
-                //   fontSize: 22,
-                //   fontWeight: FontWeight.w600, color: Colors.black,
-                //   // wordSpacing: 2,
-                //   letterSpacing: 1.5,
-                // ),
-                
                 textAlign: TextAlign.center,
               ),
             )
@@ -131,7 +123,6 @@ class _CarouselState extends State<Carousel>
 
   @override
   void initState() {
-
     _list = [
       getSliderBox(
           sliderText: 'We Provide you the Feature of Downloading Notes and Question Paper.',
