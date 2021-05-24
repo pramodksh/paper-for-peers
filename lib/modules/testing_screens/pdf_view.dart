@@ -66,16 +66,22 @@ class _PDFScreenState extends State<PDFScreen> {
     );
   }
 
-  loadDocument() async {
-    document = await PDFDocument.fromAsset(pdfPath);
+  Future loadDocumentFromAssetPath({@required String assetPath}) async {
+    setState(() => _isLoading = true);
+    document = await PDFDocument.fromAsset(assetPath);
+    setState(() => _isLoading = false);
+    return;
+  }
 
+  void loadDocumentFromURL({@required pdfURL}) async {
+    setState(() => _isLoading = true);
+    document = await PDFDocument.fromURL(pdfURL);
+    setState(() => _isLoading = false);
+  }
 
-    // document = await PDFDocument.fromURL(pdfOnlinePath);
-
+  void loadDocumentFromFile() {
     // File file  = File('...');
     // PDFDocument doc = await PDFDocument.fromFile(file);
-
-    setState(() => _isLoading = false);
   }
 
   // changePDF(value) async {
@@ -99,12 +105,73 @@ class _PDFScreenState extends State<PDFScreen> {
   //   setState(() => _isLoading = false);
   // }
 
+  Widget _buildBottomModel() {
 
+    double modelHeight = 300;
+    double ratingHeight = 30;
+    double ratingBorderRadius = 20;
+    double ratingWidth = 100;
+    double ratingRightPosition = 10;
+
+    return Stack(
+      children: [
+        Positioned(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
+            ),
+            height: ratingHeight,
+            width: ratingWidth,
+            child: Center(child: Text("HI", style: TextStyle(fontWeight: FontWeight.w600),)),
+          ),
+          right: ratingRightPosition,
+        ),
+        Container(
+            margin: EdgeInsets.only(top: ratingHeight),
+            decoration: BoxDecoration(
+                color: Colors.yellow,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(20))
+            ),
+            height: modelHeight,
+            width: MediaQuery.of(context).size.width,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text("Scroll", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
+                ],
+              ),
+            )
+        ),
+      ],
+    );
+  }
+
+  void _showCustomBottomSheet() {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
+      ),
+      context: context,
+      builder: (context) => _buildBottomModel(),
+    );
+  }
 
   @override
   void initState() {
-    loadDocument();
-
+    loadDocumentFromAssetPath(assetPath: pdfPath).then((value) {
+      _showCustomBottomSheet();
+    });
     super.initState();
   }
 
@@ -116,14 +183,7 @@ class _PDFScreenState extends State<PDFScreen> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => Container(
-                  height: 300,
-                  color: Colors.white38,
-                  child: Center(child: Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700),)),
-                ),
-              );
+              _showCustomBottomSheet();
             },
             child: Text("Show"),
           ),
@@ -154,12 +214,8 @@ class _PDFScreenState extends State<PDFScreen> {
           indicatorText: Colors.white,
           // showIndicator: false,
 
-
-
-
-          //uncomment below line to preload all pages
           lazyLoad: true,
-          // uncomment below line to scroll vertically
+
           scrollDirection: Axis.vertical,
         ),
       ),
