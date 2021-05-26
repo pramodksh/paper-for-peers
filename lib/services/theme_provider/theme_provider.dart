@@ -13,9 +13,3 @@ class DarkThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 }
-
-// todo dark theme toggle
-// Checkbox(
-//   value: themeChange.isDarkTheme,
-//   onChanged: (bool value) {  themeChange.isDarkTheme = value;},
-// ),

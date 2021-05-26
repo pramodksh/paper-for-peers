@@ -38,7 +38,7 @@ class Styles {
 
       appBarTheme: AppBarTheme(
         elevation: 0.0,
-        backgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white,
+        backgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white38,
         textTheme: TextTheme(
           headline6: CustomTextStyle.appBarTextStyle.copyWith(
             color: isDarkTheme ? Colors.white : Colors.black,
@@ -60,7 +60,7 @@ class Styles {
       ),
 
       // todo change color
-      scaffoldBackgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white,
+      scaffoldBackgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white38,
 
       // primarySwatch: Colors.red,
       // primaryColor: isDarkTheme ? Colors.black : Colors.white,

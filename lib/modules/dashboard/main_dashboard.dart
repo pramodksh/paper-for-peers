@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
+import 'package:papers_for_peers/modules/dashboard/settings/settings.dart';
 
 class MainDashboard extends StatefulWidget {
   @override
@@ -40,7 +41,11 @@ class _MainDashboardState extends State<MainDashboard> {
             child: IconButton(
               splashRadius: 25,
               icon: Image.asset(DefaultAssets.settingIcon, color: CustomColors.bottomNavBarSelectedIconColor,),
-              onPressed: () { },
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Settings(),
+                ));
+              },
             ),
           ),
           SizedBox(width: 5,),
