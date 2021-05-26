@@ -22,11 +22,23 @@ class _MainDashboardState extends State<MainDashboard> {
     {"icon": AssetImage(DefaultAssets.syllabusCopyNavIcon,), "label": "Syllabus Copy"},
   ];
 
+  String get greeting {
+    var hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good Morning';
+    }
+    if (hour < 17) {
+      return 'Good Afternoon';
+    }
+    return 'Good Evening';
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Good Morning"),
+        title: Text(greeting),
         actions: [
           Transform.scale(
             scale: 1.1,
