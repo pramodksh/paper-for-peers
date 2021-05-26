@@ -54,7 +54,9 @@ flutter:
   assets:
     - assets/images/
     - assets/logo/
-    - assets/images/appBackgroundDark.png
+    - assets/icons/bottom_nav_bar/
+    - assets/icons/
+#    - assets/images/appBackgroundDark.png
     - assets/pdfs/Javanotes.pdf
 #    - appBackground.png
 #    - assets/images/welcomeScreen1.png
