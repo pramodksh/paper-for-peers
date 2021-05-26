@@ -12,6 +12,7 @@ class DefaultAssets {
   // icons
   static const profileIcon = "assets/icons/profile_icon.png";
   static const settingIcon = "assets/icons/settings_icon.png";
+  static const addPostIcon = "assets/icons/add_post_icon.png";
 
   // bottom nav icons
   static const journalNavIcon = "assets/icons/bottom_nav_bar/journal_nav_icon.png";

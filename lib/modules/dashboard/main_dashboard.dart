@@ -11,7 +11,7 @@ class MainDashboard extends StatefulWidget {
 
 class _MainDashboardState extends State<MainDashboard> {
 
-  int selectedItemPosition = 1;
+  int selectedItemPosition = 0;
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
@@ -26,6 +26,7 @@ class _MainDashboardState extends State<MainDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Good Morning"),
         actions: [
           Transform.scale(
             scale: 1.1,

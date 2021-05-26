@@ -33,6 +33,7 @@ dependencies:
   advance_pdf_viewer: ^1.2.2
   provider: ^5.0.0
   shared_preferences: any
+  dotted_border: ^2.0.0
 
 
 dev_dependencies:
