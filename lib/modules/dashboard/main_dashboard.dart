@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
 
 class MainDashboard extends StatefulWidget {
   @override
@@ -26,19 +27,19 @@ class _MainDashboardState extends State<MainDashboard> {
       appBar: AppBar(
         actions: [
           Transform.scale(
-            scale: 1.2,
+            scale: 1.1,
             child: IconButton(
               splashRadius: 25,
-              icon: Image.asset(DefaultAssets.profileIcon,),
+              icon: Image.asset(DefaultAssets.profileIcon, color: CustomColors.bottomNavBarSelectedIconColor,),
               onPressed: () { },
             ),
           ),
           SizedBox(width: 15,),
           Transform.scale(
-            scale: 1.2,
+            scale: 1.1,
             child: IconButton(
               splashRadius: 25,
-              icon: Image.asset(DefaultAssets.settingIcon,),
+              icon: Image.asset(DefaultAssets.settingIcon, color: CustomColors.bottomNavBarSelectedIconColor,),
               onPressed: () { },
             ),
           ),
@@ -48,7 +49,7 @@ class _MainDashboardState extends State<MainDashboard> {
       body: Builder(
         builder: (context) {
           if (selectedItemPosition == 0) {
-            return Text("ZERO");
+            return QuestionPaper();
           } else if (selectedItemPosition == 1) {
             return Text("one");
           } else if (selectedItemPosition == 2) {
@@ -81,6 +82,8 @@ class _MainDashboardState extends State<MainDashboard> {
                       Transform.scale(
                         scale: 1.7,
                         child: IconButton(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           padding: EdgeInsets.zero,
                           // constraints: BoxConstraints(),
                           onPressed: () {

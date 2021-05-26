@@ -10,10 +10,8 @@ class _QuestionPaperState extends State<QuestionPaper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-
-        ],
+      body: Container(
+        child: Text("HI"),
       ),
     );
   }
