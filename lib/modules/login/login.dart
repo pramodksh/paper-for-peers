@@ -15,7 +15,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-
   bool _isLogIn = true;
 
   Widget getOrDivider() => Row(
@@ -36,12 +35,8 @@ class _LoginState extends State<Login> {
     ],
   );
 
-
   @override
   Widget build(BuildContext context) {
-
-    final themeChange = Provider.of<DarkThemeProvider>(context);
-
     return Stack(
       children: [
         Container(
@@ -83,12 +78,6 @@ class _LoginState extends State<Login> {
                   _isLogIn ?  Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      // todo testing dark theme
-                      Checkbox(
-                        value: themeChange.darkTheme,
-                        onChanged: (bool value) {  themeChange.darkTheme = value;},
-                      ),
-
                       TextButton(
                         child: Text('Forgot Password?', style: TextStyle(color: Colors.white, fontSize: 18),),
                         onPressed: (){

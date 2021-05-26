@@ -75,26 +75,32 @@
 
 import 'package:flutter/material.dart';
 import 'package:page_indicator/page_indicator.dart';
+import 'package:papers_for_peers/config/default_assets.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 
 class Carousel extends StatefulWidget {
   _CarouselState createState() => _CarouselState();
 }
 
-
 class _CarouselState extends State<Carousel>
     with SingleTickerProviderStateMixin {
 
-  SliderBox getSliderBox({@required String sliderText, @required String sliderImage}) {
+  final PageController _controller = PageController();
+  List<Widget> _list = [];
+
+  SliderBox getSliderBox({
+    @required String sliderText,
+    @required String sliderImage,
+    @required context}) {
     return SliderBox(
       child: Container(
-        // height:MediaQuery.of(context).size.height *.75 ,
         margin: EdgeInsets.fromLTRB(20, 0, 20, 50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              'assets\\images\\welcomeScreen1.png',
-              height: 500,
+              sliderImage,
+              height: MediaQuery.of(context).size.height * 0.65,
               alignment: Alignment.center,
             ),
             Container(
@@ -102,7 +108,7 @@ class _CarouselState extends State<Carousel>
               // width: MediaQuery.of(context).size.width * 0.75,
               child: Text(
                 'We Provide you the Feature of Downloading Notes and Question Paper.',
-                style: TextStyle(
+                style: CustomTextStyle.bodyTextStyle.copyWith(
                   decoration: TextDecoration.none,
                   fontSize: 22,
                   fontWeight: FontWeight.w600, color: Colors.black,
@@ -117,29 +123,32 @@ class _CarouselState extends State<Carousel>
     );
   }
 
-  final PageController _controller = PageController();
-
-  List<Widget> _list;
-
   @override
   void initState() {
-    _list = [
-      getSliderBox(
-          sliderText: 'We Provide you the Feature of Downloading Notes and Question Paper.',
-          sliderImage: "assets\\images\\welcomeScreen1.png"
-      ),
-      getSliderBox(
-          sliderText: 'We Provide you the Feature of Downloading Notes and Question Paper.',
-          sliderImage: "assets\\images\\welcomeScreen1.png"
-      ),
-      getSliderBox(
-          sliderText: 'We Provide you the Feature of Downloading Notes and Question Paper.',
-          sliderImage: "assets\\images\\welcomeScreen1.png"
-      ),
-    ];
-
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _animateSlider());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _animateSlider();
+
+      _list = [
+        getSliderBox(
+          sliderText: 'We Provide you the Feature of Downloading Notes and Question Paper.',
+          sliderImage: DefaultAssets.welcomeScreenPath,
+          context: context,
+        ),
+        getSliderBox(
+          sliderText: 'We Provide you the Feature of Downloading Notes and Question Paper.',
+          sliderImage: DefaultAssets.welcomeScreenPath,
+          context: context,
+        ),
+        getSliderBox(
+          sliderText: 'We Provide you the Feature of Downloading Notes and Question Paper.',
+          sliderImage: DefaultAssets.welcomeScreenPath,
+          context: context,
+        ),
+      ];
+
+    });
   }
 
   void _animateSlider() {
@@ -159,6 +168,7 @@ class _CarouselState extends State<Carousel>
 
   @override
   Widget build(BuildContext context) {
+
     PageIndicatorContainer container = new PageIndicatorContainer(
       pageView: new PageView(
         children: _list,

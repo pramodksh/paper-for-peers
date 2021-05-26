@@ -1,47 +1,37 @@
 import 'package:flutter/material.dart';
 
-class CustomClipPath extends CustomClipper<Path> {
-  var radius=20.0;
+class CustomRect extends CustomClipper<Rect>{
   @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, 500);
-    path.lineTo(200,200);
-    path.lineTo(260,0);
-    path.lineTo(30, 0);
-    return path;
+  Rect getClip(Size size) {
+    Rect rect = Rect.fromLTRB(0.0, size.width * 2, size.width, size.height);
+    return rect;
   }
+
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+  bool shouldReclip(CustomRect oldClipper) {
+    // TODO: implement shouldReclip
+  }
 }
 
-
-class ClipPathScreen extends StatefulWidget {
+class ClipTesting extends StatefulWidget {
   @override
-  _ClipPathScreenState createState() => _ClipPathScreenState();
+  _ClipTestingState createState() => _ClipTestingState();
 }
 
-class _ClipPathScreenState extends State<ClipPathScreen> {
+class _ClipTestingState extends State<ClipTesting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Clip path"),
+        title: Text("CLIP"),
       ),
-      body: Container(
-        child: Stack(
-          children: [
-            Container(
-                color:Colors.white
-            ),
-            ClipPath(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                color: Colors.yellow,
-              ),
-              clipper: CustomClipPath(),
-            )
-          ],
+      body: Center(
+        child: ClipOval(
+          child: Container(
+            color: Colors.red,
+            width: 300.0,
+            height: 200.0,
+          ),
         ),
       )
     );

@@ -3,13 +3,19 @@ import 'package:papers_for_peers/services/shared_preferences/shared_preferences.
 
 class DarkThemeProvider with ChangeNotifier {
   DarkThemePreference darkThemePreference = DarkThemePreference();
-  bool _darkTheme = false;
+  bool _isDarkTheme = false;
 
-  bool get darkTheme => _darkTheme;
+  bool get isDarkTheme => _isDarkTheme;
 
-  set darkTheme(bool value) {
-    _darkTheme = value;
-    darkThemePreference.setDarkTheme(value);
+  set isDarkTheme(bool value) {
+    _isDarkTheme = value;
+    darkThemePreference.setAppTheme(value);
     notifyListeners();
   }
 }
+
+// todo dark theme toggle
+// Checkbox(
+//   value: themeChange.isDarkTheme,
+//   onChanged: (bool value) {  themeChange.isDarkTheme = value;},
+// ),

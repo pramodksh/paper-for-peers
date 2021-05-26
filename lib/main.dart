@@ -3,7 +3,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/login/forgotPassword.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
-import 'package:papers_for_peers/modules/login/welcome.dart';
+import 'package:papers_for_peers/modules/login/carausel.dart';
 import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
 import 'package:papers_for_peers/modules/testing_screens/pdf_view.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
@@ -23,8 +23,8 @@ class _MyAppState extends State<MyApp> {
   DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
 
   void getCurrentAppTheme() async {
-    themeChangeProvider.darkTheme =
-    await themeChangeProvider.darkThemePreference.getTheme();
+    themeChangeProvider.isDarkTheme =
+    await themeChangeProvider.darkThemePreference.getAppTheme();
   }
 
   @override
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, value, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+            theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
 
             // theme: ThemeData(
             //   // buttonTheme: ButtonThemeData(
@@ -87,11 +87,11 @@ class _MyAppState extends State<MyApp> {
             // ),
 
             home: Login(),
-            // home: welcomeScreens(),
+
             // home: Carousel(),
 
             // home: PDFScreen(),
-            // home: ClipPathScreen(),
+            // home: ClipTesting(),
           );
         },
       ),
