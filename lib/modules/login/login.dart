@@ -5,6 +5,8 @@ import 'package:papers_for_peers/modules/login/forgotPassword.dart';
 import 'package:papers_for_peers/modules/login/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
 
   bool _isLogIn = true;
 
@@ -36,6 +39,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+
+    final themeChange = Provider.of<DarkThemeProvider>(context);
+
     return Stack(
       children: [
         Container(
@@ -77,6 +83,12 @@ class _LoginState extends State<Login> {
                   _isLogIn ?  Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      // todo testing dark theme
+                      Checkbox(
+                        value: themeChange.darkTheme,
+                        onChanged: (bool value) {  themeChange.darkTheme = value;},
+                      ),
+
                       TextButton(
                         child: Text('Forgot Password?', style: TextStyle(color: Colors.white, fontSize: 18),),
                         onPressed: (){
