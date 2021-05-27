@@ -4,6 +4,7 @@ class DefaultAssets {
   static const String appBackgroundPath = "assets/images/appBackground.png";
   static const String welcomeScreenPath = "assets/images/welcomeScreen1.png";
   static const String lockImagePath = "assets/images/lock-image.png";
+  static const String profileImagePath = "assets/images/profile_image.jpg";
 
   // logos
   static const googleIconPath = "assets/logo/google-icon.png";
@@ -14,6 +15,7 @@ class DefaultAssets {
   static const settingIcon = "assets/icons/settings_icon.png";
   static const addPostIcon = "assets/icons/add_post_icon.png";
   static const postDownloadIcon = "assets/icons/post_download_icon.png";
+  static const leftArrowIcon = "assets/icons/left_arrow_icon.png";
 
   // bottom nav icons
   static const journalNavIcon = "assets/icons/bottom_nav_bar/journal_nav_icon.png";

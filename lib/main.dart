@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
@@ -91,7 +92,8 @@ class _MyAppState extends State<MyApp> {
             // home: Carousel(),
 
             // home: QuestionPaper(),
-            home: MainDashboard(),
+            // home: MainDashboard(),
+            home: ProfileScreen(),
 
             // home: PDFScreen(),
             // home: ClipTesting(),
