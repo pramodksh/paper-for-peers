@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -15,7 +16,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   double statCircleRadius = 50;
   double statCircleBorderThickness = 4;
 
-  String avgRating = '4.5';
+  double avgRating = 4.5;
+  int totalDownloads = 20;
 
   Widget getCircularProfileImage({@required imagePath}) {
     return Container(
@@ -58,19 +60,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         radius: statCircleRadius,
         backgroundColor: CustomColors.backGroundColor,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('$title',
-                textAlign: TextAlign.center,
-                style: CustomTextStyle.bodyTextStyle.copyWith(
-                    fontSize: 13,
-                    color: CustomColors.bottomNavBarUnselectedIconColor)
-                // TextStyle(
-                //   fontSize: 12,
-                // ),
-                ),
+            Text(title,
+              textAlign: TextAlign.center,
+              style: CustomTextStyle.bodyTextStyle.copyWith(
+                fontSize: 13,
+                color: CustomColors.bottomNavBarUnselectedIconColor
+              )
+            ),
+            SizedBox(height: 5,),
             Text(
-              '$value',
+              value,
               style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 20),
             )
           ],
@@ -79,12 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getCustomButton({@required String title}){
+  Widget getCustomButton({@required String title, @required Function onPressed}){
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.7,
+      width: MediaQuery.of(context).size.width * 0.65,
       height: 50,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           primary: CustomColors.bottomNavBarColor,
           shape: new RoundedRectangleBorder(
@@ -95,8 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         child: Text(
-          '$title',
-          style: TextStyle(fontSize: 25),
+          title,
+          style: TextStyle(fontSize: 20),
         ),
       ),
     );
@@ -106,33 +107,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Image.asset(DefaultAssets.leftArrowIcon),
+        title: Text("Your Profile"),
+        centerTitle: true,
       ),
-      body: Column(
-        children: [
-          getCircularProfileImage(imagePath: DefaultAssets.profileImagePath),
-          SizedBox(
-            height: 30,
-          ),
-          Text(
-            'John Doe',
-            style: TextStyle(fontSize: 25),
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Container(
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              getCircularStat(title: 'Average\nRating', value: '4.5'),
-              getCircularStat(title: 'Total\nRating', value: '24'),
+              SizedBox(
+                height: 30,
+              ),
+              getCircularProfileImage(imagePath: DefaultAssets.profileImagePath),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                'John Doe',
+                style: TextStyle(fontSize: 25),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  getCircularStat(title: 'Average\nRating', value: avgRating.toString()),
+                  getCircularStat(title: 'Total\nRating', value: totalDownloads.toString()),
+                ],
+              ),
+              SizedBox(height: 30,),
+              getCustomButton(title: 'Your Post', onPressed: () {}),
+              SizedBox(height: 30,),
+              getCustomButton(title: 'Upload', onPressed: () {}),
             ],
           ),
-          SizedBox(height: 60,),
-          getCustomButton(title: 'Your Post'),
-          SizedBox(height: 30,),
-          getCustomButton(title: 'Upload'),
-        ],
+        ),
       ),
     );
   }

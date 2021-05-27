@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -63,7 +64,11 @@ class _MainDashboardState extends State<MainDashboard> {
             child: IconButton(
               splashRadius: 25,
               icon: Image.asset(DefaultAssets.profileIcon, color: CustomColors.bottomNavBarSelectedIconColor,),
-              onPressed: () { },
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ProfileScreen(),
+                ));
+              },
             ),
           ),
           SizedBox(width: 15,),
