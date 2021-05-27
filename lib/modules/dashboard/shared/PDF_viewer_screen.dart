@@ -153,7 +153,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.parameter.year, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 30, fontWeight: FontWeight.w600)),
-                      SizedBox(height: 20,),
+                      SizedBox(height: 10,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

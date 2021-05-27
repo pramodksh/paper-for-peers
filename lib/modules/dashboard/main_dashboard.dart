@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,7 @@ class _MainDashboardState extends State<MainDashboard> {
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
 
-  int selectedItemPosition = 0;
+  int selectedItemPosition = 1; // todo change to 0
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
@@ -84,7 +85,7 @@ class _MainDashboardState extends State<MainDashboard> {
           if (selectedItemPosition == 0) {
             return QuestionPaper();
           } else if (selectedItemPosition == 1) {
-            return Text("one");
+            return Notes();
           } else if (selectedItemPosition == 2) {
             return Text("TWO");
           } else {
