@@ -197,20 +197,26 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                                 SizedBox(height: 15,),
                                 Text("Report Content", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic),),
                                 SizedBox(height: 10,),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: reportReasons.length,
-                                  itemBuilder: (context, index) => CheckboxListTile(
-                                    checkColor: Colors.white,
-                                    activeColor: Color(0xff3C64B1),
-                                    controlAffinity: ListTileControlAffinity.leading,
-                                    onChanged: (val) { setState(() {
-                                      reportReasons[index].isChecked = !reportReasons[index].isChecked;
-                                    }); },
-                                    value: reportReasons[index].isChecked,
-                                    title: Text(reportReasons[index].label, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),)
+                                Theme(
+                                  data: ThemeData(
+                                    unselectedWidgetColor: Colors.white,
                                   ),
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: reportReasons.length,
+                                    itemBuilder: (context, index) => CheckboxListTile(
+                                      tristate: false,
+                                      checkColor: Colors.white,
+                                      activeColor: Color(0xff3C64B1),
+                                      controlAffinity: ListTileControlAffinity.leading,
+                                      onChanged: (val) { setState(() {
+                                        reportReasons[index].isChecked = !reportReasons[index].isChecked;
+                                      }); },
+                                      value: reportReasons[index].isChecked,
+                                      title: Text(reportReasons[index].label, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),)
+                                    ),
 
+                                  ),
                                 ),
                                 SizedBox(height: 20,),
                                 Row(
