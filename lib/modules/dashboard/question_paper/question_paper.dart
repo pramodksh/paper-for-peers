@@ -24,55 +24,66 @@ class _QuestionPaperState extends State<QuestionPaper> {
     "2010",
   ];
 
-
-  Widget getVariantContainer({int nVariant, bool isAddTile = false, Function onAddTitlePressed}) {
-
-    final double containerRadius = 15;
-    final double containerHeight = 80;
-    final double containerWidth = 180;
-    final double containerMargin = 20;
-
-    if (isAddTile) {
-      return GestureDetector(
-        onTap: onAddTitlePressed,
-        child: Container(
-          margin: EdgeInsets.only(right: containerMargin),
-          child: DottedBorder(
-            padding: EdgeInsets.zero,
-            color: CustomColors.bottomNavBarUnselectedIconColor,
-            dashPattern: [8, 4],
-            strokeWidth: 2,
-            borderType: BorderType.RRect,
-            radius: Radius.circular(containerRadius),
-            child: Container(
-              height: containerHeight,
-              width: containerWidth,
-              color: Colors.transparent,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Add Question Paper", style: TextStyle(fontSize: 15, color: CustomColors.bottomNavBarUnselectedIconColor, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8,),
-                  Image.asset(
-                    DefaultAssets.addPostIcon,
-                    color: CustomColors.bottomNavBarUnselectedIconColor,
-                    scale: 0.9,
-                  ),
-                ],
-              ),
+  Widget getAddPostContainer({
+    @required String label,
+    @required Function onPressed,
+    double containerHeight = 80,
+    double containerWidth = 180,
+    double containerMargin = 20,
+    double containerRadius = 15,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        margin: EdgeInsets.only(right: containerMargin),
+        child: DottedBorder(
+          padding: EdgeInsets.zero,
+          color: CustomColors.bottomNavBarUnselectedIconColor,
+          dashPattern: [8, 4],
+          strokeWidth: 2,
+          borderType: BorderType.RRect,
+          radius: Radius.circular(containerRadius),
+          child: Container(
+            height: containerHeight,
+            width: containerWidth,
+            color: Colors.transparent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(label, style: TextStyle(fontSize: 15, color: CustomColors.bottomNavBarUnselectedIconColor, fontWeight: FontWeight.w500)),
+                SizedBox(height: 8,),
+                Image.asset(
+                  DefaultAssets.addPostIcon,
+                  color: CustomColors.bottomNavBarUnselectedIconColor,
+                  scale: 0.9,
+                ),
+              ],
             ),
           ),
         ),
-      );
-    }
-    return Container(
-      margin: EdgeInsets.only(right: containerMargin),
-      height: containerHeight,
-      width: containerWidth,
-      child: Center(child: Text("Variant $nVariant", style: TextStyle(fontSize: 18, color: CustomColors.bottomNavBarUnselectedIconColor, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500),)),
-      decoration: BoxDecoration(
-        color: isAddTile ? Colors.transparent : CustomColors.bottomNavBarColor,
-        borderRadius: BorderRadius.all(Radius.circular(containerRadius)),
+      ),
+    );
+  }
+
+  Widget getQuestionVariantContainer({
+    @required int nVariant,
+    @required Function onPressed,
+    double containerRadius = 15,
+    double containerHeight = 80,
+    double containerWidth = 180,
+    double containerMargin = 20,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        margin: EdgeInsets.only(right: containerMargin),
+        height: containerHeight,
+        width: containerWidth,
+        child: Center(child: Text("Variant $nVariant", style: TextStyle(fontSize: 18, color: CustomColors.bottomNavBarUnselectedIconColor, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500),)),
+        decoration: BoxDecoration(
+          color: CustomColors.bottomNavBarColor,
+          borderRadius: BorderRadius.all(Radius.circular(containerRadius)),
+        ),
       ),
     );
   }
@@ -87,7 +98,16 @@ class _QuestionPaperState extends State<QuestionPaper> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: List.generate(3, (index) => getVariantContainer(nVariant: index + 1, isAddTile: index == 0 ? false : true)),
+              children: [
+                getQuestionVariantContainer(
+                  onPressed: () {},
+                  nVariant: 1,
+                ),
+                getAddPostContainer(
+                  label: "Add Question Paper",
+                  onPressed: () {}
+                ),
+              ],
             ),
           ),
         ],
