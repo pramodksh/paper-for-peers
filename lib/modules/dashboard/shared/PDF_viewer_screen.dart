@@ -5,6 +5,8 @@ import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/checkbox_model.dart';
 import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class PDFViewerScreen<ParameterType> extends StatefulWidget {
   final String screenLabel;
@@ -23,6 +25,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   bool _isLoading = true;
   PDFDocument document;
+  var themeChange;
 
   List<CheckBoxModel> reportReasons;
 
@@ -34,10 +37,12 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         style: ButtonStyle(
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
           )),
-          backgroundColor: MaterialStateProperty.all(CustomColors.reportButtonColor),
+          backgroundColor: MaterialStateProperty.all(
+            themeChange.isDarkTheme ? CustomColors.reportButtonColor : CustomColors.lightModeRatingBackgroundColor
+          ),
         ),
         onPressed: onPressed,
-        child: Text("Report", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),),
+        child: Text("Report", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: themeChange.isDarkTheme ? Colors.white :  Colors.black),),
       ),
     );
   }
@@ -116,11 +121,10 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
   }
 
   Widget getUploadedByColumn({@required String uploadedBy}) {
-    // todo
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Uploaded By", style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
+        Text("Uploaded By", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
         SizedBox(height: 10,),
         Row(
           children: [
@@ -129,7 +133,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
               radius: 20,
             ),
             SizedBox(width: 10,),
-            Text(uploadedBy, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
+            Text(uploadedBy, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           ],
         ),
       ],
@@ -142,7 +146,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        backgroundColor: CustomColors.reportDialogBackgroundColor,
+        backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
         child: Container(
           // height: 400,
           width: MediaQuery.of(context).size.width * 0.9,
@@ -224,7 +228,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           Container(
               margin: EdgeInsets.only(top: ratingHeight),
               decoration: BoxDecoration(
-                  color: CustomColors.bottomNavBarColor,
+                  color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
               ),
               height: modelHeight,
@@ -236,12 +240,12 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(parameter.year, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 30, fontWeight: FontWeight.w600)),
+                        Text(parameter.year, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600)),
                         SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Variant ${parameter.nVariant}", style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 28, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic)),
+                            Text("Variant ${parameter.nVariant}", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic)),
                             getDownloadPostButton(onPressed: () {}),
                           ],
                         ),
@@ -293,7 +297,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
               padding: EdgeInsets.only(top: 10,),
               margin: EdgeInsets.only(top: ratingHeight),
               decoration: BoxDecoration(
-                  color: CustomColors.bottomNavBarColor,
+                  color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(20))
               ),
               // height: modelHeight,
@@ -307,7 +311,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 10,),
-                          Text(parameter.title, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 28, fontWeight: FontWeight.w600)),
+                          Text(parameter.title, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600)),
                           SizedBox(height: 20,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -317,15 +321,15 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                             ],
                           ),
                           SizedBox(height: 15,),
-                          Text("Description", style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
+                          Text("Description", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                           SizedBox(height: 10,),
-                          Text(parameter.description, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 16, fontWeight: FontWeight.w600)),
+                          Text(parameter.description, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                           SizedBox(height: 20,),
                           Container(
                             alignment: Alignment.center,
                             child: Column(
                               children: [
-                                Text("Rate this Post", style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 22, fontWeight: FontWeight.w600)),
+                                Text("Rate this Post", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
                                 SizedBox(height: 15,),
                                 RatingBar.builder(
                                   initialRating: 3,
@@ -386,11 +390,17 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       label: e,
       isChecked: false,
     )).toList();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      themeChange = Provider.of<DarkThemeProvider>(context, listen: false);
+    });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         // todo title based on parameter type
@@ -400,21 +410,22 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
             padding: EdgeInsets.only(right: 10),
             margin: EdgeInsets.symmetric(vertical: 5),
             child: ElevatedButton(
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                )),
-                backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor),
-              ),
               onPressed: () {
                 _showCustomBottomSheet();
               },
-              child: Text("Details", style: TextStyle(fontSize: 16),),
+              child: Text("Details", style: TextStyle(fontSize: 16, color: themeChange?.isDarkTheme == null
+                ? Colors.white
+                : themeChange.isDarkTheme
+                  ? Colors.white
+                  : Colors.black
+              ),
+              ),
             ),
           ),
         ],
       ),
       body: Center(
-        child: _isLoading
+        child: _isLoading || themeChange == null
             ? Center(child: CircularProgressIndicator())
             : PDFViewer(
           document: document,

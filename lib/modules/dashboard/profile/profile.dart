@@ -3,6 +3,8 @@ import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -18,6 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   double avgRating = 4.5;
   int totalDownloads = 20;
+  var themeChange;
 
   Widget getCircularProfileImage({@required imagePath}) {
     return Container(
@@ -58,21 +61,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: CircleAvatar(
         radius: statCircleRadius,
-        backgroundColor: CustomColors.backGroundColor,
+        backgroundColor: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeRatingBackgroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(title,
+            Text(
+              title,
               textAlign: TextAlign.center,
               style: CustomTextStyle.bodyTextStyle.copyWith(
                 fontSize: 13,
-                color: CustomColors.bottomNavBarUnselectedIconColor
+                color: themeChange.isDarkTheme ? Colors.white : Colors.black,
               )
             ),
             SizedBox(height: 5,),
             Text(
               value,
-              style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 20),
+              style: CustomTextStyle.bodyTextStyle.copyWith(
+                fontSize: 20,
+                color: themeChange.isDarkTheme ?  Colors.white70 : Colors.black54,
+              ),
             )
           ],
         ),
@@ -87,30 +94,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          primary: CustomColors.bottomNavBarColor,
+          primary: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeRatingBackgroundColor,
           shape: new RoundedRectangleBorder(
             side: BorderSide(
-                color: CustomColors.bottomNavBarUnselectedIconColor,
+                color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : Colors.black,
                 width: 2),
             borderRadius: new BorderRadius.circular(30.0),
           ),
         ),
         child: Text(
           title,
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: 20, color: themeChange.isDarkTheme ? Colors.white : Colors.black),
         ),
       ),
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    themeChange = Provider.of<DarkThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Profile"),
         centerTitle: true,
       ),
-      body: Container(
+      body: themeChange == null ? Container(
+        child: Center(child: CircularProgressIndicator()),
+      ) : Container(
         child: SingleChildScrollView(
           child: Column(
             children: [

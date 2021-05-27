@@ -6,6 +6,10 @@ import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
 class QuestionPaper extends StatefulWidget {
+  final bool isDarkTheme;
+
+  QuestionPaper({this.isDarkTheme});
+
   @override
   _QuestionPaperState createState() => _QuestionPaperState();
 }
@@ -40,9 +44,11 @@ class _QuestionPaperState extends State<QuestionPaper> {
         margin: EdgeInsets.only(right: containerMargin),
         child: DottedBorder(
           padding: EdgeInsets.zero,
-          color: CustomColors.bottomNavBarUnselectedIconColor,
+          // todo check this glitch
+          color: widget.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
           dashPattern: [8, 4],
           strokeWidth: 2,
+          strokeCap: StrokeCap.square,
           borderType: BorderType.RRect,
           radius: Radius.circular(containerRadius),
           child: Container(
@@ -83,7 +89,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
         width: containerWidth,
         child: Center(child: Text("Variant $nVariant", style: TextStyle(fontSize: 18, color: CustomColors.bottomNavBarUnselectedIconColor, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500),)),
         decoration: BoxDecoration(
-          color: CustomColors.bottomNavBarColor,
+          color: widget.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
           borderRadius: BorderRadius.all(Radius.circular(containerRadius)),
         ),
       ),

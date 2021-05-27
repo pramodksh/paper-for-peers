@@ -16,7 +16,7 @@ class _MainDashboardState extends State<MainDashboard> {
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
 
-  int selectedItemPosition = 1; // todo change to 0
+  int selectedItemPosition = 0; // todo change to 0
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
@@ -49,6 +49,7 @@ class _MainDashboardState extends State<MainDashboard> {
       endDrawer: Drawer(
         child: Column(
           children: [
+            SizedBox(height: 30,),
             Checkbox(
               value: themeChange.isDarkTheme,
               onChanged: (bool value) {  themeChange.isDarkTheme = value;},
@@ -63,7 +64,10 @@ class _MainDashboardState extends State<MainDashboard> {
             scale: 1.1,
             child: IconButton(
               splashRadius: 25,
-              icon: Image.asset(DefaultAssets.profileIcon, color: CustomColors.bottomNavBarSelectedIconColor,),
+              icon: Image.asset(DefaultAssets.profileIcon, color: themeChange.isDarkTheme
+                  ? CustomColors.bottomNavBarSelectedIconColor
+                  : Colors.black.withOpacity(0.7),
+              ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => ProfileScreen(),
@@ -76,7 +80,10 @@ class _MainDashboardState extends State<MainDashboard> {
             scale: 1.1,
             child: IconButton(
               splashRadius: 25,
-              icon: Image.asset(DefaultAssets.settingIcon, color: CustomColors.bottomNavBarSelectedIconColor,),
+              icon: Image.asset(DefaultAssets.settingIcon, color: themeChange.isDarkTheme
+                  ? CustomColors.bottomNavBarSelectedIconColor
+                  : Colors.black.withOpacity(0.7),
+              ),
               onPressed: () {
                 _scaffoldkey.currentState.openEndDrawer();
               },
@@ -88,9 +95,9 @@ class _MainDashboardState extends State<MainDashboard> {
       body: Builder(
         builder: (context) {
           if (selectedItemPosition == 0) {
-            return QuestionPaper();
+            return QuestionPaper(isDarkTheme: themeChange.isDarkTheme,);
           } else if (selectedItemPosition == 1) {
-            return Notes();
+            return Notes(isDarkTheme: themeChange.isDarkTheme,);
           } else if (selectedItemPosition == 2) {
             return Text("TWO");
           } else {
@@ -100,56 +107,69 @@ class _MainDashboardState extends State<MainDashboard> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: CustomColors.bottomNavBarColor,
+          color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(bottomNavBarRadius),
             topLeft: Radius.circular(bottomNavBarRadius),
           ),
         ),
-        // height: bottomNavBarHeight,
         height: 75,
-        child: Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(
-                bottomNavBarIcons.length,
-                (index) => SizedBox(
-                  width: MediaQuery.of(context).size.width / 4,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Transform.scale(
-                        scale: 1.7,
-                        child: IconButton(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          padding: EdgeInsets.zero,
-                          // constraints: BoxConstraints(),
-                          onPressed: () {
-                            setState(() {
-                              selectedItemPosition = index;
-                            });
-                          },
-                          icon: ImageIcon(
-                            bottomNavBarIcons[index]["icon"],
-                            color: selectedItemPosition == index
-                                ? CustomColors.bottomNavBarSelectedIconColor
-                                : CustomColors.bottomNavBarUnselectedIconColor,
+        child: Builder(
+          builder: (context) {
+
+            Color selectedIconColor;
+            Color unselectedIconColor;
+
+            if (themeChange.isDarkTheme) {
+              selectedIconColor = CustomColors.bottomNavBarSelectedIconColor;
+              unselectedIconColor = CustomColors.bottomNavBarUnselectedIconColor;
+            } else {
+              selectedIconColor = CustomColors.lightModeBottomNavBarSelectedIconColor;
+              unselectedIconColor = CustomColors.lightModeBottomNavBarUnselectedIconColor;
+            }
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(
+                  bottomNavBarIcons.length, (index) => SizedBox(
+                    width: MediaQuery.of(context).size.width / 4,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Transform.scale(
+                          scale: 1.7,
+                          child: IconButton(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            // constraints: BoxConstraints(),
+                            onPressed: () {
+                              setState(() {
+                                selectedItemPosition = index;
+                              });
+                            },
+                            icon: ImageIcon(
+                              bottomNavBarIcons[index]["icon"],
+                              color: selectedItemPosition == index
+                                  ? selectedIconColor
+                                  : unselectedIconColor,
+                            ),
                           ),
                         ),
-                      ),
-                      selectedItemPosition == index ? Text(
-                        bottomNavBarIcons[index]["label"],
-                        style: TextStyle(
-                          color: CustomColors.bottomNavBarSelectedIconColor,
-                          fontSize: 12,
-                        ),
-                      ) : Container(),
-                    ],
-                  ),
-                )
-            ),
-          ),
+                        selectedItemPosition == index ? Text(
+                          bottomNavBarIcons[index]["label"],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: selectedIconColor,
+                            fontSize: 12,
+                          ),
+                        ) : Container(),
+                      ],
+                    ),
+                  )
+              ),
+            );
+          },
         ),
       ),
     );

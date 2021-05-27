@@ -7,6 +7,9 @@ import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
 class Notes extends StatefulWidget {
+  final bool isDarkTheme;
+
+  Notes({this.isDarkTheme});
   @override
   _NotesState createState() => _NotesState();
 }
@@ -44,7 +47,7 @@ class _NotesState extends State<Notes> {
               child: Container(
                 padding: EdgeInsets.only(top: 6),
                 decoration: BoxDecoration(
-                  color: CustomColors.ratingBackgroundColor,
+                  color: widget.isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
                 ),
                 height: 50,
@@ -71,7 +74,7 @@ class _NotesState extends State<Notes> {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               margin: EdgeInsets.only(top: ratingHeight),
               decoration: BoxDecoration(
-                  color: CustomColors.bottomNavBarColor,
+                  color: widget.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                   borderRadius: BorderRadius.all(Radius.circular(20))
               ),
               // height: 200,
@@ -83,9 +86,9 @@ class _NotesState extends State<Notes> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 5,),
-                        Text(title, style: TextStyle(fontSize: 28, color: CustomColors.bottomNavBarSelectedIconColor),),
+                        Text(title, style: TextStyle(fontSize: 28,),),
                         SizedBox(height: 10,),
-                        Text(description, style: TextStyle(fontSize: 16, color: CustomColors.bottomNavBarUnselectedIconColor),),
+                        Text(description, style: TextStyle(fontSize: 16,),),
                         SizedBox(height: 10,),
                         Row(
                           children: [
@@ -94,7 +97,7 @@ class _NotesState extends State<Notes> {
                               radius: 20,
                             ),
                             SizedBox(width: 10,),
-                            Text(uploadedBy, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
+                            Text(uploadedBy, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                             Spacer(),
                             Text(dateFormat.format(uploadedOn)),
                           ],
@@ -119,6 +122,7 @@ class _NotesState extends State<Notes> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: 10,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

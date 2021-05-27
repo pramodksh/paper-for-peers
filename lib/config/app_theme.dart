@@ -28,6 +28,9 @@ class Styles {
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(
+            isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+          ),
           textStyle: MaterialStateProperty.all(
             CustomTextStyle.bodyTextStyle.copyWith(
               color: isDarkTheme ? Colors.white : Colors.black,
@@ -38,7 +41,10 @@ class Styles {
 
       appBarTheme: AppBarTheme(
         elevation: 0.0,
-        backgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white38,
+        iconTheme: IconThemeData(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
+        backgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white,
         textTheme: TextTheme(
           headline6: CustomTextStyle.appBarTextStyle.copyWith(
             color: isDarkTheme ? Colors.white : Colors.black,
@@ -59,8 +65,13 @@ class Styles {
         // displayColor: Colors.white,
       ),
 
+      // iconTheme: IconThemeData(
+      //   color: Colors.red,
+      //   // color: isDarkTheme ? CustomColors.bottomNavBarSelectedIconColor : Colors.red,
+      // ),
+
       // todo change color
-      scaffoldBackgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white38,
+      scaffoldBackgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white,
 
       // primarySwatch: Colors.red,
       // primaryColor: isDarkTheme ? Colors.black : Colors.white,
