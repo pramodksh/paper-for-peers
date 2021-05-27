@@ -1,7 +1,13 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 
-class PDFViewerScreen extends StatefulWidget {
+class PDFViewerScreen<Type> extends StatefulWidget {
+  final String screenLabel;
+  final Type parameter;
+
+  PDFViewerScreen({this.screenLabel, this.parameter});
+
   @override
   _PDFViewerScreenState createState() => _PDFViewerScreenState();
 }
@@ -13,6 +19,45 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   bool _isLoading = true;
   PDFDocument document;
+
+  Widget getPostReportButton({@required Function onPressed}) {
+    return SizedBox(
+      height: 50,
+      width: MediaQuery.of(context).size.width,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+          )),
+          backgroundColor: MaterialStateProperty.all(CustomColors.reportButtonColor),
+        ),
+        onPressed: onPressed,
+        child: Text("Report", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),),
+      ),
+    );
+  }
+
+  Widget getDownloadPostButton({@required Function onPressed}) {
+    return SizedBox(
+      height: 60,
+      width: 100,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          )),
+          backgroundColor: MaterialStateProperty.all(CustomColors.downloadButtonColor),
+        ),
+        onPressed: onPressed,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(DefaultAssets.postDownloadIcon, color: CustomColors.bottomNavBarSelectedIconColor, scale: 0.8,),
+            Text("Download", style: TextStyle(fontSize: 12),),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget customPDFBottomNavBuilder(context, page, totalPages, jumpToPage, animateToPage) {
     return ButtonBar(
@@ -66,7 +111,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   Widget _buildBottomModel() {
 
-    double modelHeight = 300;
+    double modelHeight = 400;
     double ratingHeight = 30;
     double ratingBorderRadius = 20;
     double ratingWidth = 100;
@@ -74,6 +119,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
     return Stack(
       children: [
+        // todo remove this for question paper
         Positioned(
           child: Container(
             decoration: BoxDecoration(
@@ -87,28 +133,49 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           right: ratingRightPosition,
         ),
         Container(
+          // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             margin: EdgeInsets.only(top: ratingHeight),
             decoration: BoxDecoration(
-                color: Colors.yellow,
+                color: CustomColors.bottomNavBarColor,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(20))
             ),
             height: modelHeight,
             width: MediaQuery.of(context).size.width,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Text("Scroll", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                  Text("HI", style: TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.w700)),
-                ],
-              ),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 20, right: 20, top: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.parameter.year, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 30, fontWeight: FontWeight.w600)),
+                      SizedBox(height: 20,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Variant ${widget.parameter.nVariant}", style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 28, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic)),
+                          getDownloadPostButton(onPressed: () {}),
+                        ],
+                      ),
+                      SizedBox(height: 15,),
+                      Text("Uploaded By", style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
+                      SizedBox(height: 15,),
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            child: FlutterLogo(),
+                            radius: 20,
+                          ),
+                          SizedBox(width: 10,),
+                          Text(widget.parameter.uploadedBy, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Spacer(),
+                getPostReportButton(onPressed: () {}),
+              ],
             )
         ),
       ],
@@ -138,7 +205,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("PDF Testing"),
+        title: Text(widget.screenLabel),
         actions: [
           ElevatedButton(
             onPressed: () {

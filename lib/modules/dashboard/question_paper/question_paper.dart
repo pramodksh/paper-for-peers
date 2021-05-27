@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
@@ -144,7 +145,14 @@ class _QuestionPaperState extends State<QuestionPaper> {
                       getQuestionVariantContainer(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PDFViewerScreen(),
+                              builder: (context) => PDFViewerScreen<PDFScreenQuestionPaper>(
+                                screenLabel: "Question Paper",
+                                parameter: PDFScreenQuestionPaper(
+                                  year: years[index],
+                                  nVariant: 1,
+                                  uploadedBy: "John Doe",
+                                ),
+                              ),
                             ));
                           },
                           nVariant: 1

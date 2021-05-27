@@ -59,6 +59,7 @@ flutter:
     - assets/icons/
 #    - assets/images/appBackgroundDark.png
     - assets/pdfs/Javanotes.pdf
+    - assets/icons/post_download_icon.png
 #    - appBackground.png
 #    - assets/images/welcomeScreen1.png
 #    - assets/images/lock-image.png
