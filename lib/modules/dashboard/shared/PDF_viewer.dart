@@ -289,11 +289,20 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       appBar: AppBar(
         title: Text(widget.screenLabel),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              _showCustomBottomSheet();
-            },
-            child: Text("Show"),
+          Container(
+            padding: EdgeInsets.only(right: 10),
+            margin: EdgeInsets.symmetric(vertical: 5),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                )),
+                backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor),
+              ),
+              onPressed: () {
+                _showCustomBottomSheet();
+              },
+              child: Text("Details", style: TextStyle(fontSize: 16),),
+            ),
           ),
         ],
       ),
