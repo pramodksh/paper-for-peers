@@ -7,7 +7,6 @@ import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/modules/login/carausel.dart';
 import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
-import 'package:papers_for_peers/modules/testing_screens/pdf_view.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 void main(){

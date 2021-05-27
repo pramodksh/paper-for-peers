@@ -1,14 +1,12 @@
-import 'dart:async';
-
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 
-class PDFScreen extends StatefulWidget {
+class PDFViewerScreen extends StatefulWidget {
   @override
-  _PDFScreenState createState() => _PDFScreenState();
+  _PDFViewerScreenState createState() => _PDFViewerScreenState();
 }
 
-class _PDFScreenState extends State<PDFScreen> {
+class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   String pdfPath = "assets/pdfs/Javanotes.pdf";
   String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";

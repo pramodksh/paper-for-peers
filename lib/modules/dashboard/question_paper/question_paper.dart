@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
 class QuestionPaper extends StatefulWidget {
@@ -88,7 +89,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
     );
   }
 
-  Widget getQuestionYearTile({@required String year}) {
+  Widget getQuestionYearTile({@required String year, @required List<Widget> children}) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,16 +99,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: [
-                getQuestionVariantContainer(
-                  onPressed: () {},
-                  nVariant: 1,
-                ),
-                getAddPostContainer(
-                  label: "Add Question Paper",
-                  onPressed: () {}
-                ),
-              ],
+              children: children,
             ),
           ),
         ],
@@ -146,7 +138,23 @@ class _QuestionPaperState extends State<QuestionPaper> {
                   shrinkWrap: true,
                   separatorBuilder: (context, index) => SizedBox(height: 20,),
                   itemCount: years.length,
-                  itemBuilder: (context, index) => getQuestionYearTile(year: years[index]),
+                  itemBuilder: (context, index) => getQuestionYearTile(
+                    year: years[index],
+                    children: [
+                      getQuestionVariantContainer(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PDFViewerScreen(),
+                            ));
+                          },
+                          nVariant: 1
+                      ),
+                      getAddPostContainer(
+                          label: "Add Question Paper",
+                          onPressed: () {}
+                      ),
+                    ]
+                  ),
                 ),
             ],
           ),
