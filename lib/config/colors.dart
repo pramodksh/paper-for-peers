@@ -11,4 +11,7 @@ class CustomColors {
  // Buttons
  static const Color downloadButtonColor = Color(0xff0E6600);
  static const Color reportButtonColor = Color(0xff0D182B);
+
+ // Dialogs
+ static const Color reportDialogBackgroundColor = Color(0xffB9B6B6);
 }

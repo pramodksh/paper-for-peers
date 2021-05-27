@@ -1,6 +1,8 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/models/checkbox_model.dart';
 
 class PDFViewerScreen<Type> extends StatefulWidget {
   final String screenLabel;
@@ -19,6 +21,8 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   bool _isLoading = true;
   PDFDocument document;
+
+  List<CheckBoxModel> reportReasons;
 
   Widget getPostReportButton({@required Function onPressed}) {
     return SizedBox(
@@ -174,7 +178,75 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                   ),
                 ),
                 Spacer(),
-                getPostReportButton(onPressed: () {}),
+                getPostReportButton(onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => StatefulBuilder(
+                      builder: (context, setState) => Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        backgroundColor: CustomColors.reportDialogBackgroundColor,
+                        child: Container(
+                          // height: 400,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(height: 15,),
+                                Text("Report Content", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic),),
+                                SizedBox(height: 10,),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: reportReasons.length,
+                                  itemBuilder: (context, index) => CheckboxListTile(
+                                    checkColor: Colors.white,
+                                    activeColor: Color(0xff3C64B1),
+                                    controlAffinity: ListTileControlAffinity.leading,
+                                    onChanged: (val) { setState(() {
+                                      reportReasons[index].isChecked = !reportReasons[index].isChecked;
+                                    }); },
+                                    value: reportReasons[index].isChecked,
+                                    title: Text(reportReasons[index].label, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),)
+                                  ),
+
+                                ),
+                                SizedBox(height: 20,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: ButtonStyle(
+                                        overlayColor: MaterialStateProperty.all(Colors.black26),
+                                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                                        backgroundColor: MaterialStateProperty.all(Colors.white)
+                                      ),
+                                      child: Text("Cancel", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                                    ),
+                                    SizedBox(width: 10,),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                                        backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
+                                      ),
+                                      child: Text("Report", style: TextStyle(fontSize: 14),),
+                                    ),
+                                  ],
+                                ),
+                              ]
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
               ],
             )
         ),
@@ -198,6 +270,10 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     loadDocumentFromAssetPath(assetPath: pdfPath).then((value) {
       _showCustomBottomSheet();
     });
+    reportReasons = AppConstants.reportReasons.map((e) => CheckBoxModel(
+      label: e,
+      isChecked: false,
+    )).toList();
     super.initState();
   }
 

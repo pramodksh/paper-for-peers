@@ -149,13 +149,13 @@ class _QuestionPaperState extends State<QuestionPaper> {
                                 screenLabel: "Question Paper",
                                 parameter: PDFScreenQuestionPaper(
                                   year: years[index],
-                                  nVariant: 1,
+                                  nVariant: index + 1,
                                   uploadedBy: "John Doe",
                                 ),
                               ),
                             ));
                           },
-                          nVariant: 1
+                          nVariant: index + 1,
                       ),
                       getAddPostContainer(
                           label: "Add Question Paper",
