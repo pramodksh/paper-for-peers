@@ -26,7 +26,7 @@ class PDFScreenNotes {
   String title;
   String description;
   String uploadedBy;
-  int rating;
+  double rating;
 
   PDFScreenNotes({this.uploadedBy, this.description, this.title, this.rating});
 }

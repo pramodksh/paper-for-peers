@@ -14,4 +14,5 @@ class CustomColors {
 
  // Dialogs
  static const Color reportDialogBackgroundColor = Color(0xffB9B6B6);
+ static const Color ratingBackgroundColor = Color(0xff2D4668);
 }

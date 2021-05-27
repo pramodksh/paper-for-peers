@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
 class Notes extends StatefulWidget {
@@ -25,82 +27,86 @@ class _NotesState extends State<Notes> {
     @required double rating,
     @required String uploadedBy,
     @required DateTime uploadedOn,
+    @required onTileTap,
   }) {
 
     double ratingHeight = 30;
     double ratingWidth = 100;
     double ratingBorderRadius = 20;
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Stack(
-        children: [
-          Positioned(
-            child: Container(
-              padding: EdgeInsets.only(top: 6),
-              decoration: BoxDecoration(
-                color: Color(0xff2D4668),
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
-              ),
-              height: 50,
-              width: ratingWidth,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(rating.toString(), style: TextStyle(fontWeight: FontWeight.w600),),
-                    SizedBox(width: 10,),
-                    Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: 20,
-                    ),
-                  ],
-                )
-              ),
-            ),
-            right: 0,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            margin: EdgeInsets.only(top: ratingHeight),
-            decoration: BoxDecoration(
-                color: CustomColors.bottomNavBarColor,
-                borderRadius: BorderRadius.all(Radius.circular(20))
-            ),
-            // height: 200,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: onTileTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Stack(
+          children: [
+            Positioned(
+              child: Container(
+                padding: EdgeInsets.only(top: 6),
+                decoration: BoxDecoration(
+                  color: CustomColors.ratingBackgroundColor,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
+                ),
+                height: 50,
+                width: ratingWidth,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 5,),
-                      Text(title, style: TextStyle(fontSize: 28, color: CustomColors.bottomNavBarSelectedIconColor),),
-                      SizedBox(height: 10,),
-                      Text(description, style: TextStyle(fontSize: 16, color: CustomColors.bottomNavBarUnselectedIconColor),),
-                      SizedBox(height: 10,),
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            child: FlutterLogo(),
-                            radius: 20,
-                          ),
-                          SizedBox(width: 10,),
-                          Text(uploadedBy, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
-                          Spacer(),
-                          Text(dateFormat.format(uploadedOn)),
-                        ],
+                      Text(rating.toString(), style: TextStyle(fontWeight: FontWeight.w600),),
+                      SizedBox(width: 10,),
+                      Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 20,
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
+              right: 0,
             ),
-          ),
-        ],
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              margin: EdgeInsets.only(top: ratingHeight),
+              decoration: BoxDecoration(
+                  color: CustomColors.bottomNavBarColor,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              // height: 200,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 5,),
+                        Text(title, style: TextStyle(fontSize: 28, color: CustomColors.bottomNavBarSelectedIconColor),),
+                        SizedBox(height: 10,),
+                        Text(description, style: TextStyle(fontSize: 16, color: CustomColors.bottomNavBarUnselectedIconColor),),
+                        SizedBox(height: 10,),
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              child: FlutterLogo(),
+                              radius: 20,
+                            ),
+                            SizedBox(width: 10,),
+                            Text(uploadedBy, style: TextStyle(color: CustomColors.bottomNavBarUnselectedIconColor, fontSize: 18, fontWeight: FontWeight.w600)),
+                            Spacer(),
+                            Text(dateFormat.format(uploadedOn)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -128,6 +134,20 @@ class _NotesState extends State<Notes> {
               ),
               SizedBox(height: 20,),
               getNotesDetailsTile(
+                onTileTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PDFViewerScreen<PDFScreenNotes>(
+                      screenLabel: "Notes",
+                      parameter: PDFScreenNotes(
+                        rating: 3.5,
+                        uploadedBy: "John Doe",
+                        description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John",
+                        title: "Title Title Title Title Title Title Title Title",
+
+                      ),
+                    ),
+                  ));
+                },
                 title: "Title Title Title Title Title Title Title Title",
                 description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
                 uploadedBy: "John Doe",
@@ -135,6 +155,7 @@ class _NotesState extends State<Notes> {
                 uploadedOn: DateTime.now(),
               ),
               getNotesDetailsTile(
+                onTileTap: () {},
                 title: "Title Title Title Title",
                 description: "John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
                 uploadedBy: "John Doe",
@@ -142,6 +163,7 @@ class _NotesState extends State<Notes> {
                 uploadedOn: DateTime.now(),
               ),
               getNotesDetailsTile(
+                onTileTap: () {},
                 title: "Title Title Title",
                 description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
                 uploadedBy: "John Doe",
