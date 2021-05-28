@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
 class Journal extends StatefulWidget {
@@ -22,34 +25,37 @@ class _JournalState extends State<Journal> {
 
   }
 
-  Widget getJournalVariantDetailsTile({@required int nVariant, @required DateTime uploadedOn, @required String uploadedBy}) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: BoxDecoration(
-        color: widget.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Variant $nVariant", style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),),
-              Text(dateFormat.format(uploadedOn), style: TextStyle(fontSize: 14),),
-            ],
-          ),
-          Row(
-            children: [
-              CircleAvatar(
-                child: FlutterLogo(),
-                radius: 15,
-              ),
-              SizedBox(width: 10,),
-              Text(uploadedBy, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            ],
-          ),
-        ],
+  Widget getJournalVariantDetailsTile({@required int nVariant, @required DateTime uploadedOn, @required String uploadedBy, @required Function onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: widget.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Variant $nVariant", style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),),
+                Text(dateFormat.format(uploadedOn), style: TextStyle(fontSize: 14),),
+              ],
+            ),
+            Row(
+              children: [
+                CircleAvatar(
+                  child: FlutterLogo(),
+                  radius: 15,
+                ),
+                SizedBox(width: 10,),
+                Text(uploadedBy, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -59,9 +65,21 @@ class _JournalState extends State<Journal> {
     assert(nVariants <= 2);
 
     List<Widget> gridChildren = List.generate(nVariants, (index) => getJournalVariantDetailsTile(
-        nVariant: index + 1,
-        uploadedOn: DateTime.now(),
-        uploadedBy: "John Doe"
+      nVariant: index + 1,
+      uploadedOn: DateTime.now(),
+      uploadedBy: "John Doe",
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+            screenLabel: "Journal",
+            parameter: PDFScreenSimpleBottomSheet(
+                nVariant: index + 1,
+                uploadedBy: "John Doe",
+                title: subject
+            ),
+          ),
+        ));
+      }
     ));
 
     if (nVariants < 2) {

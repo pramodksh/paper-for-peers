@@ -221,8 +221,8 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     double ratingWidth = 100;
     double ratingRightPosition = 10;
     
-    if (widget.parameter.runtimeType == PDFScreenQuestionPaper) {
-      PDFScreenQuestionPaper parameter = widget.parameter;
+    if (widget.parameter.runtimeType == PDFScreenSimpleBottomSheet) {
+      PDFScreenSimpleBottomSheet parameter = widget.parameter;
       return Stack(
         children: [
           Container(
@@ -240,7 +240,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(parameter.year, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600)),
+                        Text(parameter.title, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600)),
                         SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

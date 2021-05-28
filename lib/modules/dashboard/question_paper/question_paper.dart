@@ -108,10 +108,10 @@ class _QuestionPaperState extends State<QuestionPaper> {
                       getQuestionVariantContainer(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PDFViewerScreen<PDFScreenQuestionPaper>(
+                              builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
                                 screenLabel: "Question Paper",
-                                parameter: PDFScreenQuestionPaper(
-                                  year: years[index],
+                                parameter: PDFScreenSimpleBottomSheet(
+                                  title: years[index],
                                   nVariant: index + 1,
                                   uploadedBy: "John Doe",
                                 ),

@@ -1,11 +1,11 @@
 // todo change names of classes
 
-class PDFScreenQuestionPaper {
-  String year;
+class PDFScreenSimpleBottomSheet {
+  String title;
   int nVariant;
   String uploadedBy;
 
-  PDFScreenQuestionPaper({this.nVariant, this.uploadedBy, this.year});
+  PDFScreenSimpleBottomSheet({this.nVariant, this.uploadedBy, this.title});
 
 }
 
@@ -16,13 +16,14 @@ class PDFScreenSyllabusCopy {
   PDFScreenSyllabusCopy({this.uploadedBy, this.year});
 }
 
-class PDFScreenJournal {
-  String subject;
-  int nVariant;
-  String uploadedBy;
-
-  PDFScreenJournal({this.uploadedBy, this.nVariant, this.subject});
-}
+// todo delete
+// class PDFScreenJournal {
+//   String subject;
+//   int nVariant;
+//   String uploadedBy;
+//
+//   PDFScreenJournal({this.uploadedBy, this.nVariant, this.subject});
+// }
 
 class PDFScreenNotes {
   String title;
