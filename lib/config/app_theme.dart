@@ -26,6 +26,7 @@ class Styles {
           )
       ),
 
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(

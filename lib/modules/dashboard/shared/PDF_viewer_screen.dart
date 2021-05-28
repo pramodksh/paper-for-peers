@@ -274,7 +274,9 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       List<Widget> gridChildren = List.generate(parameter.totalVariants, (index) => ElevatedButton(
         onPressed: () {},
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(CustomColors.reportButtonColor),
+          backgroundColor: MaterialStateProperty.all(
+            themeChange.isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
+          ),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
             side: BorderSide(color: Colors.white38),
