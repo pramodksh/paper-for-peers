@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/journal/journal.dart';
 import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
@@ -99,7 +100,7 @@ class _MainDashboardState extends State<MainDashboard> {
           } else if (selectedItemPosition == 1) {
             return Notes(isDarkTheme: themeChange.isDarkTheme,);
           } else if (selectedItemPosition == 2) {
-            return Text("TWO");
+            return Journal(isDarkTheme: themeChange.isDarkTheme,);
           } else {
             return Text("ELSE");
           }

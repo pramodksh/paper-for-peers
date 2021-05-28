@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -18,7 +19,6 @@ Widget getCustomDropDown({
 }) {
 
   var themeChange = Provider.of<DarkThemeProvider>(context);
-
 
   return Theme(
     data: Theme.of(context).copyWith(
@@ -55,6 +55,60 @@ Widget getCustomDropDown({
           onChanged: onDropDownChanged,
         ),
       ),
+    ),
+  );
+}
+
+Widget getAddPostContainer({
+  @required String label,
+  @required Function onPressed,
+  @required BuildContext context,
+  bool isExpanded = false,
+  double containerHeight = 80,
+  double containerWidth = 180,
+  double containerMargin = 20,
+  double containerRadius = 15,
+}) {
+
+  var themeChange = Provider.of<DarkThemeProvider>(context);
+
+  Widget dottedBorderContainer = DottedBorder(
+    padding: EdgeInsets.zero,
+    // todo check this glitch
+    color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
+    dashPattern: [8, 4],
+    strokeWidth: 2,
+    strokeCap: StrokeCap.square,
+    borderType: BorderType.RRect,
+    radius: Radius.circular(containerRadius),
+    child: Container(
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(label, style: TextStyle(fontSize: 15, color: CustomColors.bottomNavBarUnselectedIconColor, fontWeight: FontWeight.w500)),
+          SizedBox(height: 8,),
+          Image.asset(
+            DefaultAssets.addPostIcon,
+            color: CustomColors.bottomNavBarUnselectedIconColor,
+            scale: 0.9,
+          ),
+        ],
+      ),
+    ),
+  );
+
+  if (isExpanded) {
+    return dottedBorderContainer;
+  }
+  return GestureDetector(
+    onTap: onPressed,
+    child: Container(
+      height: containerHeight,
+      width: containerWidth,
+      // color: Colors.transparent,
+      margin: EdgeInsets.only(right: containerMargin),
+      child: dottedBorderContainer,
     ),
   );
 }

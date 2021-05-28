@@ -30,49 +30,6 @@ class _QuestionPaperState extends State<QuestionPaper> {
     "2010",
   ];
 
-  Widget getAddPostContainer({
-    @required String label,
-    @required Function onPressed,
-    double containerHeight = 80,
-    double containerWidth = 180,
-    double containerMargin = 20,
-    double containerRadius = 15,
-  }) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        margin: EdgeInsets.only(right: containerMargin),
-        child: DottedBorder(
-          padding: EdgeInsets.zero,
-          // todo check this glitch
-          color: widget.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
-          dashPattern: [8, 4],
-          strokeWidth: 2,
-          strokeCap: StrokeCap.square,
-          borderType: BorderType.RRect,
-          radius: Radius.circular(containerRadius),
-          child: Container(
-            height: containerHeight,
-            width: containerWidth,
-            color: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(label, style: TextStyle(fontSize: 15, color: CustomColors.bottomNavBarUnselectedIconColor, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8,),
-                Image.asset(
-                  DefaultAssets.addPostIcon,
-                  color: CustomColors.bottomNavBarUnselectedIconColor,
-                  scale: 0.9,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget getQuestionVariantContainer({
     @required int nVariant,
     @required Function onPressed,
@@ -164,8 +121,9 @@ class _QuestionPaperState extends State<QuestionPaper> {
                           nVariant: index + 1,
                       ),
                       getAddPostContainer(
-                          label: "Add Question Paper",
-                          onPressed: () {}
+                        label: "Add Question Paper",
+                        onPressed: () {},
+                        context: context,
                       ),
                     ]
                   ),
