@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/dashboard/journal/journal.dart';
 import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
@@ -21,13 +22,6 @@ class _MainDashboardState extends State<MainDashboard> {
   int selectedItemPosition = 0; // todo change to 0
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
-
-  List<Map> bottomNavBarIcons = [
-    {"icon": AssetImage(DefaultAssets.questionPaperNavIcon,), "label": "Question Paper"},
-    {"icon": AssetImage(DefaultAssets.notesNavIcon,), "label": "Notes"},
-    {"icon": AssetImage(DefaultAssets.journalNavIcon,), "label": "Journal"},
-    {"icon": AssetImage(DefaultAssets.syllabusCopyNavIcon,), "label": "Syllabus Copy"},
-  ];
 
   String get greeting {
     var hour = DateTime.now().hour;
@@ -133,7 +127,7 @@ class _MainDashboardState extends State<MainDashboard> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
-                  bottomNavBarIcons.length, (index) => SizedBox(
+                  AppConstants.bottomNavBarIcons.length, (index) => SizedBox(
                     width: MediaQuery.of(context).size.width / 4,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +145,7 @@ class _MainDashboardState extends State<MainDashboard> {
                               });
                             },
                             icon: ImageIcon(
-                              bottomNavBarIcons[index]["icon"],
+                              AppConstants.bottomNavBarIcons[index]["icon"],
                               color: selectedItemPosition == index
                                   ? selectedIconColor
                                   : unselectedIconColor,
@@ -159,7 +153,7 @@ class _MainDashboardState extends State<MainDashboard> {
                           ),
                         ),
                         selectedItemPosition == index ? Text(
-                          bottomNavBarIcons[index]["label"],
+                          AppConstants.bottomNavBarIcons[index]["label"],
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: selectedIconColor,

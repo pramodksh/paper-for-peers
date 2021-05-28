@@ -30,7 +30,7 @@ class Styles {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(
-            isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+            isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeBottomNavBarColor,
           ),
           textStyle: MaterialStateProperty.all(
             CustomTextStyle.bodyTextStyle.copyWith(

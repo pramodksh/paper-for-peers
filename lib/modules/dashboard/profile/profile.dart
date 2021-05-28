@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/your_posts.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -153,7 +154,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               SizedBox(height: 30,),
-              getCustomButton(title: 'Your Post', onPressed: () {}),
+              getCustomButton(title: 'Your Post', onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => YourPosts(),
+                ));
+              }),
               SizedBox(height: 30,),
               getCustomButton(title: 'Upload', onPressed: () {}),
             ],
