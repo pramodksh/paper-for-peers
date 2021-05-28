@@ -36,7 +36,8 @@ dependencies:
   dotted_border: ^2.0.0
   intl: ^0.17.0
   flutter_rating_bar: ^4.0.0
-  thememode_selector: ^0.1.0
+  thememode_selector: ^0.1.0 # todo cal be deleted
+  animated_theme_switcher: ^2.0.1
 
 dev_dependencies:
   flutter_test:

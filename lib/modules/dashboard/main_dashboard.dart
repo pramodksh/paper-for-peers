@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
@@ -23,6 +25,8 @@ class _MainDashboardState extends State<MainDashboard> {
   int selectedItemPosition = 0; // todo change to 0
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
+
+  bool temp = true;
 
   String get greeting {
     var hour = DateTime.now().hour;
@@ -53,23 +57,40 @@ class _MainDashboardState extends State<MainDashboard> {
               children: [
                 SizedBox(height: 50,),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text("Theme", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
-                    ThemeModeSelector(
-                      durationInMs: 300,
-                      height: 40,
-                      onChanged: (mode) {
-                        print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
-                        if (mode == ThemeMode.light) {
-                          themeChange.isDarkTheme = false;
-                        } else {
-                          themeChange.isDarkTheme = true;
-                        }
-
-                      },
+                    Text(
+                      themeChange.isDarkTheme ? "Switch to\nLight Theme" : "Switch to\nDark Theme",
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w600
+                      ),
+                    ),
+                    SizedBox(
+                      width: 50,
+                      child: CupertinoSwitch(
+                        trackColor: CustomColors.bottomNavBarColor,
+                        activeColor: CustomColors.lightModeBottomNavBarColor,
+                        onChanged: (val) { setState(() {  themeChange.isDarkTheme = val; }); },
+                        value:  themeChange.isDarkTheme,
+                      ),
                     ),
                   ],
+                ),
+                // todo remove
+                SizedBox(height: 30,),
+                ThemeModeSelector(
+                  durationInMs: 300,
+                  height: 40,
+                  onChanged: (mode) {
+                    print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
+                    if (mode == ThemeMode.light) {
+                      themeChange.isDarkTheme = false;
+                    } else {
+                      themeChange.isDarkTheme = true;
+                    }
+
+                  },
                 ),
               ],
             ),
