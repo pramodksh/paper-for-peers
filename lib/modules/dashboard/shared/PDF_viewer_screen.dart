@@ -284,7 +284,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       ));
       if (parameter.totalVariants < 2) {
         gridChildren.add(getAddPostContainer(
-          label: "Add",
+          label: "Add Syllabus Copy",
           onPressed: () {},
           context: context,
           isExpanded: true,
