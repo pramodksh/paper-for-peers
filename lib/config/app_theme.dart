@@ -26,6 +26,9 @@ class Styles {
           )
       ),
 
+      buttonTheme: ButtonThemeData(
+        splashColor: Colors.red
+      ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(

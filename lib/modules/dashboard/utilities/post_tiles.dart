@@ -83,7 +83,7 @@ Widget getNotesDetailsTile({
                               padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
                             ),
                             onPressed: () {},
-                            child: Text("Edit", style: TextStyle(fontSize: 16),),
+                            child: Text("Edit", style: TextStyle(fontSize: 16, color: themeChange.isDarkTheme ? Colors.white : Colors.black),),
                           ),
                         ],
                       ) : Row(
