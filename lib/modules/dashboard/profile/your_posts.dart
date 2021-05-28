@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -10,10 +11,17 @@ class YourPosts extends StatefulWidget {
   _YourPostsState createState() => _YourPostsState();
 }
 
-class _YourPostsState extends State<YourPosts> {
+class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
 
   int selectedItemPosition = 0;
+  TabController _tabController;
+  double tabBarViewPadding = 10;
 
+  @override
+  void initState() {
+    _tabController = new TabController(length: AppConstants.bottomNavBarIcons.length, vsync: this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,56 +48,33 @@ class _YourPostsState extends State<YourPosts> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 20,),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(
-                    AppConstants.bottomNavBarIcons.length, (index) => SizedBox(
-                  width: MediaQuery.of(context).size.width / 4,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Transform.scale(
-                        scale: 1.7,
-                        child: IconButton(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          padding: EdgeInsets.zero,
-                          // constraints: BoxConstraints(),
-                          onPressed: () {
-                            setState(() {
-                              selectedItemPosition = index;
-                            });
-                          },
-                          icon: ImageIcon(
-                            AppConstants.bottomNavBarIcons[index]["icon"],
-                            color: selectedItemPosition == index
-                                ? selectedIconColor
-                                : unselectedIconColor,
-                          ),
-                        ),
-                      ),
-                      selectedItemPosition == index ? Text(
-                        AppConstants.bottomNavBarIcons[index]["label"],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: selectedIconColor,
-                          fontSize: 12,
-                        ),
-                      ) : Container(),
-                    ],
+              child: TabBar(
+                controller: _tabController,
+                indicatorColor: themeChange.isDarkTheme ? CustomColors.lightModeBottomNavBarColor : CustomColors.bottomNavBarColor,
+                unselectedLabelColor: unselectedIconColor,
+                labelColor: selectedIconColor,
+                tabs: List.generate(AppConstants.bottomNavBarIcons.length, (index) => Tab(
+                  text: AppConstants.bottomNavBarIcons[index]["label"],
+                  icon: ImageIcon(
+                    AppConstants.bottomNavBarIcons[index]["icon"],
+                    color: selectedItemPosition == index
+                        ? selectedIconColor
+                        : unselectedIconColor,
                   ),
                 )
                 ),
               ),
-              // height: 100,
             ),
             Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  children: List.generate(10, (index) {
-                    if (selectedItemPosition == 1) {
+              child: TabBarView(
+                controller: _tabController,
+                children: <Widget>[
+                  Center(
+                    child: Text('It\'s cloudy here'),
+                  ),
+                  ListView(
+                    padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
+                    children: List.generate(10, (index) {
                       return getNotesDetailsTile(
                         isYourPostTile: true,
                         context: context,
@@ -98,11 +83,15 @@ class _YourPostsState extends State<YourPosts> {
                         description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
                         rating: 3.5,
                       );
-                    } else {
-                      return Text("hi");
-                    }
-                  }),
-                ),
+                    }),
+                  ),
+                  Center(
+                    child: Text('It\'s rainy here'),
+                  ),
+                  Center(
+                    child: Text('It\'s sunny here'),
+                  ),
+                ],
               ),
             ),
           ],
