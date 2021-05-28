@@ -18,6 +18,10 @@ class _JournalState extends State<Journal> {
 
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
+  void onAddJournalPressed(){
+
+  }
+
   Widget getJournalVariantDetailsTile({@required int nVariant, @required DateTime uploadedOn, @required String uploadedBy}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -50,7 +54,7 @@ class _JournalState extends State<Journal> {
     );
   }
 
-  Widget getJournalTile({@required String subject, @required int nVariants, Function onAddJournalPressed}) {
+  Widget getJournalTile({@required String subject, @required int nVariants}) {
 
     assert(nVariants <= 2);
 
@@ -102,11 +106,11 @@ class _JournalState extends State<Journal> {
               SizedBox(height: 20,),
               getCourseText(course: "BCA", semester: 6),
               SizedBox(height: 20,),
-              getJournalTile(subject: "C++", nVariants: 1, onAddJournalPressed: () {}),
+              getJournalTile(subject: "C++", nVariants: 1),
               SizedBox(height: 20,),
-              getJournalTile(subject: "Java", nVariants: 2, onAddJournalPressed: () {}),
+              getJournalTile(subject: "Java", nVariants: 2),
               SizedBox(height: 20,),
-              getJournalTile(subject: "Java", nVariants: 0, onAddJournalPressed: () {}),
+              getJournalTile(subject: "Java", nVariants: 0),
             ],
           ),
         ),
