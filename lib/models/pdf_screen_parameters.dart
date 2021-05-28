@@ -10,10 +10,13 @@ class PDFScreenSimpleBottomSheet {
 }
 
 class PDFScreenSyllabusCopy {
-  String year;
+  int nVariant;
+  int totalVariants;
   String uploadedBy;
 
-  PDFScreenSyllabusCopy({this.uploadedBy, this.year});
+  PDFScreenSyllabusCopy({this.uploadedBy, this.nVariant, this.totalVariants}) {
+    assert(totalVariants <= 2);
+  }
 }
 
 // todo delete
@@ -25,11 +28,11 @@ class PDFScreenSyllabusCopy {
 //   PDFScreenJournal({this.uploadedBy, this.nVariant, this.subject});
 // }
 
-class PDFScreenNotes {
+class PDFScreenNotesBottomSheet {
   String title;
   String description;
   String uploadedBy;
   double rating;
 
-  PDFScreenNotes({this.uploadedBy, this.description, this.title, this.rating});
+  PDFScreenNotesBottomSheet({this.uploadedBy, this.description, this.title, this.rating});
 }

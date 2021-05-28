@@ -72,7 +72,61 @@ Widget getAddPostContainer({
 
   var themeChange = Provider.of<DarkThemeProvider>(context);
 
-  Widget dottedBorderContainer = DottedBorder(
+  Widget button = ElevatedButton(
+    onPressed: onPressed,
+    style: ButtonStyle(
+      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        side: BorderSide(color: Colors.white38),
+      ))
+    ),
+    child:Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 15,
+            color: CustomColors.bottomNavBarUnselectedIconColor,
+            fontWeight: FontWeight.w500
+          ),
+        ),
+        SizedBox(height: 8,),
+        Image.asset(
+          DefaultAssets.addPostIcon,
+          color: CustomColors.bottomNavBarUnselectedIconColor,
+          scale: 0.9,
+        ),
+      ],
+    ),
+  );
+
+  Widget temp = Container(
+    alignment: Alignment.center,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 15,
+              color: CustomColors.bottomNavBarUnselectedIconColor,
+              fontWeight: FontWeight.w500,
+            )
+        ),
+        SizedBox(height: 8,),
+        Image.asset(
+          DefaultAssets.addPostIcon,
+          color: CustomColors.bottomNavBarUnselectedIconColor,
+          scale: 0.9,
+        ),
+      ],
+    ),
+  );
+
+  Widget dottedWidget = DottedBorder(
     padding: EdgeInsets.zero,
     // todo check this glitch
     color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
@@ -81,25 +135,16 @@ Widget getAddPostContainer({
     strokeCap: StrokeCap.square,
     borderType: BorderType.RRect,
     radius: Radius.circular(containerRadius),
-    child: Container(
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(label, style: TextStyle(fontSize: 15, color: CustomColors.bottomNavBarUnselectedIconColor, fontWeight: FontWeight.w500)),
-          SizedBox(height: 8,),
-          Image.asset(
-            DefaultAssets.addPostIcon,
-            color: CustomColors.bottomNavBarUnselectedIconColor,
-            scale: 0.9,
-          ),
-        ],
-      ),
-    ),
+    // todo choose
+    child: button,
+    // child: temp,
   );
 
   if (isExpanded) {
-    return dottedBorderContainer;
+    // todo choose
+    return button;
+    // return dottedWidget;
+    // return temp;
   }
   return GestureDetector(
     onTap: onPressed,
@@ -108,7 +153,7 @@ Widget getAddPostContainer({
       width: containerWidth,
       // color: Colors.transparent,
       margin: EdgeInsets.only(right: containerMargin),
-      child: dottedBorderContainer,
+      child: button,
     ),
   );
 }

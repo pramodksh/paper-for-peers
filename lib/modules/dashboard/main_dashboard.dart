@@ -5,6 +5,7 @@ import 'package:papers_for_peers/modules/dashboard/journal/journal.dart';
 import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
+import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -102,7 +103,7 @@ class _MainDashboardState extends State<MainDashboard> {
           } else if (selectedItemPosition == 2) {
             return Journal(isDarkTheme: themeChange.isDarkTheme,);
           } else {
-            return Text("ELSE");
+            return SyllabusCopy();
           }
         },
       ),

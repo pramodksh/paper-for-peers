@@ -41,7 +41,7 @@ class _JournalState extends State<Journal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Variant $nVariant", style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),),
-                Text(dateFormat.format(uploadedOn), style: TextStyle(fontSize: 14),),
+                Text(dateFormat.format(uploadedOn), style: TextStyle(fontSize: 12),),
               ],
             ),
             Row(

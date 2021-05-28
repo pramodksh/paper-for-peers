@@ -5,6 +5,7 @@ import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/checkbox_model.dart';
 import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -215,13 +216,13 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   Widget _buildBottomModel() {
 
-    double modelHeight = 400;
     double ratingHeight = 30;
     double ratingBorderRadius = 20;
     double ratingWidth = 100;
     double ratingRightPosition = 10;
     
     if (widget.parameter.runtimeType == PDFScreenSimpleBottomSheet) {
+      double modelHeight = 300;
       PDFScreenSimpleBottomSheet parameter = widget.parameter;
       return Stack(
         children: [
@@ -266,8 +267,93 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           ),
         ],
       );
-    } else if (widget.parameter.runtimeType == PDFScreenNotes) {
-      PDFScreenNotes parameter = widget.parameter;
+    } else if (widget.parameter.runtimeType == PDFScreenSyllabusCopy) {
+      double modelHeight = 340;
+      PDFScreenSyllabusCopy parameter = widget.parameter;
+
+      List<Widget> gridChildren = List.generate(parameter.totalVariants, (index) => ElevatedButton(
+        onPressed: () {},
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(CustomColors.reportButtonColor),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            side: BorderSide(color: Colors.white38),
+          ))
+        ),
+        child: Text("Variant ${index + 1}"),
+      ));
+      if (parameter.totalVariants < 2) {
+        gridChildren.add(getAddPostContainer(
+          label: "Add",
+          onPressed: () {},
+          context: context,
+          isExpanded: true,
+        ));
+      }
+
+      return Stack(
+        children: [
+          Container(
+              margin: EdgeInsets.only(top: ratingHeight),
+              decoration: BoxDecoration(
+                color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+              ),
+              height: modelHeight,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 20, right: 20, top: 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Variant ${parameter.nVariant}", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic)),
+                            getDownloadPostButton(onPressed: () {}),
+                          ],
+                        ),
+                        SizedBox(height: 15,),
+                        getUploadedByColumn(uploadedBy: parameter.uploadedBy),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20,),
+
+
+                  GridView.count(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    crossAxisSpacing: 10,
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    physics: NeverScrollableScrollPhysics(),
+                    childAspectRatio: 18/7,
+                    children: gridChildren,
+                  ),
+
+
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //   children: children,
+                  // ),
+                  Spacer(),
+                  getPostReportButton(onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => _buildReportDialog(),
+                    );
+                  }),
+                ],
+              )
+          ),
+        ],
+      );
+    }
+      if (widget.parameter.runtimeType == PDFScreenNotesBottomSheet) {
+      PDFScreenNotesBottomSheet parameter = widget.parameter;
       return Stack(
         children: [
           Positioned(
