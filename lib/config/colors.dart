@@ -23,4 +23,7 @@ class CustomColors {
 
  // Dialogs Light Mode
  static const Color lightModeRatingBackgroundColor = Color(0xffABABAB);
+
+ // Drawer
+ static const Color drawerColor = Color(0xff142A48);
 }

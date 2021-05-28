@@ -9,6 +9,7 @@ import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper
 import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:thememode_selector/thememode_selector.dart';
 
 class MainDashboard extends StatefulWidget {
   @override
@@ -42,15 +43,37 @@ class _MainDashboardState extends State<MainDashboard> {
 
     return Scaffold(
       key: _scaffoldkey,
-      endDrawer: Drawer(
-        child: Column(
-          children: [
-            SizedBox(height: 30,),
-            Checkbox(
-              value: themeChange.isDarkTheme,
-              onChanged: (bool value) {  themeChange.isDarkTheme = value;},
+      endDrawer: ClipRRect(
+        borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
+        child: Drawer(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            color: themeChange.isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
+            child: Column(
+              children: [
+                SizedBox(height: 50,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Theme", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+                    ThemeModeSelector(
+                      durationInMs: 300,
+                      height: 40,
+                      onChanged: (mode) {
+                        print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
+                        if (mode == ThemeMode.light) {
+                          themeChange.isDarkTheme = false;
+                        } else {
+                          themeChange.isDarkTheme = true;
+                        }
+
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       appBar: AppBar(
