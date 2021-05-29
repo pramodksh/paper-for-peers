@@ -66,14 +66,11 @@ class _MainDashboardState extends State<MainDashboard> {
                         fontSize: 20, fontWeight: FontWeight.w600
                       ),
                     ),
-                    SizedBox(
-                      width: 50,
-                      child: CupertinoSwitch(
-                        trackColor: CustomColors.bottomNavBarColor,
-                        activeColor: CustomColors.lightModeBottomNavBarColor,
-                        onChanged: (val) { setState(() {  themeChange.isDarkTheme = val; }); },
-                        value:  themeChange.isDarkTheme,
-                      ),
+                    CupertinoSwitch(
+                      trackColor: CustomColors.bottomNavBarColor,
+                      activeColor: CustomColors.lightModeBottomNavBarColor,
+                      onChanged: (val) { setState(() {  themeChange.isDarkTheme = val; }); },
+                      value:  themeChange.isDarkTheme,
                     ),
                   ],
                 ),
