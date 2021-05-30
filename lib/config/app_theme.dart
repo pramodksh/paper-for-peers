@@ -10,6 +10,9 @@ class Styles {
 
 
       inputDecorationTheme: InputDecorationTheme(
+        hintStyle: CustomTextStyle.bodyTextStyle.copyWith(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
         labelStyle: CustomTextStyle.bodyTextStyle.copyWith(
           color: isDarkTheme ? Colors.white : Colors.black,
         ),

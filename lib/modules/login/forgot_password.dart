@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/login/utils.dart';
+import 'package:papers_for_peers/modules/login/utilities.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -60,11 +60,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   SizedBox(
                     height: 70,
                   ),
-                  customTextField(inputBoxText: 'Email Address'),
+                  getCustomTextField(inputBoxText: 'Email Address'),
                   SizedBox(
                     height: 70,
                   ),
-                  customButton(
+                  getCustomButton(
                       buttonText: 'Reset Password',
                       width: 250,
                       verticalPadding: 14,

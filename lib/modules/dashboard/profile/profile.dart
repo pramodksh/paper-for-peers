@@ -4,7 +4,8 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_post.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_notes.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_question_paper.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/your_posts/your_posts.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -165,7 +166,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => UploadPost(label: e["label"], typesOfPost: e["enum"],),
+                      builder: (context) {
+                        TypesOfPost selected = e["enum"];
+                        if (selected == TypesOfPost.QuestionPaper) {
+                          return UploadQuestionPaper();
+                        } else {
+                          return UploadNotesAndJournal(label: e["label"], typesOfPost: e["enum"],);
+                        }
+                      },
                     ));
                   },
                   child: Text(e["label"], style: TextStyle(fontSize: 20),),
