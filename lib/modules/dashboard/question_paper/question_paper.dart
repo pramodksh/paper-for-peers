@@ -99,8 +99,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
-              ) // todo add child
-                : ListView.separated(
+              ) : ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
