@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Widget getUploadButton({@required Function onPressed}) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
