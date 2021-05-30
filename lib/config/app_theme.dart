@@ -8,6 +8,10 @@ class Styles {
   static ThemeData themeData(bool isDarkTheme, BuildContext context) {
     return ThemeData(
 
+      dividerTheme: DividerThemeData(
+        color: isDarkTheme ? Colors.white : Colors.black,
+        thickness: 0.6,
+      ),
 
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: CustomTextStyle.bodyTextStyle.copyWith(
