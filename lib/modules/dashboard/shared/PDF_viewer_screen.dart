@@ -43,7 +43,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           ),
         ),
         onPressed: onPressed,
-        child: Text("Report", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: themeChange.isDarkTheme ? Colors.white :  Colors.black),),
+        child: Text("Report", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
       ),
     );
   }
@@ -190,9 +190,9 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                       style: ButtonStyle(
                           overlayColor: MaterialStateProperty.all(Colors.black26),
                           padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
-                          backgroundColor: MaterialStateProperty.all(Colors.white)
+                          backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)
                       ),
-                      child: Text("Cancel", style: TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500),),
+                      child: Text("Cancel", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
                     ),
                     SizedBox(width: 10,),
                     ElevatedButton(
@@ -200,10 +200,11 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         Navigator.of(context).pop();
                       },
                       style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.all(Colors.black26),
                           padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
                           backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
                       ),
-                      child: Text("Report", style: TextStyle(fontSize: 14),),
+                      child: Text("Report", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),),
                     ),
                   ],
                 ),
@@ -501,12 +502,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
               onPressed: () {
                 _showCustomBottomSheet();
               },
-              child: Text("Details", style: TextStyle(fontSize: 16, color: themeChange?.isDarkTheme == null
-                ? Colors.white
-                : themeChange.isDarkTheme
-                  ? Colors.white
-                  : Colors.black
-              ),
+              child: Text("Details", style: TextStyle(fontSize: 16,),
               ),
             ),
           ),

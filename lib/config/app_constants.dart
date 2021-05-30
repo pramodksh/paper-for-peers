@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 
+enum TypesOfPost {
+  QuestionPaper,
+  Notes,
+  SyllabusCopy,
+  Journal,
+}
+
 class AppConstants {
   static const List<String> reportReasons = [
     "Already uploaded",
