@@ -95,7 +95,11 @@ class _QuestionPaperState extends State<QuestionPaper> {
               ),
               SizedBox(height: 30,),
               selectedSubject == null
-                ? Container() // todo add child
+                ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+              ) // todo add child
                 : ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   physics: NeverScrollableScrollPhysics(),
