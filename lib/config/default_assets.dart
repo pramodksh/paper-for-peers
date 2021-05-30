@@ -22,4 +22,10 @@ class DefaultAssets {
   static const notesNavIcon = "assets/icons/bottom_nav_bar/notes_nav_icon.png";
   static const questionPaperNavIcon = "assets/icons/bottom_nav_bar/question_paper_nav_icon.png";
   static const syllabusCopyNavIcon = "assets/icons/bottom_nav_bar/syllabus_copy_nav_icon.png";
+
+  // Split Screen Icons
+
+  static const splitIntoTwo = "assets/icons/split_screen/splitIntoTwoImage.png";
+  static const splitIntoThree = "assets/icons/split_screen/splitIntoThreeImage.png";
+  static const splitIntoFour = "assets/icons/split_screen/splitIntoFourImage.png";
 }

@@ -59,6 +59,7 @@ flutter:
     - assets/images/
     - assets/logo/
     - assets/icons/bottom_nav_bar/
+    - assets/icons/split_screen/
     - assets/icons/
 #    - assets/images/appBackgroundDark.png
     - assets/pdfs/Javanotes.pdf
