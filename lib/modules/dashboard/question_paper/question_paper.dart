@@ -95,8 +95,11 @@ class _QuestionPaperState extends State<QuestionPaper> {
               ),
               SizedBox(height: 30,),
               selectedSubject == null
-                ? Container() // todo add child
-                : ListView.separated(
+                ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+              ) : ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -120,10 +123,14 @@ class _QuestionPaperState extends State<QuestionPaper> {
                           },
                           nVariant: index + 1,
                       ),
-                      getAddPostContainer(
-                        label: "Add Question Paper",
-                        onPressed: () {},
-                        context: context,
+                      SizedBox(
+                        width: 180,
+                        height: 80,
+                        child: getAddPostContainer(
+                          label: "Add Question Paper",
+                          onPressed: () {},
+                          context: context,
+                        ),
                       ),
                     ]
                   ),

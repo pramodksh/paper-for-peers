@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
-import 'package:papers_for_peers/modules/login/utils.dart';
+import 'package:papers_for_peers/modules/login/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
@@ -67,13 +67,13 @@ class _LoginState extends State<Login> {
                     height: 50,
                   ),
                   SizedBox(height: 20,),
-                  customTextField(inputBoxText: 'Email Address'),
+                  getCustomTextField(inputBoxText: 'Email Address'),
                   SizedBox(height: 20,),
-                  customTextField(inputBoxText: 'Password', obscureText: true),
+                  getCustomTextField(inputBoxText: 'Password', obscureText: true),
                   _isLogIn ? Container() : SizedBox(height: 20,),
                   _isLogIn
                     ? SizedBox(height: 5,)
-                    : customTextField(inputBoxText: 'Confirm Password', obscureText: false
+                    : getCustomTextField(inputBoxText: 'Confirm Password', obscureText: false
                   ),
                   _isLogIn ?  Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     width: 350,
                     height: 50,
-                    child: customButton(
+                    child: getCustomButton(
                       buttonText: _isLogIn? "Sign In" : 'Sign Up',
                       onPressed: () {},
                     ),

@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/your_posts.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_notes.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_question_paper.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/your_posts/your_posts.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+
+enum TypesOfPost {
+  QuestionPaper,
+  Notes,
+  SyllabusCopy,
+  Journal,
+}
+
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -22,6 +33,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   double avgRating = 4.5;
   int totalDownloads = 20;
   var themeChange;
+
+  List<Map<String, dynamic>> typesOfPosts = [
+    { "label": "Question Paper", "enum": TypesOfPost.QuestionPaper },
+    { "label": "Notes", "enum": TypesOfPost.Notes },
+    { "label": "Journal", "enum": TypesOfPost.Journal },
+    { "label": "Syllabus Copy", "enum": TypesOfPost.SyllabusCopy },
+  ];
+
+  // List<String> typesOfPosts = [
+  //   "Question Paper",
+  //   "Notes",
+  //   "Journal",
+  //   "Syllabus Copy",
+  // ];
+
 
   Widget getCircularProfileImage({@required imagePath}) {
     return Container(
@@ -88,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getCustomButton({@required String title, @required Function onPressed}){
+  Widget getProfileCustomButton({@required String title, @required Function onPressed}){
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.65,
       height: 50,
@@ -96,16 +122,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           primary: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeRatingBackgroundColor,
-          shape: new RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             side: BorderSide(
                 color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : Colors.black,
                 width: 2),
-            borderRadius: new BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(30.0),
           ),
         ),
         child: Text(
           title,
-          style: TextStyle(fontSize: 20, color: themeChange.isDarkTheme ? Colors.white : Colors.black),
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUploadDialog() {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 15,),
+            Text("Upload", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic),),
+            SizedBox(height: 10,),
+            Column(
+              children: typesOfPosts.map((e) => Container(
+                margin: EdgeInsets.symmetric(vertical: 4),
+                width: double.infinity,
+                // height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        TypesOfPost selected = e["enum"];
+                        if (selected == TypesOfPost.QuestionPaper) {
+                          return UploadQuestionPaper();
+                        } else {
+                          return UploadNotesAndJournal(label: e["label"], typesOfPost: e["enum"],);
+                        }
+                      },
+                    ));
+                  },
+                  child: Text(e["label"], style: TextStyle(fontSize: 20),),
+                ),
+              )).toList(),
+            ),
+          ],
         ),
       ),
     );
@@ -154,13 +229,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               SizedBox(height: 30,),
-              getCustomButton(title: 'Your Post', onPressed: () {
+              getProfileCustomButton(title: 'Your Post', onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => YourPosts(),
                 ));
               }),
               SizedBox(height: 30,),
-              getCustomButton(title: 'Upload', onPressed: () {}),
+              getProfileCustomButton(title: 'Upload', onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => _buildUploadDialog(),
+                );
+              }),
             ],
           ),
         ),

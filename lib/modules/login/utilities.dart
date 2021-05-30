@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/modules/login/login.dart';
 
-Widget customTextField({String inputBoxText, bool obscureText = false}) {
+Widget getCustomTextField({String inputBoxText, bool obscureText = false}) {
   return TextField(
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
@@ -17,17 +16,11 @@ Widget customTextField({String inputBoxText, bool obscureText = false}) {
           borderRadius: BorderRadius.circular(15.0),
         ),
         labelText: inputBoxText,
-        // labelStyle: TextStyle(
-        //     fontSize: 18,
-        //     fontWeight: FontWeight.w400,
-        //     color: Colors.white
-        //   // height: 4
-        // )
     ),
   );
 }
 
-Widget customButton({@required String buttonText, @required Function onPressed, double width, double verticalPadding = 5 ,Color textColor = Colors.white}){
+Widget getCustomButton({@required String buttonText, @required Function onPressed, double width, double verticalPadding = 5 ,Color textColor = Colors.white}){
   Widget button = ElevatedButton(
     onPressed: onPressed,
     style: ButtonStyle(

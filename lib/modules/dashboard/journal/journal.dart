@@ -87,7 +87,6 @@ class _JournalState extends State<Journal> {
         context: context,
         onPressed: onAddJournalPressed,
         label: "Add Journal",
-        isExpanded: true,
       ));
     }
 

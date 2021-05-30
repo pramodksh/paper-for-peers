@@ -9,6 +9,7 @@ import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:thememode_selector/thememode_selector.dart';
@@ -26,7 +27,8 @@ class _MainDashboardState extends State<MainDashboard> {
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
-  bool temp = true;
+  String selectedSemester;
+
 
   String get greeting {
     var hour = DateTime.now().hour;
@@ -74,21 +76,49 @@ class _MainDashboardState extends State<MainDashboard> {
                     ),
                   ],
                 ),
-                // todo remove
-                SizedBox(height: 30,),
-                ThemeModeSelector(
-                  durationInMs: 300,
-                  height: 40,
-                  onChanged: (mode) {
-                    print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
-                    if (mode == ThemeMode.light) {
-                      themeChange.isDarkTheme = false;
-                    } else {
-                      themeChange.isDarkTheme = true;
-                    }
-
-                  },
+                Divider(height: 50,),
+                Text(
+                  "Change Semester",
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w600
+                  ),
                 ),
+                SizedBox(height: 10,),
+                getCustomDropDown(
+                  context: context,
+                  dropDownHint: "Semester",
+                  dropDownItems: List.generate(6, (index) => (index + 1).toString()),
+                  onDropDownChanged: (val) { setState(() { selectedSemester = val; }); },
+                  dropDownValue: selectedSemester,
+                ),
+                Divider(height: 40,),
+                Spacer(),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
+                  ),
+                  onPressed: () {},
+                  child: Text("Contact Us", style: TextStyle(fontSize: 18),),
+                ),
+                SizedBox(height: 30,),
+                // ThemeModeSelector(
+                //   // todo remove
+                //   durationInMs: 300,
+                //   height: 40,
+                //   onChanged: (mode) {
+                //     print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
+                //     if (mode == ThemeMode.light) {
+                //       themeChange.isDarkTheme = false;
+                //     } else {
+                //       themeChange.isDarkTheme = true;
+                //     }
+                //
+                //   },
+                // ),
               ],
             ),
           ),

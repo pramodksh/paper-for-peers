@@ -8,8 +8,15 @@ class Styles {
   static ThemeData themeData(bool isDarkTheme, BuildContext context) {
     return ThemeData(
 
+      dividerTheme: DividerThemeData(
+        color: isDarkTheme ? Colors.white : Colors.black,
+        thickness: 0.6,
+      ),
 
       inputDecorationTheme: InputDecorationTheme(
+        hintStyle: CustomTextStyle.bodyTextStyle.copyWith(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
         labelStyle: CustomTextStyle.bodyTextStyle.copyWith(
           color: isDarkTheme ? Colors.white : Colors.black,
         ),
@@ -26,19 +33,18 @@ class Styles {
           )
       ),
 
-      buttonTheme: ButtonThemeData(
-        splashColor: Colors.red
-      ),
+      // buttonTheme: ButtonThemeData(
+      //   splashColor: Colors.red
+      // ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(isDarkTheme ? Colors.white : Colors.black,),
           backgroundColor: MaterialStateProperty.all(
             isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeBottomNavBarColor,
           ),
           textStyle: MaterialStateProperty.all(
-            CustomTextStyle.bodyTextStyle.copyWith(
-              color: isDarkTheme ? Colors.white : Colors.black,
-            ),
+            CustomTextStyle.bodyTextStyle
           ),
         ),
       ),

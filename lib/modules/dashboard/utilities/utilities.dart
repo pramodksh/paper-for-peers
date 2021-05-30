@@ -63,10 +63,6 @@ Widget getAddPostContainer({
   @required String label,
   @required Function onPressed,
   @required BuildContext context,
-  bool isExpanded = false,
-  double containerHeight = 80,
-  double containerWidth = 180,
-  double containerMargin = 20,
   double containerRadius = 15,
 }) {
   var themeChange = Provider.of<DarkThemeProvider>(context);
@@ -99,20 +95,7 @@ Widget getAddPostContainer({
 
   return GestureDetector(
     onTap: onPressed,
-    child: Builder(
-      builder: (context) {
-        if (isExpanded) {
-          return dottedBorderContainer;
-        } else {
-          return Container(
-            height: containerHeight,
-            width: containerWidth,
-            margin: EdgeInsets.only(right: containerMargin),
-            child: dottedBorderContainer,
-          );
-        }
-      },
-    ),
+    child: dottedBorderContainer,
   );
 
 }
