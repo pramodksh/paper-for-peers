@@ -89,13 +89,14 @@ class _NotesState extends State<Notes> {
                 uploadedOn: DateTime.now(),
               ),
               SizedBox(height: 20,),
-              getAddPostContainer(
-                context: context,
-                onPressed: () {},
-                label: "Add Notes",
-                containerWidth: MediaQuery.of(context).size.width,
-                containerHeight: 140,
-                containerMargin: 0,
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 140,
+                child: getAddPostContainer(
+                  context: context,
+                  onPressed: () {},
+                  label: "Add Notes",
+                ),
               ),
             ],
           ),

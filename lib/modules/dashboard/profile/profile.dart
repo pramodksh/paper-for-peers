@@ -4,9 +4,18 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_post.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/your_posts/your_posts.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+
+enum TypesOfPost {
+  QuestionPaper,
+  Notes,
+  SyllabusCopy,
+  Journal,
+}
+
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -24,12 +33,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int totalDownloads = 20;
   var themeChange;
 
-  List<String> typesOfPosts = [
-    "Question Paper",
-    "Notes",
-    "Journal",
-    "Syllabus Copy",
+  List<Map<String, dynamic>> typesOfPosts = [
+    { "label": "Question Paper", "enum": TypesOfPost.QuestionPaper },
+    { "label": "Notes", "enum": TypesOfPost.Notes },
+    { "label": "Journal", "enum": TypesOfPost.Journal },
+    { "label": "Syllabus Copy", "enum": TypesOfPost.SyllabusCopy },
   ];
+
+  // List<String> typesOfPosts = [
+  //   "Question Paper",
+  //   "Notes",
+  //   "Journal",
+  //   "Syllabus Copy",
+  // ];
 
 
   Widget getCircularProfileImage({@required imagePath}) {
@@ -97,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getCustomButton({@required String title, @required Function onPressed}){
+  Widget getProfileCustomButton({@required String title, @required Function onPressed}){
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.65,
       height: 50,
@@ -121,7 +137,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildUploadDialog() {
-    // todo
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -129,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -148,8 +163,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(10),
                     )
                   ),
-                  onPressed: () {},
-                  child: Text(e, style: TextStyle(fontSize: 22),),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => UploadPost(label: e["label"], typesOfPost: e["enum"],),
+                    ));
+                  },
+                  child: Text(e["label"], style: TextStyle(fontSize: 20),),
                 ),
               )).toList(),
             ),
@@ -202,13 +221,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               SizedBox(height: 30,),
-              getCustomButton(title: 'Your Post', onPressed: () {
+              getProfileCustomButton(title: 'Your Post', onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => YourPosts(),
                 ));
               }),
               SizedBox(height: 30,),
-              getCustomButton(title: 'Upload', onPressed: () {
+              getProfileCustomButton(title: 'Upload', onPressed: () {
                 showDialog(
                   context: context,
                   builder: (context) => _buildUploadDialog(),

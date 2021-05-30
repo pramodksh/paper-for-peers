@@ -120,10 +120,14 @@ class _QuestionPaperState extends State<QuestionPaper> {
                           },
                           nVariant: index + 1,
                       ),
-                      getAddPostContainer(
-                        label: "Add Question Paper",
-                        onPressed: () {},
-                        context: context,
+                      SizedBox(
+                        width: 180,
+                        height: 80,
+                        child: getAddPostContainer(
+                          label: "Add Question Paper",
+                          onPressed: () {},
+                          context: context,
+                        ),
                       ),
                     ]
                   ),

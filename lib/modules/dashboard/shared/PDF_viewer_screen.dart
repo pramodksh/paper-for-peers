@@ -290,7 +290,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           label: "Add Syllabus Copy",
           onPressed: () {},
           context: context,
-          isExpanded: true,
         ));
       }
 
