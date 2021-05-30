@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/compare_question_paper/compare_question_paper.dart';
 import 'package:papers_for_peers/modules/dashboard/journal/journal.dart';
 import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
@@ -41,6 +42,81 @@ class _MainDashboardState extends State<MainDashboard> {
     return 'Good Evening';
   }
 
+  Widget getDrawer({bool isDarkTheme}) => ClipRRect(
+    borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
+    child: Drawer(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        color: isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
+        child: Column(
+          children: [
+            SizedBox(height: 50,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  isDarkTheme ? "Switch to\nLight Theme" : "Switch to\nDark Theme",
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w600
+                  ),
+                ),
+                CupertinoSwitch(
+                  trackColor: CustomColors.bottomNavBarColor,
+                  activeColor: CustomColors.lightModeBottomNavBarColor,
+                  onChanged: (val) { setState(() {  isDarkTheme = val; }); },
+                  value:  isDarkTheme,
+                ),
+              ],
+            ),
+            Divider(height: 50,),
+            Text(
+              "Change Semester",
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.w600
+              ),
+            ),
+            SizedBox(height: 10,),
+            getCustomDropDown(
+              context: context,
+              dropDownHint: "Semester",
+              dropDownItems: List.generate(6, (index) => (index + 1).toString()),
+              onDropDownChanged: (val) { setState(() { selectedSemester = val; }); },
+              dropDownValue: selectedSemester,
+            ),
+            Divider(height: 40,),
+            Spacer(),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  )
+              ),
+              onPressed: () {},
+              child: Text("Contact Us", style: TextStyle(fontSize: 18),),
+            ),
+            SizedBox(height: 30,),
+            // ThemeModeSelector(
+            //   // todo remove
+            //   durationInMs: 300,
+            //   height: 40,
+            //   onChanged: (mode) {
+            //     print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
+            //     if (mode == ThemeMode.light) {
+            //       themeChange.isDarkTheme = false;
+            //     } else {
+            //       themeChange.isDarkTheme = true;
+            //     }
+            //
+            //   },
+            // ),
+          ],
+        ),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -49,84 +125,26 @@ class _MainDashboardState extends State<MainDashboard> {
 
     return Scaffold(
       key: _scaffoldkey,
-      endDrawer: ClipRRect(
-        borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
-        child: Drawer(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            color: themeChange.isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
-            child: Column(
-              children: [
-                SizedBox(height: 50,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      themeChange.isDarkTheme ? "Switch to\nLight Theme" : "Switch to\nDark Theme",
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w600
-                      ),
-                    ),
-                    CupertinoSwitch(
-                      trackColor: CustomColors.bottomNavBarColor,
-                      activeColor: CustomColors.lightModeBottomNavBarColor,
-                      onChanged: (val) { setState(() {  themeChange.isDarkTheme = val; }); },
-                      value:  themeChange.isDarkTheme,
-                    ),
-                  ],
-                ),
-                Divider(height: 50,),
-                Text(
-                  "Change Semester",
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w600
-                  ),
-                ),
-                SizedBox(height: 10,),
-                getCustomDropDown(
-                  context: context,
-                  dropDownHint: "Semester",
-                  dropDownItems: List.generate(6, (index) => (index + 1).toString()),
-                  onDropDownChanged: (val) { setState(() { selectedSemester = val; }); },
-                  dropDownValue: selectedSemester,
-                ),
-                Divider(height: 40,),
-                Spacer(),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    )
-                  ),
-                  onPressed: () {},
-                  child: Text("Contact Us", style: TextStyle(fontSize: 18),),
-                ),
-                SizedBox(height: 30,),
-                // ThemeModeSelector(
-                //   // todo remove
-                //   durationInMs: 300,
-                //   height: 40,
-                //   onChanged: (mode) {
-                //     print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
-                //     if (mode == ThemeMode.light) {
-                //       themeChange.isDarkTheme = false;
-                //     } else {
-                //       themeChange.isDarkTheme = true;
-                //     }
-                //
-                //   },
-                // ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      endDrawer: getDrawer(isDarkTheme: themeChange.isDarkTheme),
       appBar: AppBar(
         title: Text(greeting),
         actions: [
+          Transform.scale(
+            scale: 1.1,
+            child: IconButton(
+              splashRadius: 25,
+              icon: Image.asset(DefaultAssets.profileIcon, color: themeChange.isDarkTheme
+                  ? CustomColors.bottomNavBarSelectedIconColor
+                  : Colors.black.withOpacity(0.7),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CompareQuestionPaper(),
+                ));
+              },
+            ),
+          ),
+          SizedBox(width: 15,),
           Transform.scale(
             scale: 1.1,
             child: IconButton(

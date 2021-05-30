@@ -12,7 +12,7 @@ import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'modules/testing_screens/pdfTesting.dart';
+import 'modules/dashboard/compare_question_paper/splitPDF.dart';
 void main(){
   runApp(MyApp());
 }
@@ -95,10 +95,10 @@ class _MyAppState extends State<MyApp> {
             // home: Carousel(),
 
             // home: QuestionPaper(),
-            // home: MainDashboard(),
+            home: MainDashboard(),
             // home: ProfileScreen(),
             // home: PdfTesting(),
-              home: CompareQuestionPaper(),
+            //   home: CompareQuestionPaper(),
             // home: PDFScreen(),
             // home: ClipTesting(),
           );

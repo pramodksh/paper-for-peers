@@ -3,13 +3,15 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 
-class PdfTesting extends StatefulWidget {
+class SplitScreen extends StatefulWidget {
   @override
-  _PdfTestingState createState() => _PdfTestingState();
+  _SplitScreenState createState() => _SplitScreenState();
+  int selectedItemPosition ;
+  SplitScreen(this.selectedItemPosition, {Key key}): super(key: key);
 }
 
 
-class _PdfTestingState extends State<PdfTesting> {
+class _SplitScreenState extends State<SplitScreen> {
 
   String pdfPath = "assets/pdfs/Javanotes.pdf";
   String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
@@ -91,7 +93,7 @@ class _PdfTestingState extends State<PdfTesting> {
         child: Center(child: CircularProgressIndicator()),
       ) : SafeArea(
         child: Column(
-          children: List.generate(2, (index) => getExpandedPDFView(index: index)),
+          children: List.generate(widget.selectedItemPosition + 2, (index) => getExpandedPDFView(index: index)),
         ),
       ),
     );
