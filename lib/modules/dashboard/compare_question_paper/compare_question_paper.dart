@@ -18,7 +18,7 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
     "C",
   ];
 
-  List<String> numberOfSplits = ['2x2','3x3','4x4'];
+  List<String> numberOfSplits = ['2 Splits','3 Splits','4 Splits'];
   String selectedSubject;
 
   List<Widget> bottomNavBarIcons = [
@@ -122,7 +122,7 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
               },
               child: Text("Apply"),
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)),
+                  backgroundColor: MaterialStateProperty.all(themeChange.isDarkTheme ? CustomColors.bottomNavBarColor :CustomColors.lightModeBottomNavBarColor)),
             )
           ],
         ),
