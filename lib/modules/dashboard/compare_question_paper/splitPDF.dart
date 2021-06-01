@@ -158,6 +158,9 @@ class _SplitScreenState extends State<SplitScreen> {
             splashColor: Colors.transparent,
             onPressed: () {
               print("CLOSE $index");
+              setState(() {
+                isPDF[index] = false;
+              });
             },
             icon: Icon(Icons.close, size: 30, color: Colors.indigo,),
           ),
