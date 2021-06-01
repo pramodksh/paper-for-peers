@@ -116,7 +116,7 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => SplitScreen(selectedItemPosition),
+                  builder: (context) => SplitScreen(numberOfSplits: selectedItemPosition + 2,),
 
                 ));
               },

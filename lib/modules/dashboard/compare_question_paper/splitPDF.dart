@@ -1,17 +1,25 @@
-// import 'dart:html';
-
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
 
 class VariantGenerator {
-  int total;
-  List<String> list;
-  VariantGenerator({this.total}) {
-    print("total: $total");
-    this.list = List.generate(total, (index) => (index +1).toString());
-    print("list: $list");
+  int totalVariants;
+  List<String> variantList;
+  String selectedVariant;
+  String selectedYear;
+
+  void resetVariant() {
+    this.selectedVariant = null;
+    this.selectedYear = null;
+  }
+
+  bool isShowPdf() {
+    return selectedYear != null && selectedVariant != null;
+  }
+
+  VariantGenerator({this.totalVariants}) {
+    this.variantList = List.generate(totalVariants, (index) => (index +1).toString());
   }
 }
 
@@ -35,16 +43,6 @@ class _SplitScreenState extends State<SplitScreen> {
   bool _isLoading = true;
   PDFDocument document;
 
-  Future loadDocumentFromAssetPath({@required String assetPath}) async {
-    setState(() => _isLoading = true);
-    document = await PDFDocument.fromAsset(assetPath);
-    setState(() => _isLoading = false);
-    return;
-  }
-
-  // int numberOfSplit = selectedItemPosition;
-  List<bool> isPDF;
-
   List<String> years = [
     "2017",
     "2018",
@@ -53,12 +51,15 @@ class _SplitScreenState extends State<SplitScreen> {
     "2021",
     "2022",
   ];
-  VariantGenerator obj = new VariantGenerator(total: 3);  // total -> number of variants available
-  // List<String> variants = ["1", "2", "3"];
-  String selectedVariant;
-  String selectedQuestionPaperYear;
-   // bool isSelectedQuestionPaper = false;
-  List<bool> isSelectedQuestionPaper ;
+
+  List<VariantGenerator> variants;
+
+  Future loadDocumentFromAssetPath({@required String assetPath}) async {
+    setState(() => _isLoading = true);
+    document = await PDFDocument.fromAsset(assetPath);
+    setState(() => _isLoading = false);
+    return;
+  }
 
   @override
   void initState() {
@@ -66,25 +67,12 @@ class _SplitScreenState extends State<SplitScreen> {
       print("DOC LOADED");
     });
     super.initState();
-    print(selectedVariant);
-
-    print(isSelectedQuestionPaper);
-    isSelectedQuestionPaper = List.generate(widget.numberOfSplits, (index) => false);
-    isPDF = List.generate(widget.numberOfSplits, (index) => false);
-
-    int num = 5;
+    variants = List.generate(widget.numberOfSplits, (index) => VariantGenerator(totalVariants: 3));
   }
-  /*
-  selected year
-  selected variant
-  int totalVariants
-   */
-
 
   Widget getExpandedPDFView({@required index}) => Expanded(
-    child: !isPDF[index] ? Container(
+    child: !variants[index].isShowPdf() ? Container(
       width: MediaQuery.of(context).size.width,
-      // color: Colors.red,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -92,27 +80,22 @@ class _SplitScreenState extends State<SplitScreen> {
             context: context,
             dropDownHint: "Year",
             dropDownItems: years,
-            dropDownValue: selectedQuestionPaperYear,
+            dropDownValue: variants[index].selectedYear,
             onDropDownChanged: (val) {
-              print("VAL: $val");
               setState(() {
-                selectedQuestionPaperYear = val;
-                isSelectedQuestionPaper[index] = true;
-
+                variants[index].selectedYear = val;
               });
             },
           ),
           SizedBox(height: 20,),
-          !isSelectedQuestionPaper[index]?Container():getCustomDropDown(
+          variants[index].selectedYear == null ? Container() : getCustomDropDown(
             context: context,
             dropDownHint: "Variant",
-            dropDownItems: obj.list,
-            dropDownValue: selectedVariant,
+            dropDownItems: variants[index].variantList,
+            dropDownValue: variants[index].selectedVariant,
             onDropDownChanged: (val) {
-              print("VAL2: $val");
               setState(() {
-                selectedVariant = val;
-                isPDF[index] =true;
+                variants[index].selectedVariant = val;
               });
             },
           ),
@@ -159,7 +142,7 @@ class _SplitScreenState extends State<SplitScreen> {
             onPressed: () {
               print("CLOSE $index");
               setState(() {
-                isPDF[index] = false;
+                variants[index].resetVariant();
               });
             },
             icon: Icon(Icons.close, size: 30, color: Colors.indigo,),
@@ -171,9 +154,6 @@ class _SplitScreenState extends State<SplitScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
-    // print("DOC: ${document} | ${widget.numberOfSplits} | ${years} | ${variants}");
     return Scaffold(
       body: _isLoading ? Container(
         child: Center(child: CircularProgressIndicator()),
