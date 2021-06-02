@@ -88,6 +88,7 @@ class _NotificationsState extends State<Notifications> {
                 tileColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 onTap: () {
+                  // todo open link
                   print("OPEN: ${notifications[index].link}");
                 },
                 leading: Text((index + 1).toString()),

@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/modules/dashboard/compare_question_paper/compare_question_paper.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
@@ -99,42 +100,61 @@ class _QuestionPaperState extends State<QuestionPaper> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
-              ) : ListView.separated(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  separatorBuilder: (context, index) => SizedBox(height: 20,),
-                  itemCount: years.length,
-                  itemBuilder: (context, index) => getQuestionYearTile(
-                    year: years[index],
-                    children: [
-                      getQuestionVariantContainer(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-                                screenLabel: "Question Paper",
-                                parameter: PDFScreenSimpleBottomSheet(
-                                  title: years[index],
-                                  nVariant: index + 1,
-                                  uploadedBy: "John Doe",
-                                ),
-                              ),
-                            ));
-                          },
-                          nVariant: index + 1,
+              ) : Column(
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      SizedBox(
-                        width: 180,
-                        height: 80,
-                        child: getAddPostContainer(
-                          label: "Add Question Paper",
-                          onPressed: () {},
-                          context: context,
-                        ),
-                      ),
-                    ]
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CompareQuestionPaper(),
+                      ));
+                    },
+                    child: Text("Compare Question Papers", style: TextStyle(fontSize: 18),),
                   ),
-                ),
+                  SizedBox(height: 20,),
+                  ListView.separated(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      separatorBuilder: (context, index) => SizedBox(height: 20,),
+                      itemCount: years.length,
+                      itemBuilder: (context, index) => getQuestionYearTile(
+                        year: years[index],
+                        children: [
+                          getQuestionVariantContainer(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                                    screenLabel: "Question Paper",
+                                    parameter: PDFScreenSimpleBottomSheet(
+                                      title: years[index],
+                                      nVariant: index + 1,
+                                      uploadedBy: "John Doe",
+                                    ),
+                                  ),
+                                ));
+                              },
+                              nVariant: index + 1,
+                          ),
+                          SizedBox(
+                            width: 180,
+                            height: 80,
+                            child: getAddPostContainer(
+                              label: "Add Question Paper",
+                              onPressed: () {},
+                              context: context,
+                            ),
+                          ),
+                        ]
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
         ),
