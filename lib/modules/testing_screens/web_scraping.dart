@@ -12,11 +12,11 @@ class _WebScrapingDemoState extends State<WebScrapingDemo> {
 
   String text;
 
-  String baseURL = "https://www.kud.ac.in";
+  // String baseURL = "https://www.kud.ac.in";
   String fullURL = "https://www.kud.ac.in/cmsentities.aspx?type=notifications";
   // String baseURL = "https://www.newyorker.com";
 
-  String notificationsURLPath = "/cmsentities.aspx?type=notifications";
+  // String notificationsURLPath = "/cmsentities.aspx?type=notifications";
   // String notificationsURLPath = "/magazine/2021/05/31/why-did-so-many-victorians-try-to-speak-with-the-dead?utm_source=pocket-newtab-intl-en";
 
   WebScraper webScraper = WebScraper();
@@ -33,7 +33,7 @@ class _WebScrapingDemoState extends State<WebScrapingDemo> {
       if (isLoaded) {
         print("Web page loaded");
         // List<Map<String, dynamic>> elements = webScraper.getElement('h3.title > a.caption', ['href']);
-        List<Map<String, dynamic>> elements = webScraper.getElement('td > table > tbody > tr', ['id']);
+        List<Map<String, dynamic>> elements = webScraper.getElement('td > table.tblContent > tbody > tr > td:nth-child(2)', ['style']);
         // List<Map<String, dynamic>> elements = webScraper.getElement('td#main_context > table.tblContent', ['class']);
         for (var temp in elements) {
           log("\n\n\nTITLE: ${temp['title']} ||| CLASS ${temp['class']}\n\n\n");
