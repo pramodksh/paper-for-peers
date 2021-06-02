@@ -87,13 +87,10 @@ class _NotificationsState extends State<Notifications> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: ListTile(
-                focusColor: Colors.red,
-                selectedTileColor: Colors.red,
-                hoverColor: Colors.red,
                 tileColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 onTap: () async {
-                  var url = notifications[index].link;
+                  var url = AppConstants.KUDBaseURL + notifications[index].link;
                   if (await canLaunch(url)) {
                     await launch(url);
                   } else {
