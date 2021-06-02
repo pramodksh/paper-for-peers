@@ -9,7 +9,7 @@ import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/modules/login/carausel.dart';
 import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
-import 'package:papers_for_peers/modules/testing_screens/web_scraping.dart';
+import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -96,7 +96,7 @@ class _MyAppState extends State<MyApp> {
             // home: Carousel(),
 
             // home: QuestionPaper(),
-            // home: MainDashboard(),
+            home: MainDashboard(),
             // home: ProfileScreen(),
             // home: PdfTesting(),
             //   home: CompareQuestionPaper(),
@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
 
 
             // home: ClipTesting(),
-            home: WebScrapingDemo(),
+            // home: WebScrapingDemo(),
           );
         },
       ),

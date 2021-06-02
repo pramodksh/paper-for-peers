@@ -49,6 +49,7 @@ class Styles {
         ),
       ),
 
+
       appBarTheme: AppBarTheme(
         elevation: 0.0,
         iconTheme: IconThemeData(
@@ -67,6 +68,9 @@ class Styles {
           color: isDarkTheme ? Colors.white : Colors.black,
         ),
         bodyText2: CustomTextStyle.bodyTextStyle.copyWith(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
+        subtitle1: CustomTextStyle.bodyTextStyle.copyWith(
           color: isDarkTheme ? Colors.white : Colors.black,
         ),
       ).apply(

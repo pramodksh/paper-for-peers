@@ -11,6 +11,7 @@ import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -108,20 +109,6 @@ class _MainDashboardState extends State<MainDashboard> {
                   child: Text("Contact Us", style: TextStyle(fontSize: 18),),
                 ),
                 SizedBox(height: 30,),
-                // ThemeModeSelector(
-                //   // todo remove
-                //   durationInMs: 300,
-                //   height: 40,
-                //   onChanged: (mode) {
-                //     print('ThemeMode changed to $mode | ${mode == ThemeMode.light}');
-                //     if (mode == ThemeMode.light) {
-                //       themeChange.isDarkTheme = false;
-                //     } else {
-                //       themeChange.isDarkTheme = true;
-                //     }
-                //
-                //   },
-                // ),
               ],
             ),
           ),
@@ -132,10 +119,11 @@ class _MainDashboardState extends State<MainDashboard> {
         actions: [
           IconButton(
             splashRadius: 25,
-            icon: Icon(Icons.book_online_rounded, size: 32,),
+            icon: Icon(CupertinoIcons.bell_fill, size: 32,),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => CompareQuestionPaper(),
+                builder: (context) => Notifications(),
+                // builder: (context) => CompareQuestionPaper(),
               ));
             },
           ),
