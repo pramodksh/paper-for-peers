@@ -14,6 +14,7 @@ class AppConstants {
     {"icon": AssetImage(DefaultAssets.notesNavIcon,), "label": "Notes"},
     {"icon": AssetImage(DefaultAssets.journalNavIcon,), "label": "Journal"},
     {"icon": AssetImage(DefaultAssets.syllabusCopyNavIcon,), "label": "Syllabus Copy"},
+    {"icon": AssetImage(DefaultAssets.syllabusCopyNavIcon,), "label": "Syllabus Copy"},
   ];
 
 }

@@ -12,8 +12,9 @@ import 'package:provider/provider.dart';
 class PDFViewerScreen<ParameterType> extends StatefulWidget {
   final String screenLabel;
   final ParameterType parameter;
+  final bool isShowBottomSheet;
 
-  PDFViewerScreen({this.screenLabel, this.parameter});
+  PDFViewerScreen({this.screenLabel, this.parameter, this.isShowBottomSheet = true});
 
   @override
   _PDFViewerScreenState createState() => _PDFViewerScreenState();
@@ -292,7 +293,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           context: context,
         ));
       }
-
       return Stack(
         children: [
           Container(
@@ -353,8 +353,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           ),
         ],
       );
-    }
-      if (widget.parameter.runtimeType == PDFScreenNotesBottomSheet) {
+    } else {
       PDFScreenNotesBottomSheet parameter = widget.parameter;
       return Stack(
         children: [
@@ -471,9 +470,11 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   @override
   void initState() {
-    loadDocumentFromAssetPath(assetPath: pdfPath).then((value) {
-      _showCustomBottomSheet();
-    });
+    if (widget.isShowBottomSheet) {
+      loadDocumentFromAssetPath(assetPath: pdfPath).then((value) {
+        _showCustomBottomSheet();
+      });
+    }
     reportReasons = AppConstants.reportReasons.map((e) => CheckBoxModel(
       label: e,
       isChecked: false,
@@ -491,7 +492,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        // todo title based on parameter type
         title: Text(widget.screenLabel),
         actions: [
           Container(

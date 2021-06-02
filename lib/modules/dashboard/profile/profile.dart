@@ -229,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               SizedBox(height: 30,),
-              getProfileCustomButton(title: 'Your Post', onPressed: () {
+              getProfileCustomButton(title: 'Your Posts', onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => YourPosts(),
                 ));

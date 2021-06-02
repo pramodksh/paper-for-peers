@@ -13,6 +13,7 @@ class _SyllabusCopyState extends State<SyllabusCopy> {
     return Scaffold(
       body: PDFViewerScreen<PDFScreenSyllabusCopy>(
         screenLabel: "Syllabus Copy",
+        isShowBottomSheet: false,
         parameter: PDFScreenSyllabusCopy(
           uploadedBy: "John Doe",
           nVariant: 1,

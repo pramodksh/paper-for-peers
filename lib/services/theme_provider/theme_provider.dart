@@ -3,7 +3,7 @@ import 'package:papers_for_peers/services/shared_preferences/shared_preferences.
 
 class DarkThemeProvider with ChangeNotifier {
   DarkThemePreference darkThemePreference = DarkThemePreference();
-  bool _isDarkTheme = true;
+  bool _isDarkTheme = false;
 
   bool get isDarkTheme => _isDarkTheme;
 

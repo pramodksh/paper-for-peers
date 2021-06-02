@@ -13,7 +13,6 @@ import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.d
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:thememode_selector/thememode_selector.dart';
 
 class MainDashboard extends StatefulWidget {
   @override
@@ -55,7 +54,6 @@ class _MainDashboardState extends State<MainDashboard> {
         borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
         child: Drawer(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
             color: themeChange.isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
             child: Column(
               children: [
@@ -83,16 +81,19 @@ class _MainDashboardState extends State<MainDashboard> {
                   "Change Semester",
                   textAlign: TextAlign.end,
                   style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w600
+                      fontSize: 20, fontWeight: FontWeight.w600,
                   ),
                 ),
                 SizedBox(height: 10,),
-                getCustomDropDown(
-                  context: context,
-                  dropDownHint: "Semester",
-                  dropDownItems: List.generate(6, (index) => (index + 1).toString()),
-                  onDropDownChanged: (val) { setState(() { selectedSemester = val; }); },
-                  dropDownValue: selectedSemester,
+                SizedBox(
+                  width: 180,
+                  child: getCustomDropDown(
+                    context: context,
+                    dropDownHint: "Semester",
+                    dropDownItems: List.generate(6, (index) => (index + 1).toString()),
+                    onDropDownChanged: (val) { setState(() { selectedSemester = val; }); },
+                    dropDownValue: selectedSemester,
+                  ),
                 ),
                 Divider(height: 40,),
                 Spacer(),
@@ -129,50 +130,32 @@ class _MainDashboardState extends State<MainDashboard> {
       appBar: AppBar(
         title: Text(greeting),
         actions: [
-          Transform.scale(
-            scale: 1.1,
-            child: IconButton(
-              splashRadius: 25,
-              icon: Image.asset(DefaultAssets.profileIcon, color: themeChange.isDarkTheme
-                  ? CustomColors.bottomNavBarSelectedIconColor
-                  : Colors.black.withOpacity(0.7),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => CompareQuestionPaper(),
-                ));
-              },
-            ),
+          IconButton(
+            splashRadius: 25,
+            icon: Icon(Icons.book_online_rounded, size: 32,),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => CompareQuestionPaper(),
+              ));
+            },
           ),
           SizedBox(width: 15,),
-          Transform.scale(
-            scale: 1.1,
-            child: IconButton(
-              splashRadius: 25,
-              icon: Image.asset(DefaultAssets.profileIcon, color: themeChange.isDarkTheme
-                  ? CustomColors.bottomNavBarSelectedIconColor
-                  : Colors.black.withOpacity(0.7),
-              ),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProfileScreen(),
-                ));
-              },
-            ),
+          IconButton(
+            splashRadius: 25,
+            icon: Icon(Icons.account_circle, size: 32,),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ProfileScreen(),
+              ));
+            },
           ),
           SizedBox(width: 15,),
-          Transform.scale(
-            scale: 1.1,
-            child: IconButton(
-              splashRadius: 25,
-              icon: Image.asset(DefaultAssets.settingIcon, color: themeChange.isDarkTheme
-                  ? CustomColors.bottomNavBarSelectedIconColor
-                  : Colors.black.withOpacity(0.7),
-              ),
-              onPressed: () {
-                _scaffoldkey.currentState.openEndDrawer();
-              },
-            ),
+          IconButton(
+            splashRadius: 25,
+            icon: Icon(Icons.settings, size: 32,),
+            onPressed: () {
+              _scaffoldkey.currentState.openEndDrawer();
+            },
           ),
           SizedBox(width: 5,),
         ],
@@ -198,7 +181,7 @@ class _MainDashboardState extends State<MainDashboard> {
             topLeft: Radius.circular(bottomNavBarRadius),
           ),
         ),
-        height: 75,
+        height: 90,
         child: Builder(
           builder: (context) {
 
@@ -217,12 +200,12 @@ class _MainDashboardState extends State<MainDashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
                   AppConstants.bottomNavBarIcons.length, (index) => SizedBox(
-                    width: MediaQuery.of(context).size.width / 4,
+                    width: MediaQuery.of(context).size.width / AppConstants.bottomNavBarIcons.length,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Transform.scale(
-                          scale: 1.7,
+                          scale: 1.5,
                           child: IconButton(
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,

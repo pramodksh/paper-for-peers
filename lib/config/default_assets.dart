@@ -11,8 +11,8 @@ class DefaultAssets {
   static const mainLogoPath = "assets/logo/mainLogo.png";
 
   // icons
-  static const profileIcon = "assets/icons/profile_icon.png";
-  static const settingIcon = "assets/icons/settings_icon.png";
+  // static const profileIcon = "assets/icons/profile_icon.png";
+  // static const settingIcon = "assets/icons/settings_icon.png";
   static const addPostIcon = "assets/icons/add_post_icon.png";
   static const postDownloadIcon = "assets/icons/post_download_icon.png";
   static const leftArrowIcon = "assets/icons/left_arrow_icon.png";

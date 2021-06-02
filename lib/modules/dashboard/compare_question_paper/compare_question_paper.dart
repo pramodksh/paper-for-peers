@@ -81,27 +81,20 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
                               },
                               child: Builder(
                                 builder: (context) {
-                                  Color selectedIconColor;
-                                  Color unselectedIconColor;
+                                  Color selectedSplitColor;
 
                                   if (themeChange.isDarkTheme) {
-                                    selectedIconColor = CustomColors
-                                        .bottomNavBarColor;
-                                    unselectedIconColor = Colors.transparent;
+                                    selectedSplitColor = CustomColors.bottomNavBarColor;
                                   } else {
-                                    selectedIconColor = Colors.black12;
-                                    unselectedIconColor = Colors.transparent;
+                                    selectedSplitColor = Colors.black12;
                                   }
 
                                   return Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
-                                      color: selectedItemPosition == index ? selectedIconColor : Colors.transparent,
+                                      color: selectedItemPosition == index ? selectedSplitColor : Colors.transparent,
                                     ),
-
-                                    // margin: EdgeInsets.symmetric(horizontal: 10),
                                     padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-
                                     child: bottomNavBarIcons[index],
                                   );
                                 },
