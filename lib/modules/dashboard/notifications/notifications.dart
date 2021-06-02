@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/notification_model.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web_scraper/web_scraper.dart';
 
 class Notifications extends StatefulWidget {
@@ -85,14 +87,21 @@ class _NotificationsState extends State<Notifications> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: ListTile(
+                focusColor: Colors.red,
+                selectedTileColor: Colors.red,
+                hoverColor: Colors.red,
                 tileColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                onTap: () {
-                  // todo open link
-                  print("OPEN: ${notifications[index].link}");
+                onTap: () async {
+                  var url = notifications[index].link;
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                    showAlertDialog(context: context, text: "Could not launch this url");
+                  }
                 },
                 leading: Text((index + 1).toString()),
-                minLeadingWidth: 15,
+                minLeadingWidth: 10,
                 title: Text(notifications[index].notification, style: TextStyle(fontSize: 18),),
               ),
             ),
