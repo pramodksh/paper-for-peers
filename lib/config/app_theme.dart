@@ -49,7 +49,6 @@ class Styles {
         ),
       ),
 
-
       appBarTheme: AppBarTheme(
         elevation: 0.0,
         iconTheme: IconThemeData(

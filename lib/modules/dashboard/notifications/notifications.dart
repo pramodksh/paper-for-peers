@@ -94,7 +94,7 @@ class _NotificationsState extends State<Notifications> {
                   if (await canLaunch(url)) {
                     await launch(url);
                   } else {
-                    showAlertDialog(context: context, text: "Could not launch this url");
+                    showAlertDialog(context: context, text: "Couldn't open url - $url");
                   }
                 },
                 leading: Text((index + 1).toString()),
@@ -121,9 +121,13 @@ class _NotificationsState extends State<Notifications> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("KUD Notifications"),
+        title: Text(
+          _isLoading ? "KUD Notifications" : "KUD Notifications (${notifications.length})"
+        ),
       ),
-      body: _isLoading ? LoadingScreen() : Container(
+      body: _isLoading ? LoadingScreen(
+        loadingText: "Loading URL - ${AppConstants.KUDNotificationsURL}",
+      ) : Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: ListView.builder(
           itemCount: notifications.length,
