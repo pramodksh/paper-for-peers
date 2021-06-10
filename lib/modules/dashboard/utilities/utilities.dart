@@ -16,9 +16,20 @@ Widget getCustomDropDown({
   @required List<String> dropDownItems,
   @required String dropDownHint,
   @required Function onDropDownChanged,
+  bool isTransparent = false
 }) {
 
   var themeChange = Provider.of<DarkThemeProvider>(context);
+  Color backgroundColor;
+  Border border;
+
+  if (isTransparent) {
+    backgroundColor = Colors.transparent;
+    border = Border.all(color: Colors.white, width: 2);
+  } else {
+    backgroundColor = themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : Colors.grey.shade300;
+  border = Border.all(color: Colors.black54,);
+  }
 
   return Theme(
     data: Theme.of(context).copyWith(
@@ -30,8 +41,8 @@ Widget getCustomDropDown({
       width: 140,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : Colors.grey.shade300,
-          border: Border.all(color: Colors.black54,)
+          color: backgroundColor,
+          border: border,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(

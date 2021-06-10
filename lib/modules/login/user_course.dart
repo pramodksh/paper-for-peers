@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
+import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/modules/login/welcome_message.dart';
 
 class UserCourse extends StatefulWidget {
   @override
@@ -9,18 +11,6 @@ class UserCourse extends StatefulWidget {
 }
 
 class _UserCourseState extends State<UserCourse> {
-
-  // Widget getCustomRoundedButton({@required String semester}){
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //         color: CustomColors.bottomNavBarColor,
-  //         shape: BoxShape.circle),
-  //     padding: EdgeInsets.all(1),
-  //     child: TextButton(
-  //       child: Text(semester,style: TextStyle(fontSize: 20,color: Colors.white),),
-  //     ),
-  //   );
-  // }
 
   List<String> courses = [
     "BCA",
@@ -31,10 +21,10 @@ class _UserCourseState extends State<UserCourse> {
     '1','2','3','4','5','6'
   ];
 
-  // String selectedSubject;
 
   String selectedCourse;
   String selectedSemester;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -54,51 +44,59 @@ class _UserCourseState extends State<UserCourse> {
           backgroundColor: Colors.transparent,
           body: Container(
             width: MediaQuery.of(context).size.width,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 100,
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Text('Select Course',style: TextStyle(fontSize: 30),),
+                    SizedBox(height: 20,),
+                    getCustomDropDown(
+                        isTransparent: true,
+                        context: context,
+                        dropDownValue: selectedCourse,
+                        dropDownItems: courses,
+                        dropDownHint: 'Courses',
+                        onDropDownChanged: (val) {
+                          setState(() {
+                            selectedCourse = val;
+                          });
+                        }),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text('Select Semester',style: TextStyle(fontSize: 30),),
+                    SizedBox(height: 20,),
+                    getCustomDropDown(
+                        isTransparent: true,
+                        context: context,
+                        dropDownValue: selectedSemester,
+                        dropDownItems: semesters,
+                        dropDownHint: 'Semester',
+                        onDropDownChanged: (val) {
+                          setState(() {
+                            selectedSemester = val;
+                          });
+                        }),
+                  ],
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
                   ),
-                  Text('Select Course',style: TextStyle(fontSize: 30),),
-                  SizedBox(height: 50,),
-                  getCustomDropDown(
-                      context: context,
-                      dropDownValue: selectedCourse,
-                      dropDownItems: courses,
-                      dropDownHint: 'Courses',
-                      onDropDownChanged: (val) {
-                        setState(() {
-                          selectedCourse = val;
-                        });
-                      }),
-                  SizedBox(height: 120,),
-                  Text('Select Semester',style: TextStyle(fontSize: 30),),
-                  SizedBox(height: 50,),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     getCustomRoundedButton(semester: '1'),
-                  //     getCustomRoundedButton(semester: '2'),
-                  //     getCustomRoundedButton(semester: '3'),
-                  //     getCustomRoundedButton(semester: '4'),
-                  //     getCustomRoundedButton(semester: '5'),
-                  //     getCustomRoundedButton(semester: '6'),
-                  //   ],
-                  // ),
-                  getCustomDropDown(
-                      context: context,
-                      dropDownValue: selectedSemester,
-                      dropDownItems: semesters,
-                      dropDownHint: 'Semester',
-                      onDropDownChanged: (val) {
-                        setState(() {
-                          selectedSemester = val;
-                        });
-                      }),
-                ],
-              ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => WelcomeMessage(),
+                    ));
+                  },
+                  child: Text("Continue", style: TextStyle(fontSize: 18),),
+                ),
+              ],
             ),
           ),
         )

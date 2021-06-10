@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
+import 'package:papers_for_peers/modules/login/user_course.dart';
 import 'package:papers_for_peers/modules/login/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +97,17 @@ class _LoginState extends State<Login> {
                     height: 50,
                     child: getCustomButton(
                       buttonText: _isLogIn? "Sign In" : 'Sign Up',
-                      onPressed: () {},
+                      onPressed: () {
+                        if (_isLogIn) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MainDashboard(),
+                          ));
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => UserCourse(),
+                          ));
+                        }
+                      },
                     ),
                   ),
                   SizedBox(height: 35,),

@@ -24,62 +24,60 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
         ),
         Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+          ),
           backgroundColor: Colors.transparent,
-            body: Container(
-              width: MediaQuery.of(context).size.width,
+            body: SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
               child: Column(
-                children: [
-                  SizedBox(height:40,),
-                  Image.asset(
-                    DefaultAssets.lockImagePath,
-                    height: 60,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Text(
-                    "Forgot Password?",
-                    style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.white,
-                        decoration: TextDecoration.none),
-                  ),
-                  SizedBox(
-                    height: 70,
-                  ),
-                  Text(
-                    'We just need your registered email address send you password reset email',
-                    style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
-                    // style: TextStyle(fontSize: 15,),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 70,
-                  ),
-                  getCustomTextField(inputBoxText: 'Email Address'),
-                  SizedBox(
-                    height: 70,
-                  ),
-                  getCustomButton(
-                      buttonText: 'Reset Password',
-                      width: 250,
-                      verticalPadding: 14,
-                      textColor: Colors.white,
-                      onPressed: () {
-                        print("FORGOT PASSWORD");
-                        Navigator.pop(context);
-                      }
-                  ),
-                  SizedBox(height:40,),
-                ],
+              children: [
+                Image.asset(
+                  DefaultAssets.lockImagePath,
+                  height: 60,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Text(
+                  "Forgot Password?",
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.white,
+                      decoration: TextDecoration.none),
+                ),
+                SizedBox(
+                  height: 70,
+                ),
+                Text(
+                  'We just need your registered email address send you password reset email',
+                  style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
+                  // style: TextStyle(fontSize: 15,),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 70,
+                ),
+                getCustomTextField(inputBoxText: 'Email Address'),
+                SizedBox(
+                  height: 70,
+                ),
+                getCustomButton(
+                    buttonText: 'Reset Password',
+                    width: 250,
+                    verticalPadding: 14,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      print("FORGOT PASSWORD");
+                      Navigator.pop(context);
+                    }
+                ),
+              ],
               ),
             ),
-             ),
-          ),
+            ),
         ),
       ],
     );
