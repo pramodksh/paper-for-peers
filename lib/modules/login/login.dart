@@ -18,6 +18,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   bool _isLogIn = true;
+  bool _isPasswordObscure = true;
+  bool _isConfirmPasswordObscure = true;
 
   Widget getOrDivider() => Row(
     children: <Widget>[
@@ -71,11 +73,18 @@ class _LoginState extends State<Login> {
                   SizedBox(height: 20,),
                   getCustomTextField(inputBoxText: 'Email Address'),
                   SizedBox(height: 20,),
-                  getCustomTextField(inputBoxText: 'Password', obscureText: true),
+                  getCustomPasswordField(
+                    inputBoxText: 'Password',
+                    obscureText: _isPasswordObscure,
+                    onTapObscure: () { setState(() { _isPasswordObscure = !_isPasswordObscure; }); }
+                  ),
                   _isLogIn ? Container() : SizedBox(height: 20,),
                   _isLogIn
                     ? SizedBox(height: 5,)
-                    : getCustomTextField(inputBoxText: 'Confirm Password', obscureText: false
+                    : getCustomPasswordField(
+                      inputBoxText: 'Confirm Password',
+                      obscureText: _isConfirmPasswordObscure,
+                      onTapObscure: () { setState(() { _isConfirmPasswordObscure = !_isConfirmPasswordObscure; }); }
                   ),
                   _isLogIn ?  Row(
                     mainAxisAlignment: MainAxisAlignment.end,
