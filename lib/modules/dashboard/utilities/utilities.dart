@@ -16,9 +16,20 @@ Widget getCustomDropDown({
   @required List<String> dropDownItems,
   @required String dropDownHint,
   @required Function onDropDownChanged,
+  bool isTransparent = false
 }) {
 
   var themeChange = Provider.of<DarkThemeProvider>(context);
+  Color backgroundColor;
+  Border border;
+
+  if (isTransparent) {
+    backgroundColor = Colors.transparent;
+    border = Border.all(color: Colors.white, width: 2);
+  } else {
+    backgroundColor = themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : Colors.grey.shade300;
+  border = Border.all(color: Colors.black54,);
+  }
 
   return Theme(
     data: Theme.of(context).copyWith(
@@ -30,14 +41,19 @@ Widget getCustomDropDown({
       width: 140,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : Colors.grey.shade300,
-          border: Border.all(color: Colors.black54,)
+          color: backgroundColor,
+          border: border,
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           isExpanded: true,
           iconSize: 30,
-          icon: Icon(Icons.keyboard_arrow_down),
+          // iconEnabledColor: Colors.red,
+          // iconDisabledColor: Colors.tealAccent,
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            color: themeChange.isDarkTheme ? Colors.grey.shade300 : CustomColors.bottomNavBarColor,
+          ),
           value: dropDownValue,
           hint: Text(dropDownHint, style: CustomTextStyle.bodyTextStyle.copyWith(
             fontSize: 18,
@@ -69,7 +85,6 @@ Widget getAddPostContainer({
 
   Widget dottedBorderContainer = DottedBorder(
     padding: EdgeInsets.zero,
-    // todo check this glitch
     color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
     dashPattern: [8, 4],
     strokeWidth: 2,

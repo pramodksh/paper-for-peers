@@ -9,6 +9,7 @@ import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/modules/login/carausel.dart';
 import 'package:papers_for_peers/modules/login/user_details.dart';
+import 'package:papers_for_peers/modules/login/welcome_message.dart';
 import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
 import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
@@ -51,62 +52,8 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
-
-            // theme: ThemeData(
-            //   // buttonTheme: ButtonThemeData(
-            //   //   splashColor:
-            //   // ),
-            //
-            //   inputDecorationTheme: InputDecorationTheme(
-            //     labelStyle: CustomTextStyle.bodyTextStyle,
-            //   ),
-            //
-            //   textButtonTheme: TextButtonThemeData(
-            //       style: ButtonStyle(
-            //         textStyle: MaterialStateProperty.all(TextStyle(fontFamily: "Montserrat")),
-            //       )
-            //   ),
-            //
-            //   elevatedButtonTheme: ElevatedButtonThemeData(
-            //     style: ButtonStyle(
-            //       textStyle: MaterialStateProperty.all(CustomTextStyle.bodyTextStyle),
-            //     ),
-            //   ),
-            //
-            //   appBarTheme: AppBarTheme(
-            //     backgroundColor: Colors.black,
-            //     textTheme: TextTheme(
-            //       headline6: CustomTextStyle.appBarTextStyle,
-            //     ),
-            //   ),
-            //
-            //   textTheme: TextTheme(
-            //     bodyText1: CustomTextStyle.bodyTextStyle,
-            //     bodyText2: CustomTextStyle.bodyTextStyle,
-            //   ).apply(
-            //     bodyColor: Colors.white,
-            //     displayColor: Colors.white,
-            //   ),
-            //
-            //   visualDensity: VisualDensity.adaptivePlatformDensity,
-            //   scaffoldBackgroundColor: Colors.black,
-            //
-            // ),
-
-            // home: Login(),
-            // home: Carousel(),
-            home: UserDetails(),
-
-            // home: QuestionPaper(),
-            // home: MainDashboard(),
-            // home: ProfileScreen(),
-            // home: PdfTesting(),
-            //   home: CompareQuestionPaper(),
-            // home: PDFScreen(),
-
-
-            // home: ClipTesting(),
-            // home: WebScrapingDemo(),
+            home: Login(),
+            // home: User,
           );
         },
       ),

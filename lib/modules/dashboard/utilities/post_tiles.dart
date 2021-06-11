@@ -14,6 +14,8 @@ Widget getNotesDetailsTile({
   String uploadedBy,
   DateTime uploadedOn,
   bool isYourPostTile = false,
+  Function yourPostTileOnEdit,
+  Function yourPostTileOnDelete,
 }) {
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
   var themeChange = Provider.of<DarkThemeProvider>(context);
@@ -82,8 +84,16 @@ Widget getNotesDetailsTile({
                             style: ButtonStyle(
                               padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
                             ),
-                            onPressed: () {},
+                            onPressed: yourPostTileOnEdit,
                             child: Text("Edit", style: TextStyle(fontSize: 16),),
+                          ),
+                          SizedBox(width: 10,),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
+                            ),
+                            onPressed: yourPostTileOnDelete,
+                            child: Text("Delete", style: TextStyle(fontSize: 16),),
                           ),
                         ],
                       ) : Row(

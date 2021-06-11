@@ -37,6 +37,8 @@ class Styles {
       //   splashColor: Colors.red
       // ),
 
+
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           foregroundColor: MaterialStateProperty.all<Color>(isDarkTheme ? Colors.white : Colors.black,),
@@ -48,7 +50,6 @@ class Styles {
           ),
         ),
       ),
-
 
       appBarTheme: AppBarTheme(
         elevation: 0.0,
@@ -84,7 +85,6 @@ class Styles {
       //   // color: isDarkTheme ? CustomColors.bottomNavBarSelectedIconColor : Colors.red,
       // ),
 
-      // todo change color
       scaffoldBackgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white,
 
       // primarySwatch: Colors.red,

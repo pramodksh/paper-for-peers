@@ -33,7 +33,7 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
     ),
   ];
 
-  int selectedItemPosition = 0; // todo change to 0
+  int selectedItemPosition = 0;
 
   @override
   Widget build(BuildContext context) {

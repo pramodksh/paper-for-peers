@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -13,9 +12,148 @@ class YourPosts extends StatefulWidget {
 
 class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
 
-  int selectedItemPosition = 0;
   TabController _tabController;
   double tabBarViewPadding = 10;
+
+  Widget _getCommonTile({
+    String label,
+    String subLabel,
+    @required int nDownloads,
+    @required onDeletePressed,
+    @required int nSemester,
+  }) {
+    var themeChange = Provider.of<DarkThemeProvider>(context);
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      margin: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 5,),
+          label != null && subLabel != null
+            ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                Text(label, style: TextStyle(fontSize: 28,),),
+                SizedBox(height: 8,),
+                Text(
+                  subLabel,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: themeChange.isDarkTheme ? Colors.white60 : Colors.black54,
+                  ),
+                ),
+              ],
+            ) : label != null ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label, style: TextStyle(fontSize: 28,),),
+              Text("Downloads: $nDownloads", style: TextStyle(fontSize: 16,),),
+            ],
+          ) : Text("Downloads: $nDownloads", style: TextStyle(fontSize: 16,),),
+          SizedBox(height: 10,),
+          Text("Semester: $nSemester", style: TextStyle(fontSize: 16,),),
+          SizedBox(height: 10,),
+          Row(
+            children: [
+              ElevatedButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
+                ),
+                onPressed: onDeletePressed,
+                child: Row(
+                  children: [
+                    Icon(Icons.delete_outline),
+                    SizedBox(width: 8,),
+                    Text("Delete", style: TextStyle(fontSize: 16),),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getQuestionPapers() {
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
+      children: List.generate(10, (index) {
+        return _getCommonTile(
+          label: (index + 2000).toString(),
+          nDownloads: 24,
+          nSemester: 3,
+          onDeletePressed: () {},
+        );
+      }),
+    );
+  }
+
+  Widget _getNotes() {
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
+      children: List.generate(10, (index) {
+        return getNotesDetailsTile(
+          isYourPostTile: true,
+          yourPostTileOnDelete: () {},
+          yourPostTileOnEdit: () {},
+          context: context,
+          onTileTap: () {},
+          title: "Title Title Title",
+          description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
+          rating: 3.5,
+        );
+      }),
+    );
+  }
+
+  Widget _getJournal() {
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
+      children: List.generate(10, (index) {
+        return _getCommonTile(
+          label: "CPP",
+          nDownloads: 24,
+          nSemester: 3,
+          onDeletePressed: () {},
+        );
+      }),
+    );
+  }
+
+  Widget _getSyllabusCopy() {
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
+      children: List.generate(10, (index) {
+        return _getCommonTile(
+          nDownloads: 24,
+          nSemester: 3,
+          onDeletePressed: () {},
+        );
+      }),
+    );
+  }
+
+  Widget _getTextBooks() {
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
+      children: List.generate(10, (index) {
+        return _getCommonTile(
+          label: "Learn CPP in 20 days with Advanced OOPS",
+          subLabel: "Author",
+          nDownloads: 24,
+          nSemester: 3,
+          onDeletePressed: () {},
+        );
+      }),
+    );
+  }
 
   @override
   void initState() {
@@ -57,9 +195,6 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
                   text: AppConstants.bottomNavBarIcons[index]["label"],
                   icon: ImageIcon(
                     AppConstants.bottomNavBarIcons[index]["icon"],
-                    color: selectedItemPosition == index
-                        ? selectedIconColor
-                        : unselectedIconColor,
                   ),
                 )
                 ),
@@ -69,28 +204,11 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  Center(
-                    child: Text('It\'s cloudy here'),
-                  ),
-                  ListView(
-                    padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
-                    children: List.generate(10, (index) {
-                      return getNotesDetailsTile(
-                        isYourPostTile: true,
-                        context: context,
-                        onTileTap: () {},
-                        title: "Title Title Title",
-                        description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
-                        rating: 3.5,
-                      );
-                    }),
-                  ),
-                  Center(
-                    child: Text('It\'s rainy here'),
-                  ),
-                  Center(
-                    child: Text('It\'s sunny here'),
-                  ),
+                  _getQuestionPapers(),
+                  _getNotes(),
+                  _getJournal(),
+                  _getSyllabusCopy(),
+                  _getTextBooks(),
                 ],
               ),
             ),

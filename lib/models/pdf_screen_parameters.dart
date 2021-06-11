@@ -1,5 +1,3 @@
-// todo change names of classes
-
 class PDFScreenSimpleBottomSheet {
   String title;
   int nVariant;
@@ -18,15 +16,6 @@ class PDFScreenSyllabusCopy {
     assert(totalVariants <= 2);
   }
 }
-
-// todo delete
-// class PDFScreenJournal {
-//   String subject;
-//   int nVariant;
-//   String uploadedBy;
-//
-//   PDFScreenJournal({this.uploadedBy, this.nVariant, this.subject});
-// }
 
 class PDFScreenNotesBottomSheet {
   String title;

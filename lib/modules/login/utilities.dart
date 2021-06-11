@@ -1,6 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+Widget getCustomPasswordField({
+  String inputBoxText,
+  bool obscureText = true,
+  VoidCallback onTapObscure,
+}) {
+  return TextFormField(
+    style: TextStyle(fontSize: 16, color: Colors.white),
+    obscureText: obscureText,
+    decoration: InputDecoration(
+      suffixIcon: IconButton(
+        splashRadius: 20,
+        onPressed: onTapObscure,
+        icon: obscureText ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
+        color: Colors.white,
+      ),
+      isDense: true,
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white24),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      labelText: inputBoxText,
+    ),
+  );
+}
+
+
 Widget getCustomTextField({String inputBoxText, bool obscureText = false}) {
   return TextField(
     style: TextStyle(fontSize: 16, color: Colors.white),
