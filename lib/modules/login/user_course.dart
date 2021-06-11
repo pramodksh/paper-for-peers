@@ -4,7 +4,7 @@ import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
-import 'file:///C:/Users/pramod/AndroidStudioProjects/paper-for-peers-new/lib/modules/login/welcom_screen.dart';
+import 'file:///C:/Users/pramod/AndroidStudioProjects/paper-for-peers-new/lib/modules/login/welcome_screen.dart';
 
 class UserCourse extends StatefulWidget {
   @override

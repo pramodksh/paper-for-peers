@@ -21,7 +21,7 @@ class IntroScreenState extends State<IntroScreen> {
   Function goToTab;
 
   String welcomeText1 =
-      "1.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
+      "We Provide you the Feature of Downloading Notes And Question Paper";
   String welcomeText2 =
       "2.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
   String welcomeText3 =
@@ -31,6 +31,7 @@ class IntroScreenState extends State<IntroScreen> {
       {@required String descriptionText, @required String imagePath}) {
     return Slide(
       description: descriptionText,
+      backgroundColor: Color(0xfff5a623),
       styleDescription: TextStyle(
         color: Color(0xfffe9c8f),
         fontSize: 20.0,
@@ -38,6 +39,10 @@ class IntroScreenState extends State<IntroScreen> {
         // fontFamily: 'Raleway'
       ),
       pathImage: imagePath,
+      colorBegin: Color(0xffFFFACD),
+      colorEnd: Color(0xffFF6347),
+      directionColorBegin: Alignment.topRight,
+      directionColorEnd: Alignment.bottomLeft,
     );
   }
 
