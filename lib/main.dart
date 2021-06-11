@@ -8,6 +8,7 @@ import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/modules/login/carausel.dart';
+import 'package:papers_for_peers/modules/login/user_details.dart';
 import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
 import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
@@ -94,9 +95,10 @@ class _MyAppState extends State<MyApp> {
 
             // home: Login(),
             // home: Carousel(),
+            home: UserDetails(),
 
             // home: QuestionPaper(),
-            home: MainDashboard(),
+            // home: MainDashboard(),
             // home: ProfileScreen(),
             // home: PdfTesting(),
             //   home: CompareQuestionPaper(),
