@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../config/default_assets.dart';
 import '../../config/export_config.dart';
+import 'user_course.dart';
 import 'utilities.dart';
 import 'utilities.dart';
 
@@ -98,6 +99,21 @@ class _UserDetailsState extends State<UserDetails> {
                   Container(
                       margin: EdgeInsets.symmetric(horizontal: 70),
                       child: getCustomTextField()
+                  ),
+                  SizedBox(height: 100,),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 30),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        )
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => UserCourse(),
+                      ));
+                    },
+                    child: Text("Continue", style: TextStyle(fontSize: 18),),
                   ),
                   // getCustomButton(buttonText: 'Continue', onPressed: (){})
                 ],
