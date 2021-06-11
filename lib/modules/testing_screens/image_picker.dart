@@ -12,6 +12,13 @@ class DemoImagePicker extends StatefulWidget {
 class _DemoImagePickerState extends State<DemoImagePicker> {
 
   File file;
+  ImagePickerService imagePickerService = ImagePickerService();
+
+  Future<File> getImage({@required ImageSource imageSource}) async {
+    File file = await imagePickerService.getPickedImageAsFile(imageSource: ImageSource.gallery);
+    file = await imagePickerService.getCroppedImage(imageFile: file);
+    return file;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +30,7 @@ class _DemoImagePickerState extends State<DemoImagePicker> {
             file != null ? Image.file(file) : Text("NO FILE"),
             ElevatedButton(
               onPressed: () async {
-                File _pickedFile = await ImagePickerService().getPickedImageAsFile(imageSource: ImageSource.camera);
+                File _pickedFile = await getImage(imageSource: ImageSource.gallery);
                 setState(() {
                   file = _pickedFile;
                 });
@@ -32,7 +39,7 @@ class _DemoImagePickerState extends State<DemoImagePicker> {
             ),
             ElevatedButton(
               onPressed: () async {
-                File _pickedFile = await ImagePickerService().getPickedImageAsFile(imageSource: ImageSource.gallery);
+                File _pickedFile = await getImage(imageSource: ImageSource.gallery);
                 setState(() {
                   file = _pickedFile;
                 });
