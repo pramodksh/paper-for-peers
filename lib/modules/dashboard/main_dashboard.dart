@@ -24,7 +24,7 @@ class _MainDashboardState extends State<MainDashboard> {
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
 
-  int selectedItemPosition = 0; // todo change to 0
+  int selectedItemPosition = 0;
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 

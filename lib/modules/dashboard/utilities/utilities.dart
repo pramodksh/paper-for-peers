@@ -85,7 +85,6 @@ Widget getAddPostContainer({
 
   Widget dottedBorderContainer = DottedBorder(
     padding: EdgeInsets.zero,
-    // todo check this glitch
     color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
     dashPattern: [8, 4],
     strokeWidth: 2,

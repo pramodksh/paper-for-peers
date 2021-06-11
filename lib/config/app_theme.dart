@@ -85,7 +85,6 @@ class Styles {
       //   // color: isDarkTheme ? CustomColors.bottomNavBarSelectedIconColor : Colors.red,
       // ),
 
-      // todo change color
       scaffoldBackgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white,
 
       // primarySwatch: Colors.red,
