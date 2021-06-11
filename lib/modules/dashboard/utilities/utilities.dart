@@ -114,3 +114,16 @@ Widget getAddPostContainer({
   );
 
 }
+
+String getUserNameForProfilePhoto(String userName) {
+  if (userName.isEmpty) {
+    return "";
+  } else {
+    List<String> list = userName.split(" ").map((e) => e.isEmpty ? "" : e[0].toUpperCase()).toList();
+    if (list.length <= 2) {
+      return list.join();
+    } else {
+      return list.join().substring(0, 2);
+    }
+  }
+}

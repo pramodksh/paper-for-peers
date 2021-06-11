@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/services/image_picker/image_picker_service.dart';
 
 import '../../config/default_assets.dart';
 import '../../config/export_config.dart';
@@ -12,10 +17,41 @@ class UserDetails extends StatefulWidget {
 }
 
 class _UserDetailsState extends State<UserDetails> {
+
+  ImagePickerService imagePickerService = ImagePickerService();
+
+
   double borderThickness = 5;
   double profileImageRadius = 90;
 
+  File profilePhotoFile;
+  TextEditingController userNameController = TextEditingController();
+
+  Future<File> getImage({@required ImageSource imageSource}) async {
+    File file = await imagePickerService.getPickedImageAsFile(imageSource: ImageSource.gallery);
+    file = await imagePickerService.getCroppedImage(imageFile: file);
+    return file;
+  }
+
   Widget getCircularProfileImage({@required imagePath}) {
+
+    Widget circleImage;
+    if (profilePhotoFile == null) {
+      circleImage = CircleAvatar(
+        radius: profileImageRadius,
+        backgroundColor: Colors.grey[800],
+        child: Text(
+          getUserNameForProfilePhoto(userNameController.text),
+          style: TextStyle(color: Colors.white, fontSize: 40),
+        ),
+      );
+    } else {
+      circleImage = CircleAvatar(
+          radius: profileImageRadius,
+          backgroundImage: AssetImage(imagePath)
+      );
+    }
+
     return Container(
       padding: EdgeInsets.all(borderThickness),
       decoration: BoxDecoration(
@@ -30,10 +66,7 @@ class _UserDetailsState extends State<UserDetails> {
           ],
         ),
       ),
-      child: CircleAvatar(
-        radius: profileImageRadius,
-        backgroundImage: AssetImage(imagePath),
-      ),
+      child: circleImage,
     );
   }
 
@@ -65,8 +98,7 @@ class _UserDetailsState extends State<UserDetails> {
                   ),
                   Stack(
                     children: [
-                      getCircularProfileImage(
-                          imagePath: DefaultAssets.profileImagePath),
+                     getCircularProfileImage(imagePath: DefaultAssets.profileImagePath),
                       Positioned(
                         bottom: 0,
                         right: 0,
@@ -98,7 +130,13 @@ class _UserDetailsState extends State<UserDetails> {
                   ),
                   Container(
                       margin: EdgeInsets.symmetric(horizontal: 70),
-                      child: getCustomTextField(hintText: "Name")
+                      child: getCustomTextField(
+                        onChanged: (val) {
+                          setState(() { });
+                        },
+                        hintText: "Name",
+                        controller: userNameController,
+                      )
                   ),
                   SizedBox(height: 100,),
                   ElevatedButton(

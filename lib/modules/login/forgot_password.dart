@@ -9,6 +9,9 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+
+  TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -60,7 +63,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 SizedBox(
                   height: 70,
                 ),
-                getCustomTextField(labelText: 'Email Address'),
+                getCustomTextField(
+                  labelText: 'Email Address',
+                  controller: emailController,
+                ),
                 SizedBox(
                   height: 70,
                 ),

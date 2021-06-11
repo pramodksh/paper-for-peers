@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 Widget getCustomPasswordField({
+  // todo add controller
   String inputBoxText,
   bool obscureText = true,
   VoidCallback onTapObscure,
@@ -32,11 +33,15 @@ Widget getCustomPasswordField({
 
 
 Widget getCustomTextField({
+  @required TextEditingController controller,
   String labelText,
   String hintText,
-  bool obscureText = false
+  bool obscureText = false,
+  Function onChanged,
 }) {
   return TextField(
+    onChanged: onChanged,
+    controller: controller,
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
