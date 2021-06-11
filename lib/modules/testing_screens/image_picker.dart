@@ -34,6 +34,7 @@ class _DemoImagePickerState extends State<DemoImagePicker> {
                 setState(() {
                   file = _pickedFile;
                 });
+                Navigator.of(context).pop();
               },
               child: Text("Camera"),
             ),
@@ -43,14 +44,16 @@ class _DemoImagePickerState extends State<DemoImagePicker> {
                 setState(() {
                   file = _pickedFile;
                 });
+                Navigator.of(context).pop();
               },
               child: Text("Galley"),
             ),
-            ElevatedButton(
+             ElevatedButton(
               onPressed: () {
                 setState(() {
                   file = null;
                 });
+                Navigator.of(context).pop();
               },
               child: Text("CLear"),
             ),

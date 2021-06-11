@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/image_picker/image_picker_service.dart';
+import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/default_assets.dart';
 import '../../config/export_config.dart';
@@ -19,7 +22,7 @@ class UserDetails extends StatefulWidget {
 class _UserDetailsState extends State<UserDetails> {
 
   ImagePickerService imagePickerService = ImagePickerService();
-
+  var themeChange;
 
   double borderThickness = 5;
   double profileImageRadius = 90;
@@ -27,14 +30,17 @@ class _UserDetailsState extends State<UserDetails> {
   File profilePhotoFile;
   TextEditingController userNameController = TextEditingController();
 
+  bool _isLoading = false;
+
   Future<File> getImage({@required ImageSource imageSource}) async {
+    setState(() { _isLoading = true; });
     File file = await imagePickerService.getPickedImageAsFile(imageSource: ImageSource.gallery);
     file = await imagePickerService.getCroppedImage(imageFile: file);
+    setState(() { _isLoading = false; });
     return file;
   }
 
-  Widget getCircularProfileImage({@required imagePath}) {
-
+  Widget getCircularProfileImage() {
     Widget circleImage;
     if (profilePhotoFile == null) {
       circleImage = CircleAvatar(
@@ -48,7 +54,7 @@ class _UserDetailsState extends State<UserDetails> {
     } else {
       circleImage = CircleAvatar(
           radius: profileImageRadius,
-          backgroundImage: AssetImage(imagePath)
+          backgroundImage: FileImage(profilePhotoFile),
       );
     }
 
@@ -70,6 +76,91 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
+  Widget buildChooseSourceDialog() {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      child: Container(
+        // height: 400,
+        width: MediaQuery.of(context).size.width * 0.9,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 15,),
+              Text("Choose", style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic),),
+              SizedBox(height: 10,),
+              ListView(
+                shrinkWrap: true,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      File _pickedFile = await getImage(imageSource: ImageSource.camera);
+                      setState(() {
+                        profilePhotoFile = _pickedFile;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
+                    ),
+                    child: Text("Camera", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      File _pickedFile = await getImage(imageSource: ImageSource.gallery);
+                      setState(() {
+                        profilePhotoFile = _pickedFile;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
+                    ),
+                    child: Text("Gallery", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),),
+                  ),
+                  ElevatedButton(
+                    onPressed: profilePhotoFile == null ? null : () async {
+                      setState(() {
+                        profilePhotoFile = null;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(
+                          profilePhotoFile == null ? Colors.black54 : CustomColors.bottomNavBarColor
+                        )
+                    ),
+                    child: Text("Remove", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10,),
+              Text(
+                "Caution: You cannot change the profile once you tap on continue",
+                style: TextStyle(color: Colors.black54,),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20,),
+            ]
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      themeChange = Provider.of<DarkThemeProvider>(context, listen: false);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -87,7 +178,9 @@ class _UserDetailsState extends State<UserDetails> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          body: SingleChildScrollView(
+          body: _isLoading ? LoadingScreen(
+            loadingText: "Please wait...",
+          ) : SingleChildScrollView(
             child: Container(
               width: double.infinity,
               child: Column(
@@ -98,7 +191,7 @@ class _UserDetailsState extends State<UserDetails> {
                   ),
                   Stack(
                     children: [
-                     getCircularProfileImage(imagePath: DefaultAssets.profileImagePath),
+                     getCircularProfileImage(),
                       Positioned(
                         bottom: 0,
                         right: 0,
@@ -113,7 +206,12 @@ class _UserDetailsState extends State<UserDetails> {
                                 color: Colors.white,
                                 size: 30,
                               ),
-                              onPressed: () {}),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => buildChooseSourceDialog(),
+                                );
+                              }),
                         ),
                       ),
                     ],

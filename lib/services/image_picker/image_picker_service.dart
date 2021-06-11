@@ -14,10 +14,10 @@ class ImagePickerService {
         sourcePath: imageFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
+          // CropAspectRatioPreset.ratio3x2,
+          // CropAspectRatioPreset.original,
+          // CropAspectRatioPreset.ratio4x3,
+          // CropAspectRatioPreset.ratio16x9
         ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Crop Image',

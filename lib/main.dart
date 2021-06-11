@@ -56,11 +56,11 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
             // home: Login(),
-            home: IntroScreen(),
+            // home: IntroScreen(),
             // home: WelcomeMessage(),
             // home: Login(),
             // home: DemoImagePicker(),
-            //home: UserDetails(),
+            home: UserDetails(),
             // home: User,
           );
         },
