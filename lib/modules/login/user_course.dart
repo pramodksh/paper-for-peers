@@ -3,8 +3,7 @@ import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
-
-import 'file:///C:/Users/pramod/AndroidStudioProjects/paper-for-peers-new/lib/modules/login/welcome_screen.dart';
+import 'package:papers_for_peers/modules/login/welcom_screen.dart';
 
 class UserCourse extends StatefulWidget {
   @override
@@ -102,9 +101,7 @@ class _UserCourseState extends State<UserCourse> {
                   ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          // WelcomeMessage(),
-                            IntroScreen(),
+                      builder: (context) => IntroScreen(),
                     ));
                   },
                   child: Text("Continue", style: TextStyle(fontSize: 18),),

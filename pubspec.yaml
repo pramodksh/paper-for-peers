@@ -38,6 +38,8 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   web_scraper: ^0.1.4
   url_launcher: ^6.0.5
+  image_picker: ^0.8.0+3
+  image_cropper: ^1.4.0
 
 dev_dependencies:
   flutter_test:

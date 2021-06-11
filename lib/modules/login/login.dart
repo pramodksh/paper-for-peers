@@ -21,6 +21,7 @@ class _LoginState extends State<Login> {
   bool _isLogIn = true;
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
+  TextEditingController emailController = TextEditingController();
 
   Widget getOrDivider() => Row(
     children: <Widget>[
@@ -72,7 +73,10 @@ class _LoginState extends State<Login> {
                     height: 50,
                   ),
                   SizedBox(height: 20,),
-                  getCustomTextField(inputBoxText: 'Email Address'),
+                  getCustomTextField(
+                    labelText: 'Email Address',
+                    controller: emailController,
+                  ),
                   SizedBox(height: 20,),
                   getCustomPasswordField(
                     inputBoxText: 'Password',
