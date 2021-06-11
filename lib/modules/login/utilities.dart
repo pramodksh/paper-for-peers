@@ -31,7 +31,11 @@ Widget getCustomPasswordField({
 }
 
 
-Widget getCustomTextField({String inputBoxText, bool obscureText = false}) {
+Widget getCustomTextField({
+  String labelText,
+  String hintText,
+  bool obscureText = false
+}) {
   return TextField(
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
@@ -45,7 +49,8 @@ Widget getCustomTextField({String inputBoxText, bool obscureText = false}) {
           borderSide: BorderSide(color: Colors.white24),
           borderRadius: BorderRadius.circular(15.0),
         ),
-        labelText: inputBoxText,
+        labelText: labelText,
+        hintText: hintText,
     ),
   );
 }

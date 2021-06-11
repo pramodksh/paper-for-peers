@@ -98,7 +98,7 @@ class _UserDetailsState extends State<UserDetails> {
                   ),
                   Container(
                       margin: EdgeInsets.symmetric(horizontal: 70),
-                      child: getCustomTextField()
+                      child: getCustomTextField(hintText: "Name")
                   ),
                   SizedBox(height: 100,),
                   ElevatedButton(

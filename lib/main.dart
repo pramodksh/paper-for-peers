@@ -54,8 +54,8 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
-            // home: Login(),
-            home: DemoImagePicker(),
+            home: Login(),
+            // home: DemoImagePicker(),
             // home: User,
           );
         },

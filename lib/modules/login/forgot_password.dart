@@ -60,7 +60,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 SizedBox(
                   height: 70,
                 ),
-                getCustomTextField(inputBoxText: 'Email Address'),
+                getCustomTextField(labelText: 'Email Address'),
                 SizedBox(
                   height: 70,
                 ),
