@@ -37,6 +37,8 @@ class Styles {
       //   splashColor: Colors.red
       // ),
 
+
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           foregroundColor: MaterialStateProperty.all<Color>(isDarkTheme ? Colors.white : Colors.black,),

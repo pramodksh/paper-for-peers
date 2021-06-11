@@ -48,7 +48,12 @@ Widget getCustomDropDown({
         child: DropdownButton<String>(
           isExpanded: true,
           iconSize: 30,
-          icon: Icon(Icons.keyboard_arrow_down),
+          // iconEnabledColor: Colors.red,
+          // iconDisabledColor: Colors.tealAccent,
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            color: themeChange.isDarkTheme ? Colors.grey.shade300 : CustomColors.bottomNavBarColor,
+          ),
           value: dropDownValue,
           hint: Text(dropDownHint, style: CustomTextStyle.bodyTextStyle.copyWith(
             fontSize: 18,
