@@ -5,6 +5,7 @@ import 'package:intro_slider/slide_object.dart';
 import 'package:intro_slider/scrollbar_behavior_enum.dart';
 
 import '../../config/default_assets.dart';
+import '../dashboard/main_dashboard.dart';
 
 // import 'package:intro_slider_example/home.dart';
 class IntroScreen extends StatefulWidget {
@@ -62,7 +63,12 @@ class IntroScreenState extends State<IntroScreen> {
 
   void onDonePress() {
     // Back to the first tab
-    this.goToTab(0);
+    // this.goToTab(0);
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) =>
+      // WelcomeMessage(),
+      MainDashboard(),
+    ));
   }
 
   void onTabChangeCompleted(index) {

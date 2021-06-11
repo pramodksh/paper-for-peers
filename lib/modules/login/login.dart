@@ -114,7 +114,7 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         if (_isLogIn) {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => MainDashboard(),
+                            builder: (context) => UserDetails(),
                           ));
                         } else {
                           Navigator.of(context).push(MaterialPageRoute(
