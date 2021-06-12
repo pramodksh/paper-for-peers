@@ -8,6 +8,7 @@ import 'package:papers_for_peers/modules/login/user_details.dart';
 import 'package:papers_for_peers/modules/login/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/services/firebase_services/firebase_auth_service.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -114,7 +115,7 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         if (_isLogIn) {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => UserDetails(),
+                            builder: (context) => MainDashboard(),
                           ));
                         } else {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -128,7 +129,9 @@ class _LoginState extends State<Login> {
                   getOrDivider(),
                   SizedBox(height: 30,),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      FirebaseAuthService().signInWithGoogle();
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -136,10 +139,9 @@ class _LoginState extends State<Login> {
                           DefaultAssets.googleIconPath,
                           height: 30,
                         ),
-
                         SizedBox(width: 15,),
                         Text(
-                          'Continue from Google',
+                          'Continue with Google',
                           style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
                         ),
                       ],
