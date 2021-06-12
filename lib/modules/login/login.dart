@@ -19,10 +19,15 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
+  FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
+
   bool _isLogIn = true;
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
   TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget getOrDivider() => Row(
     children: <Widget>[
@@ -58,115 +63,133 @@ class _LoginState extends State<Login> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          body: SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(55, 70, 55, 30),
-              width: MediaQuery.of(context).size.width,
-              // color: Colors.red,
-              child: Column(
-                children: [
-                  Image.asset(
-                    DefaultAssets.mainLogoPath,
-                    height: 110,
-                    alignment: Alignment.center,
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  SizedBox(height: 20,),
-                  getCustomTextField(
-                    labelText: 'Email Address',
-                    controller: emailController,
-                  ),
-                  SizedBox(height: 20,),
-                  getCustomPasswordField(
-                    inputBoxText: 'Password',
-                    obscureText: _isPasswordObscure,
-                    onTapObscure: () { setState(() { _isPasswordObscure = !_isPasswordObscure; }); }
-                  ),
-                  _isLogIn ? Container() : SizedBox(height: 20,),
-                  _isLogIn
-                    ? SizedBox(height: 5,)
-                    : getCustomPasswordField(
-                      inputBoxText: 'Confirm Password',
-                      obscureText: _isConfirmPasswordObscure,
-                      onTapObscure: () { setState(() { _isConfirmPasswordObscure = !_isConfirmPasswordObscure; }); }
-                  ),
-                  _isLogIn ?  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        child: Text('Forgot Password?', style: TextStyle(color: Colors.white, fontSize: 18),),
-                        onPressed: (){
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ForgotPassword(),
-                          ));
+          body: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(55, 70, 55, 30),
+                width: MediaQuery.of(context).size.width,
+                // color: Colors.red,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      DefaultAssets.mainLogoPath,
+                      height: 110,
+                      alignment: Alignment.center,
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    SizedBox(height: 20,),
+                    getCustomTextField(
+                      labelText: 'Email Address',
+                      controller: emailController,
+                      validator: (String val) => val.isValidEmail() ? null : "Please enter valid email",
+                    ),
+                    SizedBox(height: 20,),
+                    getCustomPasswordField(
+                      controller: passwordController,
+                      inputBoxText: 'Password',
+                      obscureText: _isPasswordObscure,
+                      onTapObscure: () { setState(() { _isPasswordObscure = !_isPasswordObscure; }); },
+                      validator: (String val) => val.isEmpty ? "Enter Password" : null,
+                    ),
+                    _isLogIn ? Container() : SizedBox(height: 20,),
+                    _isLogIn
+                      ? SizedBox(height: 5,)
+                      : getCustomPasswordField(
+                        controller: confirmPasswordController,
+                        inputBoxText: 'Confirm Password',
+                        obscureText: _isConfirmPasswordObscure,
+                        onTapObscure: () { setState(() { _isConfirmPasswordObscure = !_isConfirmPasswordObscure; }); },
+                        validator: (String val) => passwordController.text == val ? null : "Passwords do not match",
+                    ),
+                    _isLogIn ?  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          child: Text('Forgot Password?', style: TextStyle(color: Colors.white, fontSize: 18),),
+                          onPressed: (){
+                            // todo implement forgot password
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ForgotPassword(),
+                            ));
+                          },
+                        ),
+                      ],
+                    ):Container() ,
+                    SizedBox(height: 20,),
+                    _isLogIn ? Container():SizedBox(height: 40,) ,
+                    SizedBox(
+                      width: 350,
+                      height: 50,
+                      child: getCustomButton(
+                        buttonText: _isLogIn? "Sign In" : 'Sign Up',
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            if (_isLogIn) {
+                              // todo display alert if error
+                             await _firebaseAuthService.signInWithEmailAndPassword(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+                            } else {
+                              // todo display alert if error
+                              await _firebaseAuthService.signUpWithEmailAndPassword(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => UserDetails(),
+                              ));
+                            }
+                          }
                         },
                       ),
-                    ],
-                  ):Container() ,
-                  SizedBox(height: 20,),
-                  _isLogIn ? Container():SizedBox(height: 40,) ,
-                  SizedBox(
-                    width: 350,
-                    height: 50,
-                    child: getCustomButton(
-                      buttonText: _isLogIn? "Sign In" : 'Sign Up',
+                    ),
+                    SizedBox(height: 35,),
+                    getOrDivider(),
+                    SizedBox(height: 30,),
+                    TextButton(
                       onPressed: () {
-                        if (_isLogIn) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => MainDashboard(),
-                          ));
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => UserDetails(),
-                          ));
-                        }
+                        _firebaseAuthService.authenticateWithGoogle();
                       },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            DefaultAssets.googleIconPath,
+                            height: 30,
+                          ),
+                          SizedBox(width: 15,),
+                          Text(
+                            'Continue with Google',
+                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 35,),
-                  getOrDivider(),
-                  SizedBox(height: 30,),
-                  TextButton(
-                    onPressed: () {
-                      FirebaseAuthService().signInWithGoogle();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          DefaultAssets.googleIconPath,
-                          height: 30,
-                        ),
-                        SizedBox(width: 15,),
-                        Text(
-                          'Continue with Google',
-                          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20,),
+                    SizedBox(height: 20,),
 
-                  RichText(
-                    text: TextSpan(
-                      style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: _isLogIn ? "Already a Member? " : "New Member? ",
-                        ),
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()..onTap = () {
-                            setState(() { _isLogIn = !_isLogIn; });
-                          },
-                          text: _isLogIn ? "Sign In" : "Create Account",
-                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                    RichText(
+                      text: TextSpan(
+                        style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: _isLogIn ? "New Member? " : "Already a Member? ",
+                          ),
+                          TextSpan(
+                            recognizer: TapGestureRecognizer()..onTap = () {
+                              setState(() { _isLogIn = !_isLogIn; });
+                            },
+                            text: _isLogIn ? "Create Account" : "Sign In" ,
+                            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

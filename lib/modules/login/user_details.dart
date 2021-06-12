@@ -234,6 +234,7 @@ class _UserDetailsState extends State<UserDetails> {
                         },
                         hintText: "Name",
                         controller: userNameController,
+                        validator: (String val) => val.isEmpty ? "Enter your name" : null,
                       )
                   ),
                   SizedBox(height: 100,),

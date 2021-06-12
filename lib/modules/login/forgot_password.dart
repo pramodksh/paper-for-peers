@@ -66,6 +66,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 getCustomTextField(
                   labelText: 'Email Address',
                   controller: emailController,
+                  validator: (String val) => val.isValidEmail() ? null : "Please enter valid email",
                 ),
                 SizedBox(
                   height: 70,

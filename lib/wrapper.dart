@@ -17,7 +17,7 @@ class _WrapperState extends State<Wrapper> {
       stream: FirebaseAuthService().user,
       builder: (context, snapshot) {
         UserModel user = snapshot.data;
-        print("CURRENT USER: ${user}");
+        print("CURRENT USER: ${user} | ${snapshot.connectionState}");
 
         if (snapshot.connectionState == ConnectionState.active) {
           if (user == null) {

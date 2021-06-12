@@ -1,13 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+extension EmailValidator on String {
+  bool isValidEmail() {
+    return RegExp(
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(this);
+  }
+}
+
 Widget getCustomPasswordField({
-  // todo add controller
+  @required TextEditingController controller,
+  @required Function validator,
   String inputBoxText,
   bool obscureText = true,
   VoidCallback onTapObscure,
 }) {
   return TextFormField(
+    controller: controller,
+    validator: validator,
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
@@ -18,6 +29,14 @@ Widget getCustomPasswordField({
         color: Colors.white,
       ),
       isDense: true,
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red.withOpacity(0.7)),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.white),
         borderRadius: BorderRadius.circular(15.0),
@@ -27,6 +46,7 @@ Widget getCustomPasswordField({
         borderRadius: BorderRadius.circular(15.0),
       ),
       labelText: inputBoxText,
+      errorStyle: TextStyle(color: Colors.white),
     ),
   );
 }
@@ -34,18 +54,28 @@ Widget getCustomPasswordField({
 
 Widget getCustomTextField({
   @required TextEditingController controller,
+  @required Function validator,
   String labelText,
   String hintText,
   bool obscureText = false,
   Function onChanged,
 }) {
-  return TextField(
+  return TextFormField(
     onChanged: onChanged,
     controller: controller,
+    validator: validator,
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
       isDense: true,
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red.withOpacity(0.7)),
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red),
+          borderRadius: BorderRadius.circular(15.0),
+        ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white),
           borderRadius: BorderRadius.circular(15.0),
@@ -56,6 +86,7 @@ Widget getCustomTextField({
         ),
         labelText: labelText,
         hintText: hintText,
+        errorStyle: TextStyle(color: Colors.white),
     ),
   );
 }
