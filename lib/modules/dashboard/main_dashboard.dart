@@ -11,6 +11,7 @@ import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper
 import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
+import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -124,6 +125,9 @@ class _MainDashboardState extends State<MainDashboard> {
                       await FirebaseAuthService().logoutUser();
                       SchedulerBinding.instance.addPostFrameCallback((_) {
                         Navigator.of(context).popUntil((route) => route.isFirst);
+                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        //   builder: (context) => Login(),
+                        // ));
                       });
                     },
                     child: Text("Log Out", style: TextStyle(fontSize: 18),),

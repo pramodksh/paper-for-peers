@@ -4,6 +4,7 @@ import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
+import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 class Wrapper extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class _WrapperState extends State<Wrapper> {
           if (user == null) {
             return Login();
           } else {
+            FirebaseFireStoreService().getUserByUserId(userId: user.uid);
             return MainDashboard();
           }
         } else {

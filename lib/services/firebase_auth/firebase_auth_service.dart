@@ -28,7 +28,11 @@ class FirebaseAuthService {
           password: password,
       );
       print("EMAIL PASSWORD SIGN IN DONE | ${userCredential.user.email}");
-      return ApiResponse(isError: false);
+      return ApiResponse<UserModel>(isError: false, data: UserModel(
+        email: userCredential.user.email,
+        photoUrl: userCredential.user.photoURL,
+        displayName: userCredential.user.displayName,
+      ));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return ApiResponse(isError: true, errorMessage: "The password provided is too weak");
@@ -64,20 +68,35 @@ class FirebaseAuthService {
 
   // todo send verification email
 
-  Future<UserCredential> authenticateWithGoogle() async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<ApiResponse> authenticateWithGoogle() async {
+    try {
+      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      return ApiResponse<UserModel>(isError: false, data: UserModel(
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName: userCredential.user.displayName,
+        photoUrl: userCredential.user.photoURL,
+      ));
+    } catch (e) {
+      print("GOOGLE AUTH ERROR: $e");
+      return ApiResponse(isError: true, errorMessage: "There was some error while authenticating with Google");
+    }
   }
 
   Future logoutUser() async {
-    await auth.signOut();
     await _googleSignIn.signOut();
+    await auth.signOut();
     print("USER LOGGED OUT");
+  }
+
+  foo() {
+    print(auth.currentUser.uid);
   }
 
 }

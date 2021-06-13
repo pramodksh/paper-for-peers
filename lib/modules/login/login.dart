@@ -1,12 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/models/api_response.dart';
+import 'package:papers_for_peers/models/user_model/user_model.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/user_details.dart';
 import 'package:papers_for_peers/modules/login/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
+import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -16,6 +20,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
+  FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
 
   bool _isLogIn = true;
   bool _isPasswordObscure = true;
@@ -125,16 +130,21 @@ class _LoginState extends State<Login> {
                           if (_formKey.currentState.validate()) {
                             if (_isLogIn) {
                               // todo display alert if error
-                             await _firebaseAuthService.signInWithEmailAndPassword(
+                              ApiResponse signInResponse = await _firebaseAuthService.signInWithEmailAndPassword(
                                 email: emailController.text,
                                 password: passwordController.text,
                               );
                             } else {
                               // todo display alert if error
-                              await _firebaseAuthService.signUpWithEmailAndPassword(
+                              ApiResponse signUpResponse = await _firebaseAuthService.signUpWithEmailAndPassword(
                                 email: emailController.text,
                                 password: passwordController.text,
                               );
+                              if (signUpResponse.isError) {
+                                showAlertDialog(context: context, text: signUpResponse.errorMessage);
+                              } else {
+                                // todo save in database
+                              }
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => UserDetails(),
                               ));
@@ -147,8 +157,25 @@ class _LoginState extends State<Login> {
                     getOrDivider(),
                     SizedBox(height: 30,),
                     TextButton(
-                      onPressed: () {
-                        _firebaseAuthService.authenticateWithGoogle();
+                      onPressed: () async {
+                       ApiResponse googleAuthResponse = await _firebaseAuthService.authenticateWithGoogle();
+                       if (googleAuthResponse.isError) {
+                         showAlertDialog(context: context, text: googleAuthResponse.errorMessage);
+                       } else {
+                         UserModel user = googleAuthResponse.data;
+                         bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
+                         if (!isUserExists && user.isAuthDataAvailable()) {
+                           // todo save user in database
+                           ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
+                           if (addUserResponse.isError) {
+                             showAlertDialog(context: context, text: addUserResponse.errorMessage);
+                           } else {
+                             print("USER ADDED");
+                           }
+                         } else {
+                           print("USER EXISTS");
+                         }
+                       }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
