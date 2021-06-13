@@ -32,10 +32,9 @@ class _WrapperState extends State<Wrapper> {
             return FutureBuilder(
               future: FirebaseFireStoreService().getUserByUserId(userId: user.uid),
               builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+                if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
                   return LoadingScreen(loadingText: "Fetching your details",);
                 } else {
-                  print("SEE: ${snapshot.data}");
                   UserModel authenticatedUser = snapshot.data;
                   if (authenticatedUser.displayName == null || authenticatedUser.photoUrl == null) {
                     return UserDetails(user: authenticatedUser,);

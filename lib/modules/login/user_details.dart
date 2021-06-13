@@ -162,6 +162,61 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
+  Widget _buildProfilePhotoEmptyDialog() {
+    return StatefulBuilder(
+      builder: (context, setState) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+        child: Container(
+          // height: 400,
+          width: MediaQuery.of(context).size.width * 0.9,
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 15,),
+                Text("Are you sure you don't want to upload your Profile Photo?", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic,), textAlign: TextAlign.center,),
+                SizedBox(height: 20,),
+                Text("Note: You cannot edit it once you tap on continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xff373F41),), textAlign: TextAlign.center,),
+                SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.all(Colors.black26),
+                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                          backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)
+                      ),
+                      child: Text("Yes, I'm sure", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+                    ),
+                    SizedBox(width: 10,),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.all(Colors.black26),
+                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                          backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
+                      ),
+                      child: Text("No", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),),
+                    ),
+                  ],
+                ),
+              ]
+          ),
+        ),
+      ),
+    );
+  }
+
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -259,37 +314,58 @@ class _UserDetailsState extends State<UserDetails> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        print(profilePhotoFile);
 
                         widget.user.displayName = userNameController.text;
 
-                        if (profilePhotoFile != null) {
-                          ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile, userId: widget.user.uid);
-                          if (response.isError) {
-                            showAlertDialog(context: context, text: response.errorMessage);
-                          } else {
-                            String url = response.data;
-                            widget.user.photoUrl = url;
-                            print("photo uploaded | $url");
+                        Future uploadPhoto() async {
+                          print("UPLOAD PHOTO| ${widget.user.photoUrl}");
+                          if (profilePhotoFile != null) {
+                            ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile, userId: widget.user.uid);
+                            if (response.isError) {
+                              showAlertDialog(context: context, text: response.errorMessage);
+                            } else {
+                              String url = response.data;
+                              widget.user.photoUrl = url;
+                              print("photo uploaded | $url");
+                            }
                           }
                         }
 
-                        ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user);
-                        if (response.isError) {
-                          showAlertDialog(context: context, text: response.errorMessage);
+                        Future addUser() async {
+                          ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user);
+                          if (response.isError) {
+                            showAlertDialog(context: context, text: response.errorMessage);
+                          } else {
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              builder: (context) => UserCourse(user: widget.user,),
+                            ));
+                          }
+                        }
+
+
+                        if (profilePhotoFile == null) {
+                          bool shouldDisplayDismissibleDialog = await showDialog(
+                            context: context,
+                            builder: (context) => _buildProfilePhotoEmptyDialog(),
+                          );
+                          if (shouldDisplayDismissibleDialog == true) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => buildChooseSourceDialog(),
+                            );
+                          } else if(shouldDisplayDismissibleDialog == false) {
+                            widget.user.photoUrl = "";
+                            await addUser();
+                          }
                         } else {
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => UserCourse(user: widget.user,),
-                          ));
+                          await uploadPhoto();
+                          await addUser();
                         }
                       }
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //   builder: (context) => UserCourse(),
-                      // ));
                     },
                     child: Text("Continue", style: TextStyle(fontSize: 18),),
                   ),
-                  // getCustomButton(buttonText: 'Continue', onPressed: (){})
+                  SizedBox(height: 30,),
                 ],
               ),
             ),
