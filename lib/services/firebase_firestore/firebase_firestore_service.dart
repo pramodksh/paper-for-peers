@@ -18,7 +18,7 @@ class FirebaseFireStoreService {
 
   Future<UserModel> getUserByUserId({@required String userId}) async {
     DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
-    print(userDocumentSnapshot);
+    return UserModel.getUserModelByMap(userMap: userDocumentSnapshot.data(), userId: userId);
   }
 
   Future<ApiResponse> addUser({@required UserModel user}) {
@@ -26,6 +26,8 @@ class FirebaseFireStoreService {
         'displayName': user.displayName,
         'email': user.email,
         'photoUrl': user.photoUrl,
+        UserModel.courseLabel: user.course,
+        UserModel.semesterLabel: user.semester,
       }).then((value) => ApiResponse(isError: false))
           .catchError((error) => ApiResponse(isError: true, errorMessage: "Failed to add user: ERR: $error"));
   }

@@ -11,6 +11,7 @@ class FirebaseAuthService {
 
   UserModel _userFromFirebaseUser(User user) {
     return user != null ? UserModel(
+      uid: user.uid,
       displayName: user.displayName,
       email: user.email,
       photoUrl: user.photoURL,

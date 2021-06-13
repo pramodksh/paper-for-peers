@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/config/course_details.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
+import 'package:papers_for_peers/models/api_response.dart';
+import 'package:papers_for_peers/models/user_model/user_model.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/modules/login/welcom_screen.dart';
+import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 class UserCourse extends StatefulWidget {
+  final UserModel user;
+
+  UserCourse({this.user});
+
   @override
   _UserCourseState createState() => _UserCourseState();
 }
 
 class _UserCourseState extends State<UserCourse> {
 
-  List<String> courses = [
-    "BCA",
-    "BBA",
-    "BCOM",
-  ];
+  List<String> courses;
   List<String> semesters;
-
 
   String selectedCourse;
   String selectedSemester;
 
+  String courseErrorText = "";
+  String semesterErrorText = "";
+  TextStyle errorTextStyle = TextStyle(
+    fontSize: 14,
+  );
+
   @override
   void initState() {
+    courses = getCourses().map((e) => e.courseName).toList();
     semesters = List.generate(6, (index) => "Semester - ${index + 1}");
     super.initState();
   }
@@ -52,11 +63,12 @@ class _UserCourseState extends State<UserCourse> {
               children: [
                 Column(
                   children: [
-                    Text('Select Course',style: TextStyle(fontSize: 30),),
+                    Text('Select Course',style: TextStyle(fontSize: 30,),),
                     SizedBox(height: 20,),
                     SizedBox(
                       width: 200,
                       child: getCustomDropDown(
+                          onDropDownTap: () { setState(() { courseErrorText = ""; }); },
                           isTransparent: true,
                           context: context,
                           dropDownValue: selectedCourse,
@@ -65,29 +77,47 @@ class _UserCourseState extends State<UserCourse> {
                           onDropDownChanged: (val) {
                             setState(() {
                               selectedCourse = val;
+                              Course course = getCourses().where((element) => element.courseName == selectedCourse).first;
+                              semesters = course.semesters.map((e) => e.semester.toString()).toList();
                             });
                           }),
                     ),
+                    SizedBox(height: 20,),
+                    courseErrorText.isEmpty ? Container() : Text(courseErrorText, style: errorTextStyle,),
                   ],
                 ),
                 Column(
                   children: [
-                    Text('Select Semester',style: TextStyle(fontSize: 30),),
+                    Text(
+                      'Select Semester',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: selectedCourse == null ? Colors.grey : Colors.white,
+                      ),
+                    ),
                     SizedBox(height: 20,),
-                    SizedBox(
-                      width: 200,
+                    Container(
+                      decoration: BoxDecoration(
+                        color: selectedCourse == null ? Colors.grey.withOpacity(0.3) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      width: 180,
                       child: getCustomDropDown(
+                          onDropDownTap: () { setState(() { semesterErrorText = ""; }); },
                           isTransparent: true,
                           context: context,
                           dropDownValue: selectedSemester,
                           dropDownItems: semesters,
                           dropDownHint: 'Semester',
-                          onDropDownChanged: (val) {
+                          onDropDownChanged: selectedCourse == null ? null : (val) {
                             setState(() {
                               selectedSemester = val;
                             });
-                          }),
+                          }
+                        ),
                     ),
+                    SizedBox(height: 20,),
+                    semesterErrorText.isEmpty ? Container() : Text(semesterErrorText, style: errorTextStyle,),
                   ],
                 ),
                 ElevatedButton(
@@ -97,10 +127,33 @@ class _UserCourseState extends State<UserCourse> {
                       borderRadius: BorderRadius.circular(20),
                     )
                   ),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => IntroScreen(),
-                    ));
+                  onPressed: () async {
+                    if (selectedCourse == null) {
+                      setState(() {
+                        courseErrorText = "Please select course";
+                      });
+                    } else if (selectedSemester == null) {
+                      setState(() {
+                        semesterErrorText = "Please select semester";
+                      });
+                    } else {
+                      // todo add to database
+                      ApiResponse response = await FirebaseFireStoreService().addUser(user: UserModel(
+                        uid: widget.user.uid,
+                        displayName: widget.user.displayName,
+                        photoUrl: widget.user.photoUrl,
+                        email: widget.user.email,
+                        course: selectedCourse,
+                        semester: int.parse(selectedSemester),
+                      ));
+                      if (response.isError) {
+                        showAlertDialog(context: context, text: response.errorMessage);
+                      } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => IntroScreen(),
+                        ));
+                      }
+                    }
                   },
                   child: Text("Continue", style: TextStyle(fontSize: 18),),
                 ),

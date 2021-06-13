@@ -16,6 +16,7 @@ Widget getCustomDropDown({
   @required List<String> dropDownItems,
   @required String dropDownHint,
   @required Function onDropDownChanged,
+  Function onDropDownTap,
   bool isTransparent = false
 }) {
 
@@ -46,6 +47,7 @@ Widget getCustomDropDown({
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          onTap: onDropDownTap,
           isExpanded: true,
           iconSize: 30,
           // iconEnabledColor: Colors.red,
