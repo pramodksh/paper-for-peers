@@ -27,14 +27,12 @@ class _WrapperState extends State<Wrapper> {
             return Login();
           } else {
             print("USER ID: ${user.uid}");
-
             // todo check stored data in cache : course, semester and pass in [MainDashboard]
 
             return FutureBuilder(
               future: FirebaseFireStoreService().getUserByUserId(userId: user.uid),
               builder: (context, snapshot) {
-                print("STATE: ${snapshot.connectionState} | DATA: ${snapshot.hasData}");
-                if (!snapshot.hasData) {
+                if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
                   return LoadingScreen(loadingText: "Fetching your details",);
                 } else {
                   UserModel authenticatedUser = snapshot.data;

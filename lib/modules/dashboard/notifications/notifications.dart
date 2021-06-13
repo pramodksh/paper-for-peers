@@ -62,7 +62,7 @@ class _NotificationsState extends State<Notifications> {
     @required int index,
   }) {
     double dateHeight = 30;
-    double dateWidth = 120;
+    double dateWidth = 150;
     double dateBorderRadius = 20;
     // foo
     return Container(
