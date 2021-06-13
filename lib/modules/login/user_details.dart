@@ -2,8 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:papers_for_peers/models/api_response.dart';
+import 'package:papers_for_peers/models/user_model/user_model.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
+import 'package:papers_for_peers/services/firebase_storage/firebase_storage_service.dart';
 import 'package:papers_for_peers/services/image_picker/image_picker_service.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +19,10 @@ import 'user_course.dart';
 import 'utilities.dart';
 
 class UserDetails extends StatefulWidget {
+  final UserModel user;
+
+  UserDetails({this.user});
+
   @override
   _UserDetailsState createState() => _UserDetailsState();
 }
@@ -21,6 +30,7 @@ class UserDetails extends StatefulWidget {
 class _UserDetailsState extends State<UserDetails> {
 
   ImagePickerService imagePickerService = ImagePickerService();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var themeChange;
 
   double borderThickness = 5;
@@ -225,16 +235,19 @@ class _UserDetailsState extends State<UserDetails> {
                   SizedBox(
                     height: 30,
                   ),
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 70),
-                      child: getCustomTextField(
-                        onChanged: (val) {
-                          setState(() { });
-                        },
-                        hintText: "Name",
-                        controller: userNameController,
-                        validator: (String val) => val.isEmpty ? "Enter your name" : null,
-                      )
+                  Form(
+                    key: _formKey,
+                    child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 70),
+                        child: getCustomTextField(
+                          onChanged: (val) {
+                            setState(() { });
+                          },
+                          hintText: "Name",
+                          controller: userNameController,
+                          validator: (String val) => val.isEmpty ? "Enter your name" : null,
+                        )
+                    ),
                   ),
                   SizedBox(height: 100,),
                   ElevatedButton(
@@ -244,10 +257,35 @@ class _UserDetailsState extends State<UserDetails> {
                           borderRadius: BorderRadius.circular(20),
                         )
                     ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UserCourse(),
-                      ));
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        print(profilePhotoFile);
+
+                        widget.user.displayName = userNameController.text;
+
+                        if (profilePhotoFile != null) {
+                          ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile, userId: widget.user.uid);
+                          if (response.isError) {
+                            showAlertDialog(context: context, text: response.errorMessage);
+                          } else {
+                            String url = response.data;
+                            widget.user.photoUrl = url;
+                            print("photo uploaded | $url");
+                          }
+                        }
+
+                        ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user);
+                        if (response.isError) {
+                          showAlertDialog(context: context, text: response.errorMessage);
+                        } else {
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => UserCourse(user: widget.user,),
+                          ));
+                        }
+                      }
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => UserCourse(),
+                      // ));
                     },
                     child: Text("Continue", style: TextStyle(fontSize: 18),),
                   ),

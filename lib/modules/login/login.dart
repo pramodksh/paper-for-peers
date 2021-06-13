@@ -5,7 +5,6 @@ import 'package:papers_for_peers/models/api_response.dart';
 import 'package:papers_for_peers/models/user_model/user_model.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
-import 'package:papers_for_peers/modules/login/user_details.dart';
 import 'package:papers_for_peers/modules/login/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -134,6 +133,11 @@ class _LoginState extends State<Login> {
                                 email: emailController.text,
                                 password: passwordController.text,
                               );
+                              if (signInResponse.isError) {
+                                showAlertDialog(context: context, text: signInResponse.errorMessage);
+                              } else {
+                                print("SIGN IN DONE IN LOGIN");
+                              }
                             } else {
                               // todo display alert if error
                               ApiResponse signUpResponse = await _firebaseAuthService.signUpWithEmailAndPassword(
@@ -143,11 +147,23 @@ class _LoginState extends State<Login> {
                               if (signUpResponse.isError) {
                                 showAlertDialog(context: context, text: signUpResponse.errorMessage);
                               } else {
-                                // todo save in database
+                                UserModel user = signUpResponse.data;
+                                bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
+                                print("IS EXISTS: ${isUserExists}");
+                                if (!isUserExists && user.isEmailPasswordAuthDataAvailable()) {
+                                  ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
+                                  if (addUserResponse.isError) {
+                                    showAlertDialog(context: context, text: addUserResponse.errorMessage);
+                                  } else {
+                                    print("USER ADDED");
+                                  }
+                                } else {
+                                  print("USER EXISTS");
+                                }
                               }
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => UserDetails(),
-                              ));
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //   builder: (context) => UserDetails(),
+                              // ));
                             }
                           }
                         },
@@ -164,8 +180,7 @@ class _LoginState extends State<Login> {
                        } else {
                          UserModel user = googleAuthResponse.data;
                          bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
-                         if (!isUserExists && user.isAuthDataAvailable()) {
-                           // todo save user in database
+                         if (!isUserExists && user.isGoogleAuthDataAvailable()) {
                            ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
                            if (addUserResponse.isError) {
                              showAlertDialog(context: context, text: addUserResponse.errorMessage);

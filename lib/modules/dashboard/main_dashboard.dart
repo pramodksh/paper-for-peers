@@ -124,10 +124,9 @@ class _MainDashboardState extends State<MainDashboard> {
                     onPressed: () async {
                       await FirebaseAuthService().logoutUser();
                       SchedulerBinding.instance.addPostFrameCallback((_) {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //   builder: (context) => Login(),
-                        // ));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => Login(),
+                        ));
                       });
                     },
                     child: Text("Log Out", style: TextStyle(fontSize: 18),),

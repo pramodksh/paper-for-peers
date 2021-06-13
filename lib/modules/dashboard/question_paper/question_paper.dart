@@ -4,8 +4,6 @@ import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/modules/dashboard/compare_question_paper/show_split_options.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
-import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
-import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 class QuestionPaper extends StatefulWidget {
   final bool isDarkTheme;

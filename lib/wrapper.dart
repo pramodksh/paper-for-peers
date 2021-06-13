@@ -35,9 +35,10 @@ class _WrapperState extends State<Wrapper> {
                 if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
                   return LoadingScreen(loadingText: "Fetching your details",);
                 } else {
+                  print("SEE: ${snapshot.data}");
                   UserModel authenticatedUser = snapshot.data;
                   if (authenticatedUser.displayName == null || authenticatedUser.photoUrl == null) {
-                    return UserDetails();
+                    return UserDetails(user: authenticatedUser,);
                   } else if (authenticatedUser.course == null || authenticatedUser.semester == null) {
                     return UserCourse(user: authenticatedUser,);
                   } else {

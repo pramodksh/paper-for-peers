@@ -22,7 +22,11 @@ class UserModel {
     );
   }
 
-  bool isAuthDataAvailable() {
+  bool isEmailPasswordAuthDataAvailable() {
+    return this.email != null;
+  }
+
+  bool isGoogleAuthDataAvailable() {
     return this.uid != null && this.displayName != null && this.email != null && this.photoUrl != null;
   }
 
