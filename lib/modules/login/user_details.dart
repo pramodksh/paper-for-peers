@@ -12,7 +12,6 @@ import '../../config/default_assets.dart';
 import '../../config/export_config.dart';
 import 'user_course.dart';
 import 'utilities.dart';
-import 'utilities.dart';
 
 class UserDetails extends StatefulWidget {
   @override

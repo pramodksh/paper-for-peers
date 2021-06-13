@@ -1,8 +1,7 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
-import 'package:papers_for_peers/modules/dashboard/compare_question_paper/compare_question_paper.dart';
+import 'package:papers_for_peers/modules/dashboard/compare_question_paper/show_split_options.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
@@ -111,7 +110,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                     ),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CompareQuestionPaper(),
+                        builder: (context) => ShowSplitOptions(),
                       ));
                     },
                     child: Text("Compare Question Papers", style: TextStyle(fontSize: 18),),

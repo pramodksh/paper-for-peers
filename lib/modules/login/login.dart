@@ -1,16 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
-import 'package:papers_for_peers/modules/login/user_course.dart';
 import 'package:papers_for_peers/modules/login/user_details.dart';
 import 'package:papers_for_peers/modules/login/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/services/firebase_services/firebase_auth_service.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -117,7 +113,7 @@ class _LoginState extends State<Login> {
                           },
                         ),
                       ],
-                    ):Container() ,
+                    ) : Container() ,
                     SizedBox(height: 20,),
                     _isLogIn ? Container():SizedBox(height: 40,) ,
                     SizedBox(
@@ -170,7 +166,6 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(height: 20,),
-
                     RichText(
                       text: TextSpan(
                         style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),

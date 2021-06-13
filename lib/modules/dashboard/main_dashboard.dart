@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/main.dart';
-import 'package:papers_for_peers/modules/dashboard/compare_question_paper/compare_question_paper.dart';
 import 'package:papers_for_peers/modules/dashboard/journal/journal.dart';
 import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
@@ -14,9 +11,8 @@ import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper
 import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
-import 'package:papers_for_peers/services/firebase_services/firebase_auth_service.dart';
+import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
-import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
 class MainDashboard extends StatefulWidget {

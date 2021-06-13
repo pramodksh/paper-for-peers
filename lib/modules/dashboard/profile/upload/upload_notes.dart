@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/upload/shared.dart';
-import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
 class UploadNotesAndJournal extends StatefulWidget {

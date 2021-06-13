@@ -1,36 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/compare_question_paper/splitPDF.dart';
+import 'package:papers_for_peers/modules/dashboard/compare_question_paper/show_split_pdf.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-class CompareQuestionPaper extends StatefulWidget {
+class ShowSplitOptions extends StatefulWidget {
   @override
-  _CompareQuestionPaperState createState() => _CompareQuestionPaperState();
+  _ShowSplitOptionsState createState() => _ShowSplitOptionsState();
 }
 
-class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
+class _ShowSplitOptionsState extends State<ShowSplitOptions> {
   List<String> subjects = [
     "A",
     "B",
     "C",
   ];
 
-  List<String> numberOfSplits = ['2 Splits','3 Splits','4 Splits'];
   String selectedSubject;
 
-  List<Widget> bottomNavBarIcons = [
-    Image.asset(
-      DefaultAssets.splitIntoTwo,
-    ),
-    Image.asset(
-      DefaultAssets.splitIntoThree,
-    ),
-    Image.asset(
-      DefaultAssets.splitIntoFour,
-    ),
+  List<Map> splitOptions= [
+    {'image': DefaultAssets.splitIntoTwo, 'label': "2 Splits"},
+    {'image': DefaultAssets.splitIntoThree, 'label': "3 Splits"},
+    {'image': DefaultAssets.splitIntoFour, 'label': "4 Splits"},
   ];
 
   int selectedItemPosition = 0;
@@ -65,7 +58,7 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(
-                  bottomNavBarIcons.length,
+                  splitOptions.length,
                   (index) => SizedBox(
                         width: MediaQuery.of(context).size.width / 3 - 20,
                         child: Column(
@@ -95,13 +88,13 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
                                       color: selectedItemPosition == index ? selectedSplitColor : Colors.transparent,
                                     ),
                                     padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                                    child: bottomNavBarIcons[index],
+                                    child: Image.asset(splitOptions[index]['image']),
                                   );
                                 },
                               ),
                             ),
                             SizedBox(height: 20,),
-                            Text(numberOfSplits[index])
+                            Text(splitOptions[index]['label'])
                           ],
                         ),
                       )),
@@ -109,7 +102,7 @@ class _CompareQuestionPaperState extends State<CompareQuestionPaper> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => SplitScreen(numberOfSplits: selectedItemPosition + 2,),
+                  builder: (context) => ShowSplitPdf(numberOfSplits: selectedItemPosition + 2,),
 
                 ));
               },

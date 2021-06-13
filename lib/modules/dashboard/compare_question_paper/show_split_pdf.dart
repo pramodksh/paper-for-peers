@@ -2,7 +2,6 @@ import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 
-
 class VariantGenerator {
   int totalVariants;
   List<String> variantList;
@@ -24,18 +23,16 @@ class VariantGenerator {
 }
 
 
-class SplitScreen extends StatefulWidget {
+class ShowSplitPdf extends StatefulWidget {
   final int numberOfSplits ;
-  SplitScreen({this.numberOfSplits});
-
+  ShowSplitPdf({this.numberOfSplits});
 
   @override
-  _SplitScreenState createState() => _SplitScreenState();
+  _ShowSplitPdfState createState() => _ShowSplitPdfState();
 
 }
 
-
-class _SplitScreenState extends State<SplitScreen> {
+class _ShowSplitPdfState extends State<ShowSplitPdf> {
 
   String pdfPath = "assets/pdfs/Javanotes.pdf";
   String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
