@@ -9,6 +9,7 @@ import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 // import 'package:papers_for_peers/modules/login/carausel.dart';
 import 'package:papers_for_peers/modules/login/user_details.dart';
+import 'package:papers_for_peers/modules/login/welcome_screen.dart';
 // import 'package:papers_for_peers/modules/login/welcome_message.dart';
 import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
 import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
@@ -55,7 +56,8 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
-            home: Login(),
+            // home: Login(),
+            home: IntroScreen(),
           );
         },
       ),

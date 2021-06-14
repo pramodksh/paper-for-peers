@@ -3,7 +3,8 @@ import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
-import 'package:papers_for_peers/modules/login/welcom_screen.dart';
+// import 'package:papers_for_peers/modules/login/welcom_screen.dart';
+import 'package:papers_for_peers/modules/login/welcome_screen.dart';
 
 class UserCourse extends StatefulWidget {
   @override
