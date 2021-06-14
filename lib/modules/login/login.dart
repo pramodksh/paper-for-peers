@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -155,15 +156,14 @@ class _LoginState extends State<Login> {
                                   if (addUserResponse.isError) {
                                     showAlertDialog(context: context, text: addUserResponse.errorMessage);
                                   } else {
+                                    // await _firebaseAuthService.logoutUser();
+
                                     print("USER ADDED");
                                   }
                                 } else {
                                   print("USER EXISTS");
                                 }
                               }
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //   builder: (context) => UserDetails(),
-                              // ));
                             }
                           }
                         },
@@ -185,7 +185,9 @@ class _LoginState extends State<Login> {
                            if (addUserResponse.isError) {
                              showAlertDialog(context: context, text: addUserResponse.errorMessage);
                            } else {
-                             print("USER ADDED");
+                             await _firebaseAuthService.logoutUser(isGoogleLogout: false);
+                             await _firebaseAuthService.authenticateWithGoogle();
+                             print("USER ADDED && User logged out and logged in");
                            }
                          } else {
                            print("USER EXISTS");

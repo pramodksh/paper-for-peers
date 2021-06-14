@@ -29,6 +29,8 @@ class _WrapperState extends State<Wrapper> {
             print("USER ID: ${user.uid}");
             // todo check stored data in cache : course, semester and pass in [MainDashboard]
 
+            // FirebaseAuthService().logoutUser();
+
             return FutureBuilder(
               future: FirebaseFireStoreService().getUserByUserId(userId: user.uid),
               builder: (context, snapshot) {
