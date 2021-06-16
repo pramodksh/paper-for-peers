@@ -40,6 +40,7 @@ class _UserDetailsState extends State<UserDetails> {
   TextEditingController userNameController = TextEditingController();
 
   bool _isLoading = false;
+  String _loadingText = "";
 
   Future<File> getImage({@required ImageSource imageSource}) async {
     setState(() { _isLoading = true; });
@@ -217,6 +218,43 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
 
+  Future<String> _uploadPhotoAndGetUrl() async {
+    print("UPLOAD PHOTO| ${widget.user.photoUrl}");
+    if (mounted) {
+      setState(() { _isLoading = true; _loadingText = "Uploading Photo"; });
+    }
+    ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile, userId: widget.user.uid);
+    if (mounted) {
+      setState(() { _isLoading = false; });
+    }
+    if (response.isError) {
+      showAlertDialog(context: context, text: response.errorMessage);
+      return null;
+    } else {
+      String url = response.data;
+      print("photo uploaded | $url");
+      return url;
+    }
+  }
+
+  Future _addUser() async {
+    if (mounted) {
+      setState(() { _isLoading = true; _loadingText = "Adding user"; });
+    }
+    ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user);
+    if (mounted) {
+      setState(() { _isLoading = false; });
+    }
+    if (response.isError) {
+      showAlertDialog(context: context, text: response.errorMessage);
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => UserCourse(user: widget.user,),
+      ));
+    }
+  }
+
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -243,7 +281,7 @@ class _UserDetailsState extends State<UserDetails> {
         Scaffold(
           backgroundColor: Colors.transparent,
           body: _isLoading ? LoadingScreen(
-            loadingText: "Please wait...",
+            loadingText: _loadingText,
           ) : SingleChildScrollView(
             child: Container(
               width: double.infinity,
@@ -316,33 +354,7 @@ class _UserDetailsState extends State<UserDetails> {
                       if (_formKey.currentState.validate()) {
 
                         widget.user.displayName = userNameController.text;
-
-                        Future uploadPhoto() async {
-                          print("UPLOAD PHOTO| ${widget.user.photoUrl}");
-                          if (profilePhotoFile != null) {
-                            ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile, userId: widget.user.uid);
-                            if (response.isError) {
-                              showAlertDialog(context: context, text: response.errorMessage);
-                            } else {
-                              String url = response.data;
-                              widget.user.photoUrl = url;
-                              print("photo uploaded | $url");
-                            }
-                          }
-                        }
-
-                        Future addUser() async {
-                          ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user);
-                          if (response.isError) {
-                            showAlertDialog(context: context, text: response.errorMessage);
-                          } else {
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => UserCourse(user: widget.user,),
-                            ));
-                          }
-                        }
-
-
+                        
                         if (profilePhotoFile == null) {
                           bool shouldDisplayDismissibleDialog = await showDialog(
                             context: context,
@@ -355,11 +367,12 @@ class _UserDetailsState extends State<UserDetails> {
                             );
                           } else if(shouldDisplayDismissibleDialog == false) {
                             widget.user.photoUrl = "";
-                            await addUser();
+                            await _addUser();
                           }
                         } else {
-                          await uploadPhoto();
-                          await addUser();
+                          String url = await _uploadPhotoAndGetUrl();
+                          widget.user.photoUrl = url;
+                          await _addUser();
                         }
                       }
                     },

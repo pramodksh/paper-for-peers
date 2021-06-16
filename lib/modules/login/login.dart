@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/api_response.dart';
 import 'package:papers_for_peers/models/user_model/user_model.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/modules/login/utilities.dart';
@@ -22,7 +24,9 @@ class _LoginState extends State<Login> {
   FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
   FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
 
-  bool _isLogIn = true;
+  bool _isLoading = false;
+  String _loadingText = "";
+  bool _isSignIn = true;
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
   TextEditingController emailController = TextEditingController();
@@ -48,6 +52,124 @@ class _LoginState extends State<Login> {
     ],
   );
 
+
+  void signIn() async {
+    setState(() {
+      _isLoading = true;
+      _loadingText = "Signing In";
+    });
+    ApiResponse signInResponse = await _firebaseAuthService.signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+    setState(() {
+      _isLoading = false;
+      _loadingText = "";
+    });
+    if (signInResponse.isError) {
+      showAlertDialog(context: context, text: signInResponse.errorMessage);
+    } else {
+      print("SIGN IN DONE IN LOGIN");
+    }
+  }
+
+  void isMounted(Function function) {
+    if (mounted) {
+      function();
+    }
+  }
+
+  void signUp() async {
+    isMounted(() {
+      setState(() {
+        _isLoading = true;
+        _loadingText = "Signing Up";
+      });
+    });
+    ApiResponse signUpResponse = await _firebaseAuthService.signUpWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+    isMounted(() {
+      setState(() {
+        _isLoading = false;
+        _loadingText = "";
+      });
+    });
+    if (signUpResponse.isError) {
+      showAlertDialog(context: context, text: signUpResponse.errorMessage);
+    } else {
+      UserModel user = signUpResponse.data;
+      bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
+      print("IS EXISTS: ${isUserExists}");
+      if (!isUserExists && user.isEmailPasswordAuthDataAvailable()) {
+        print("ADDING USER");
+        isMounted(() {
+          setState(() {
+            _isLoading = true;
+            _loadingText = "Please wait... (adding to database)";
+          });
+        });
+        ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
+        isMounted(() {
+          setState(() {
+            _isLoading = false;
+            _loadingText = "";
+          });
+        });
+        if (addUserResponse.isError) {
+          showAlertDialog(context: context, text: addUserResponse.errorMessage);
+        } else {
+          await _firebaseAuthService.logoutUser();
+          confirmPasswordController.clear();
+          isMounted(() {
+            setState(() { _isSignIn = true; _isLoading = false; _loadingText = "";});
+          });
+          Fluttertoast.showToast(
+              msg: "Signed up successfully, please sign in to continue",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: CustomColors.bottomNavBarColor,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+          print("USER ADDED");
+        }
+      } else {
+        print("USER EXISTS");
+      }
+    }
+  }
+
+  void continueWithGoogle() async {
+    if (mounted) {
+      setState(() { _isLoading = true; _loadingText = "Please wait..."; });
+    }
+    ApiResponse googleAuthResponse = await _firebaseAuthService.authenticateWithGoogle();
+    if (mounted) {
+      setState(() { _isLoading = false; });
+    }
+    if (googleAuthResponse.isError) {
+      showAlertDialog(context: context, text: googleAuthResponse.errorMessage);
+    } else {
+      UserModel user = googleAuthResponse.data;
+      bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
+      if (!isUserExists && user.isGoogleAuthDataAvailable()) {
+        ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
+        if (addUserResponse.isError) {
+          showAlertDialog(context: context, text: addUserResponse.errorMessage);
+        } else {
+          await _firebaseAuthService.logoutUser(isGoogleLogout: false);
+          await _firebaseAuthService.authenticateWithGoogle();
+          print("USER ADDED && User logged out and logged in");
+        }
+      } else {
+        print("USER EXISTS");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -64,7 +186,7 @@ class _LoginState extends State<Login> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          body: Form(
+          body: _isLoading ? LoadingScreen(loadingText: _loadingText,) : Form(
             key: _formKey,
             child: SingleChildScrollView(
               child: Container(
@@ -95,8 +217,8 @@ class _LoginState extends State<Login> {
                       onTapObscure: () { setState(() { _isPasswordObscure = !_isPasswordObscure; }); },
                       validator: (String val) => val.isEmpty ? "Enter Password" : null,
                     ),
-                    _isLogIn ? Container() : SizedBox(height: 20,),
-                    _isLogIn
+                    _isSignIn ? Container() : SizedBox(height: 20,),
+                    _isSignIn
                       ? SizedBox(height: 5,)
                       : getCustomPasswordField(
                         controller: confirmPasswordController,
@@ -105,7 +227,7 @@ class _LoginState extends State<Login> {
                         onTapObscure: () { setState(() { _isConfirmPasswordObscure = !_isConfirmPasswordObscure; }); },
                         validator: (String val) => passwordController.text == val ? null : "Passwords do not match",
                     ),
-                    _isLogIn ?  Row(
+                    _isSignIn ?  Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
@@ -120,50 +242,18 @@ class _LoginState extends State<Login> {
                       ],
                     ) : Container() ,
                     SizedBox(height: 20,),
-                    _isLogIn ? Container():SizedBox(height: 40,) ,
+                    _isSignIn ? Container():SizedBox(height: 40,) ,
                     SizedBox(
                       width: 350,
                       height: 50,
                       child: getCustomButton(
-                        buttonText: _isLogIn? "Sign In" : 'Sign Up',
-                        onPressed: () async {
+                        buttonText: _isSignIn? "Sign In" : 'Sign Up',
+                        onPressed: () {
                           if (_formKey.currentState.validate()) {
-                            if (_isLogIn) {
-                              // todo display alert if error
-                              ApiResponse signInResponse = await _firebaseAuthService.signInWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text,
-                              );
-                              if (signInResponse.isError) {
-                                showAlertDialog(context: context, text: signInResponse.errorMessage);
-                              } else {
-                                print("SIGN IN DONE IN LOGIN");
-                              }
+                            if (_isSignIn) {
+                              signIn();
                             } else {
-                              // todo display alert if error
-                              ApiResponse signUpResponse = await _firebaseAuthService.signUpWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text,
-                              );
-                              if (signUpResponse.isError) {
-                                showAlertDialog(context: context, text: signUpResponse.errorMessage);
-                              } else {
-                                UserModel user = signUpResponse.data;
-                                bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
-                                print("IS EXISTS: ${isUserExists}");
-                                if (!isUserExists && user.isEmailPasswordAuthDataAvailable()) {
-                                  ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
-                                  if (addUserResponse.isError) {
-                                    showAlertDialog(context: context, text: addUserResponse.errorMessage);
-                                  } else {
-                                    // await _firebaseAuthService.logoutUser();
-
-                                    print("USER ADDED");
-                                  }
-                                } else {
-                                  print("USER EXISTS");
-                                }
-                              }
+                              signUp();
                             }
                           }
                         },
@@ -173,26 +263,8 @@ class _LoginState extends State<Login> {
                     getOrDivider(),
                     SizedBox(height: 30,),
                     TextButton(
-                      onPressed: () async {
-                       ApiResponse googleAuthResponse = await _firebaseAuthService.authenticateWithGoogle();
-                       if (googleAuthResponse.isError) {
-                         showAlertDialog(context: context, text: googleAuthResponse.errorMessage);
-                       } else {
-                         UserModel user = googleAuthResponse.data;
-                         bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
-                         if (!isUserExists && user.isGoogleAuthDataAvailable()) {
-                           ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
-                           if (addUserResponse.isError) {
-                             showAlertDialog(context: context, text: addUserResponse.errorMessage);
-                           } else {
-                             await _firebaseAuthService.logoutUser(isGoogleLogout: false);
-                             await _firebaseAuthService.authenticateWithGoogle();
-                             print("USER ADDED && User logged out and logged in");
-                           }
-                         } else {
-                           print("USER EXISTS");
-                         }
-                       }
+                      onPressed: () {
+                        continueWithGoogle();
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -215,13 +287,13 @@ class _LoginState extends State<Login> {
                         style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
                         children: <TextSpan>[
                           TextSpan(
-                              text: _isLogIn ? "New Member? " : "Already a Member? ",
+                              text: _isSignIn ? "New Member? " : "Already a Member? ",
                           ),
                           TextSpan(
                             recognizer: TapGestureRecognizer()..onTap = () {
-                              setState(() { _isLogIn = !_isLogIn; });
+                              setState(() { _isSignIn = !_isSignIn; });
                             },
-                            text: _isLogIn ? "Create Account" : "Sign In" ,
+                            text: _isSignIn ? "Create Account" : "Sign In" ,
                             style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)
                           ),
                         ],

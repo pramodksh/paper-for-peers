@@ -8,6 +8,7 @@ import 'package:papers_for_peers/modules/dashboard/journal/journal.dart';
 import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
 import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
@@ -24,6 +25,9 @@ class MainDashboard extends StatefulWidget {
 class _MainDashboardState extends State<MainDashboard> {
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
+
+  bool _isLoading = false;
+  String _loadingText = "";
 
   int selectedItemPosition = 0;
   final double bottomNavBarRadius = 20;
@@ -122,12 +126,21 @@ class _MainDashboardState extends State<MainDashboard> {
                         )
                     ),
                     onPressed: () async {
+                      if (mounted) {
+                        setState(() { _isLoading = true; _loadingText = "Logging out.."; });
+                      }
                       await FirebaseAuthService().logoutUser();
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => Login(),
-                        ));
-                      });
+                      if (mounted) {
+                        setState(() { _isLoading = false; });
+                      }
+
+                      // todo check logging out when user first signs up
+                      // print("CAP POP: ${Navigator.of(context).canPop()}");
+                      // SchedulerBinding.instance.addPostFrameCallback((_) {
+                      //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      //     builder: (context) => Login(),
+                      //   ));
+                      // });
                     },
                     child: Text("Log Out", style: TextStyle(fontSize: 18),),
                   ),
@@ -174,7 +187,9 @@ class _MainDashboardState extends State<MainDashboard> {
       ),
       body: Builder(
         builder: (context) {
-          if (selectedItemPosition == 0) {
+          if (_isLoading ) {
+            return LoadingScreen(loadingText: _loadingText,);
+          } else if (selectedItemPosition == 0) {
             return QuestionPaper(isDarkTheme: themeChange.isDarkTheme,);
           } else if (selectedItemPosition == 1) {
             return Notes(isDarkTheme: themeChange.isDarkTheme,);

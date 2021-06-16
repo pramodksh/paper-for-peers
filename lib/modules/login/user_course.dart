@@ -3,6 +3,7 @@ import 'package:papers_for_peers/config/course_details.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/models/api_response.dart';
 import 'package:papers_for_peers/models/user_model/user_model.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/modules/login/welcom_screen.dart';
@@ -18,6 +19,8 @@ class UserCourse extends StatefulWidget {
 }
 
 class _UserCourseState extends State<UserCourse> {
+
+  bool _isLoading = false;
 
   List<String> courses;
   List<String> semesters;
@@ -55,7 +58,9 @@ class _UserCourseState extends State<UserCourse> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          body: Container(
+          body: _isLoading ? LoadingScreen(
+            loadingText: "Please wait...",
+          ) : Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Column(
@@ -137,7 +142,9 @@ class _UserCourseState extends State<UserCourse> {
                         semesterErrorText = "Please select semester";
                       });
                     } else {
-                      // todo add to database
+                      if (mounted) {
+                        setState(() { _isLoading = true; });
+                      }
                       ApiResponse response = await FirebaseFireStoreService().addUser(user: UserModel(
                         uid: widget.user.uid,
                         displayName: widget.user.displayName,
@@ -146,6 +153,9 @@ class _UserCourseState extends State<UserCourse> {
                         course: selectedCourse,
                         semester: int.parse(selectedSemester),
                       ));
+                      if (mounted) {
+                        setState(() { _isLoading = false; });
+                      }
                       if (response.isError) {
                         showAlertDialog(context: context, text: response.errorMessage);
                       } else {
