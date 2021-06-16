@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intro_slider/dot_animation_enum.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
+import 'package:intro_slider/scrollbar_behavior_enum.dart';
+import 'package:papers_for_peers/config/colors.dart';
 
 import '../../config/default_assets.dart';
 import '../dashboard/main_dashboard.dart';
@@ -19,7 +21,7 @@ class IntroScreenState extends State<IntroScreen> {
   Function goToTab;
 
   String welcomeText1 =
-      "1.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
+      "We Provide you the Feature of Downloading Notes And Question Paper";
   String welcomeText2 =
       "2.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
   String welcomeText3 =
@@ -29,6 +31,7 @@ class IntroScreenState extends State<IntroScreen> {
       {@required String descriptionText, @required String imagePath}) {
     return Slide(
       description: descriptionText,
+      backgroundColor: Color(0xfff5a623),
       styleDescription: TextStyle(
         color: Color(0xfffe9c8f),
         fontSize: 20.0,
@@ -36,6 +39,10 @@ class IntroScreenState extends State<IntroScreen> {
         // fontFamily: 'Raleway'
       ),
       pathImage: imagePath,
+      colorBegin: Color(0xffFFFACD),
+      colorEnd: Color(0xffFF6347),
+      directionColorBegin: Alignment.topRight,
+      directionColorEnd: Alignment.bottomLeft,
     );
   }
 
@@ -45,17 +52,17 @@ class IntroScreenState extends State<IntroScreen> {
     slides.add(
       getSlide(
           descriptionText: welcomeText1,
-          imagePath: DefaultAssets.welcomeScreenPath),
+          imagePath: DefaultAssets.welcomeScreen1Path),
     );
     slides.add(
       getSlide(
           descriptionText: welcomeText2,
-          imagePath: DefaultAssets.welcomeScreenPath),
+          imagePath: DefaultAssets.welcomeScreen2Path),
     );
     slides.add(
       getSlide(
           descriptionText: welcomeText3,
-          imagePath: DefaultAssets.welcomeScreenPath),
+          imagePath: DefaultAssets.welcomeScreen1Path),
     );
   }
 
@@ -76,7 +83,7 @@ class IntroScreenState extends State<IntroScreen> {
   Widget renderNextBtn() {
     return Icon(
       Icons.navigate_next,
-      color: Color(0xffffcc5c),
+      color: Colors.white,
       size: 35.0,
     );
   }
@@ -84,14 +91,14 @@ class IntroScreenState extends State<IntroScreen> {
   Widget renderDoneBtn() {
     return Icon(
       Icons.done,
-      color: Color(0xffffcc5c),
+      color: Colors.white,
     );
   }
 
   Widget renderSkipBtn() {
     return Icon(
       Icons.skip_next,
-      color: Color(0xffffcc5c),
+      color: Colors.white,
     );
   }
 
@@ -141,8 +148,8 @@ class IntroScreenState extends State<IntroScreen> {
     return new IntroSlider(
       // Skip button
       renderSkipBtn: this.renderSkipBtn(),
-      colorSkipBtn: Color(0x33ffcc5c),
-      highlightColorSkipBtn: Color(0xffffcc5c),
+      colorSkipBtn: CustomColors.backGroundColor,
+      highlightColorSkipBtn: CustomColors.backGroundColor,
 
       // Next button
       renderNextBtn: this.renderNextBtn(),
@@ -150,17 +157,17 @@ class IntroScreenState extends State<IntroScreen> {
       // Done button
       renderDoneBtn: this.renderDoneBtn(),
       onDonePress: this.onDonePress,
-      colorDoneBtn: Color(0x33ffcc5c),
-      highlightColorDoneBtn: Color(0xffffcc5c),
+      colorDoneBtn: CustomColors.backGroundColor,
+      highlightColorDoneBtn: CustomColors.backGroundColor,
 
       // Dot indicator
-      colorDot: Color(0xffffcc5c),
+      colorDot: Colors.white,
       sizeDot: 13.0,
       typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
 
       // Tabs
       listCustomTabs: renderListCustomTabs(),
-      backgroundColorAllSlides: Colors.white,
+      backgroundColorAllSlides: CustomColors.bottomNavBarColor,
       refFuncGoToTab: (refFunc) {
         this.goToTab = refFunc;
       },
