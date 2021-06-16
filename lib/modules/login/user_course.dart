@@ -6,9 +6,7 @@ import 'package:papers_for_peers/models/user_model/user_model.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
-// import 'package:papers_for_peers/modules/login/welcom_screen.dart';
 import 'package:papers_for_peers/modules/login/welcome_screen.dart';
-import 'package:papers_for_peers/modules/login/welcom_screen.dart';
 import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 class UserCourse extends StatefulWidget {
