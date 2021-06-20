@@ -54,18 +54,22 @@ class _LoginState extends State<Login> {
 
 
   void signIn() async {
-    setState(() {
-      _isLoading = true;
-      _loadingText = "Signing In";
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _loadingText = "Signing In";
+      });
+    }
     ApiResponse signInResponse = await _firebaseAuthService.signInWithEmailAndPassword(
       email: emailController.text,
       password: passwordController.text,
     );
-    setState(() {
-      _isLoading = false;
-      _loadingText = "";
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _loadingText = "";
+      });
+    }
     if (signInResponse.isError) {
       showAlertDialog(context: context, text: signInResponse.errorMessage);
     } else {
@@ -73,29 +77,23 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void isMounted(Function function) {
-    if (mounted) {
-      function();
-    }
-  }
-
   void signUp() async {
-    isMounted(() {
+    if (mounted) {
       setState(() {
         _isLoading = true;
         _loadingText = "Signing Up";
       });
-    });
+    }
     ApiResponse signUpResponse = await _firebaseAuthService.signUpWithEmailAndPassword(
       email: emailController.text,
       password: passwordController.text,
     );
-    isMounted(() {
+    if (mounted) {
       setState(() {
         _isLoading = false;
         _loadingText = "";
       });
-    });
+    }
     if (signUpResponse.isError) {
       showAlertDialog(context: context, text: signUpResponse.errorMessage);
     } else {
@@ -104,36 +102,42 @@ class _LoginState extends State<Login> {
       print("IS EXISTS: ${isUserExists}");
       if (!isUserExists && user.isEmailPasswordAuthDataAvailable()) {
         print("ADDING USER");
-        isMounted(() {
+        if (mounted) {
           setState(() {
             _isLoading = true;
             _loadingText = "Please wait... (adding to database)";
           });
-        });
+        }
         ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
-        isMounted(() {
+        if (mounted) {
           setState(() {
             _isLoading = false;
             _loadingText = "";
           });
-        });
+        }
         if (addUserResponse.isError) {
           showAlertDialog(context: context, text: addUserResponse.errorMessage);
         } else {
           await _firebaseAuthService.logoutUser();
           confirmPasswordController.clear();
-          isMounted(() {
-            setState(() { _isSignIn = true; _isLoading = false; _loadingText = "";});
-          });
+
+          // todo try to show a dialog rather than toast
           Fluttertoast.showToast(
-              msg: "Signed up successfully, please sign in to continue",
-              toastLength: Toast.LENGTH_SHORT,
+              msg: "Signed up successfully.\nPlease sign in to continue",
+              toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
               backgroundColor: CustomColors.bottomNavBarColor,
               textColor: Colors.white,
-              fontSize: 16.0
+              fontSize: 18.0
           );
+
+          if (mounted) {
+            setState(() {
+              _isSignIn = true;
+              _isLoading = false;
+              _loadingText = "";
+            });
+          }
           print("USER ADDED");
         }
       } else {
@@ -168,6 +172,46 @@ class _LoginState extends State<Login> {
         print("USER EXISTS");
       }
     }
+  }
+
+  Widget _buildLoginAfterSignUpDialog() {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: CustomColors.reportDialogBackgroundColor,
+      child: Container(
+        // height: 400,
+        width: MediaQuery.of(context).size.width * 0.9,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 15,),
+              Text("Successfully Registered", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+              SizedBox(height: 10,),
+              Text("Please login to continue", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black), textAlign: TextAlign.center,),
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(Colors.black26),
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)
+                    ),
+                    child: Text("Okay", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+                  ),
+                ],
+              ),
+            ]
+        ),
+      ),
+    );
   }
 
   @override
