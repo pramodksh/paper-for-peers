@@ -1,5 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/models/api_response.dart';
+import 'package:papers_for_peers/models/user_model/user_model.dart';
+import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
+import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
+import 'package:papers_for_peers/modules/login/login.dart';
+import 'package:papers_for_peers/modules/login/user_course.dart';
+import 'package:papers_for_peers/modules/login/user_details.dart';
+import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
+import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 extension EmailValidator on String {
   bool isValidEmail() {
@@ -123,4 +135,79 @@ Widget getCustomButton({@required String buttonText, @required Function onPresse
     return SizedBox(width: width, child: button,);
   }
 
+}
+
+Widget getAppropriateWidget({@required UserModel user, @required BuildContext context}) {
+
+  FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
+
+  return FutureBuilder(
+    future: _firebaseFireStoreService.getUserByUserId(userId: user.uid),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
+        return LoadingScreen(loadingText: "Fetching your details",);
+      } else {
+        UserModel authenticatedUser = snapshot.data;
+        if (authenticatedUser.displayName == null || authenticatedUser.photoUrl == null) {
+          return UserDetails(user: authenticatedUser,);
+        } else if (authenticatedUser.course == null || authenticatedUser.semester == null) {
+          return UserCourse(user: authenticatedUser,);
+        } else {
+          return MainDashboard();
+        }
+      }
+    },
+  );
+}
+
+
+Widget addUserIfNotExistsAndGetWidget({@required UserModel user, @required BuildContext context}) {
+
+  FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
+
+  return FutureBuilder(
+    future: _firebaseFireStoreService.isUserExists(userId: user.uid),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
+        return LoadingScreen(loadingText: "Checking if user exists",);
+      } else {
+        bool isUserExists = snapshot.data;
+        if (!isUserExists) {
+          print("ADDING USER");
+
+          return FutureBuilder(
+            future: _firebaseFireStoreService.addUser(user: user),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
+                return LoadingScreen(loadingText: "Adding user",);
+              } else {
+                ApiResponse addUserResponse = snapshot.data;
+                if (addUserResponse.isError) {
+                  print("ADD USER ERR: ${addUserResponse.errorMessage}");
+                  return Login();
+                } else {
+                  return getAppropriateWidget(user: user, context: context);
+                }
+              }
+            },
+          );
+        } else {
+          print("USER EXISTS");
+          return getAppropriateWidget(user: user, context: context);
+        }
+      }
+    },
+  );
+}
+
+
+void showToast({@required String label}) {
+  Fluttertoast.showToast(
+      msg: label,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: CustomColors.bottomNavBarColor,
+      textColor: Colors.white,
+      fontSize: 18.0
+  );
 }

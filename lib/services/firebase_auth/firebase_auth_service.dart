@@ -73,31 +73,23 @@ class FirebaseAuthService {
     }
   }
 
-  // todo send verification email
+  bool get isCurrentUserEmailVerified => auth.currentUser.emailVerified;
 
-  Future<ApiResponse> getCredentialsFromGoogle() async {
-    try {
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      // print()
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      return ApiResponse(data: credential, isError: false);
-    } catch (e) {
-      print("GET CREDENTIALS ERROR: $e");
-      return ApiResponse(isError: true, errorMessage: "There was some error while authenticating");
+
+  Future<bool> sendVerificationEmail() async {
+    User user = FirebaseAuth.instance.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+      return true;
+    } else {
+      return false;
     }
-
-
   }
 
   Future<ApiResponse> authenticateWithGoogle() async {
     try {
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      // print()
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -115,16 +107,10 @@ class FirebaseAuthService {
     }
   }
 
-  Future logoutUser({bool isGoogleLogout = true}) async {
-    if (isGoogleLogout) {
-      await _googleSignIn.signOut();
-    }
+  Future logoutUser() async {
+    await _googleSignIn.signOut();
     await auth.signOut();
     print("USER LOGGED OUT");
-  }
-
-  foo() {
-    print(auth.currentUser.uid);
   }
 
 }

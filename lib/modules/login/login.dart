@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/api_response.dart';
-import 'package:papers_for_peers/models/user_model/user_model.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/login/forgot_password.dart';
@@ -22,16 +20,15 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
-  FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
 
   bool _isLoading = false;
   String _loadingText = "";
   bool _isSignIn = true;
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Widget getOrDivider() => Row(
@@ -61,8 +58,8 @@ class _LoginState extends State<Login> {
       });
     }
     ApiResponse signInResponse = await _firebaseAuthService.signInWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
     );
     if (mounted) {
       setState(() {
@@ -85,8 +82,8 @@ class _LoginState extends State<Login> {
       });
     }
     ApiResponse signUpResponse = await _firebaseAuthService.signUpWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
     );
     if (mounted) {
       setState(() {
@@ -97,52 +94,7 @@ class _LoginState extends State<Login> {
     if (signUpResponse.isError) {
       showAlertDialog(context: context, text: signUpResponse.errorMessage);
     } else {
-      UserModel user = signUpResponse.data;
-      bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
-      print("IS EXISTS: ${isUserExists}");
-      if (!isUserExists && user.isEmailPasswordAuthDataAvailable()) {
-        print("ADDING USER");
-        if (mounted) {
-          setState(() {
-            _isLoading = true;
-            _loadingText = "Please wait... (adding to database)";
-          });
-        }
-        ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            _loadingText = "";
-          });
-        }
-        if (addUserResponse.isError) {
-          showAlertDialog(context: context, text: addUserResponse.errorMessage);
-        } else {
-          await _firebaseAuthService.logoutUser();
-          confirmPasswordController.clear();
-
-          // todo try to show a dialog rather than toast
-          Fluttertoast.showToast(
-              msg: "Signed up successfully.\nPlease sign in to continue",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: CustomColors.bottomNavBarColor,
-              textColor: Colors.white,
-              fontSize: 18.0
-          );
-
-          if (mounted) {
-            setState(() {
-              _isSignIn = true;
-              _isLoading = false;
-              _loadingText = "";
-            });
-          }
-          print("USER ADDED");
-        }
-      } else {
-        print("USER EXISTS");
-      }
+      print("SIGNED UP IN LOGIN");
     }
   }
 
@@ -157,61 +109,8 @@ class _LoginState extends State<Login> {
     if (googleAuthResponse.isError) {
       showAlertDialog(context: context, text: googleAuthResponse.errorMessage);
     } else {
-      UserModel user = googleAuthResponse.data;
-      bool isUserExists = await _firebaseFireStoreService.isUserExists(userId: user.uid);
-      if (!isUserExists && user.isGoogleAuthDataAvailable()) {
-        ApiResponse addUserResponse = await _firebaseFireStoreService.addUser(user: user);
-        if (addUserResponse.isError) {
-          showAlertDialog(context: context, text: addUserResponse.errorMessage);
-        } else {
-          await _firebaseAuthService.logoutUser(isGoogleLogout: false);
-          await _firebaseAuthService.authenticateWithGoogle();
-          print("USER ADDED && User logged out and logged in");
-        }
-      } else {
-        print("USER EXISTS");
-      }
+      print("GOOGLE AUTH DONE IN LOGIN");
     }
-  }
-
-  Widget _buildLoginAfterSignUpDialog() {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      backgroundColor: CustomColors.reportDialogBackgroundColor,
-      child: Container(
-        // height: 400,
-        width: MediaQuery.of(context).size.width * 0.9,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 15,),
-              Text("Successfully Registered", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
-              SizedBox(height: 10,),
-              Text("Please login to continue", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black), textAlign: TextAlign.center,),
-              SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.all(Colors.black26),
-                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
-                        backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)
-                    ),
-                    child: Text("Okay", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
-                  ),
-                ],
-              ),
-            ]
-        ),
-      ),
-    );
   }
 
   @override
@@ -250,12 +149,12 @@ class _LoginState extends State<Login> {
                     SizedBox(height: 20,),
                     getCustomTextField(
                       labelText: 'Email Address',
-                      controller: emailController,
+                      controller: _emailController,
                       validator: (String val) => val.isValidEmail() ? null : "Please enter valid email",
                     ),
                     SizedBox(height: 20,),
                     getCustomPasswordField(
-                      controller: passwordController,
+                      controller: _passwordController,
                       inputBoxText: 'Password',
                       obscureText: _isPasswordObscure,
                       onTapObscure: () { setState(() { _isPasswordObscure = !_isPasswordObscure; }); },
@@ -265,11 +164,11 @@ class _LoginState extends State<Login> {
                     _isSignIn
                       ? SizedBox(height: 5,)
                       : getCustomPasswordField(
-                        controller: confirmPasswordController,
+                        controller: _confirmPasswordController,
                         inputBoxText: 'Confirm Password',
                         obscureText: _isConfirmPasswordObscure,
                         onTapObscure: () { setState(() { _isConfirmPasswordObscure = !_isConfirmPasswordObscure; }); },
-                        validator: (String val) => passwordController.text == val ? null : "Passwords do not match",
+                        validator: (String val) => _passwordController.text == val ? null : "Passwords do not match",
                     ),
                     _isSignIn ?  Row(
                       mainAxisAlignment: MainAxisAlignment.end,
