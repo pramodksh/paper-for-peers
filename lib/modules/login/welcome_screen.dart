@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intro_slider/dot_animation_enum.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
-import 'package:intro_slider/scrollbar_behavior_enum.dart';
 import 'package:papers_for_peers/config/colors.dart';
 
 import '../../config/default_assets.dart';

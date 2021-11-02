@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
-import 'package:papers_for_peers/models/user_model/user_model.dart';
-import 'package:papers_for_peers/modules/login/send_verification_email.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';

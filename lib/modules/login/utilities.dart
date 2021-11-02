@@ -6,11 +6,9 @@ import 'package:papers_for_peers/models/api_response.dart';
 import 'package:papers_for_peers/models/user_model/user_model.dart';
 import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/modules/login/login.dart';
 import 'package:papers_for_peers/modules/login/user_course.dart';
 import 'package:papers_for_peers/modules/login/user_details.dart';
-import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 extension EmailValidator on String {

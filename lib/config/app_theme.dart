@@ -57,10 +57,11 @@ class Styles {
           color: isDarkTheme ? Colors.white : Colors.black,
         ),
         backgroundColor: isDarkTheme ? CustomColors.backGroundColor : Colors.white,
-        textTheme: TextTheme(
-          headline6: CustomTextStyle.appBarTextStyle.copyWith(
-            color: isDarkTheme ? Colors.white : Colors.black,
-          ),
+        titleTextStyle: CustomTextStyle.appBarTextStyle.copyWith(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
+        toolbarTextStyle: CustomTextStyle.appBarTextStyle.copyWith(
+          color: isDarkTheme ? Colors.white : Colors.black,
         ),
       ),
 
