@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
-import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 
 class SyllabusCopy extends StatefulWidget {
   @override

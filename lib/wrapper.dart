@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/models/user_model/user_model.dart';
-import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/modules/login/login.dart';
-import 'package:papers_for_peers/modules/login/send_verification_email.dart';
-import 'package:papers_for_peers/modules/login/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/presentation/modules/login/login.dart';
+import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
+import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
+
+import 'data/models/user_model/user_model.dart';
 
 class Wrapper extends StatefulWidget {
   @override

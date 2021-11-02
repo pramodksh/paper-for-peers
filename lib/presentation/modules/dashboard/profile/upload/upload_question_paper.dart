@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/upload/shared.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/shared.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 
 class UploadQuestionPaper extends StatefulWidget {
   @override

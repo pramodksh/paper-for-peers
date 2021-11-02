@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/models/notification_model.dart';
-import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/dialogs.dart';
+import 'package:papers_for_peers/data/models/notification_model.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';

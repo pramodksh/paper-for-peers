@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/post_tiles.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/post_tiles.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 

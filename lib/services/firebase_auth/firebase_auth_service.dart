@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:papers_for_peers/models/api_response.dart';
-import 'package:papers_for_peers/models/user_model/user_model.dart';
+import 'package:papers_for_peers/data/models/api_response.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class FirebaseAuthService {
 

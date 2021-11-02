@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/compare_question_paper/show_split_pdf.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_pdf.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 

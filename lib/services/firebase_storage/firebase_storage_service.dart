@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:papers_for_peers/models/api_response.dart';
+import 'package:papers_for_peers/data/models/api_response.dart';
 
 class FirebaseStorageService {
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
-import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 
 class Journal extends StatefulWidget {
   final bool isDarkTheme;

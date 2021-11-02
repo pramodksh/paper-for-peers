@@ -3,9 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_notes.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/upload/upload_question_paper.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/your_posts/your_posts.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_notes.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_question_paper.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/profile/your_posts/your_posts.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 

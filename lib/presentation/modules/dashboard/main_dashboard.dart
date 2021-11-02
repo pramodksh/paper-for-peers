@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/journal/journal.dart';
-import 'package:papers_for_peers/modules/dashboard/notes/notes.dart';
-import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
-import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
-import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/modules/dashboard/syllabus_copy/syllabus_copy.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/question_paper.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+
+import 'journal/journal.dart';
+import 'notes/notes.dart';
+import 'notifications/notifications.dart';
 
 class MainDashboard extends StatefulWidget {
   @override

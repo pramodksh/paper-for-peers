@@ -2,13 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/models/api_response.dart';
-import 'package:papers_for_peers/models/user_model/user_model.dart';
-import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
-import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/modules/login/login.dart';
-import 'package:papers_for_peers/modules/login/user_course.dart';
-import 'package:papers_for_peers/modules/login/user_details.dart';
+import 'package:papers_for_peers/data/models/api_response.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/main_dashboard.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/presentation/modules/login/login.dart';
+import 'package:papers_for_peers/presentation/modules/login/user_course.dart';
+import 'package:papers_for_peers/presentation/modules/login/user_details.dart';
 import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 extension EmailValidator on String {

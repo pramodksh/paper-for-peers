@@ -1,6 +1,6 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 
 class VariantGenerator {
   int totalVariants;

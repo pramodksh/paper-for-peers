@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/models/pdf_screen_parameters.dart';
-import 'package:papers_for_peers/modules/dashboard/shared/PDF_viewer_screen.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/post_tiles.dart';
-import 'package:papers_for_peers/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/post_tiles.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 
 class Notes extends StatefulWidget {
   final bool isDarkTheme;
