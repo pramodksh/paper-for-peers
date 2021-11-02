@@ -3,8 +3,8 @@ import 'package:intro_slider/dot_animation_enum.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
 import 'package:papers_for_peers/config/colors.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 
-import '../../config/default_assets.dart';
 import '../dashboard/main_dashboard.dart';
 
 class IntroScreen extends StatefulWidget {

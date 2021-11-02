@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/models/api_response.dart';
 import 'package:papers_for_peers/models/user_model/user_model.dart';
 import 'package:papers_for_peers/modules/dashboard/shared/loading_screen.dart';
@@ -13,8 +14,6 @@ import 'package:papers_for_peers/services/image_picker/image_picker_service.dart
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../config/default_assets.dart';
-import '../../config/export_config.dart';
 import 'user_course.dart';
 import 'utilities.dart';
 
