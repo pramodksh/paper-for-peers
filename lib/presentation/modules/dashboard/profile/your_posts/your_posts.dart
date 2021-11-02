@@ -12,15 +12,15 @@ class YourPosts extends StatefulWidget {
 
 class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
 
-  TabController _tabController;
+  TabController? _tabController;
   double tabBarViewPadding = 10;
 
   Widget _getCommonTile({
-    String label,
-    String subLabel,
-    @required int nDownloads,
-    @required onDeletePressed,
-    @required int nSemester,
+    String? label,
+    String? subLabel,
+    required int nDownloads,
+    required onDeletePressed,
+    required int nSemester,
   }) {
     var themeChange = Provider.of<DarkThemeProvider>(context);
 

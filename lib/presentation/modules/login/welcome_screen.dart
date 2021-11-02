@@ -8,7 +8,7 @@ import 'package:papers_for_peers/config/export_config.dart';
 import '../dashboard/main_dashboard.dart';
 
 class IntroScreen extends StatefulWidget {
-  IntroScreen({Key key}) : super(key: key);
+  IntroScreen({Key? key}) : super(key: key);
 
   @override
   IntroScreenState createState() => new IntroScreenState();
@@ -17,7 +17,7 @@ class IntroScreen extends StatefulWidget {
 class IntroScreenState extends State<IntroScreen> {
   List<Slide> slides = [];
 
-  Function goToTab;
+  Function? goToTab;
 
   String welcomeText1 =
       "We Provide you the Feature of Downloading Notes And Question Paper";
@@ -27,7 +27,7 @@ class IntroScreenState extends State<IntroScreen> {
       "3.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
 
   Slide getSlide(
-      {@required String descriptionText, @required String imagePath}) {
+      {required String descriptionText, required String imagePath}) {
     return Slide(
       description: descriptionText,
       backgroundColor: Color(0xfff5a623),
@@ -120,7 +120,7 @@ class IntroScreenState extends State<IntroScreen> {
                 SizedBox(height: 50,),
                 GestureDetector(
                     child: Image.asset(
-                      currentSlide.pathImage,
+                      currentSlide.pathImage!,
                       width: 280.0,
                       height: 280.0,
                       fit: BoxFit.contain,
@@ -128,7 +128,7 @@ class IntroScreenState extends State<IntroScreen> {
                 SizedBox(height: 100,),
                 Container(
                   child: Text(
-                    currentSlide.description,
+                    currentSlide.description!,
                     style: currentSlide.styleDescription,
                     textAlign: TextAlign.center,
                     maxLines: 5,

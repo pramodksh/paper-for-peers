@@ -71,7 +71,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 home: Wrapper(),
               ),
-              builder: (context, value, child) => child,
+              builder: (context, value, child) => child!,
             ),
           );
         }

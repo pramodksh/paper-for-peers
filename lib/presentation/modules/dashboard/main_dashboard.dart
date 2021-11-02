@@ -10,7 +10,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_s
 import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'journal/journal.dart';
@@ -33,7 +32,7 @@ class _MainDashboardState extends State<MainDashboard> {
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
-  String selectedSemester;
+  String? selectedSemester;
 
 
   String get greeting {
@@ -75,7 +74,7 @@ class _MainDashboardState extends State<MainDashboard> {
           splashRadius: 25,
           icon: Icon(Icons.settings, size: 32,),
           onPressed: () {
-            _scaffoldkey.currentState.openEndDrawer();
+            _scaffoldkey.currentState!.openEndDrawer();
           },
         ),
         SizedBox(width: 5,),
@@ -83,7 +82,7 @@ class _MainDashboardState extends State<MainDashboard> {
     );
   }
 
-  Drawer getDrawer({@required bool isDarkTheme}) {
+  Drawer getDrawer({required bool isDarkTheme}) {
     return Drawer(
       child: Container(
         color: isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
@@ -180,7 +179,7 @@ class _MainDashboardState extends State<MainDashboard> {
     );
   }
 
-  Widget getBottomNavBar({@required bool isDarkTheme}) {
+  Widget getBottomNavBar({required bool isDarkTheme}) {
     return Container(
       decoration: BoxDecoration(
         color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,

@@ -11,17 +11,17 @@ class FirebaseFireStoreService {
 
   CollectionReference usersCollection = FirebaseFirestore.instance.collection(usersCollectionLabel);
 
-  Future<bool> isUserExists({@required String userId}) async {
+  Future<bool> isUserExists({required String userId}) async {
     DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
     return userDocumentSnapshot.exists;
   }
 
-  Future<UserModel> getUserByUserId({@required String userId}) async {
+  Future<UserModel> getUserByUserId({required String userId}) async {
     DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
-    return UserModel.getUserModelByMap(userMap: userDocumentSnapshot.data(), userId: userId);
+    return UserModel.getUserModelByMap(userMap: userDocumentSnapshot.data() as Map<dynamic, dynamic>, userId: userId);
   }
 
-  Future<ApiResponse> addUser({@required UserModel user}) {
+  Future<ApiResponse> addUser({required UserModel user}) {
       return usersCollection.doc(user.uid).set({
         'displayName': user.displayName,
         'email': user.email,

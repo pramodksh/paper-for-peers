@@ -18,7 +18,7 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
     "C",
   ];
 
-  String selectedSubject;
+  String? selectedSubject;
 
   List<Map> splitOptions= [
     {'image': DefaultAssets.splitIntoTwo, 'label': "2 Splits"},

@@ -6,16 +6,16 @@ import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 Widget getNotesDetailsTile({
-  @required String title,
-  @required String description,
-  @required double rating,
-  @required onTileTap,
-  @required BuildContext context,
-  String uploadedBy,
-  DateTime uploadedOn,
+  required String title,
+  required String description,
+  required double rating,
+  required onTileTap,
+  required BuildContext context,
+  String? uploadedBy,
+  DateTime? uploadedOn,
   bool isYourPostTile = false,
-  Function yourPostTileOnEdit,
-  Function yourPostTileOnDelete,
+  Function()? yourPostTileOnEdit,
+  Function()? yourPostTileOnDelete,
 }) {
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
   var themeChange = Provider.of<DarkThemeProvider>(context);
@@ -103,9 +103,9 @@ Widget getNotesDetailsTile({
                             radius: 20,
                           ),
                           SizedBox(width: 10,),
-                          Text(uploadedBy, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                          Text(uploadedBy!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                           Spacer(),
-                          Text(dateFormat.format(uploadedOn)),
+                          Text(dateFormat.format(uploadedOn!)),
                         ],
                       ),
                     ],

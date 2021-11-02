@@ -51,15 +51,15 @@ class _NotificationsState extends State<Notifications> {
       }
       print("DONE");
     } catch (e) {
-      print("ERROR: ${e}");
+      print("ERROR: $e");
     }
     setState(() { _isLoading = false; });
   }
 
   Widget getNotificationTile({
-    @required NotificationModel notificationModel,
-    @required bool isDarkTheme,
-    @required int index,
+    required NotificationModel notificationModel,
+    required bool isDarkTheme,
+    required int index,
   }) {
     double dateHeight = 30;
     double dateWidth = 150;
@@ -90,7 +90,7 @@ class _NotificationsState extends State<Notifications> {
                 tileColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 onTap: () async {
-                  var url = AppConstants.KUDBaseURL + notifications[index].link;
+                  var url = AppConstants.KUDBaseURL! + notifications[index].link!;
                   if (await canLaunch(url)) {
                     await launch(url);
                   } else {
@@ -99,7 +99,7 @@ class _NotificationsState extends State<Notifications> {
                 },
                 leading: Text((index + 1).toString()),
                 minLeadingWidth: 10,
-                title: Text(notifications[index].notification, style: TextStyle(fontSize: 18),),
+                title: Text(notifications[index].notification!, style: TextStyle(fontSize: 18),),
               ),
             ),
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget getUploadButton({@required Function onPressed}) {
+Widget getUploadButton({required Function() onPressed}) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),

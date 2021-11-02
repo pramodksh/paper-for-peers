@@ -9,7 +9,7 @@ import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 
 class SendVerificationEmail extends StatefulWidget {
-  final UserModel user;
+  final UserModel? user;
 
   SendVerificationEmail({this.user});
 
@@ -20,7 +20,7 @@ class SendVerificationEmail extends StatefulWidget {
 class _SendVerificationEmailState extends State<SendVerificationEmail> {
 
   FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
-  Timer _timer;
+  Timer? _timer;
 
   Future<bool> sendVerificationEmail() async {
     bool isSuccess = await _firebaseAuthService.sendVerificationEmail();
@@ -37,13 +37,13 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
         Future(() async {
           _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
             print("RELOAD USER");
-            await _firebaseAuthService.auth.currentUser.reload();
-            User user = _firebaseAuthService.auth.currentUser;
+            await _firebaseAuthService.auth.currentUser!.reload();
+            User user = _firebaseAuthService.auth.currentUser!;
             if (user.emailVerified) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => addUserIfNotExistsAndGetWidget(
                   context: context,
-                  user: widget.user,
+                  user: widget.user!,
                 ),
               ));
               timer.cancel();
@@ -59,7 +59,7 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
   @override
   void dispose() {
     if (_timer != null) {
-      _timer.cancel();
+      _timer!.cancel();
     }
     super.dispose();
 
@@ -103,7 +103,7 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
                   height: 70,
                 ),
                 Text(
-                  'We will send you a verification link to\n\"${widget.user.email}\"',
+                  'We will send you a verification link to\n\"${widget.user!.email}\"',
                   style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
                   // style: TextStyle(fontSize: 15,),
                   textAlign: TextAlign.center,

@@ -6,17 +6,17 @@ import 'package:papers_for_peers/config/text_styles.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-Widget getCourseText({@required String course, @required int semester}) {
+Widget getCourseText({required String course, required int semester}) {
   return Text("$course $semester", style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),);
 }
 
 Widget getCustomDropDown({
-  @required BuildContext context,
-  @required String dropDownValue,
-  @required List<String> dropDownItems,
-  @required String dropDownHint,
-  @required Function onDropDownChanged,
-  Function onDropDownTap,
+  required BuildContext context,
+  required String? dropDownValue,
+  required List<String> dropDownItems,
+  required String dropDownHint,
+  required Function(String?)? onDropDownChanged,
+  Function()? onDropDownTap,
   bool isTransparent = false
 }) {
 
@@ -78,9 +78,9 @@ Widget getCustomDropDown({
 }
 
 Widget getAddPostContainer({
-  @required String label,
-  @required Function onPressed,
-  @required BuildContext context,
+  required String label,
+  required Function() onPressed,
+  required BuildContext context,
   double containerRadius = 15,
 }) {
   var themeChange = Provider.of<DarkThemeProvider>(context);

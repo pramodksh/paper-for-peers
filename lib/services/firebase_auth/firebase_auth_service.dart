@@ -9,7 +9,7 @@ class FirebaseAuthService {
   FirebaseAuth auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  UserModel _userFromFirebaseUser(User user) {
+  UserModel? _userFromFirebaseUser(User? user) {
     return user != null ? UserModel(
       uid: user.uid,
       displayName: user.displayName,
@@ -18,11 +18,11 @@ class FirebaseAuthService {
     ) : null;
   }
 
-  Stream<UserModel> get user {
+  Stream<UserModel?> get user {
     return auth.authStateChanges().map(_userFromFirebaseUser);
   }
 
-  Future<ApiResponse> signUpWithEmailAndPassword({@required String email, @required String password}) async {
+  Future<ApiResponse> signUpWithEmailAndPassword({required String email, required String password}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
@@ -30,10 +30,10 @@ class FirebaseAuthService {
       );
       print("EMAIL PASSWORD SIGN UP DONE | ${userCredential.user.toString()}");
       return ApiResponse<UserModel>(isError: false, data: UserModel(
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        photoUrl: userCredential.user.photoURL,
-        displayName: userCredential.user.displayName,
+        uid: userCredential.user!.uid,
+        email: userCredential.user!.email,
+        photoUrl: userCredential.user!.photoURL,
+        displayName: userCredential.user!.displayName,
       ));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -48,18 +48,18 @@ class FirebaseAuthService {
     }
   }
   
-  Future<ApiResponse> signInWithEmailAndPassword({@required String email, @required String password}) async {
+  Future<ApiResponse> signInWithEmailAndPassword({required String email, required String password}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
       );
-      print("EMAIL PASSWORD SIGN IN DONE | ${userCredential.user.email}");
+      print("EMAIL PASSWORD SIGN IN DONE | ${userCredential.user!.email}");
       return ApiResponse<UserModel>(isError: false, data: UserModel(
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        photoUrl: userCredential.user.photoURL,
-        displayName: userCredential.user.displayName,
+        uid: userCredential.user!.uid,
+        email: userCredential.user!.email,
+        photoUrl: userCredential.user!.photoURL,
+        displayName: userCredential.user!.displayName,
       ));
     } on FirebaseAuthException catch (e) {
       print("SIGN UP ERROR: $e");
@@ -73,11 +73,11 @@ class FirebaseAuthService {
     }
   }
 
-  bool get isCurrentUserEmailVerified => auth.currentUser.emailVerified;
+  bool get isCurrentUserEmailVerified => auth.currentUser!.emailVerified;
 
 
   Future<bool> sendVerificationEmail() async {
-    User user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
     if (user != null && !user.emailVerified) {
       await user.sendEmailVerification();
       return true;
@@ -88,18 +88,18 @@ class FirebaseAuthService {
 
   Future<ApiResponse> authenticateWithGoogle() async {
     try {
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       return ApiResponse<UserModel>(isError: false, data: UserModel(
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        displayName: userCredential.user.displayName,
-        photoUrl: userCredential.user.photoURL,
+        uid: userCredential.user!.uid,
+        email: userCredential.user!.email,
+        displayName: userCredential.user!.displayName,
+        photoUrl: userCredential.user!.photoURL,
       ));
     } catch (e) {
       print("GOOGLE AUTH ERROR: $e");

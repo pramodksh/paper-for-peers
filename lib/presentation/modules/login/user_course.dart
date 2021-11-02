@@ -10,7 +10,7 @@ import 'package:papers_for_peers/presentation/modules/login/welcome_screen.dart'
 import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 
 class UserCourse extends StatefulWidget {
-  final UserModel user;
+  final UserModel? user;
 
   UserCourse({this.user});
 
@@ -22,11 +22,11 @@ class _UserCourseState extends State<UserCourse> {
 
   bool _isLoading = false;
 
-  List<String> courses;
-  List<String> semesters;
+  late List<String> courses;
+  late List<String> semesters;
 
-  String selectedCourse;
-  String selectedSemester;
+  String? selectedCourse;
+  String? selectedSemester;
 
   String courseErrorText = "";
   String semesterErrorText = "";
@@ -146,12 +146,12 @@ class _UserCourseState extends State<UserCourse> {
                         setState(() { _isLoading = true; });
                       }
                       ApiResponse response = await FirebaseFireStoreService().addUser(user: UserModel(
-                        uid: widget.user.uid,
-                        displayName: widget.user.displayName,
-                        photoUrl: widget.user.photoUrl,
-                        email: widget.user.email,
+                        uid: widget.user!.uid,
+                        displayName: widget.user!.displayName,
+                        photoUrl: widget.user!.photoUrl,
+                        email: widget.user!.email,
                         course: selectedCourse,
-                        semester: int.parse(selectedSemester),
+                        semester: int.parse(selectedSemester!),
                       ));
                       if (mounted) {
                         setState(() { _isLoading = false; });

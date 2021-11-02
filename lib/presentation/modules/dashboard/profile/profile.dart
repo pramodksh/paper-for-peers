@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // ];
 
 
-  Widget getCircularProfileImage({@required imagePath}) {
+  Widget getCircularProfileImage({required imagePath}) {
     return Container(
       padding: EdgeInsets.all(borderThickness),
       decoration: BoxDecoration(
@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getCircularStat({@required String title, @required String value}) {
+  Widget getCircularStat({required String title, required String value}) {
     return Container(
       padding: EdgeInsets.all(statCircleBorderThickness),
       decoration: BoxDecoration(
@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getProfileCustomButton({@required String title, @required Function onPressed}){
+  Widget getProfileCustomButton({required String title, required Function() onPressed}){
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.65,
       height: 50,
@@ -166,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) {
-                        TypesOfPost selected = e["enum"];
+                        TypesOfPost? selected = e["enum"];
                         if (selected == TypesOfPost.QuestionPaper) {
                           return UploadQuestionPaper();
                         } else {

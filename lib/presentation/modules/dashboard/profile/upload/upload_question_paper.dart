@@ -9,9 +9,9 @@ class UploadQuestionPaper extends StatefulWidget {
 
 class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
 
-  String selectedSubject;
-  String selectedYear;
-  String selectedSemester;
+  String? selectedSubject;
+  String? selectedYear;
+  String? selectedSemester;
 
   @override
   Widget build(BuildContext context) {

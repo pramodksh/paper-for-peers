@@ -14,7 +14,7 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
   final ParameterType parameter;
   final bool isShowBottomSheet;
 
-  PDFViewerScreen({this.screenLabel, this.parameter, this.isShowBottomSheet = true});
+  PDFViewerScreen({required this.screenLabel, required this.parameter, this.isShowBottomSheet = true});
 
   @override
   _PDFViewerScreenState createState() => _PDFViewerScreenState();
@@ -26,12 +26,12 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
   String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
 
   bool _isLoading = true;
-  PDFDocument document;
+  late PDFDocument document;
   var themeChange;
 
-  List<CheckBoxModel> reportReasons;
+  late List<CheckBoxModel> reportReasons;
 
-  Widget getPostReportButton({@required Function onPressed}) {
+  Widget getPostReportButton({required Function() onPressed}) {
     return SizedBox(
       height: 50,
       width: MediaQuery.of(context).size.width,
@@ -49,7 +49,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     );
   }
 
-  Widget getDownloadPostButton({@required Function onPressed}) {
+  Widget getDownloadPostButton({required Function() onPressed}) {
     return SizedBox(
       height: 60,
       width: 100,
@@ -104,14 +104,14 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     );
   }
 
-  Future loadDocumentFromAssetPath({@required String assetPath}) async {
+  Future loadDocumentFromAssetPath({required String assetPath}) async {
     setState(() => _isLoading = true);
     document = await PDFDocument.fromAsset(assetPath);
     setState(() => _isLoading = false);
     return;
   }
 
-  void loadDocumentFromURL({@required pdfURL}) async {
+  void loadDocumentFromURL({required pdfURL}) async {
     setState(() => _isLoading = true);
     document = await PDFDocument.fromURL(pdfURL);
     setState(() => _isLoading = false);
@@ -122,7 +122,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     // PDFDocument doc = await PDFDocument.fromFile(file);
   }
 
-  Widget getUploadedByColumn({@required String uploadedBy}) {
+  Widget getUploadedByColumn({required String uploadedBy}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -243,7 +243,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(parameter.title, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600)),
+                        Text(parameter.title!, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600)),
                         SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -253,7 +253,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                           ],
                         ),
                         SizedBox(height: 15,),
-                        getUploadedByColumn(uploadedBy: parameter.uploadedBy),
+                        getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
                       ],
                     ),
                   ),
@@ -318,7 +318,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                           ],
                         ),
                         SizedBox(height: 15,),
-                        getUploadedByColumn(uploadedBy: parameter.uploadedBy),
+                        getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
                       ],
                     ),
                   ),
@@ -398,19 +398,19 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 10,),
-                          Text(parameter.title, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600)),
+                          Text(parameter.title!, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600)),
                           SizedBox(height: 20,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              getUploadedByColumn(uploadedBy: parameter.uploadedBy),
+                              getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
                               getDownloadPostButton(onPressed: () {}),
                             ],
                           ),
                           SizedBox(height: 15,),
                           Text("Description", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                           SizedBox(height: 10,),
-                          Text(parameter.description, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                          Text(parameter.description!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                           SizedBox(height: 20,),
                           Container(
                             alignment: Alignment.center,
@@ -480,7 +480,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       isChecked: false,
     )).toList();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       themeChange = Provider.of<DarkThemeProvider>(context, listen: false);
     });
 

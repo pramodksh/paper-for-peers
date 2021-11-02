@@ -18,7 +18,7 @@ import 'user_course.dart';
 import 'utilities.dart';
 
 class UserDetails extends StatefulWidget {
-  final UserModel user;
+  final UserModel? user;
 
   UserDetails({this.user});
 
@@ -30,20 +30,23 @@ class _UserDetailsState extends State<UserDetails> {
 
   ImagePickerService imagePickerService = ImagePickerService();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  var themeChange;
+  late var themeChange;
 
   double borderThickness = 5;
   double profileImageRadius = 90;
 
-  File profilePhotoFile;
+  File? profilePhotoFile;
   TextEditingController userNameController = TextEditingController();
 
   bool _isLoading = false;
   String _loadingText = "";
 
-  Future<File> getImage({@required ImageSource imageSource}) async {
+  Future<File?> getImage({required ImageSource imageSource}) async {
     setState(() { _isLoading = true; });
-    File file = await imagePickerService.getPickedImageAsFile(imageSource: ImageSource.gallery);
+    File? file = await imagePickerService.getPickedImageAsFile(imageSource: ImageSource.gallery);
+
+    if (file == null) { return null; }
+
     file = await imagePickerService.getCroppedImage(imageFile: file);
     setState(() { _isLoading = false; });
     return file;
@@ -63,7 +66,7 @@ class _UserDetailsState extends State<UserDetails> {
     } else {
       circleImage = CircleAvatar(
           radius: profileImageRadius,
-          backgroundImage: FileImage(profilePhotoFile),
+          backgroundImage: FileImage(profilePhotoFile!),
       );
     }
 
@@ -106,7 +109,7 @@ class _UserDetailsState extends State<UserDetails> {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      File _pickedFile = await getImage(imageSource: ImageSource.camera);
+                      File? _pickedFile = await getImage(imageSource: ImageSource.camera);
                       setState(() {
                         profilePhotoFile = _pickedFile;
                       });
@@ -120,7 +123,7 @@ class _UserDetailsState extends State<UserDetails> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      File _pickedFile = await getImage(imageSource: ImageSource.gallery);
+                      File? _pickedFile = await getImage(imageSource: ImageSource.gallery);
                       setState(() {
                         profilePhotoFile = _pickedFile;
                       });
@@ -217,12 +220,12 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
 
-  Future<String> _uploadPhotoAndGetUrl() async {
-    print("UPLOAD PHOTO| ${widget.user.photoUrl}");
+  Future<String?> _uploadPhotoAndGetUrl() async {
+    print("UPLOAD PHOTO| ${widget.user!.photoUrl}");
     if (mounted) {
       setState(() { _isLoading = true; _loadingText = "Uploading Photo"; });
     }
-    ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile, userId: widget.user.uid);
+    ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile!, userId: widget.user!.uid);
     if (mounted) {
       setState(() { _isLoading = false; });
     }
@@ -230,7 +233,7 @@ class _UserDetailsState extends State<UserDetails> {
       showAlertDialog(context: context, text: response.errorMessage);
       return null;
     } else {
-      String url = response.data;
+      String? url = response.data;
       print("photo uploaded | $url");
       return url;
     }
@@ -240,7 +243,7 @@ class _UserDetailsState extends State<UserDetails> {
     if (mounted) {
       setState(() { _isLoading = true; _loadingText = "Adding user"; });
     }
-    ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user);
+    ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user!);
     if (mounted) {
       setState(() { _isLoading = false; });
     }
@@ -256,7 +259,7 @@ class _UserDetailsState extends State<UserDetails> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       themeChange = Provider.of<DarkThemeProvider>(context, listen: false);
     });
     super.initState();
@@ -350,12 +353,12 @@ class _UserDetailsState extends State<UserDetails> {
                         )
                     ),
                     onPressed: () async {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState!.validate()) {
 
-                        widget.user.displayName = userNameController.text;
+                        widget.user!.displayName = userNameController.text;
                         
                         if (profilePhotoFile == null) {
-                          bool shouldDisplayDismissibleDialog = await showDialog(
+                          bool? shouldDisplayDismissibleDialog = await showDialog(
                             context: context,
                             builder: (context) => _buildProfilePhotoEmptyDialog(),
                           );
@@ -365,12 +368,12 @@ class _UserDetailsState extends State<UserDetails> {
                               builder: (context) => buildChooseSourceDialog(),
                             );
                           } else if(shouldDisplayDismissibleDialog == false) {
-                            widget.user.photoUrl = "";
+                            widget.user!.photoUrl = "";
                             await _addUser();
                           }
                         } else {
-                          String url = await _uploadPhotoAndGetUrl();
-                          widget.user.photoUrl = url;
+                          String? url = await _uploadPhotoAndGetUrl();
+                          widget.user!.photoUrl = url;
                           await _addUser();
                         }
                       }

@@ -4,10 +4,10 @@ import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/s
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 
 class UploadNotesAndJournal extends StatefulWidget {
-  final TypesOfPost typesOfPost;
-  final String label;
+  final TypesOfPost? typesOfPost;
+  final String? label;
 
-  UploadNotesAndJournal({this.typesOfPost, this.label});
+  UploadNotesAndJournal({required this.typesOfPost, required this.label});
 
   @override
   _UploadNotesAndJournalState createState() => _UploadNotesAndJournalState();
@@ -15,10 +15,10 @@ class UploadNotesAndJournal extends StatefulWidget {
 
 class _UploadNotesAndJournalState extends State<UploadNotesAndJournal> {
 
-  String selectedSubject;
-  String selectedSemester;
+  String? selectedSubject;
+  String? selectedSemester;
 
-  Widget getNotesDetailsTextField({String hintText}) {
+  Widget getNotesDetailsTextField({required String hintText}) {
     return TextField(
       style: TextStyle(fontSize: 16, color: Colors.white),
       decoration: InputDecoration(

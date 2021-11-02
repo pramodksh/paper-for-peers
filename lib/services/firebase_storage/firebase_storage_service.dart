@@ -8,7 +8,7 @@ class FirebaseStorageService {
 
   FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<ApiResponse> uploadProfilePhoto({@required File file, @required String userId}) async {
+  Future<ApiResponse> uploadProfilePhoto({required File file, required String userId}) async {
 
     try {
       // Reference ref = storage.ref('profile_photos/file-to-upload.png');

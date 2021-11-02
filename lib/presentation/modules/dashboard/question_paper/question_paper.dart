@@ -8,7 +8,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 class QuestionPaper extends StatefulWidget {
   final bool isDarkTheme;
 
-  QuestionPaper({this.isDarkTheme});
+  QuestionPaper({required this.isDarkTheme});
 
   @override
   _QuestionPaperState createState() => _QuestionPaperState();
@@ -21,7 +21,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
     "B",
     "C",
   ];
-  String selectedSubject;
+  String? selectedSubject;
 
   List<String> years = [
     "2017",
@@ -31,8 +31,8 @@ class _QuestionPaperState extends State<QuestionPaper> {
   ];
 
   Widget getQuestionVariantContainer({
-    @required int nVariant,
-    @required Function onPressed,
+    required int nVariant,
+    required Function() onPressed,
     double containerRadius = 15,
     double containerHeight = 80,
     double containerWidth = 180,
@@ -53,7 +53,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
     );
   }
 
-  Widget getQuestionYearTile({@required String year, @required List<Widget> children}) {
+  Widget getQuestionYearTile({required String year, required List<Widget> children}) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

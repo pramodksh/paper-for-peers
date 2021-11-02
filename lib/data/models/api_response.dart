@@ -1,7 +1,9 @@
-class ApiResponse<Type> {
-  Type data;
-  bool isError;
-  String errorMessage;
+import 'package:flutter/material.dart';
 
-  ApiResponse({this.data, this.errorMessage, this.isError});
+class ApiResponse<Type> {
+  Type? data;
+  bool isError;
+  String? errorMessage;
+
+  ApiResponse({this.data, this.errorMessage, required this.isError});
 }

@@ -10,7 +10,7 @@ enum AppThemeType {
 
 class Styles {
 
-  static ThemeData themeData({@required AppThemeType appThemeType, @required BuildContext context}) {
+  static ThemeData themeData({required AppThemeType appThemeType, required BuildContext context}) {
     return ThemeData(
 
       dividerTheme: DividerThemeData(

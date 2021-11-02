@@ -1,16 +1,18 @@
 
+import 'package:flutter/cupertino.dart';
+
 class Course {
   String courseName;
   List<Semester> semesters;
 
-  Course({this.courseName, this.semesters});
+  Course({required this.courseName, required this.semesters});
 }
 
 class Semester {
   int semester;
   List<String> subjects;
 
-  Semester({this.subjects, this.semester});
+  Semester({required this.subjects, required this.semester});
 }
 
 List<Course> getCourses() {

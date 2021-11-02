@@ -1,7 +1,9 @@
-class NotificationModel {
-  String notification;
-  DateTime dateOfNotification;
-  String link;
+import 'package:flutter/cupertino.dart';
 
-  NotificationModel({this.dateOfNotification, this.notification, this.link});
+class NotificationModel {
+  String? notification;
+  DateTime dateOfNotification;
+  String? link;
+
+  NotificationModel({required this.dateOfNotification, required this.notification, required this.link});
 }

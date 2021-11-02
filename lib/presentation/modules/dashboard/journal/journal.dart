@@ -9,7 +9,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 class Journal extends StatefulWidget {
   final bool isDarkTheme;
 
-  Journal({this.isDarkTheme});
+  Journal({required this.isDarkTheme});
 
   @override
   _JournalState createState() => _JournalState();
@@ -23,7 +23,7 @@ class _JournalState extends State<Journal> {
 
   }
 
-  Widget getJournalVariantDetailsTile({@required int nVariant, @required DateTime uploadedOn, @required String uploadedBy, @required Function onTap}) {
+  Widget getJournalVariantDetailsTile({required int nVariant, required DateTime uploadedOn, required String uploadedBy, required Function() onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -58,7 +58,7 @@ class _JournalState extends State<Journal> {
     );
   }
 
-  Widget getJournalTile({@required String subject, @required int nVariants}) {
+  Widget getJournalTile({required String subject, required int nVariants}) {
 
     assert(nVariants <= 2);
 

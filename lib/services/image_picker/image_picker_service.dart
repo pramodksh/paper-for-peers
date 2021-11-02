@@ -9,8 +9,8 @@ class ImagePickerService {
 
   final ImagePicker picker = ImagePicker();
 
-  Future<File> getCroppedImage({@required File imageFile}) async  {
-    File croppedFile = await ImageCropper.cropImage(
+  Future<File?> getCroppedImage({required File imageFile}) async  {
+    File? croppedFile = await ImageCropper.cropImage(
         sourcePath: imageFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
@@ -33,14 +33,13 @@ class ImagePickerService {
     return croppedFile;
   }
 
-  Future<File> getPickedImageAsFile({@required ImageSource imageSource}) async {
+  Future<File?> getPickedImageAsFile({required ImageSource imageSource}) async {
     final pickedFile = await picker.getImage(source: imageSource);
 
     if (pickedFile == null) {
       return null;
     } else {
       return File(pickedFile.path);
-
     }
   }
 

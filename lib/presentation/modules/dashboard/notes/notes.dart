@@ -7,7 +7,8 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 class Notes extends StatefulWidget {
   final bool isDarkTheme;
 
-  Notes({this.isDarkTheme});
+  Notes({required this.isDarkTheme});
+
   @override
   _NotesState createState() => _NotesState();
 }
@@ -19,7 +20,7 @@ class _NotesState extends State<Notes> {
     "B",
     "C",
   ];
-  String selectedSubject;
+  String? selectedSubject;
 
 
   @override

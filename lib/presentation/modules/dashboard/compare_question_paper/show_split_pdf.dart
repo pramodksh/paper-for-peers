@@ -4,9 +4,9 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 
 class VariantGenerator {
   int totalVariants;
-  List<String> variantList;
-  String selectedVariant;
-  String selectedYear;
+  late List<String> variantList;
+  String? selectedVariant;
+  String? selectedYear;
 
   void resetVariant() {
     this.selectedVariant = null;
@@ -17,14 +17,14 @@ class VariantGenerator {
     return selectedYear != null && selectedVariant != null;
   }
 
-  VariantGenerator({this.totalVariants}) {
+  VariantGenerator({required this.totalVariants}) {
     this.variantList = List.generate(totalVariants, (index) => (index +1).toString());
   }
 }
 
 
 class ShowSplitPdf extends StatefulWidget {
-  final int numberOfSplits ;
+  final int? numberOfSplits ;
   ShowSplitPdf({this.numberOfSplits});
 
   @override
@@ -38,7 +38,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
   String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
 
   bool _isLoading = true;
-  PDFDocument document;
+  late PDFDocument document;
 
   List<String> years = [
     "2017",
@@ -49,9 +49,9 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
     "2022",
   ];
 
-  List<VariantGenerator> variants;
+  late List<VariantGenerator> variants;
 
-  Future loadDocumentFromAssetPath({@required String assetPath}) async {
+  Future loadDocumentFromAssetPath({required String assetPath}) async {
     setState(() => _isLoading = true);
     document = await PDFDocument.fromAsset(assetPath);
     setState(() => _isLoading = false);
@@ -64,10 +64,10 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
       print("DOC LOADED");
     });
     super.initState();
-    variants = List.generate(widget.numberOfSplits, (index) => VariantGenerator(totalVariants: 3));
+    variants = List.generate(widget.numberOfSplits!, (index) => VariantGenerator(totalVariants: 3));
   }
 
-  Widget getExpandedPDFView({@required index}) => Expanded(
+  Widget getExpandedPDFView({required index}) => Expanded(
     child: !variants[index].isShowPdf() ? Container(
       width: MediaQuery.of(context).size.width,
       child: Column(
@@ -158,7 +158,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
-            children: List.generate(widget.numberOfSplits, (index) => getExpandedPDFView(index: index)),
+            children: List.generate(widget.numberOfSplits!, (index) => getExpandedPDFView(index: index)),
             // children: List.generate( (index) => getExpandedPDFView(index: index)),
           ),
         ),

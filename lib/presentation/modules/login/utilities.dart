@@ -20,15 +20,15 @@ extension EmailValidator on String {
 }
 
 Widget getCustomPasswordField({
-  @required TextEditingController controller,
-  @required Function validator,
-  String inputBoxText,
+  required TextEditingController controller,
+  required Function(String) validator,
+  String? inputBoxText,
   bool obscureText = true,
-  VoidCallback onTapObscure,
+  VoidCallback? onTapObscure,
 }) {
   return TextFormField(
     controller: controller,
-    validator: validator,
+    validator: validator as String? Function(String?)?,
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
@@ -63,17 +63,17 @@ Widget getCustomPasswordField({
 
 
 Widget getCustomTextField({
-  @required TextEditingController controller,
-  @required Function validator,
-  String labelText,
-  String hintText,
+  required TextEditingController controller,
+  required Function(String) validator,
+  String? labelText,
+  String? hintText,
   bool obscureText = false,
-  Function onChanged,
+  Function? onChanged,
 }) {
   return TextFormField(
-    onChanged: onChanged,
+    onChanged: onChanged as void Function(String)?,
     controller: controller,
-    validator: validator,
+    validator: validator as String? Function(String?)?,
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
@@ -101,7 +101,7 @@ Widget getCustomTextField({
   );
 }
 
-Widget getCustomButton({@required String buttonText, @required Function onPressed, double width, double verticalPadding = 5 ,Color textColor = Colors.white}){
+Widget getCustomButton({required String buttonText, required Function() onPressed, double? width, double verticalPadding = 5 ,Color textColor = Colors.white}){
   Widget button = ElevatedButton(
     onPressed: onPressed,
     style: ButtonStyle(
@@ -135,7 +135,7 @@ Widget getCustomButton({@required String buttonText, @required Function onPresse
 
 }
 
-Widget getAppropriateWidget({@required UserModel user, @required BuildContext context}) {
+Widget getAppropriateWidget({required UserModel user, required BuildContext context}) {
 
   FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
 
@@ -145,7 +145,7 @@ Widget getAppropriateWidget({@required UserModel user, @required BuildContext co
       if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
         return LoadingScreen(loadingText: "Fetching your details",);
       } else {
-        UserModel authenticatedUser = snapshot.data;
+        UserModel authenticatedUser = snapshot.data as UserModel;
         if (authenticatedUser.displayName == null || authenticatedUser.photoUrl == null) {
           return UserDetails(user: authenticatedUser,);
         } else if (authenticatedUser.course == null || authenticatedUser.semester == null) {
@@ -159,7 +159,7 @@ Widget getAppropriateWidget({@required UserModel user, @required BuildContext co
 }
 
 
-Widget addUserIfNotExistsAndGetWidget({@required UserModel user, @required BuildContext context}) {
+Widget addUserIfNotExistsAndGetWidget({required UserModel user, required BuildContext context}) {
 
   FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
 
@@ -169,7 +169,7 @@ Widget addUserIfNotExistsAndGetWidget({@required UserModel user, @required Build
       if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
         return LoadingScreen(loadingText: "Checking if user exists",);
       } else {
-        bool isUserExists = snapshot.data;
+        bool isUserExists = snapshot.data as bool;
         if (!isUserExists) {
           print("ADDING USER");
 
@@ -179,7 +179,7 @@ Widget addUserIfNotExistsAndGetWidget({@required UserModel user, @required Build
               if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
                 return LoadingScreen(loadingText: "Adding user",);
               } else {
-                ApiResponse addUserResponse = snapshot.data;
+                ApiResponse addUserResponse = snapshot.data as ApiResponse;
                 if (addUserResponse.isError) {
                   print("ADD USER ERR: ${addUserResponse.errorMessage}");
                   return Login();
@@ -199,7 +199,7 @@ Widget addUserIfNotExistsAndGetWidget({@required UserModel user, @required Build
 }
 
 
-void showToast({@required String label}) {
+void showToast({required String label}) {
   Fluttertoast.showToast(
       msg: label,
       toastLength: Toast.LENGTH_LONG,

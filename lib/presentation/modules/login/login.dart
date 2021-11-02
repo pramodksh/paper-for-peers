@@ -190,7 +190,7 @@ class _LoginState extends State<Login> {
                       child: getCustomButton(
                         buttonText: _isSignIn? "Sign In" : 'Sign Up',
                         onPressed: () {
-                          if (_formKey.currentState.validate()) {
+                          if (_formKey.currentState!.validate()) {
                             if (_isSignIn) {
                               signIn();
                             } else {
