@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+
 
 class NotificationModel {
   String? notification;

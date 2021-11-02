@@ -148,7 +148,7 @@ class _LoginState extends State<Login> {
                     getCustomTextField(
                       labelText: 'Email Address',
                       controller: _emailController,
-                      validator: (String val) => val.isValidEmail() ? null : "Please enter valid email",
+                      validator: (String? val) => val!.isValidEmail() ? null : "Please enter valid email",
                     ),
                     SizedBox(height: 20,),
                     getCustomPasswordField(
@@ -156,7 +156,7 @@ class _LoginState extends State<Login> {
                       inputBoxText: 'Password',
                       obscureText: _isPasswordObscure,
                       onTapObscure: () { setState(() { _isPasswordObscure = !_isPasswordObscure; }); },
-                      validator: (String val) => val.isEmpty ? "Enter Password" : null,
+                      validator: (String? val) => val!.isEmpty ? "Enter Password" : null,
                     ),
                     _isSignIn ? Container() : SizedBox(height: 20,),
                     _isSignIn
@@ -166,9 +166,9 @@ class _LoginState extends State<Login> {
                         inputBoxText: 'Confirm Password',
                         obscureText: _isConfirmPasswordObscure,
                         onTapObscure: () { setState(() { _isConfirmPasswordObscure = !_isConfirmPasswordObscure; }); },
-                        validator: (String val) => _passwordController.text == val ? null : "Passwords do not match",
+                        validator: (String? val) => _passwordController.text == val ? null : "Passwords do not match",
                     ),
-                    _isSignIn ?  Row(
+                    _isSignIn ? Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 
 class UserModel {
   final String uid;
@@ -22,13 +22,13 @@ class UserModel {
     );
   }
 
-  bool isEmailPasswordAuthDataAvailable() {
-    return this.email != null;
-  }
-
-  bool isGoogleAuthDataAvailable() {
-    return this.uid != null && this.displayName != null && this.email != null && this.photoUrl != null;
-  }
+  // bool isEmailPasswordAuthDataAvailable() {
+  //   return this.email != null;
+  // }
+  //
+  // bool isGoogleAuthDataAvailable() {
+  //   return this.uid != null && this.displayName != null && this.email != null && this.photoUrl != null;
+  // }
 
   UserModel({
     required this.email,

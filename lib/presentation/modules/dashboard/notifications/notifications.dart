@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/notification_model.dart';
+import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
+import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -111,6 +115,9 @@ class _NotificationsState extends State<Notifications> {
   @override
   void initState() {
     setNotificationsFromWeb();
+
+    // handleKudNotificationsBloc();
+
     super.initState();
   }
 
@@ -119,22 +126,52 @@ class _NotificationsState extends State<Notifications> {
 
     var themeChange = Provider.of<DarkThemeProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isLoading ? "KUD Notifications" : "KUD Notifications (${notifications.length})"
+    return RefreshIndicator(
+      onRefresh: () {
+        print("REFRESHED");
+        context.read<KudNotificationsBloc>().add(KudNotificationsFetched());
+
+        return Future.value(true);
+
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _isLoading ? "KUD Notifications" : "KUD Notifications (${notifications.length})"
+          ),
         ),
-      ),
-      body: _isLoading ? LoadingScreen(
-        loadingText: "Loading URL - ${AppConstants.KUDNotificationsURL}",
-      ) : Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: ListView.builder(
-          itemCount: notifications.length,
-          itemBuilder: (context, index) => getNotificationTile(
-            index: index,
-            notificationModel: notifications[index],
-            isDarkTheme: themeChange.isDarkTheme,
+        body: _isLoading ? LoadingScreen(
+          loadingText: "Loading URL - ${AppConstants.KUDNotificationsURL}",
+        ) : Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Builder(
+            builder: (context) {
+
+              KudNotificationsState kudNotificationsState = context.watch<KudNotificationsBloc>().state;
+
+              log("SEE HERE: ${kudNotificationsState}");
+
+              if (kudNotificationsState is KudNotificationsFetchLoading) {
+                return CircularProgressIndicator.adaptive();
+              } else if (kudNotificationsState is KudNotificationsInitial) {
+                // return Text("Pull down to load notifications");
+                return getCustomButton(buttonText: "Load", onPressed: () {
+                  context.read<KudNotificationsBloc>().add(KudNotificationsFetched());
+                });
+              } else if (kudNotificationsState is KudNotificationsFetchLoaded){
+                return ListView.builder(
+                  itemCount: notifications.length,
+                  itemBuilder: (context, index) => getNotificationTile(
+                    index: index,
+                    notificationModel: notifications[index],
+                    isDarkTheme: themeChange.isDarkTheme,
+                  ),
+                );
+              } else {
+                return CircularProgressIndicator.adaptive();
+              }
+
+            }
           ),
         ),
       ),

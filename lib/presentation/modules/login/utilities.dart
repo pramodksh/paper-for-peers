@@ -21,14 +21,14 @@ extension EmailValidator on String {
 
 Widget getCustomPasswordField({
   required TextEditingController controller,
-  required Function(String) validator,
+  required String? Function(String?)? validator,
   String? inputBoxText,
   bool obscureText = true,
   VoidCallback? onTapObscure,
 }) {
   return TextFormField(
     controller: controller,
-    validator: validator as String? Function(String?)?,
+    validator: validator,
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
@@ -64,16 +64,16 @@ Widget getCustomPasswordField({
 
 Widget getCustomTextField({
   required TextEditingController controller,
-  required Function(String) validator,
+  required String? Function(String?)? validator,
   String? labelText,
   String? hintText,
   bool obscureText = false,
-  Function? onChanged,
+  Function(String)? onChanged,
 }) {
   return TextFormField(
-    onChanged: onChanged as void Function(String)?,
+    onChanged: onChanged,
     controller: controller,
-    validator: validator as String? Function(String?)?,
+    validator: validator,
     style: TextStyle(fontSize: 16, color: Colors.white),
     obscureText: obscureText,
     decoration: InputDecoration(
