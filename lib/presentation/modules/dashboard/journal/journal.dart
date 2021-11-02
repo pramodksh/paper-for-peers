@@ -33,15 +33,15 @@ class _JournalState extends State<Journal> {
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Variant $nVariant", style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),),
-                Text(dateFormat.format(uploadedOn), style: TextStyle(fontSize: 12),),
-              ],
-            ),
+
+            Text(dateFormat.format(uploadedOn), style: TextStyle(fontSize: 12),),
+            SizedBox(height: 5,),
+            Text("Variant $nVariant", style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),),
+
+            SizedBox(height: 10,),
+
             Row(
               children: [
                 CircleAvatar(
@@ -100,7 +100,7 @@ class _JournalState extends State<Journal> {
             shrinkWrap: true,
             crossAxisCount: 2,
             physics: NeverScrollableScrollPhysics(),
-            childAspectRatio: 16/7,
+            childAspectRatio: 16/9,
             children: gridChildren,
           ),
         ],
