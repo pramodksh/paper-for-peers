@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
@@ -252,13 +255,13 @@ class _MainDashboardState extends State<MainDashboard> {
   @override
   Widget build(BuildContext context) {
 
-    final bool isDarkTheme = context.select((AppThemeCubit cubit) => cubit.state is AppThemeDark);
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
     return Scaffold(
       key: _scaffoldkey,
       endDrawer: ClipRRect(
         borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
-        child: getDrawer(isDarkTheme: isDarkTheme),
+        child: getDrawer(isDarkTheme: appThemeType == AppThemeType.dark),
       ),
       appBar: getAppBar(),
       body: Builder(
@@ -266,17 +269,17 @@ class _MainDashboardState extends State<MainDashboard> {
           if (_isLoading ) {
             return LoadingScreen(loadingText: _loadingText,);
           } else if (selectedItemPosition == 0) {
-            return QuestionPaper(isDarkTheme: isDarkTheme,);
+            return QuestionPaper(isDarkTheme: appThemeType == AppThemeType.dark,);
           } else if (selectedItemPosition == 1) {
-            return Notes(isDarkTheme: isDarkTheme,);
+            return Notes(isDarkTheme: appThemeType == AppThemeType.dark,);
           } else if (selectedItemPosition == 2) {
-            return Journal(isDarkTheme: isDarkTheme,);
+            return Journal(isDarkTheme: appThemeType == AppThemeType.dark,);
           } else {
             return SyllabusCopy();
           }
         },
       ),
-      bottomNavigationBar: getBottomNavBar(isDarkTheme: isDarkTheme),
+      bottomNavigationBar: getBottomNavBar(isDarkTheme: appThemeType == AppThemeType.dark),
     );
   }
 }
