@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
@@ -34,19 +36,61 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) {
-        return themeChangeProvider;
-      },
-      child: Consumer<DarkThemeProvider>(
-        builder: (context, value, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
-            home: Wrapper(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AppThemeCubit(),
+        ),
+      ],
+      child: Builder(
+        builder: (context) {
+
+          final AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
+
+          // todo add this
+          // return MaterialApp(
+          //   debugShowCheckedModeBanner: false,
+          //   theme: Styles.themeData(
+          //     context: context,
+          //     appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
+          //   ),
+          //   home: Wrapper(),
+          // );
+
+          // todo remove change notifier
+          return ChangeNotifierProvider(
+            create: (_) {
+              return themeChangeProvider;
+            },
+            child: Consumer<DarkThemeProvider>(
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: Styles.themeData(
+                  context: context,
+                  appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
+                ),
+                home: Wrapper(),
+              ),
+              builder: (context, value, child) => child,
+            ),
           );
-        },
+        }
       ),
     );
+
+    // return ChangeNotifierProvider(
+    //   create: (_) {
+    //     return themeChangeProvider;
+    //   },
+    //   child: Consumer<DarkThemeProvider>(
+    //     builder: (context, value, child) {
+    //       return MaterialApp(
+    //         debugShowCheckedModeBanner: false,
+    //         theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
+    //         home: Wrapper(),
+    //       );
+    //     },
+    //   ),
+    // );
   }
 }
