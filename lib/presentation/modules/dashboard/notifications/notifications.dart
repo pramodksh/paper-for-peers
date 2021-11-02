@@ -1,10 +1,11 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/notification_model.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
@@ -13,62 +14,19 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_scraper/web_scraper.dart';
 
-class Notifications extends StatefulWidget {
-  @override
-  _NotificationsState createState() => _NotificationsState();
-}
-
-class _NotificationsState extends State<Notifications> {
-
-  WebScraper webScraper = WebScraper();
-  List<NotificationModel> notifications = [];
-  bool _isLoading = false;
-  DateFormat dateFormat = DateFormat("dd MMMM yyyy");
-
-  void setNotificationsFromWeb() async {
-    print("Loading URL");
-    setState(() { _isLoading = true; });
-    try {
-      bool isLoaded = await webScraper.loadFullURL(AppConstants.KUDNotificationsURL);
-      if (isLoaded) {
-        print("Web page loaded");
-        List<Map<String, dynamic>> datesMap = webScraper.getElement('td > table.tblContent > tbody > tr > td:nth-child(2)', ['style']);
-        List<Map<String, dynamic>> notificationsMap = webScraper.getElement('td > table.tblContent > tbody > tr > td:nth-child(1)', ['href']);
-        List<Map<String, dynamic>> linksMap = webScraper.getElement('td > table.tblContent > tbody > tr > td:nth-child(3) > a', ['href']);
-
-        print("${datesMap.length} || ${notificationsMap.length} || ${linksMap.length}");
-
-        for (int index = 0; index < datesMap.length; index++) {
-          List splitDate = datesMap[index]['title'].toString().split("/");
-          int year = int.parse(splitDate[2]);
-          int month = int.parse(splitDate[1]);
-          int date = int.parse(splitDate[0]);
-          DateTime dateOfNotification = DateTime(year, month = month, date = date);
-          notifications.add(NotificationModel(
-            notification: notificationsMap[index]['title'],
-            dateOfNotification: dateOfNotification,
-            link: linksMap[index]['attributes']['href'],
-          ));
-        }
-      } else {
-        print("NOT LOADED");
-      }
-      print("DONE");
-    } catch (e) {
-      print("ERROR: $e");
-    }
-    setState(() { _isLoading = false; });
-  }
+class Notifications extends StatelessWidget {
+  final DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
   Widget getNotificationTile({
     required NotificationModel notificationModel,
     required bool isDarkTheme,
     required int index,
+    required BuildContext context,
   }) {
     double dateHeight = 30;
     double dateWidth = 150;
     double dateBorderRadius = 20;
-    // foo
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Stack(
@@ -82,7 +40,7 @@ class _NotificationsState extends State<Notifications> {
               ),
               height: dateHeight,
               width: dateWidth,
-              child: Center(child: Text(dateFormat.format(notifications[index].dateOfNotification))),
+              child: Center(child: Text(dateFormat.format(notificationModel.dateOfNotification))),
             ),
             right: 15,
           ),
@@ -94,7 +52,7 @@ class _NotificationsState extends State<Notifications> {
                 tileColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 onTap: () async {
-                  var url = AppConstants.KUDBaseURL! + notifications[index].link!;
+                  var url = AppConstants.KUDBaseURL! + notificationModel.link!;
                   if (await canLaunch(url)) {
                     await launch(url);
                   } else {
@@ -103,7 +61,7 @@ class _NotificationsState extends State<Notifications> {
                 },
                 leading: Text((index + 1).toString()),
                 minLeadingWidth: 10,
-                title: Text(notifications[index].notification!, style: TextStyle(fontSize: 18),),
+                title: Text(notificationModel.notification!, style: TextStyle(fontSize: 18),),
               ),
             ),
           ),
@@ -112,67 +70,72 @@ class _NotificationsState extends State<Notifications> {
     );
   }
 
-  @override
-  void initState() {
-    setNotificationsFromWeb();
+  AppBar _getAppBar({required BuildContext context}) {
+    KudNotificationsState kudNotificationsState = context.select((KudNotificationsBloc bloc) => bloc.state);
 
-    // handleKudNotificationsBloc();
+    return AppBar(
+      title: Text(
+        kudNotificationsState is KudNotificationsFetchLoaded ?
+        "KUD Notifications (${kudNotificationsState.notifications.length})"
+            : "KUD Notifications",
+      ),
+    );
+  }
 
-    super.initState();
+  Widget getBodyTextWidget({
+    required String label,
+    required double appBarHeight,
+    required BuildContext context,
+  }) {
+    return ListView(
+      children: [
+        Container(
+            height: MediaQuery.of(context).size.height - appBarHeight,
+            child: Center(child: Text(label, style: TextStyle(fontSize: 20),))
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
 
-    var themeChange = Provider.of<DarkThemeProvider>(context);
+    AppBar _appBar = _getAppBar(context: context);
 
     return RefreshIndicator(
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () {
-        print("REFRESHED");
         context.read<KudNotificationsBloc>().add(KudNotificationsFetched());
-
         return Future.value(true);
-
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            _isLoading ? "KUD Notifications" : "KUD Notifications (${notifications.length})"
-          ),
-        ),
-        body: _isLoading ? LoadingScreen(
-          loadingText: "Loading URL - ${AppConstants.KUDNotificationsURL}",
-        ) : Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: Builder(
-            builder: (context) {
+        appBar: _appBar,
+        body: Builder(
+          builder: (context) {
+            KudNotificationsState kudNotificationsState = context.watch<KudNotificationsBloc>().state;
+            AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
 
-              KudNotificationsState kudNotificationsState = context.watch<KudNotificationsBloc>().state;
-
-              log("SEE HERE: ${kudNotificationsState}");
-
-              if (kudNotificationsState is KudNotificationsFetchLoading) {
-                return CircularProgressIndicator.adaptive();
-              } else if (kudNotificationsState is KudNotificationsInitial) {
-                // return Text("Pull down to load notifications");
-                return getCustomButton(buttonText: "Load", onPressed: () {
-                  context.read<KudNotificationsBloc>().add(KudNotificationsFetched());
-                });
-              } else if (kudNotificationsState is KudNotificationsFetchLoaded){
-                return ListView.builder(
-                  itemCount: notifications.length,
-                  itemBuilder: (context, index) => getNotificationTile(
-                    index: index,
-                    notificationModel: notifications[index],
-                    isDarkTheme: themeChange.isDarkTheme,
-                  ),
-                );
-              } else {
-                return CircularProgressIndicator.adaptive();
-              }
-
+            if (kudNotificationsState is KudNotificationsFetchLoading) {
+              return LoadingScreen(loadingText: "Loading URL - ${AppConstants.KUDNotificationsURL}",);
+            } else if (kudNotificationsState is KudNotificationsInitial) {
+              return getBodyTextWidget(label: "Pull down to load notifications", appBarHeight: _appBar.preferredSize.height, context: context);
+            } else if (kudNotificationsState is KudNotificationsFetchError) {
+              return getBodyTextWidget(label: "Error while loading Kud Notifications", appBarHeight: _appBar.preferredSize.height, context: context);
+            } else if (kudNotificationsState is KudNotificationsFetchLoaded){
+              return ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                itemCount: kudNotificationsState.notifications.length,
+                itemBuilder: (context, index) => getNotificationTile(
+                  index: index,
+                  notificationModel: kudNotificationsState.notifications[index],
+                  isDarkTheme: appThemeState.appThemeType == AppThemeType.dark,
+                  context: context,
+                ),
+              );
+            } else {
+              return CircularProgressIndicator.adaptive();
             }
-          ),
+          },
         ),
       ),
     );
