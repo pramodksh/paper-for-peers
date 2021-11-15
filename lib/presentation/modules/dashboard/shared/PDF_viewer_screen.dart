@@ -488,7 +488,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
         await loadDocumentFromAssetPath(assetPath: pdfPath);
-        _showCustomBottomSheet(isDarkTheme: appThemeType == AppThemeType.dark);
+        _showCustomBottomSheet(isDarkTheme: appThemeType.isDarkTheme());
       });
     }
     reportReasons = AppConstants.reportReasons.map((e) => CheckBoxModel(
@@ -514,7 +514,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
             margin: EdgeInsets.symmetric(vertical: 5),
             child: ElevatedButton(
               onPressed: () {
-                _showCustomBottomSheet(isDarkTheme: appThemeType == AppThemeType.dark);
+                _showCustomBottomSheet(isDarkTheme: appThemeType.isDarkTheme());
               },
               child: Text("Details", style: TextStyle(fontSize: 16,),
               ),

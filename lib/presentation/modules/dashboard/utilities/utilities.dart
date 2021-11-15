@@ -29,13 +29,13 @@ Widget getCustomDropDown({
     backgroundColor = Colors.transparent;
     border = Border.all(color: Colors.white, width: 2);
   } else {
-    backgroundColor = appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : Colors.grey.shade300;
+    backgroundColor = appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : Colors.grey.shade300;
   border = Border.all(color: Colors.black54,);
   }
 
   return Theme(
     data: Theme.of(context).copyWith(
-      canvasColor: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : Colors.grey.shade300,
+      canvasColor: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : Colors.grey.shade300,
     ),
     child: Container(
       height: 45,
@@ -53,19 +53,19 @@ Widget getCustomDropDown({
           iconSize: 30,
           icon: Icon(
             Icons.keyboard_arrow_down,
-            color: appThemeType == AppThemeType.dark ? Colors.grey.shade300 : CustomColors.bottomNavBarColor,
+            color: appThemeType.isDarkTheme() ? Colors.grey.shade300 : CustomColors.bottomNavBarColor,
           ),
           value: dropDownValue,
           hint: Text(dropDownHint, style: CustomTextStyle.bodyTextStyle.copyWith(
             fontSize: 18,
-            color: appThemeType == AppThemeType.dark ? Colors.white60 : Colors.black,
+            color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
           ),),
           items: dropDownItems.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value, style: CustomTextStyle.bodyTextStyle.copyWith(
                 fontSize: 18,
-                color: appThemeType == AppThemeType.dark ? Colors.white60 : Colors.black,
+                color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
               ),),
             );
           }).toList(),
@@ -87,7 +87,7 @@ Widget getAddPostContainer({
 
   Widget dottedBorderContainer = DottedBorder(
     padding: EdgeInsets.zero,
-    color: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
+    color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
     dashPattern: [8, 4],
     strokeWidth: 2,
     strokeCap: StrokeCap.square,

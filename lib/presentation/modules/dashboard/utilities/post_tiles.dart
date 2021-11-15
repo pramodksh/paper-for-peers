@@ -36,7 +36,7 @@ Widget getNotesDetailsTile({
             child: Container(
               padding: EdgeInsets.only(top: 6),
               decoration: BoxDecoration(
-                color: appThemeType == AppThemeType.dark ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
+                color: appThemeType.isDarkTheme() ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
               ),
               height: 50,
@@ -63,7 +63,7 @@ Widget getNotesDetailsTile({
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             margin: EdgeInsets.only(top: ratingHeight),
             decoration: BoxDecoration(
-                color: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 borderRadius: BorderRadius.all(Radius.circular(20))
             ),
             // height: 200,

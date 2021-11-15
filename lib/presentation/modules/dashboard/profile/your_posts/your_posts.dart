@@ -31,7 +31,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+        color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -48,7 +48,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
                   subLabel,
                   style: TextStyle(
                     fontSize: 16,
-                    color: appThemeType == AppThemeType.dark ? Colors.white60 : Colors.black54,
+                    color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black54,
                   ),
                 ),
               ],
@@ -176,7 +176,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
     Color selectedIconColor;
     Color unselectedIconColor;
 
-    if (appThemeType == AppThemeType.dark) {
+    if (appThemeType.isDarkTheme()) {
       selectedIconColor = CustomColors.bottomNavBarSelectedIconColor;
       unselectedIconColor = CustomColors.bottomNavBarUnselectedIconColor;
     } else {
@@ -195,7 +195,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
             Container(
               child: TabBar(
                 controller: _tabController,
-                indicatorColor: appThemeType == AppThemeType.dark ? CustomColors.lightModeBottomNavBarColor : CustomColors.bottomNavBarColor,
+                indicatorColor: appThemeType.isDarkTheme() ? CustomColors.lightModeBottomNavBarColor : CustomColors.bottomNavBarColor,
                 unselectedLabelColor: unselectedIconColor,
                 labelColor: selectedIconColor,
                 tabs: List.generate(AppConstants.bottomNavBarIcons.length, (index) => Tab(
@@ -211,11 +211,11 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  _getQuestionPapers(isDarkTheme: appThemeType == AppThemeType.dark),
-                  _getNotes(isDarkTheme: appThemeType == AppThemeType.dark),
-                  _getJournal(isDarkTheme: appThemeType == AppThemeType.dark),
-                  _getSyllabusCopy(isDarkTheme: appThemeType == AppThemeType.dark),
-                  _getTextBooks(isDarkTheme: appThemeType == AppThemeType.dark),
+                  _getQuestionPapers(isDarkTheme: appThemeType.isDarkTheme()),
+                  _getNotes(isDarkTheme: appThemeType.isDarkTheme()),
+                  _getJournal(isDarkTheme: appThemeType.isDarkTheme()),
+                  _getSyllabusCopy(isDarkTheme: appThemeType.isDarkTheme()),
+                  _getTextBooks(isDarkTheme: appThemeType.isDarkTheme()),
                 ],
               ),
             ),

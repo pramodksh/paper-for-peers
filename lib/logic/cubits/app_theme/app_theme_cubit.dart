@@ -16,7 +16,7 @@ class AppThemeCubit extends Cubit<AppThemeState> {
   }
 
   void setAppTheme(AppThemeType appThemeType) {
-    if (appThemeType == AppThemeType.dark) {
+    if (appThemeType.isDarkTheme()) {
       emit(AppThemeDark());
     } else {
       emit(AppThemeLight());

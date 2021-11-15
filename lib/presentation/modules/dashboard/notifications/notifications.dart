@@ -125,7 +125,7 @@ class Notifications extends StatelessWidget {
                 itemBuilder: (context, index) => getNotificationTile(
                   index: index,
                   notificationModel: kudNotificationsState.notifications[index],
-                  isDarkTheme: appThemeState.appThemeType == AppThemeType.dark,
+                  isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
                   context: context,
                 ),
               );

@@ -221,13 +221,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  getCircularStat(title: 'Average\nRating', value: avgRating.toString(), isDarkTheme: appThemeType == AppThemeType.dark),
-                  getCircularStat(title: 'Total\nRating', value: totalDownloads.toString(), isDarkTheme: appThemeType == AppThemeType.dark),
+                  getCircularStat(title: 'Average\nRating', value: avgRating.toString(), isDarkTheme: appThemeType.isDarkTheme()),
+                  getCircularStat(title: 'Total\nRating', value: totalDownloads.toString(), isDarkTheme: appThemeType.isDarkTheme()),
                 ],
               ),
               SizedBox(height: 30,),
               getProfileCustomButton(
-                isDarkTheme: appThemeType == AppThemeType.dark,
+                isDarkTheme: appThemeType.isDarkTheme(),
                 title: 'Your Posts',
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -237,12 +237,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               SizedBox(height: 30,),
               getProfileCustomButton(
-                isDarkTheme: appThemeType == AppThemeType.dark,
+                isDarkTheme: appThemeType.isDarkTheme(),
                 title: 'Upload',
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (context) => _buildUploadDialog(isDarkTheme: appThemeType == AppThemeType.dark),
+                    builder: (context) => _buildUploadDialog(isDarkTheme: appThemeType.isDarkTheme()),
                   );
                 }
               ),

@@ -260,7 +260,7 @@ class _MainDashboardState extends State<MainDashboard> {
       key: _scaffoldkey,
       endDrawer: ClipRRect(
         borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
-        child: getDrawer(isDarkTheme: appThemeType == AppThemeType.dark),
+        child: getDrawer(isDarkTheme: appThemeType.isDarkTheme()),
       ),
       appBar: getAppBar(),
       body: Builder(
@@ -268,17 +268,17 @@ class _MainDashboardState extends State<MainDashboard> {
           if (_isLoading ) {
             return LoadingScreen(loadingText: _loadingText,);
           } else if (selectedItemPosition == 0) {
-            return QuestionPaper(isDarkTheme: appThemeType == AppThemeType.dark,);
+            return QuestionPaper(isDarkTheme: appThemeType.isDarkTheme(),);
           } else if (selectedItemPosition == 1) {
-            return Notes(isDarkTheme: appThemeType == AppThemeType.dark,);
+            return Notes(isDarkTheme: appThemeType.isDarkTheme(),);
           } else if (selectedItemPosition == 2) {
-            return Journal(isDarkTheme: appThemeType == AppThemeType.dark,);
+            return Journal(isDarkTheme: appThemeType.isDarkTheme(),);
           } else {
             return SyllabusCopy();
           }
         },
       ),
-      bottomNavigationBar: getBottomNavBar(isDarkTheme: appThemeType == AppThemeType.dark),
+      bottomNavigationBar: getBottomNavBar(isDarkTheme: appThemeType.isDarkTheme()),
     );
   }
 }

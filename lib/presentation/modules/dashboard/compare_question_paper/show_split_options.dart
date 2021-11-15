@@ -72,14 +72,14 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
                               onTap: () {
                                 setState(() {
                                   selectedItemPosition = index;
-                                  print('Theme : ${appThemeType == AppThemeType.dark}');
+                                  print('Theme : ${appThemeType.isDarkTheme()}');
                                 });
                               },
                               child: Builder(
                                 builder: (context) {
                                   Color selectedSplitColor;
 
-                                  if (appThemeType == AppThemeType.dark) {
+                                  if (appThemeType.isDarkTheme()) {
                                     selectedSplitColor = CustomColors.bottomNavBarColor;
                                   } else {
                                     selectedSplitColor = Colors.black12;
@@ -111,7 +111,7 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
               },
               child: Text("Apply"),
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor :CustomColors.lightModeBottomNavBarColor)),
+                  backgroundColor: MaterialStateProperty.all(appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor :CustomColors.lightModeBottomNavBarColor)),
             )
           ],
         ),

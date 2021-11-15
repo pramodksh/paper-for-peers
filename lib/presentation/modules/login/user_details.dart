@@ -307,7 +307,7 @@ class _UserDetailsState extends State<UserDetails> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => buildChooseSourceDialog(isDarkTheme: appThemeType == AppThemeType.dark),
+                                  builder: (context) => buildChooseSourceDialog(isDarkTheme: appThemeType.isDarkTheme()),
                                 );
                               }),
                         ),
@@ -354,12 +354,12 @@ class _UserDetailsState extends State<UserDetails> {
                         if (profilePhotoFile == null) {
                           bool? shouldDisplayDismissibleDialog = await showDialog(
                             context: context,
-                            builder: (context) => _buildProfilePhotoEmptyDialog(isDarkTheme: appThemeType == AppThemeType.dark),
+                            builder: (context) => _buildProfilePhotoEmptyDialog(isDarkTheme: appThemeType.isDarkTheme()),
                           );
                           if (shouldDisplayDismissibleDialog == true) {
                             showDialog(
                               context: context,
-                              builder: (context) => buildChooseSourceDialog(isDarkTheme: appThemeType == AppThemeType.dark),
+                              builder: (context) => buildChooseSourceDialog(isDarkTheme: appThemeType.isDarkTheme()),
                             );
                           } else if(shouldDisplayDismissibleDialog == false) {
                             widget.user!.photoUrl = "";

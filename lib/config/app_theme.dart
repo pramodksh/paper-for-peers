@@ -25,16 +25,16 @@ class Styles {
     return ThemeData(
 
       dividerTheme: DividerThemeData(
-        color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+        color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         thickness: 0.6,
       ),
 
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: CustomTextStyle.bodyTextStyle.copyWith(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
         labelStyle: CustomTextStyle.bodyTextStyle.copyWith(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
       ),
 
@@ -43,7 +43,7 @@ class Styles {
           style: ButtonStyle(
             textStyle: MaterialStateProperty.all(
               CustomTextStyle.bodyTextStyle.copyWith(
-                color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+                color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
               ),
             ),
           )
@@ -57,9 +57,9 @@ class Styles {
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color>(appThemeType == AppThemeType.dark ? Colors.white : Colors.black,),
+          foregroundColor: MaterialStateProperty.all<Color>(appThemeType.isDarkTheme() ? Colors.white : Colors.black,),
           backgroundColor: MaterialStateProperty.all(
-            appThemeType == AppThemeType.dark ? CustomColors.ratingBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+            appThemeType.isDarkTheme() ? CustomColors.ratingBackgroundColor : CustomColors.lightModeBottomNavBarColor,
           ),
           textStyle: MaterialStateProperty.all(
             CustomTextStyle.bodyTextStyle
@@ -70,26 +70,26 @@ class Styles {
       appBarTheme: AppBarTheme(
         elevation: 0.0,
         iconTheme: IconThemeData(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
-        backgroundColor: appThemeType == AppThemeType.dark ? CustomColors.backGroundColor : Colors.white,
+        backgroundColor: appThemeType.isDarkTheme() ? CustomColors.backGroundColor : Colors.white,
         titleTextStyle: CustomTextStyle.appBarTextStyle.copyWith(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
         toolbarTextStyle: CustomTextStyle.appBarTextStyle.copyWith(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
       ),
 
       textTheme: TextTheme(
         bodyText1: CustomTextStyle.bodyTextStyle.copyWith(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
         bodyText2: CustomTextStyle.bodyTextStyle.copyWith(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
         subtitle1: CustomTextStyle.bodyTextStyle.copyWith(
-          color: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
+          color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
       ).apply(
         // todo check and delete
@@ -99,33 +99,33 @@ class Styles {
 
       // iconTheme: IconThemeData(
       //   color: Colors.red,
-      //   // color: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarSelectedIconColor : Colors.red,
+      //   // color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarSelectedIconColor : Colors.red,
       // ),
 
-      scaffoldBackgroundColor: appThemeType == AppThemeType.dark ? CustomColors.backGroundColor : Colors.white,
+      scaffoldBackgroundColor: appThemeType.isDarkTheme() ? CustomColors.backGroundColor : Colors.white,
 
       // primarySwatch: Colors.red,
-      // primaryColor: appThemeType == AppThemeType.dark ? Colors.black : Colors.white,
+      // primaryColor: appThemeType.isDarkTheme() ? Colors.black : Colors.white,
       //
-      // backgroundColor: appThemeType == AppThemeType.dark ? Colors.black : Color(0xffF1F5FB),
+      // backgroundColor: appThemeType.isDarkTheme() ? Colors.black : Color(0xffF1F5FB),
       //
-      // indicatorColor: appThemeType == AppThemeType.dark ? Color(0xff0E1D36) : Color(0xffCBDCF8),
-      // buttonColor: appThemeType == AppThemeType.dark ? Color(0xff3B3B3B) : Color(0xffF1F5FB),
+      // indicatorColor: appThemeType.isDarkTheme() ? Color(0xff0E1D36) : Color(0xffCBDCF8),
+      // buttonColor: appThemeType.isDarkTheme() ? Color(0xff3B3B3B) : Color(0xffF1F5FB),
       //
-      // hintColor: appThemeType == AppThemeType.dark ? Color(0xff280C0B) : Color(0xffEECED3),
+      // hintColor: appThemeType.isDarkTheme() ? Color(0xff280C0B) : Color(0xffEECED3),
       //
-      // highlightColor: appThemeType == AppThemeType.dark ? Color(0xff372901) : Color(0xffFCE192),
-      // hoverColor: appThemeType == AppThemeType.dark ? Color(0xff3A3A3B) : Color(0xff4285F4),
+      // highlightColor: appThemeType.isDarkTheme() ? Color(0xff372901) : Color(0xffFCE192),
+      // hoverColor: appThemeType.isDarkTheme() ? Color(0xff3A3A3B) : Color(0xff4285F4),
       //
-      // focusColor: appThemeType == AppThemeType.dark ? Color(0xff0B2512) : Color(0xffA8DAB5),
+      // focusColor: appThemeType.isDarkTheme() ? Color(0xff0B2512) : Color(0xffA8DAB5),
       // disabledColor: Colors.grey,
       // // textSelectionTheme: TextSelectionThemeData.lerp(a, b, t),
-      // // textSelectionColor: appThemeType == AppThemeType.dark ? Colors.white : Colors.black,
-      // cardColor: appThemeType == AppThemeType.dark ? Color(0xFF151515) : Colors.white,
-      // canvasColor: appThemeType == AppThemeType.dark ? Colors.black : Colors.grey[50],
-      // brightness: appThemeType == AppThemeType.dark ? Brightness.dark : Brightness.light,
+      // // textSelectionColor: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
+      // cardColor: appThemeType.isDarkTheme() ? Color(0xFF151515) : Colors.white,
+      // canvasColor: appThemeType.isDarkTheme() ? Colors.black : Colors.grey[50],
+      // brightness: appThemeType.isDarkTheme() ? Brightness.dark : Brightness.light,
       // buttonTheme: Theme.of(context).buttonTheme.copyWith(
-      //     colorScheme: appThemeType == AppThemeType.dark ? ColorScheme.dark() : ColorScheme.light()),
+      //     colorScheme: appThemeType.isDarkTheme() ? ColorScheme.dark() : ColorScheme.light()),
     );
 
   }
