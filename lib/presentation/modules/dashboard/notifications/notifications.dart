@@ -20,9 +20,9 @@ class Notifications extends StatelessWidget {
     required int index,
     required BuildContext context,
   }) {
-    double dateHeight = 30;
-    double dateWidth = 150;
-    double dateBorderRadius = 20;
+    final double dateHeight = 30;
+    final double dateWidth = 150;
+    final double dateBorderRadius = 15;
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -43,23 +43,21 @@ class Notifications extends StatelessWidget {
           ),
           Container(
             margin: EdgeInsets.only(top: dateHeight),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: ListTile(
-                tileColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
-                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                onTap: () async {
-                  var url = AppConstants.KUDBaseURL! + notificationModel.link!;
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  } else {
-                    showAlertDialog(context: context, text: "Couldn't open url - $url");
-                  }
-                },
-                leading: Text((index + 1).toString()),
-                minLeadingWidth: 10,
-                title: Text(notificationModel.notification!, style: TextStyle(fontSize: 18),),
-              ),
+            child: ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20),),
+              tileColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              onTap: () async {
+                var url = AppConstants.KUDBaseURL + notificationModel.link!;
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  showAlertDialog(context: context, text: "Couldn't open url - $url");
+                }
+              },
+              leading: Text((index + 1).toString()),
+              minLeadingWidth: 10,
+              title: Text(notificationModel.notification!, style: TextStyle(fontSize: 18),),
             ),
           ),
         ],
@@ -120,7 +118,7 @@ class Notifications extends StatelessWidget {
               return getBodyTextWidget(label: "Error while loading Kud Notifications", appBarHeight: _appBar.preferredSize.height, context: context);
             } else if (kudNotificationsState is KudNotificationsFetchLoaded){
               return ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 itemCount: kudNotificationsState.notifications.length,
                 itemBuilder: (context, index) => getNotificationTile(
                   index: index,
