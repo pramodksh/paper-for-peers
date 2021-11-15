@@ -6,6 +6,8 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_options.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
+import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 import 'package:provider/provider.dart';
 
 class QuestionPaper extends StatefulWidget {
@@ -89,6 +91,9 @@ class _QuestionPaperState extends State<QuestionPaper> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  getCustomButton(buttonText: "demo", onPressed: () {
+                    FirebaseFireStoreService().foo();
+                  }),
                   getCourseText(course: "BCA", semester: 6),
                   getCustomDropDown(
                     context: context,

@@ -6,13 +6,21 @@ class FirebaseFireStoreService {
   static final String usersCollectionLabel = "users";
   // static String documentsCollectionLabel = "";
 
-  static final String coursesCollectionLabel = "courses";
+  // static final String coursesCollectionLabel = "courses";
+  static final String coursesCollectionLabel = "courses_new";
   static final String semestersCollectionLabel = "semesters";
+  static final String syllabusCopyCollectionLabel = "syllabus_copy";
+  static final String subjectsCollectionLabel = "subjects";
+  static final String journalCollectionLabel = "journal";
+  static final String notesCollectionLabel = "notes";
   static final String questionPaperCollectionLabel = "question_paper";
+
+
   static final String yearsCollectionLabel = "years";
   static final String versionsCollectionLabel = "versions";
 
   CollectionReference usersCollection = FirebaseFirestore.instance.collection(usersCollectionLabel);
+  CollectionReference coursesCollection = FirebaseFirestore.instance.collection(coursesCollectionLabel);
 
   Future<bool> isUserExists({required String userId}) async {
     DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
@@ -38,5 +46,44 @@ class FirebaseFireStoreService {
       return ApiResponse(isError: true, errorMessage: "Failed to add user: ERR: $err");
     }
   }
+
+  Future? foo() async {
+    QuerySnapshot snapshot = await coursesCollection.get();
+    snapshot.docs.forEach((course) async {
+      print("SEE: ${course.id}");
+      QuerySnapshot semesterSnapshot = await course.reference.collection(semestersCollectionLabel).get();
+
+      semesterSnapshot.docs.forEach((semester) async {
+
+        // todo subjects
+        QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
+        subjectsSnapshot.docs.forEach((subject) {
+          print("sem: ${semester.id}, Subject: ${subject.id}");
+
+          // todo journal, notes, question paper
+          // subject.reference.collection(journalCollectionLabel);
+          // subject.reference.collection(notesCollectionLabel);
+          // subject.reference.collection(questionPaperCollectionLabel);
+
+        });
+
+        // todo syllabus copy
+        // QuerySnapshot syllabusCopySnapshot = await semester.reference.collection(syllabusCopyCollectionLabel).get();
+        // syllabusCopySnapshot.docs.forEach((syllabusCopy) {
+        //   print("sem: ${semester.id} : SYLLABUS COPY: ${syllabusCopy.data()}");
+        // });
+
+        // questionPaperSnapshot.docs.forEach((questionPaper) {
+        //   print("\t\t subjects: ${questionPaper.id}");
+        // });
+
+
+      });
+
+    });
+    // var temp = snapshot.
+    // print("TEMP: ${temp} ");
+  }
+
 
 }
