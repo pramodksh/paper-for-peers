@@ -1,5 +1,7 @@
  import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
+import 'package:papers_for_peers/data/models/course.dart';
+import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class FirebaseFireStoreService {
@@ -16,8 +18,8 @@ class FirebaseFireStoreService {
   static final String questionPaperCollectionLabel = "question_paper";
 
 
-  static final String yearsCollectionLabel = "years";
-  static final String versionsCollectionLabel = "versions";
+  // static final String yearsCollectionLabel = "years";
+  // static final String versionsCollectionLabel = "versions";
 
   CollectionReference usersCollection = FirebaseFirestore.instance.collection(usersCollectionLabel);
   CollectionReference coursesCollection = FirebaseFirestore.instance.collection(coursesCollectionLabel);
@@ -45,6 +47,39 @@ class FirebaseFireStoreService {
     } catch (err) {
       return ApiResponse(isError: true, errorMessage: "Failed to add user: ERR: $err");
     }
+  }
+
+  Future<List<Course>> getCourses() async {
+    QuerySnapshot coursesSnapshot = await coursesCollection.get();
+
+    List<Course> courses = [];
+
+    await Future.forEach<QueryDocumentSnapshot>(coursesSnapshot.docs, (course) async {
+
+      List<Semester> semesters = [];
+
+      QuerySnapshot semesterSnapshot = await course.reference.collection(semestersCollectionLabel).get();
+      Future.forEach<QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
+        print("\t ${semester.id}");
+        QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
+        List<String> subjects = [];
+        subjectsSnapshot.docs.forEach((subject) {
+          print("\t\t ${subject.id}");
+          subjects.add(subject.id);
+        });
+
+        Semester semesterModel = Semester(subjects: subjects, semester: int.parse(semester.id));
+        semesters.add(semesterModel);
+
+      });
+
+      Course courseModel = Course(courseName: course.id, semesters: semesters);
+      courses.add(courseModel);
+
+    });
+
+    return courses;
+
   }
 
   Future? foo() async {

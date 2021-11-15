@@ -73,7 +73,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          getCustomDropDown(
+          getCustomDropDown<String>(
             context: context,
             dropDownHint: "Year",
             dropDownItems: years,
@@ -85,7 +85,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
             },
           ),
           SizedBox(height: 20,),
-          variants[index].selectedYear == null ? Container() : getCustomDropDown(
+          variants[index].selectedYear == null ? Container() : getCustomDropDown<String>(
             context: context,
             dropDownHint: "Variant",
             dropDownItems: variants[index].variantList,

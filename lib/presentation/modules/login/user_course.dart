@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/config/course_details.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
+import 'package:papers_for_peers/data/models/course.dart';
+import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/course_and_semester/course_and_semester_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/presentation/modules/login/welcome_screen.dart';
 import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
+import 'package:provider/provider.dart';
 
 class UserCourse extends StatefulWidget {
   final UserModel? user;
@@ -22,11 +28,11 @@ class _UserCourseState extends State<UserCourse> {
 
   bool _isLoading = false;
 
-  late List<String> courses;
-  late List<String> semesters;
+  // late List<Course> courses;
+  // late List<Semester> semesters = [];
 
-  String? selectedCourse;
-  String? selectedSemester;
+  Course? selectedCourse;
+  Semester? selectedSemester;
 
   String courseErrorText = "";
   String semesterErrorText = "";
@@ -34,15 +40,29 @@ class _UserCourseState extends State<UserCourse> {
     fontSize: 14,
   );
 
+  // Future<void> setCourses() async {
+  //   if (mounted) setState(() { _isLoading = true; });
+  //   courses = await FirebaseFireStoreService().getCourses();
+  //   if (mounted) setState(() { _isLoading = false; });
+  // }
+
   @override
   void initState() {
-    courses = getCourses().map((e) => e.courseName).toList();
-    semesters = List.generate(6, (index) => "Semester - ${index + 1}");
+    // setCourses();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
+    CourseAndSemesterState courseAndSemesterState = context.select((CourseAndSemesterCubit cubit) => cubit.state);
+
+    if (courseAndSemesterState is CourseAndSemesterInitial) {
+      context.read<CourseAndSemesterCubit>().fetchCourses();
+    }
+
     return Stack(
       children: [
         Container(
@@ -66,64 +86,103 @@ class _UserCourseState extends State<UserCourse> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
-                  children: [
-                    Text('Select Course',style: TextStyle(fontSize: 30,),),
-                    SizedBox(height: 20,),
-                    SizedBox(
-                      width: 200,
-                      child: getCustomDropDown(
-                          onDropDownTap: () { setState(() { courseErrorText = ""; }); },
-                          isTransparent: true,
-                          context: context,
-                          dropDownValue: selectedCourse,
-                          dropDownItems: courses,
-                          dropDownHint: 'Courses',
-                          onDropDownChanged: (val) {
-                            setState(() {
-                              selectedCourse = val;
-                              Course course = getCourses().where((element) => element.courseName == selectedCourse).first;
-                              semesters = course.semesters.map((e) => e.semester.toString()).toList();
-                            });
-                          }),
-                    ),
-                    SizedBox(height: 20,),
-                    courseErrorText.isEmpty ? Container() : Text(courseErrorText, style: errorTextStyle,),
-                  ],
+                Builder(
+                  builder: (context) {
+
+                    if (courseAndSemesterState is CourseAndSemesterLoading) {
+                      return CircularProgressIndicator.adaptive();
+                    } else if (courseAndSemesterState is CourseAndSemesterLoaded) {
+
+                      List<Course> courses = courseAndSemesterState.courses;
+
+                      return Column(
+                        children: [
+                          Text('Select Course',style: TextStyle(fontSize: 30,),),
+                          SizedBox(height: 20,),
+                          SizedBox(
+                            width: 200,
+                            child: getCustomDropDown<Course>(
+                              onDropDownTap: () { setState(() { courseErrorText = ""; }); },
+                              isTransparent: true,
+                              context: context,
+                              dropDownValue: selectedCourse,
+                              dropDownItems: courses,
+                              dropDownHint: 'Courses',
+                              items: courses.map((Course value) {
+                                return DropdownMenuItem<Course>(
+                                  value: value,
+                                  child: Text(value.courseName.toUpperCase(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                    fontSize: 18,
+                                    color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                  ),),
+                                );
+                              }).toList(),
+                              onDropDownChanged: (val) {
+                                setState(() {
+                                  if (mounted) setState(() {
+                                    selectedCourse = val;
+                                  });
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 20,),
+                          courseErrorText.isEmpty ? Container() : Text(courseErrorText, style: errorTextStyle,),
+                        ],
+                      );
+                    } else {
+                      return CircularProgressIndicator.adaptive();
+                    }
+
+                  }
                 ),
-                Column(
-                  children: [
-                    Text(
-                      'Select Semester',
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: selectedCourse == null ? Colors.grey : Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: selectedCourse == null ? Colors.grey.withOpacity(0.3) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      width: 180,
-                      child: getCustomDropDown(
-                          onDropDownTap: () { setState(() { semesterErrorText = ""; }); },
-                          isTransparent: true,
-                          context: context,
-                          dropDownValue: selectedSemester,
-                          dropDownItems: semesters,
-                          dropDownHint: 'Semester',
-                          onDropDownChanged: selectedCourse == null ? null : (val) {
-                            setState(() {
-                              selectedSemester = val;
-                            });
-                          }
+                Builder(
+                  builder: (context) {
+                    List<Semester>? semesters = selectedCourse?.semesters;
+                    return Column(
+                      children: [
+                        Text(
+                          'Select Semester',
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: selectedCourse == null ? Colors.grey : Colors.white,
+                          ),
                         ),
-                    ),
-                    SizedBox(height: 20,),
-                    semesterErrorText.isEmpty ? Container() : Text(semesterErrorText, style: errorTextStyle,),
-                  ],
+                        SizedBox(height: 20,),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: selectedCourse == null ? Colors.grey.withOpacity(0.3) : Colors.transparent,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          width: 180,
+                          child: getCustomDropDown<Semester>(
+                            onDropDownTap: () { setState(() { semesterErrorText = ""; }); },
+                            isTransparent: true,
+                            context: context,
+                            dropDownValue: selectedSemester,
+                            dropDownItems: semesters,
+                            dropDownHint: 'Semester',
+                            onDropDownChanged: selectedCourse == null ? null : (val) {
+                              setState(() {
+                                selectedSemester = val;
+                              });
+                            },
+                            items: semesters?.map((Semester value) {
+                              return DropdownMenuItem<Semester>(
+                                value: value,
+                                child: Text(value.semester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                  fontSize: 18,
+                                  color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                ),),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        semesterErrorText.isEmpty ? Container() : Text(semesterErrorText, style: errorTextStyle,),
+                      ],
+                    );
+                  },
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -150,8 +209,8 @@ class _UserCourseState extends State<UserCourse> {
                         displayName: widget.user!.displayName,
                         photoUrl: widget.user!.photoUrl,
                         email: widget.user!.email,
-                        course: selectedCourse,
-                        semester: int.parse(selectedSemester!),
+                        course: selectedCourse!.courseName,
+                        semester: selectedSemester!.semester,
                       ));
                       if (mounted) {
                         setState(() { _isLoading = false; });

@@ -44,7 +44,7 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
           // crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            getCustomDropDown(
+            getCustomDropDown<String>(
               context: context,
               dropDownHint: "Subject",
               dropDownItems: subjects,

@@ -68,7 +68,7 @@ class _UploadNotesAndJournalState extends State<UploadNotesAndJournal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  widget.typesOfPost != TypesOfPost.SyllabusCopy ? getCustomDropDown(
+                  widget.typesOfPost != TypesOfPost.SyllabusCopy ? getCustomDropDown<String>(
                     context: context,
                     dropDownHint: "Subject",
                     dropDownItems: ["CPP", "JAVA"],
@@ -76,7 +76,7 @@ class _UploadNotesAndJournalState extends State<UploadNotesAndJournal> {
                     dropDownValue: selectedSubject,
                   ) : Container(),
                   widget.typesOfPost != TypesOfPost.SyllabusCopy ? SizedBox(width: 20,) : Container(),
-                  getCustomDropDown(
+                  getCustomDropDown<String>(
                     context: context,
                     dropDownHint: "Semester",
                     dropDownItems: List.generate(6, (index) => (index + 1).toString()),

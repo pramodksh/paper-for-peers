@@ -46,7 +46,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
-                    child: getCustomDropDown(
+                    child: getCustomDropDown<String>(
                       context: context,
                       dropDownHint: "Subject",
                       dropDownItems: ["CPP", "JAVA"],
@@ -57,7 +57,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
 
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
-                    child: getCustomDropDown(
+                    child: getCustomDropDown<String>(
                       context: context,
                       dropDownHint: "Year",
                       dropDownItems: ["2016", "2107"],
@@ -68,7 +68,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
 
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
-                    child: getCustomDropDown(
+                    child: getCustomDropDown<String>(
                       context: context,
                       dropDownHint: "Semester",
                       dropDownItems: List.generate(6, (index) => "Semester - ${index + 1}"),

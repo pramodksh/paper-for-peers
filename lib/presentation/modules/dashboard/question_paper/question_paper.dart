@@ -95,7 +95,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                     FirebaseFireStoreService().foo();
                   }),
                   getCourseText(course: "BCA", semester: 6),
-                  getCustomDropDown(
+                  getCustomDropDown<String>(
                     context: context,
                     dropDownHint: "Subject",
                     dropDownItems: subjects,

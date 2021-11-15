@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/course_and_semester/course_and_semester_cubit.dart';
 import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<KudNotificationsBloc>(
           create: (context) => KudNotificationsBloc(),
+        ),
+        BlocProvider<CourseAndSemesterCubit>(
+          create: (context) => CourseAndSemesterCubit(),
         ),
       ],
       child: Builder(

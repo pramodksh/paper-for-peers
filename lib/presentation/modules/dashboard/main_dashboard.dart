@@ -122,7 +122,7 @@ class _MainDashboardState extends State<MainDashboard> {
             SizedBox(height: 10,),
             SizedBox(
               width: 180,
-              child: getCustomDropDown(
+              child: getCustomDropDown<String>(
                 context: context,
                 dropDownHint: "Semester",
                 dropDownItems: List.generate(6, (index) => (index + 1).toString()),

@@ -11,12 +11,13 @@ Widget getCourseText({required String course, required int semester}) {
   return Text("$course $semester", style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),);
 }
 
-Widget getCustomDropDown({
+Widget getCustomDropDown<DropdownItemType>({
   required BuildContext context,
-  required String? dropDownValue,
-  required List<String> dropDownItems,
+  required DropdownItemType? dropDownValue,
+  required List<DropdownItemType>? dropDownItems,
   required String dropDownHint,
-  required Function(String?)? onDropDownChanged,
+  required Function(DropdownItemType?)? onDropDownChanged,
+  List<DropdownMenuItem<DropdownItemType>>? items,
   Function()? onDropDownTap,
   bool isTransparent = false
 }) {
@@ -24,6 +25,18 @@ Widget getCustomDropDown({
   final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
   Color backgroundColor;
   Border border;
+
+  if (items == null) {
+    items = dropDownItems?.map((DropdownItemType value) {
+      return DropdownMenuItem<DropdownItemType>(
+        value: value,
+        child: Text(value.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+          fontSize: 18,
+          color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+        ),),
+      );
+    }).toList();
+  }
 
   if (isTransparent) {
     backgroundColor = Colors.transparent;
@@ -47,7 +60,7 @@ Widget getCustomDropDown({
           border: border,
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
+        child: DropdownButton<DropdownItemType>(
           onTap: onDropDownTap,
           isExpanded: true,
           iconSize: 30,
@@ -60,15 +73,7 @@ Widget getCustomDropDown({
             fontSize: 18,
             color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
           ),),
-          items: dropDownItems.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value, style: CustomTextStyle.bodyTextStyle.copyWith(
-                fontSize: 18,
-                color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-              ),),
-            );
-          }).toList(),
+          items: items,
           onChanged: onDropDownChanged,
         ),
       ),
