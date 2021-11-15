@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_notes.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/your_posts/your_posts.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 enum TypesOfPost {
@@ -31,7 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   double avgRating = 4.5;
   int totalDownloads = 20;
-  var themeChange;
 
   List<Map<String, dynamic>> typesOfPosts = [
     { "label": "Question Paper", "enum": TypesOfPost.QuestionPaper },
@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getCircularStat({required String title, required String value}) {
+  Widget getCircularStat({required String title, required String value, required bool isDarkTheme}) {
     return Container(
       padding: EdgeInsets.all(statCircleBorderThickness),
       decoration: BoxDecoration(
@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: CircleAvatar(
         radius: statCircleRadius,
-        backgroundColor: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeRatingBackgroundColor,
+        backgroundColor: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeRatingBackgroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               textAlign: TextAlign.center,
               style: CustomTextStyle.bodyTextStyle.copyWith(
                 fontSize: 13,
-                color: themeChange.isDarkTheme ? Colors.white : Colors.black,
+                color: isDarkTheme ? Colors.white : Colors.black,
               )
             ),
             SizedBox(height: 5,),
@@ -104,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               value,
               style: CustomTextStyle.bodyTextStyle.copyWith(
                 fontSize: 20,
-                color: themeChange.isDarkTheme ?  Colors.white70 : Colors.black54,
+                color: isDarkTheme ?  Colors.white70 : Colors.black54,
               ),
             )
           ],
@@ -113,17 +113,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getProfileCustomButton({required String title, required Function() onPressed}){
+  Widget getProfileCustomButton({required String title, required Function() onPressed, required bool isDarkTheme}){
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.65,
       height: 50,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          primary: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeRatingBackgroundColor,
+          primary: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeRatingBackgroundColor,
           shape: RoundedRectangleBorder(
             side: BorderSide(
-                color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : Colors.black,
+                color: isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : Colors.black,
                 width: 2),
             borderRadius: BorderRadius.circular(30.0),
           ),
@@ -136,12 +136,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildUploadDialog() {
+  Widget _buildUploadDialog({required bool isDarkTheme}) {
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -193,16 +193,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
 
-    themeChange = Provider.of<DarkThemeProvider>(context);
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Profile"),
         centerTitle: true,
       ),
-      body: themeChange == null ? Container(
-        child: Center(child: CircularProgressIndicator()),
-      ) : Container(
+      body: Container(
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -223,23 +221,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  getCircularStat(title: 'Average\nRating', value: avgRating.toString()),
-                  getCircularStat(title: 'Total\nRating', value: totalDownloads.toString()),
+                  getCircularStat(title: 'Average\nRating', value: avgRating.toString(), isDarkTheme: appThemeType == AppThemeType.dark),
+                  getCircularStat(title: 'Total\nRating', value: totalDownloads.toString(), isDarkTheme: appThemeType == AppThemeType.dark),
                 ],
               ),
               SizedBox(height: 30,),
-              getProfileCustomButton(title: 'Your Posts', onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => YourPosts(),
-                ));
-              }),
+              getProfileCustomButton(
+                isDarkTheme: appThemeType == AppThemeType.dark,
+                title: 'Your Posts',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => YourPosts(),
+                  ));
+                }
+              ),
               SizedBox(height: 30,),
-              getProfileCustomButton(title: 'Upload', onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => _buildUploadDialog(),
-                );
-              }),
+              getProfileCustomButton(
+                isDarkTheme: appThemeType == AppThemeType.dark,
+                title: 'Upload',
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => _buildUploadDialog(isDarkTheme: appThemeType == AppThemeType.dark),
+                  );
+                }
+              ),
             ],
           ),
         ),

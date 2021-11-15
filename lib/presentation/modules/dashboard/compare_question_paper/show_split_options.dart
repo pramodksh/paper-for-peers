@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_pdf.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class ShowSplitOptions extends StatefulWidget {
@@ -30,7 +31,9 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
 
   @override
   Widget build(BuildContext context) {
-    var themeChange = Provider.of<DarkThemeProvider>(context);
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Compare Question Paper"),
@@ -69,14 +72,14 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
                               onTap: () {
                                 setState(() {
                                   selectedItemPosition = index;
-                                  print('Theme : ${themeChange.isDarkTheme}');
+                                  print('Theme : ${appThemeType == AppThemeType.dark}');
                                 });
                               },
                               child: Builder(
                                 builder: (context) {
                                   Color selectedSplitColor;
 
-                                  if (themeChange.isDarkTheme) {
+                                  if (appThemeType == AppThemeType.dark) {
                                     selectedSplitColor = CustomColors.bottomNavBarColor;
                                   } else {
                                     selectedSplitColor = Colors.black12;
@@ -108,7 +111,7 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
               },
               child: Text("Apply"),
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(themeChange.isDarkTheme ? CustomColors.bottomNavBarColor :CustomColors.lightModeBottomNavBarColor)),
+                  backgroundColor: MaterialStateProperty.all(appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor :CustomColors.lightModeBottomNavBarColor)),
             )
           ],
         ),

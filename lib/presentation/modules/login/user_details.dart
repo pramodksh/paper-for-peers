@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 import 'package:papers_for_peers/services/firebase_storage/firebase_storage_service.dart';
 import 'package:papers_for_peers/services/image_picker/image_picker_service.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'user_course.dart';
@@ -30,7 +31,6 @@ class _UserDetailsState extends State<UserDetails> {
 
   ImagePickerService imagePickerService = ImagePickerService();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late var themeChange;
 
   double borderThickness = 5;
   double profileImageRadius = 90;
@@ -88,12 +88,12 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
-  Widget buildChooseSourceDialog() {
+  Widget buildChooseSourceDialog({required bool isDarkTheme}) {
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
       child: Container(
         // height: 400,
         width: MediaQuery.of(context).size.width * 0.9,
@@ -165,13 +165,13 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
-  Widget _buildProfilePhotoEmptyDialog() {
+  Widget _buildProfilePhotoEmptyDialog({required bool isDarkTheme}) {
     return StatefulBuilder(
       builder: (context, setState) => Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+        backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
         child: Container(
           // height: 400,
           width: MediaQuery.of(context).size.width * 0.9,
@@ -256,17 +256,11 @@ class _UserDetailsState extends State<UserDetails> {
     }
   }
 
-
-  @override
-  void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      themeChange = Provider.of<DarkThemeProvider>(context, listen: false);
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
     return Stack(
       children: [
         Container(
@@ -313,7 +307,7 @@ class _UserDetailsState extends State<UserDetails> {
                               onPressed: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => buildChooseSourceDialog(),
+                                  builder: (context) => buildChooseSourceDialog(isDarkTheme: appThemeType == AppThemeType.dark),
                                 );
                               }),
                         ),
@@ -360,12 +354,12 @@ class _UserDetailsState extends State<UserDetails> {
                         if (profilePhotoFile == null) {
                           bool? shouldDisplayDismissibleDialog = await showDialog(
                             context: context,
-                            builder: (context) => _buildProfilePhotoEmptyDialog(),
+                            builder: (context) => _buildProfilePhotoEmptyDialog(isDarkTheme: appThemeType == AppThemeType.dark),
                           );
                           if (shouldDisplayDismissibleDialog == true) {
                             showDialog(
                               context: context,
-                              builder: (context) => buildChooseSourceDialog(),
+                              builder: (context) => buildChooseSourceDialog(isDarkTheme: appThemeType == AppThemeType.dark),
                             );
                           } else if(shouldDisplayDismissibleDialog == false) {
                             widget.user!.photoUrl = "";

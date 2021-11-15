@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
@@ -22,19 +21,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
-
-  void getCurrentAppTheme() async {
-    themeChangeProvider.isDarkTheme =
-    await themeChangeProvider.darkThemePreference.getAppTheme();
-  }
-
-  @override
-  void initState() {
-    getCurrentAppTheme();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -51,50 +37,16 @@ class _MyAppState extends State<MyApp> {
 
           final AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
 
-          // todo add this
-          // return MaterialApp(
-          //   debugShowCheckedModeBanner: false,
-          //   theme: Styles.themeData(
-          //     context: context,
-          //     appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
-          //   ),
-          //   home: Wrapper(),
-          // );
-
-          // todo remove change notifier
-          return ChangeNotifierProvider(
-            create: (_) {
-              return themeChangeProvider;
-            },
-            child: Consumer<DarkThemeProvider>(
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: Styles.themeData(
-                  context: context,
-                  appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
-                ),
-                home: Wrapper(),
-              ),
-              builder: (context, value, child) => child!,
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: Styles.themeData(
+              context: context,
+              appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
             ),
+            home: Wrapper(),
           );
         }
       ),
     );
-
-    // return ChangeNotifierProvider(
-    //   create: (_) {
-    //     return themeChangeProvider;
-    //   },
-    //   child: Consumer<DarkThemeProvider>(
-    //     builder: (context, value, child) {
-    //       return MaterialApp(
-    //         debugShowCheckedModeBanner: false,
-    //         theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
-    //         home: Wrapper(),
-    //       );
-    //     },
-    //   ),
-    // );
   }
 }

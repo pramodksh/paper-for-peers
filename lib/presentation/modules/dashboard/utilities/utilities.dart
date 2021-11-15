@@ -1,9 +1,10 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/config/text_styles.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:provider/provider.dart';
 
 Widget getCourseText({required String course, required int semester}) {
@@ -20,7 +21,7 @@ Widget getCustomDropDown({
   bool isTransparent = false
 }) {
 
-  var themeChange = Provider.of<DarkThemeProvider>(context);
+  final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
   Color backgroundColor;
   Border border;
 
@@ -28,13 +29,13 @@ Widget getCustomDropDown({
     backgroundColor = Colors.transparent;
     border = Border.all(color: Colors.white, width: 2);
   } else {
-    backgroundColor = themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : Colors.grey.shade300;
+    backgroundColor = appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : Colors.grey.shade300;
   border = Border.all(color: Colors.black54,);
   }
 
   return Theme(
     data: Theme.of(context).copyWith(
-      canvasColor: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : Colors.grey.shade300,
+      canvasColor: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : Colors.grey.shade300,
     ),
     child: Container(
       height: 45,
@@ -50,23 +51,21 @@ Widget getCustomDropDown({
           onTap: onDropDownTap,
           isExpanded: true,
           iconSize: 30,
-          // iconEnabledColor: Colors.red,
-          // iconDisabledColor: Colors.tealAccent,
           icon: Icon(
             Icons.keyboard_arrow_down,
-            color: themeChange.isDarkTheme ? Colors.grey.shade300 : CustomColors.bottomNavBarColor,
+            color: appThemeType == AppThemeType.dark ? Colors.grey.shade300 : CustomColors.bottomNavBarColor,
           ),
           value: dropDownValue,
           hint: Text(dropDownHint, style: CustomTextStyle.bodyTextStyle.copyWith(
             fontSize: 18,
-            color: themeChange.isDarkTheme ? Colors.white60 : Colors.black,
+            color: appThemeType == AppThemeType.dark ? Colors.white60 : Colors.black,
           ),),
           items: dropDownItems.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(value, style: CustomTextStyle.bodyTextStyle.copyWith(
                 fontSize: 18,
-                color: themeChange.isDarkTheme ? Colors.white60 : Colors.black,
+                color: appThemeType == AppThemeType.dark ? Colors.white60 : Colors.black,
               ),),
             );
           }).toList(),
@@ -83,11 +82,12 @@ Widget getAddPostContainer({
   required BuildContext context,
   double containerRadius = 15,
 }) {
-  var themeChange = Provider.of<DarkThemeProvider>(context);
+
+  final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
   Widget dottedBorderContainer = DottedBorder(
     padding: EdgeInsets.zero,
-    color: themeChange.isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
+    color: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
     dashPattern: [8, 4],
     strokeWidth: 2,
     strokeCap: StrokeCap.square,

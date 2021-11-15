@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:provider/provider.dart';
 
 Widget getNotesDetailsTile({
@@ -18,8 +19,8 @@ Widget getNotesDetailsTile({
   Function()? yourPostTileOnDelete,
 }) {
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
-  var themeChange = Provider.of<DarkThemeProvider>(context);
 
+  final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
   double ratingHeight = 30;
   double ratingWidth = 100;
@@ -35,7 +36,7 @@ Widget getNotesDetailsTile({
             child: Container(
               padding: EdgeInsets.only(top: 6),
               decoration: BoxDecoration(
-                color: themeChange.isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
+                color: appThemeType == AppThemeType.dark ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
               ),
               height: 50,
@@ -62,7 +63,7 @@ Widget getNotesDetailsTile({
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             margin: EdgeInsets.only(top: ratingHeight),
             decoration: BoxDecoration(
-                color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                color: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 borderRadius: BorderRadius.all(Radius.circular(20))
             ),
             // height: 200,

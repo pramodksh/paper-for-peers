@@ -1,12 +1,14 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/checkbox_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class PDFViewerScreen<ParameterType> extends StatefulWidget {
@@ -27,11 +29,10 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   bool _isLoading = true;
   late PDFDocument document;
-  var themeChange;
 
   late List<CheckBoxModel> reportReasons;
 
-  Widget getPostReportButton({required Function() onPressed}) {
+  Widget getPostReportButton({required Function() onPressed, required bool isDarkTheme}) {
     return SizedBox(
       height: 50,
       width: MediaQuery.of(context).size.width,
@@ -40,7 +41,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
           )),
           backgroundColor: MaterialStateProperty.all(
-            themeChange.isDarkTheme ? CustomColors.reportButtonColor : CustomColors.lightModeRatingBackgroundColor
+            isDarkTheme ? CustomColors.reportButtonColor : CustomColors.lightModeRatingBackgroundColor
           ),
         ),
         onPressed: onPressed,
@@ -142,13 +143,13 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     );
   }
 
-  Widget _buildReportDialog() {
+  Widget _buildReportDialog({required bool isDarkTheme}) {
     return StatefulBuilder(
       builder: (context, setState) => Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        backgroundColor: themeChange.isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+        backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
         child: Container(
           // height: 400,
           width: MediaQuery.of(context).size.width * 0.9,
@@ -216,7 +217,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     );
   }
 
-  Widget _buildBottomModel() {
+  Widget _buildBottomModel({required bool isDarkTheme}) {
 
     double ratingHeight = 30;
     double ratingBorderRadius = 20;
@@ -231,7 +232,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           Container(
               margin: EdgeInsets.only(top: ratingHeight),
               decoration: BoxDecoration(
-                  color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                  color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
               ),
               height: modelHeight,
@@ -258,12 +259,15 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     ),
                   ),
                   Spacer(),
-                  getPostReportButton(onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => _buildReportDialog(),
-                    );
-                  }),
+                  getPostReportButton(
+                    isDarkTheme: isDarkTheme,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => _buildReportDialog(isDarkTheme: isDarkTheme),
+                      );
+                    }
+                  ),
                 ],
               )
           ),
@@ -277,7 +281,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         onPressed: () {},
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(
-            themeChange.isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
+            isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
           ),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -298,7 +302,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           Container(
               margin: EdgeInsets.only(top: ratingHeight),
               decoration: BoxDecoration(
-                color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
               ),
               height: modelHeight,
@@ -342,12 +346,15 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                   //   children: children,
                   // ),
                   Spacer(),
-                  getPostReportButton(onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => _buildReportDialog(),
-                    );
-                  }),
+                  getPostReportButton(
+                    isDarkTheme: isDarkTheme,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => _buildReportDialog(isDarkTheme: isDarkTheme),
+                      );
+                    }
+                  ),
                 ],
               )
           ),
@@ -384,7 +391,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
               padding: EdgeInsets.only(top: 10,),
               margin: EdgeInsets.only(top: ratingHeight),
               decoration: BoxDecoration(
-                  color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                  color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(20))
               ),
               // height: modelHeight,
@@ -442,12 +449,15 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         ],
                       ),
                     ),
-                    getPostReportButton(onPressed: () {
-                      showDialog(
-                        context: context,
-                          builder: (context) => _buildReportDialog(),
-                      );
-                    }),
+                    getPostReportButton(
+                      isDarkTheme: isDarkTheme,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                            builder: (context) => _buildReportDialog(isDarkTheme: isDarkTheme),
+                        );
+                      }
+                    ),
                   ],
                 ),
               )
@@ -457,22 +467,28 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     }
   }
 
-  void _showCustomBottomSheet() {
+  void _showCustomBottomSheet({required bool isDarkTheme}) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
       ),
       context: context,
-      builder: (context) => _buildBottomModel(),
+      builder: (context) {
+        return _buildBottomModel(isDarkTheme: isDarkTheme);
+      },
     );
   }
 
   @override
   void initState() {
+
     if (widget.isShowBottomSheet) {
-      loadDocumentFromAssetPath(assetPath: pdfPath).then((value) {
-        _showCustomBottomSheet();
+      SchedulerBinding.instance!.addPostFrameCallback((_) async {
+        final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
+        await loadDocumentFromAssetPath(assetPath: pdfPath);
+        _showCustomBottomSheet(isDarkTheme: appThemeType == AppThemeType.dark);
       });
     }
     reportReasons = AppConstants.reportReasons.map((e) => CheckBoxModel(
@@ -480,15 +496,14 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       isChecked: false,
     )).toList();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      themeChange = Provider.of<DarkThemeProvider>(context, listen: false);
-    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
     return Scaffold(
       appBar: AppBar(
@@ -499,7 +514,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
             margin: EdgeInsets.symmetric(vertical: 5),
             child: ElevatedButton(
               onPressed: () {
-                _showCustomBottomSheet();
+                _showCustomBottomSheet(isDarkTheme: appThemeType == AppThemeType.dark);
               },
               child: Text("Details", style: TextStyle(fontSize: 16,),
               ),
@@ -508,33 +523,33 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         ],
       ),
       body: Center(
-        child: _isLoading || themeChange == null
+        child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : PDFViewer(
-          document: document,
-          zoomSteps: 1,
+              document: document,
+              zoomSteps: 1,
 
-          showNavigation: false,
-          // navigationBuilder: customPDFBottomNavBuilder,
-
-
-          showPicker: false,
-          pickerButtonColor: Colors.black,
-          pickerIconColor: Colors.red,
-
-          enableSwipeNavigation: true,
-
-          progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
+              showNavigation: false,
+              // navigationBuilder: customPDFBottomNavBuilder,
 
 
-          indicatorPosition: IndicatorPosition.topLeft,
-          indicatorBackground: Colors.black,
-          indicatorText: Colors.white,
-          // showIndicator: false,
+              showPicker: false,
+              pickerButtonColor: Colors.black,
+              pickerIconColor: Colors.red,
 
-          lazyLoad: true,
+              enableSwipeNavigation: true,
 
-          scrollDirection: Axis.vertical,
+              progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
+
+
+              indicatorPosition: IndicatorPosition.topLeft,
+              indicatorBackground: Colors.black,
+              indicatorText: Colors.white,
+              // showIndicator: false,
+
+              lazyLoad: true,
+
+              scrollDirection: Axis.vertical,
         ),
       ),
     );

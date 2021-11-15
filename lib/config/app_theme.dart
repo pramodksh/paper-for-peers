@@ -8,6 +8,17 @@ enum AppThemeType {
   light,
 }
 
+extension GetBoolValue on AppThemeType {
+
+  bool isDarkTheme() {
+    if (this == AppThemeType.dark) {
+      return true;
+    }
+    return false;
+  }
+
+}
+
 class Styles {
 
   static ThemeData themeData({required AppThemeType appThemeType, required BuildContext context}) {

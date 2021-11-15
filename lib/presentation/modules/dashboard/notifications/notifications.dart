@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
@@ -8,11 +8,8 @@ import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:web_scraper/web_scraper.dart';
 
 class Notifications extends StatelessWidget {
   final DateFormat dateFormat = DateFormat("dd MMMM yyyy");

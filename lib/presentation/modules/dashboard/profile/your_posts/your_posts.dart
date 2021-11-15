@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/post_tiles.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class YourPosts extends StatefulWidget {
@@ -16,19 +17,21 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
   double tabBarViewPadding = 10;
 
   Widget _getCommonTile({
+    required bool isDarkTheme,
     String? label,
     String? subLabel,
     required int nDownloads,
     required onDeletePressed,
     required int nSemester,
   }) {
-    var themeChange = Provider.of<DarkThemeProvider>(context);
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       margin: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: themeChange.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+        color: appThemeType == AppThemeType.dark ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -45,7 +48,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
                   subLabel,
                   style: TextStyle(
                     fontSize: 16,
-                    color: themeChange.isDarkTheme ? Colors.white60 : Colors.black54,
+                    color: appThemeType == AppThemeType.dark ? Colors.white60 : Colors.black54,
                   ),
                 ),
               ],
@@ -81,11 +84,12 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
     );
   }
 
-  Widget _getQuestionPapers() {
+  Widget _getQuestionPapers({required bool isDarkTheme}) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
       children: List.generate(10, (index) {
         return _getCommonTile(
+          isDarkTheme: isDarkTheme,
           label: (index + 2000).toString(),
           nDownloads: 24,
           nSemester: 3,
@@ -95,7 +99,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
     );
   }
 
-  Widget _getNotes() {
+  Widget _getNotes({required bool isDarkTheme}) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
       children: List.generate(10, (index) {
@@ -113,11 +117,12 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
     );
   }
 
-  Widget _getJournal() {
+  Widget _getJournal({required bool isDarkTheme}) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
       children: List.generate(10, (index) {
         return _getCommonTile(
+          isDarkTheme: isDarkTheme,
           label: "CPP",
           nDownloads: 24,
           nSemester: 3,
@@ -127,11 +132,12 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
     );
   }
 
-  Widget _getSyllabusCopy() {
+  Widget _getSyllabusCopy({required bool isDarkTheme}) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
       children: List.generate(10, (index) {
         return _getCommonTile(
+          isDarkTheme: isDarkTheme,
           nDownloads: 24,
           nSemester: 3,
           onDeletePressed: () {},
@@ -140,11 +146,12 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
     );
   }
 
-  Widget _getTextBooks() {
+  Widget _getTextBooks({required bool isDarkTheme}) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
       children: List.generate(10, (index) {
         return _getCommonTile(
+          isDarkTheme: isDarkTheme,
           label: "Learn CPP in 20 days with Advanced OOPS",
           subLabel: "Author",
           nDownloads: 24,
@@ -164,12 +171,12 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 
-    var themeChange = Provider.of<DarkThemeProvider>(context);
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
     Color selectedIconColor;
     Color unselectedIconColor;
 
-    if (themeChange.isDarkTheme) {
+    if (appThemeType == AppThemeType.dark) {
       selectedIconColor = CustomColors.bottomNavBarSelectedIconColor;
       unselectedIconColor = CustomColors.bottomNavBarUnselectedIconColor;
     } else {
@@ -188,7 +195,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
             Container(
               child: TabBar(
                 controller: _tabController,
-                indicatorColor: themeChange.isDarkTheme ? CustomColors.lightModeBottomNavBarColor : CustomColors.bottomNavBarColor,
+                indicatorColor: appThemeType == AppThemeType.dark ? CustomColors.lightModeBottomNavBarColor : CustomColors.bottomNavBarColor,
                 unselectedLabelColor: unselectedIconColor,
                 labelColor: selectedIconColor,
                 tabs: List.generate(AppConstants.bottomNavBarIcons.length, (index) => Tab(
@@ -204,11 +211,11 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  _getQuestionPapers(),
-                  _getNotes(),
-                  _getJournal(),
-                  _getSyllabusCopy(),
-                  _getTextBooks(),
+                  _getQuestionPapers(isDarkTheme: appThemeType == AppThemeType.dark),
+                  _getNotes(isDarkTheme: appThemeType == AppThemeType.dark),
+                  _getJournal(isDarkTheme: appThemeType == AppThemeType.dark),
+                  _getSyllabusCopy(isDarkTheme: appThemeType == AppThemeType.dark),
+                  _getTextBooks(isDarkTheme: appThemeType == AppThemeType.dark),
                 ],
               ),
             ),
