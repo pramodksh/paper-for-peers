@@ -4,7 +4,7 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/shared.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
-import 'package:provider/src/provider.dart';
+import 'package:provider/provider.dart';
 
 class UploadNotesAndJournal extends StatefulWidget {
   final TypesOfPost? typesOfPost;

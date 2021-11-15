@@ -1,6 +1,5 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
