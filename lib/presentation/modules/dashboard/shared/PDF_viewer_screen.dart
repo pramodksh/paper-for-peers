@@ -217,7 +217,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     );
   }
 
-  Widget _buildBottomModel({required bool isDarkTheme}) {
+  Widget _buildBottomModel({required bool isDarkTheme, required BuildContext context}) {
 
     double ratingHeight = 30;
     double ratingBorderRadius = 20;
@@ -476,27 +476,19 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       ),
       context: context,
       builder: (context) {
-        return _buildBottomModel(isDarkTheme: isDarkTheme);
+        return _buildBottomModel(isDarkTheme: isDarkTheme, context: context);
       },
     );
   }
 
   @override
   void initState() {
+    loadDocumentFromAssetPath(assetPath: pdfPath);
 
-    if (widget.isShowBottomSheet) {
-      SchedulerBinding.instance!.addPostFrameCallback((_) async {
-        final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
-
-        await loadDocumentFromAssetPath(assetPath: pdfPath);
-        _showCustomBottomSheet(isDarkTheme: appThemeType.isDarkTheme());
-      });
-    }
     reportReasons = AppConstants.reportReasons.map((e) => CheckBoxModel(
       label: e,
       isChecked: false,
     )).toList();
-
 
     super.initState();
   }
