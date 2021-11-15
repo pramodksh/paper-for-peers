@@ -28,9 +28,6 @@ class _UserCourseState extends State<UserCourse> {
 
   bool _isLoading = false;
 
-  // late List<Course> courses;
-  // late List<Semester> semesters = [];
-
   Course? selectedCourse;
   Semester? selectedSemester;
 
@@ -39,18 +36,6 @@ class _UserCourseState extends State<UserCourse> {
   TextStyle errorTextStyle = TextStyle(
     fontSize: 14,
   );
-
-  // Future<void> setCourses() async {
-  //   if (mounted) setState(() { _isLoading = true; });
-  //   courses = await FirebaseFireStoreService().getCourses();
-  //   if (mounted) setState(() { _isLoading = false; });
-  // }
-
-  @override
-  void initState() {
-    // setCourses();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
