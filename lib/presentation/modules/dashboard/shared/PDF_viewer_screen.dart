@@ -292,6 +292,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       ));
       if (parameter.totalVariants < 2) {
         gridChildren.add(getAddPostContainer(
+          isDarkTheme: isDarkTheme,
           label: "Add Syllabus Copy",
           onPressed: () {},
           context: context,

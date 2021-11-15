@@ -77,17 +77,16 @@ Widget getCustomDropDown({
 }
 
 Widget getAddPostContainer({
+  required bool isDarkTheme,
   required String label,
   required Function() onPressed,
   required BuildContext context,
   double containerRadius = 15,
 }) {
 
-  final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
-
   Widget dottedBorderContainer = DottedBorder(
     padding: EdgeInsets.zero,
-    color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
+    color: isDarkTheme ? CustomColors.bottomNavBarUnselectedIconColor : CustomColors.lightModeBottomNavBarUnselectedIconColor,
     dashPattern: [8, 4],
     strokeWidth: 2,
     strokeCap: StrokeCap.square,

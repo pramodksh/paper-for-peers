@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/shared.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:provider/src/provider.dart';
 
 class UploadQuestionPaper extends StatefulWidget {
   @override
@@ -16,6 +19,8 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
   @override
   Widget build(BuildContext context) {
 
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -29,6 +34,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
             SizedBox(
               height: 200,
               child: getAddPostContainer(
+                isDarkTheme: appThemeType.isDarkTheme(),
                 context: context,
                 label: "Select File",
                 onPressed: () {},

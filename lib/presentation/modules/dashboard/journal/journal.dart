@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:provider/src/provider.dart';
 
 class Journal extends StatefulWidget {
   final bool isDarkTheme;
@@ -58,7 +61,7 @@ class _JournalState extends State<Journal> {
     );
   }
 
-  Widget getJournalTile({required String subject, required int nVariants}) {
+  Widget getJournalTile({required String subject, required int nVariants, required AppThemeType appThemeType}) {
 
     assert(nVariants <= 2);
 
@@ -82,6 +85,7 @@ class _JournalState extends State<Journal> {
 
     if (nVariants < 2) {
       gridChildren.add(getAddPostContainer(
+        isDarkTheme: appThemeType.isDarkTheme(),
         context: context,
         onPressed: onAddJournalPressed,
         label: "Add Journal",
@@ -111,6 +115,9 @@ class _JournalState extends State<Journal> {
 
   @override
   Widget build(BuildContext context) {
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -119,13 +126,13 @@ class _JournalState extends State<Journal> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20,),
-              getCourseText(course: "BCA", semester: 6),
+              getCourseText(course: "BCA", semester: 6,),
               SizedBox(height: 20,),
-              getJournalTile(subject: "C++", nVariants: 1),
+              getJournalTile(subject: "C++", nVariants: 1, appThemeType: appThemeType),
               SizedBox(height: 20,),
-              getJournalTile(subject: "Java", nVariants: 2),
+              getJournalTile(subject: "Java", nVariants: 2, appThemeType: appThemeType),
               SizedBox(height: 20,),
-              getJournalTile(subject: "Java", nVariants: 0),
+              getJournalTile(subject: "Java", nVariants: 0, appThemeType: appThemeType),
             ],
           ),
         ),
