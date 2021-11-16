@@ -1,5 +1,3 @@
-
-
 class UserModel {
   final String uid;
   String? displayName;
@@ -22,14 +20,6 @@ class UserModel {
     );
   }
 
-  // bool isEmailPasswordAuthDataAvailable() {
-  //   return this.email != null;
-  // }
-  //
-  // bool isGoogleAuthDataAvailable() {
-  //   return this.uid != null && this.displayName != null && this.email != null && this.photoUrl != null;
-  // }
-
   UserModel({
     required this.email,
     required this.displayName,
@@ -38,4 +28,22 @@ class UserModel {
     this.semester,
     this.course
   });
+
+  UserModel copyWith({
+    String? uid,
+    String? displayName,
+    String? email,
+    String? photoUrl,
+    int? semester,
+    String? course,
+  }) {
+    return UserModel(
+      uid: uid ?? this.uid,
+      displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+      photoUrl: photoUrl ?? this.photoUrl,
+      semester: semester ?? this.semester,
+      course: course ?? this.course,
+    );
+  }
 }

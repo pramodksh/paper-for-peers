@@ -8,6 +8,12 @@ part 'course_and_semester_state.dart';
 class CourseAndSemesterCubit extends Cubit<CourseAndSemesterState> {
   CourseAndSemesterCubit() : super(CourseAndSemesterInitial());
 
+  void setSelectedCourses(Course selectedCourse) {
+    // if (state is CourseAndSemesterLoaded) {
+    //   // emit(CourseAndSemesterLoaded(courses: ));
+    // }
+  }
+
   void fetchCourses() async {
     emit(CourseAndSemesterLoading());
     List<Course> courses = await FirebaseFireStoreService().getCourses();
