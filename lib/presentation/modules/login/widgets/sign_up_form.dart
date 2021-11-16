@@ -4,7 +4,6 @@ import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
-import 'package:papers_for_peers/presentation/modules/login/widgets/login_utils.dart';
 import 'package:provider/provider.dart';
 
 class SignUpForm extends StatelessWidget {
