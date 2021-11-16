@@ -20,13 +20,15 @@ extension EmailValidator on String {
 }
 
 Widget getCustomPasswordField({
-  required TextEditingController controller,
   required String? Function(String?)? validator,
+  TextEditingController? controller,
   String? inputBoxText,
   bool obscureText = true,
   VoidCallback? onTapObscure,
+  Function(String)? onChanged,
 }) {
   return TextFormField(
+    onChanged: onChanged,
     controller: controller,
     validator: validator,
     style: TextStyle(fontSize: 16, color: Colors.white),
@@ -63,8 +65,8 @@ Widget getCustomPasswordField({
 
 
 Widget getCustomTextField({
-  required TextEditingController controller,
   required String? Function(String?)? validator,
+  TextEditingController? controller,
   String? labelText,
   String? hintText,
   bool obscureText = false,
