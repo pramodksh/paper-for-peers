@@ -35,7 +35,7 @@ class SignUpState extends Equatable {
     );
   }
 
-  bool get isValid => this.email.isNotEmpty || this.password.isNotEmpty;
+  bool get isValid => this.email.isNotEmpty || this.password.isNotEmpty || this.confirmPassword.isNotEmpty;
 
   SignUpState copyWith({
     String? email,

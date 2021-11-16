@@ -5,6 +5,7 @@ import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 abstract class BaseAuthRepository {
   Stream<auth.User?> get user;
   Future<ApiResponse> signUpWithEmailAndPassword({required String email, required String password});
+  Future<ApiResponse> signInWithEmailAndPassword({required String email, required String password});
 }
 
 class AuthRepository extends BaseAuthRepository {
@@ -37,6 +38,32 @@ class AuthRepository extends BaseAuthRepository {
       }
     } catch (e) {
       return ApiResponse(isError: true, errorMessage: "Error signing in with email and password");
+    }
+  }
+
+  @override
+  Future<ApiResponse> signInWithEmailAndPassword({required String email, required String password}) async {
+    try {
+      auth.UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      print("EMAIL PASSWORD SIGN IN DONE | ${userCredential.user!.email}");
+      return ApiResponse<UserModel>(isError: false, data: UserModel(
+        uid: userCredential.user!.uid,
+        email: userCredential.user!.email,
+        photoUrl: userCredential.user!.photoURL,
+        displayName: userCredential.user!.displayName,
+      ));
+    } on auth.FirebaseAuthException catch (e) {
+      print("SIGN In ERROR: $e");
+      if (e.code == 'user-not-found') {
+        return ApiResponse(isError: true, errorMessage: "No user found for that email");
+      } else if (e.code == 'wrong-password') {
+        return ApiResponse(isError: true, errorMessage: "Wrong password provided for that user");
+      } else {
+        return ApiResponse(isError: true, errorMessage: "Error while signing in");
+      }
     }
   }
 
