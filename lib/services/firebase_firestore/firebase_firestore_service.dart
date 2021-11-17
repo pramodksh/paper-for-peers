@@ -24,10 +24,10 @@ class FirebaseFireStoreService {
   CollectionReference usersCollection = FirebaseFirestore.instance.collection(usersCollectionLabel);
   CollectionReference coursesCollection = FirebaseFirestore.instance.collection(coursesCollectionLabel);
 
-  Future<bool> isUserExists({required String userId}) async {
-    DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
-    return userDocumentSnapshot.exists;
-  }
+  // Future<bool> isUserExists({required String userId}) async {
+  //   DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
+  //   return userDocumentSnapshot.exists;
+  // }
 
   // Future<UserModel> getUserByUserId({required String userId}) async {
   //   DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();

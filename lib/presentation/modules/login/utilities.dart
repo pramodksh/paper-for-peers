@@ -171,10 +171,10 @@ Widget getAppropriateWidget({required UserModel user, required BuildContext cont
 
 Widget addUserIfNotExistsAndGetWidget({required UserModel user, required BuildContext context}) {
 
-  FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
+  FirestoreRepository _firestoreRepository = context.read<FirestoreRepository>();
 
   return FutureBuilder(
-    future: _firebaseFireStoreService.isUserExists(userId: user.uid),
+    future: _firestoreRepository.isUserExists(userId: user.uid),
     builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
         return LoadingScreen(loadingText: "Checking if user exists",);
@@ -184,7 +184,7 @@ Widget addUserIfNotExistsAndGetWidget({required UserModel user, required BuildCo
           print("ADDING USER");
 
           return FutureBuilder(
-            future: _firebaseFireStoreService.addUser(user: user),
+            future: _firestoreRepository.addUser(user: user),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
                 return LoadingScreen(loadingText: "Adding user",);
