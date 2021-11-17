@@ -5,13 +5,13 @@ import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
-import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 import 'package:provider/provider.dart';
 
 import 'journal/journal.dart';
@@ -158,7 +158,7 @@ class _MainDashboardState extends State<MainDashboard> {
                   if (mounted) {
                     setState(() { _isLoading = true; _loadingText = "Logging out.."; });
                   }
-                  await FirebaseAuthService().logoutUser();
+                  await context.read<AuthRepository>().logoutUser();
                   if (mounted) {
                     setState(() { _isLoading = false; });
                   }

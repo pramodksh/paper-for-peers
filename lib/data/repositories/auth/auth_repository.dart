@@ -9,13 +9,16 @@ abstract class BaseAuthRepository {
   Future<ApiResponse> signUpWithEmailAndPassword({required String email, required String password});
   Future<ApiResponse> signInWithEmailAndPassword({required String email, required String password});
   Future<ApiResponse> authenticateWithGoogle();
+  Future<void> logoutUser();
 }
 
 class AuthRepository extends BaseAuthRepository {
 
   final auth.FirebaseAuth _firebaseAuth;
+  final googleAuth.GoogleSignIn _googleSignIn;
 
-  AuthRepository({auth.FirebaseAuth? firebaseAuth}) : _firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance;
+  AuthRepository({auth.FirebaseAuth? firebaseAuth, googleAuth.GoogleSignIn? googleSignIn})
+      : _firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance, _googleSignIn = googleAuth.GoogleSignIn();
 
   @override
   Future<ApiResponse> signUpWithEmailAndPassword({required String email, required String password}) async {
@@ -73,7 +76,7 @@ class AuthRepository extends BaseAuthRepository {
   @override
   Future<ApiResponse> authenticateWithGoogle() async {
     try {
-      final googleAuth.GoogleSignInAccount? googleUser = await googleAuth.GoogleSignIn().signIn();
+      final googleAuth.GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       final googleAuth.GoogleSignInAuthentication googleSignInAuth = await googleUser!.authentication;
       final credential = auth.GoogleAuthProvider.credential(
         accessToken: googleSignInAuth.accessToken,
@@ -105,5 +108,29 @@ class AuthRepository extends BaseAuthRepository {
   @override
   Stream<UserModel?> get user => _firebaseAuth.userChanges().map(getCustomUserFromFirebaseUser);
 
+  @override
+  Future<void> logoutUser() async {
+    await _googleSignIn.signOut();
+    await _firebaseAuth.signOut();
+    print("USER LOGGED OUT");
+  }
+
   bool get isCurrentUserEmailVerified => _firebaseAuth.currentUser!.emailVerified;
+
+  Future<bool> sendVerificationEmail() async {
+    auth.User? user = _firebaseAuth.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> reloadCurrentUser() async {
+    await _firebaseAuth.currentUser!.reload();
+  }
+
+  auth.User get currentUser => _firebaseAuth.currentUser!;
+
 }

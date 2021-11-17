@@ -4,7 +4,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_s
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
 import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
 import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
-import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
 import 'package:provider/provider.dart';
 import 'data/models/user_model/user_model.dart';
 
@@ -15,13 +14,11 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
 
-  // FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
-
   @override
   Widget build(BuildContext context) {
 
     AuthRepository _authRepository = context.select((AuthRepository repo) => repo);
-
+    // _authRepository.logoutUser();// todo delete
     return StreamBuilder(
       stream: _authRepository.user,
       builder: (context, snapshot) {

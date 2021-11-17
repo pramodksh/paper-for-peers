@@ -73,7 +73,6 @@ class _UserCourseState extends State<UserCourse> {
               children: [
                 Builder(
                   builder: (context) {
-
                     return Column(
                       children: [
                         Text('Select Course',style: TextStyle(fontSize: 30,),),
