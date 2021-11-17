@@ -6,7 +6,10 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
+import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
+import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
@@ -220,12 +223,12 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
 
-  Future<String?> _uploadPhotoAndGetUrl() async {
+  Future<String?> _uploadPhotoAndGetUrl({required BuildContext context}) async {
     print("UPLOAD PHOTO| ${widget.user!.photoUrl}");
     if (mounted) {
       setState(() { _isLoading = true; _loadingText = "Uploading Photo"; });
     }
-    ApiResponse response = await FirebaseStorageService().uploadProfilePhoto(file: profilePhotoFile!, userId: widget.user!.uid);
+    ApiResponse response = await context.read<FirebaseStorageRepository>().uploadProfilePhoto(file: profilePhotoFile!, userId: widget.user!.uid);
     if (mounted) {
       setState(() { _isLoading = false; });
     }
@@ -239,11 +242,11 @@ class _UserDetailsState extends State<UserDetails> {
     }
   }
 
-  Future _addUser() async {
+  Future _addUser({required BuildContext context}) async {
     if (mounted) {
       setState(() { _isLoading = true; _loadingText = "Adding user"; });
     }
-    ApiResponse response = await FirebaseFireStoreService().addUser(user: widget.user!);
+    ApiResponse response = await context.read<UserCubit>().addUser(widget.user!);
     if (mounted) {
       setState(() { _isLoading = false; });
     }
@@ -363,12 +366,12 @@ class _UserDetailsState extends State<UserDetails> {
                             );
                           } else if(shouldDisplayDismissibleDialog == false) {
                             widget.user!.photoUrl = "";
-                            await _addUser();
+                            await _addUser(context: context);
                           }
                         } else {
-                          String? url = await _uploadPhotoAndGetUrl();
+                          String? url = await _uploadPhotoAndGetUrl(context: context);
                           widget.user!.photoUrl = url;
-                          await _addUser();
+                          await _addUser(context: context);
                         }
                       }
                     },

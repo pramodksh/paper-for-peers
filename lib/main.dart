@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
@@ -35,6 +36,9 @@ class _MyAppState extends State<MyApp> {
         ),
         RepositoryProvider<FirestoreRepository>(
           create: (context) => FirestoreRepository(),
+        ),
+        RepositoryProvider<FirebaseStorageRepository>(
+          create: (context) => FirebaseStorageRepository(),
         ),
       ],
       child: MultiBlocProvider(

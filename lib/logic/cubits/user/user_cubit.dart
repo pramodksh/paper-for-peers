@@ -28,11 +28,9 @@ class UserCubit extends Cubit<UserState> {
     }
 
     return addUserResponse;
-
   }
 
-  void validateCourseAndSemester() {
+  Future<bool> isUserExists(UserModel user) async => await _firestoreRepository.isUserExists(userId: user.uid);
 
-  }
-
+  Future<UserModel> getUserById({required String userId}) async => await _firestoreRepository.getUserByUserId(userId: userId);
 }

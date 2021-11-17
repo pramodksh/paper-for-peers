@@ -144,7 +144,7 @@ Widget getAppropriateWidget({required UserModel user, required BuildContext cont
 
   print("GET APPROPRIATE WIDGET");
   return FutureBuilder(
-    future: context.read<FirestoreRepository>().getUserByUserId(userId: user.uid),
+    future: context.read<UserCubit>().getUserById(userId: user.uid),
     builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
         return LoadingScreen(loadingText: "Fetching your details",);
@@ -171,10 +171,8 @@ Widget getAppropriateWidget({required UserModel user, required BuildContext cont
 
 Widget addUserIfNotExistsAndGetWidget({required UserModel user, required BuildContext context}) {
 
-  FirestoreRepository _firestoreRepository = context.read<FirestoreRepository>();
-
   return FutureBuilder(
-    future: _firestoreRepository.isUserExists(userId: user.uid),
+    future: context.read<UserCubit>().isUserExists(user),
     builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
         return LoadingScreen(loadingText: "Checking if user exists",);
@@ -184,7 +182,7 @@ Widget addUserIfNotExistsAndGetWidget({required UserModel user, required BuildCo
           print("ADDING USER");
 
           return FutureBuilder(
-            future: _firestoreRepository.addUser(user: user),
+            future: context.read<UserCubit>().addUser(user),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
                 return LoadingScreen(loadingText: "Adding user",);
