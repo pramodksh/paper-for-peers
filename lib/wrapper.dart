@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
 import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
 import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
 import 'package:papers_for_peers/services/firebase_auth/firebase_auth_service.dart';
-
+import 'package:provider/provider.dart';
 import 'data/models/user_model/user_model.dart';
 
 class Wrapper extends StatefulWidget {
@@ -19,7 +20,7 @@ class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _firebaseAuthService.user,
+      stream: context.read<AuthRepository>().user,
       builder: (context, snapshot) {
         UserModel? user = snapshot.data as UserModel?;
         print("CURRENT USER: $user | ${snapshot.connectionState}");

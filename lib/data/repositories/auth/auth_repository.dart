@@ -4,7 +4,8 @@ import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 abstract class BaseAuthRepository {
-  Stream<auth.User?> get user;
+  Stream<UserModel?> get user;
+  UserModel? getCustomUserFromFirebaseUser(auth.User? user);
   Future<ApiResponse> signUpWithEmailAndPassword({required String email, required String password});
   Future<ApiResponse> signInWithEmailAndPassword({required String email, required String password});
   Future<ApiResponse> authenticateWithGoogle();
@@ -92,6 +93,16 @@ class AuthRepository extends BaseAuthRepository {
   }
 
   @override
-  Stream<auth.User?> get user => _firebaseAuth.userChanges();
+  UserModel? getCustomUserFromFirebaseUser(auth.User? user) {
+    return user != null ? UserModel(
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+      photoUrl: user.photoURL,
+    ) : null;
+  }
+
+  @override
+  Stream<UserModel?> get user => _firebaseAuth.userChanges().map(getCustomUserFromFirebaseUser);
 
 }
