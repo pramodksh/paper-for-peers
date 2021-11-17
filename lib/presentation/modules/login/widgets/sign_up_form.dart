@@ -17,7 +17,7 @@ class SignUpForm extends StatelessWidget {
 
     return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) {
-        if (state.signUpStatus == SignUpStatus.error) {
+        if (state.signUpStatus.isError) {
           showAlertDialog(context: context, text: state.errorMessage);
         }
       },
@@ -84,7 +84,7 @@ class SignUpForm extends StatelessWidget {
                 SizedBox(
                   width: 350,
                   height: 50,
-                  child: signUpState.signUpStatus == SignUpStatus.loading
+                  child: signUpState.signUpStatus.isLoading
                       ? Center(child: CircularProgressIndicator.adaptive())
                       : getCustomButton(
                     buttonText: 'Sign Up',

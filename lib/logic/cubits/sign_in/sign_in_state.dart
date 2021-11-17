@@ -7,6 +7,11 @@ enum SignInStatus {
   error,
 }
 
+extension SignInStatusExtension on SignInStatus{
+  bool get isLoading => this == SignInStatus.loading;
+  bool get isError => this == SignInStatus.error;
+}
+
 class SignInState extends Equatable {
 
   final String email;
