@@ -4,12 +4,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
+import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
 import 'package:papers_for_peers/presentation/modules/login/user_course.dart';
 import 'package:papers_for_peers/presentation/modules/login/user_details.dart';
 import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
+import 'package:provider/provider.dart';
 
 extension EmailValidator on String {
   bool isValidEmail() {
@@ -139,15 +142,20 @@ Widget getCustomButton({required String buttonText, required Function() onPresse
 
 Widget getAppropriateWidget({required UserModel user, required BuildContext context}) {
 
-  FirebaseFireStoreService _firebaseFireStoreService = FirebaseFireStoreService();
-
+  print("GET APPROPRIATE WIDGET");
   return FutureBuilder(
-    future: _firebaseFireStoreService.getUserByUserId(userId: user.uid),
+    future: context.read<FirestoreRepository>().getUserByUserId(userId: user.uid),
     builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
         return LoadingScreen(loadingText: "Fetching your details",);
       } else {
+
         UserModel authenticatedUser = snapshot.data as UserModel;
+
+        print("GET USER BY ID: ${authenticatedUser}");
+
+        context.read<UserCubit>().setUser(authenticatedUser);
+
         if (authenticatedUser.displayName == null || authenticatedUser.photoUrl == null) {
           return UserDetails(user: authenticatedUser,);
         } else if (authenticatedUser.course == null || authenticatedUser.semester == null) {

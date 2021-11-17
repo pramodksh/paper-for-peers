@@ -1,10 +1,15 @@
+import 'dart:developer';
+
+import 'package:papers_for_peers/data/models/course.dart';
+import 'package:papers_for_peers/data/models/semester.dart';
+
 class UserModel {
   final String uid;
   String? displayName;
   final String? email;
   String? photoUrl;
-  int? semester;
-  String? course;
+  Semester? semester;
+  Course? course;
 
   static String courseLabel = "course";
   static String semesterLabel = "semester";
@@ -34,8 +39,8 @@ class UserModel {
     String? displayName,
     String? email,
     String? photoUrl,
-    int? semester,
-    String? course,
+    Semester? semester,
+    Course? course,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -46,4 +51,5 @@ class UserModel {
       course: course ?? this.course,
     );
   }
+
 }

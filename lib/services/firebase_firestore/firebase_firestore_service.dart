@@ -29,10 +29,10 @@ class FirebaseFireStoreService {
     return userDocumentSnapshot.exists;
   }
 
-  Future<UserModel> getUserByUserId({required String userId}) async {
-    DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
-    return UserModel.getUserModelByMap(userMap: userDocumentSnapshot.data() as Map<dynamic, dynamic>, userId: userId);
-  }
+  // Future<UserModel> getUserByUserId({required String userId}) async {
+  //   DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
+  //   return UserModel.getUserModelByMap(userMap: userDocumentSnapshot.data() as Map<dynamic, dynamic>, userId: userId);
+  // }
 
   Future<ApiResponse> addUser({required UserModel user}) async {
     try {

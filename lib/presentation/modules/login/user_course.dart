@@ -8,6 +8,7 @@ import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/course_and_semester/course_and_semester_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
@@ -28,8 +29,8 @@ class _UserCourseState extends State<UserCourse> {
 
   bool _isLoading = false;
 
-  Course? selectedCourse;
-  Semester? selectedSemester;
+  // Course? selectedCourse;
+  // Semester? selectedSemester;
 
   String courseErrorText = "";
   String semesterErrorText = "";
@@ -43,6 +44,7 @@ class _UserCourseState extends State<UserCourse> {
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
     CourseAndSemesterState courseAndSemesterState = context.select((CourseAndSemesterCubit cubit) => cubit.state);
+    UserState userState = context.select((UserCubit cubit) => cubit.state);
 
     if (courseAndSemesterState is CourseAndSemesterInitial) {
       context.read<CourseAndSemesterCubit>().fetchCourses();
@@ -63,7 +65,7 @@ class _UserCourseState extends State<UserCourse> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          body: _isLoading ? LoadingScreen(
+          body: userState is UserLoading ? LoadingScreen(
             loadingText: "Please wait...",
           ) : Container(
             width: MediaQuery.of(context).size.width,
@@ -71,103 +73,98 @@ class _UserCourseState extends State<UserCourse> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Builder(
-                  builder: (context) {
-                    return Column(
-                      children: [
-                        Text('Select Course',style: TextStyle(fontSize: 30,),),
-                        SizedBox(height: 20,),
-                        Builder(
-                          builder: (context) {
-                            if (courseAndSemesterState is CourseAndSemesterLoaded) {
-                              List<Course> courses = courseAndSemesterState.courses;
-                              return SizedBox(
-                                width: 200,
-                                child: getCustomDropDown<Course>(
-                                  onDropDownTap: () { setState(() { courseErrorText = ""; }); },
-                                  isTransparent: true,
-                                  context: context,
-                                  dropDownValue: selectedCourse,
-                                  dropDownItems: courses,
-                                  dropDownHint: 'Courses',
-                                  items: courses.map((Course value) {
-                                    return DropdownMenuItem<Course>(
-                                      value: value,
-                                      child: Text(value.courseName.toUpperCase(), style: CustomTextStyle.bodyTextStyle.copyWith(
-                                        fontSize: 18,
-                                        color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-                                      ),),
-                                    );
-                                  }).toList(),
-                                  onDropDownChanged: (val) {
-                                    setState(() {
-                                      if (mounted) setState(() {
-                                        selectedCourse = val;
-                                      });
-                                    });
-                                  },
-                                ),
-                              );
-                            } else {
-                              return CircularProgressIndicator.adaptive();
-                            }
+                Column(
+                  children: [
+                    Text('Select Course',style: TextStyle(fontSize: 30,),),
+                    SizedBox(height: 20,),
+                    Builder(
+                        builder: (context) {
+                          if (courseAndSemesterState is CourseAndSemesterLoaded && userState is UserLoaded) {
+                            List<Course> courses = courseAndSemesterState.courses;
+                            return SizedBox(
+                              width: 200,
+                              child: getCustomDropDown<Course>(
+                                onDropDownTap: () { setState(() { courseErrorText = ""; }); },
+                                isTransparent: true,
+                                context: context,
+                                dropDownValue: userState.userModel.course,
+                                dropDownItems: courses,
+                                dropDownHint: 'Courses',
+                                items: courses.map((Course value) {
+                                  return DropdownMenuItem<Course>(
+                                    value: value,
+                                    child: Text(value.courseName.toUpperCase(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                      fontSize: 18,
+                                      color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                    ),),
+                                  );
+                                }).toList(),
+                                onDropDownChanged: (val) {
+                                  context.read<UserCubit>().setUser(userState.userModel.copyWith(course: val),);
+                                },
+                              ),
+                            );
+                          } else {
+                            return CircularProgressIndicator.adaptive();
                           }
-                        ),
-                        SizedBox(height: 20,),
-                        courseErrorText.isEmpty ? Container() : Text(courseErrorText, style: errorTextStyle,),
-                      ],
-                    );
+                        }
+                    ),
+                    SizedBox(height: 20,),
+                    courseErrorText.isEmpty ? Container() : Text(courseErrorText, style: errorTextStyle,),
+                  ],
+                ),
 
-                  }
+                Column(
+                  children: [
+                    Text(
+                      'Select Semester',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: userState is UserLoaded && userState.userModel.course == null
+                            ? Colors.grey : Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    Builder(
+                      builder: (context) {
+
+                        if (userState is UserLoaded) {
+
+                          List<Semester>? semesters = userState.userModel.course?.semesters;
+
+                          return SizedBox(
+                            width: 200,
+                            child: getCustomDropDown<Semester>(
+                              onDropDownTap: () { setState(() { semesterErrorText = ""; }); },
+                              isTransparent: true,
+                              context: context,
+                              dropDownValue: userState.userModel.semester,
+                              dropDownItems: semesters,
+                              dropDownHint: 'Semester',
+                              onDropDownChanged: userState.userModel.course == null ? null : (val) {
+                                context.read<UserCubit>().setUser(userState.userModel.copyWith(semester: val));
+                              },
+                              items: semesters?.map((Semester value) {
+                                return DropdownMenuItem<Semester>(
+                                  value: value,
+                                  child: Text(value.semester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                    fontSize: 18,
+                                    color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                  ),),
+                                );
+                              }).toList(),
+                            ),
+                          );
+                        } else {
+                          return CircularProgressIndicator.adaptive();
+                        }
+                      }
+                    ),
+                    SizedBox(height: 20,),
+                    semesterErrorText.isEmpty ? Container() : Text(semesterErrorText, style: errorTextStyle,),
+                  ],
                 ),
-                Builder(
-                  builder: (context) {
-                    List<Semester>? semesters = selectedCourse?.semesters;
-                    return Column(
-                      children: [
-                        Text(
-                          'Select Semester',
-                          style: TextStyle(
-                            fontSize: 30,
-                            color: selectedCourse == null ? Colors.grey : Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 20,),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: selectedCourse == null ? Colors.grey.withOpacity(0.3) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          width: 180,
-                          child: getCustomDropDown<Semester>(
-                            onDropDownTap: () { setState(() { semesterErrorText = ""; }); },
-                            isTransparent: true,
-                            context: context,
-                            dropDownValue: selectedSemester,
-                            dropDownItems: semesters,
-                            dropDownHint: 'Semester',
-                            onDropDownChanged: selectedCourse == null ? null : (val) {
-                              setState(() {
-                                selectedSemester = val;
-                              });
-                            },
-                            items: semesters?.map((Semester value) {
-                              return DropdownMenuItem<Semester>(
-                                value: value,
-                                child: Text(value.semester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
-                                  fontSize: 18,
-                                  color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-                                ),),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        SizedBox(height: 20,),
-                        semesterErrorText.isEmpty ? Container() : Text(semesterErrorText, style: errorTextStyle,),
-                      ],
-                    );
-                  },
-                ),
+
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 30),
@@ -176,37 +173,47 @@ class _UserCourseState extends State<UserCourse> {
                     )
                   ),
                   onPressed: () async {
-                    if (selectedCourse == null) {
-                      setState(() {
-                        courseErrorText = "Please select course";
-                      });
-                    } else if (selectedSemester == null) {
-                      setState(() {
-                        semesterErrorText = "Please select semester";
-                      });
-                    } else {
-                      if (mounted) {
-                        setState(() { _isLoading = true; });
-                      }
-                      ApiResponse response = await FirebaseFireStoreService().addUser(user: UserModel(
-                        uid: widget.user!.uid,
-                        displayName: widget.user!.displayName,
-                        photoUrl: widget.user!.photoUrl,
-                        email: widget.user!.email,
-                        course: selectedCourse!.courseName,
-                        semester: selectedSemester!.semester,
-                      ));
-                      if (mounted) {
-                        setState(() { _isLoading = false; });
-                      }
-                      if (response.isError) {
-                        showAlertDialog(context: context, text: response.errorMessage);
-                      } else {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => IntroScreen(),
-                        ));
-                      }
-                    }
+                    // if (selectedCourse == null) {
+                    //   setState(() {
+                    //     courseErrorText = "Please select course";
+                    //   });
+                    // } else if (selectedSemester == null) {
+                    //   setState(() {
+                    //     semesterErrorText = "Please select semester";
+                    //   });
+                    // } else {
+                    //   // if (mounted) {
+                    //   //   setState(() { _isLoading = true; });
+                    //   // }
+                    //
+                    //   context.read<UserCubit>().addUser(UserModel(
+                    //     uid: widget.user!.uid,
+                    //     displayName: widget.user!.displayName,
+                    //     photoUrl: widget.user!.photoUrl,
+                    //     email: widget.user!.email,
+                    //     course: selectedCourse!.courseName,
+                    //     semester: selectedSemester!.semester,
+                    //   ));
+                    //
+                    //   // ApiResponse response = await FirebaseFireStoreService().addUser(user: UserModel(
+                    //   //   uid: widget.user!.uid,
+                    //   //   displayName: widget.user!.displayName,
+                    //   //   photoUrl: widget.user!.photoUrl,
+                    //   //   email: widget.user!.email,
+                    //   //   course: selectedCourse!.courseName,
+                    //   //   semester: selectedSemester!.semester,
+                    //   // ));
+                    //   if (mounted) {
+                    //     setState(() { _isLoading = false; });
+                    //   }
+                    //   if (response.isError) {
+                    //     showAlertDialog(context: context, text: response.errorMessage);
+                    //   } else {
+                    //     Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) => IntroScreen(),
+                    //     ));
+                    //   }
+                    // }
                   },
                   child: Text("Continue", style: TextStyle(fontSize: 18),),
                 ),
