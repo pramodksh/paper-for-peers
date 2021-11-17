@@ -18,6 +18,10 @@ class UserLoaded extends UserState {
   @override
   List<Object?> get props => [userModel];
 
+  bool get isValidCourse => userModel.course != null;
+
+  bool get isValidSemester => userModel.semester != null;
+
 }
 
 class UserLoading extends UserState {

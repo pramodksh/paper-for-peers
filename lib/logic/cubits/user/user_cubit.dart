@@ -17,15 +17,22 @@ class UserCubit extends Cubit<UserState> {
     emit(UserLoaded(userModel: userModel,));
   }
 
-  void addUser(UserModel userModel) async {
+  Future<ApiResponse> addUser(UserModel userModel) async {
     emit(UserLoading());
     ApiResponse addUserResponse = await _firestoreRepository.addUser(user: userModel,);
 
     if (addUserResponse.isError) {
       emit(UserError(errorMessage: addUserResponse.errorMessage!));
     } else {
-      emit(UserLoaded(userModel: addUserResponse.data));
+      emit(UserLoaded(userModel: userModel));
     }
 
+    return addUserResponse;
+
   }
+
+  void validateCourseAndSemester() {
+
+  }
+
 }
