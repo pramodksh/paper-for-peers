@@ -74,50 +74,50 @@ class _UserCourseState extends State<UserCourse> {
                 Builder(
                   builder: (context) {
 
-                    if (courseAndSemesterState is CourseAndSemesterLoading) {
-                      return CircularProgressIndicator.adaptive();
-                    } else if (courseAndSemesterState is CourseAndSemesterLoaded) {
-
-                      List<Course> courses = courseAndSemesterState.courses;
-
-                      return Column(
-                        children: [
-                          Text('Select Course',style: TextStyle(fontSize: 30,),),
-                          SizedBox(height: 20,),
-                          SizedBox(
-                            width: 200,
-                            child: getCustomDropDown<Course>(
-                              onDropDownTap: () { setState(() { courseErrorText = ""; }); },
-                              isTransparent: true,
-                              context: context,
-                              dropDownValue: selectedCourse,
-                              dropDownItems: courses,
-                              dropDownHint: 'Courses',
-                              items: courses.map((Course value) {
-                                return DropdownMenuItem<Course>(
-                                  value: value,
-                                  child: Text(value.courseName.toUpperCase(), style: CustomTextStyle.bodyTextStyle.copyWith(
-                                    fontSize: 18,
-                                    color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-                                  ),),
-                                );
-                              }).toList(),
-                              onDropDownChanged: (val) {
-                                setState(() {
-                                  if (mounted) setState(() {
-                                    selectedCourse = val;
-                                  });
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(height: 20,),
-                          courseErrorText.isEmpty ? Container() : Text(courseErrorText, style: errorTextStyle,),
-                        ],
-                      );
-                    } else {
-                      return CircularProgressIndicator.adaptive();
-                    }
+                    return Column(
+                      children: [
+                        Text('Select Course',style: TextStyle(fontSize: 30,),),
+                        SizedBox(height: 20,),
+                        Builder(
+                          builder: (context) {
+                            if (courseAndSemesterState is CourseAndSemesterLoaded) {
+                              List<Course> courses = courseAndSemesterState.courses;
+                              return SizedBox(
+                                width: 200,
+                                child: getCustomDropDown<Course>(
+                                  onDropDownTap: () { setState(() { courseErrorText = ""; }); },
+                                  isTransparent: true,
+                                  context: context,
+                                  dropDownValue: selectedCourse,
+                                  dropDownItems: courses,
+                                  dropDownHint: 'Courses',
+                                  items: courses.map((Course value) {
+                                    return DropdownMenuItem<Course>(
+                                      value: value,
+                                      child: Text(value.courseName.toUpperCase(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                        fontSize: 18,
+                                        color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                      ),),
+                                    );
+                                  }).toList(),
+                                  onDropDownChanged: (val) {
+                                    setState(() {
+                                      if (mounted) setState(() {
+                                        selectedCourse = val;
+                                      });
+                                    });
+                                  },
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator.adaptive();
+                            }
+                          }
+                        ),
+                        SizedBox(height: 20,),
+                        courseErrorText.isEmpty ? Container() : Text(courseErrorText, style: errorTextStyle,),
+                      ],
+                    );
 
                   }
                 ),

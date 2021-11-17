@@ -105,4 +105,5 @@ class AuthRepository extends BaseAuthRepository {
   @override
   Stream<UserModel?> get user => _firebaseAuth.userChanges().map(getCustomUserFromFirebaseUser);
 
+  bool get isCurrentUserEmailVerified => _firebaseAuth.currentUser!.emailVerified;
 }

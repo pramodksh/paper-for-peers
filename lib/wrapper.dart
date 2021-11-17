@@ -15,12 +15,15 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
 
-  FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
+  // FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
 
   @override
   Widget build(BuildContext context) {
+
+    AuthRepository _authRepository = context.select((AuthRepository repo) => repo);
+
     return StreamBuilder(
-      stream: context.read<AuthRepository>().user,
+      stream: _authRepository.user,
       builder: (context, snapshot) {
         UserModel? user = snapshot.data as UserModel?;
         print("CURRENT USER: $user | ${snapshot.connectionState}");
@@ -29,8 +32,8 @@ class _WrapperState extends State<Wrapper> {
             return Login();
           } else {
             print("USER ID: ${user.uid}");
-            print("USER EMAIL VERIFIED? : ${_firebaseAuthService.isCurrentUserEmailVerified}");
-            if (!_firebaseAuthService.isCurrentUserEmailVerified) {
+            print("USER EMAIL VERIFIED? : ${_authRepository.isCurrentUserEmailVerified}");
+            if (!_authRepository.isCurrentUserEmailVerified) {
               return SendVerificationEmail(user: user,);
             } else {
               return addUserIfNotExistsAndGetWidget(context: context, user: user);
