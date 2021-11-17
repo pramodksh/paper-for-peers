@@ -18,10 +18,6 @@ import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_
 import 'package:provider/provider.dart';
 
 class UserCourse extends StatefulWidget {
-  final UserModel? user;
-
-  UserCourse({this.user});
-
   @override
   _UserCourseState createState() => _UserCourseState();
 }

@@ -5,6 +5,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/course_and_semester/course_and_semester_cubit.dart';
@@ -40,6 +41,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<FirebaseStorageRepository>(
           create: (context) => FirebaseStorageRepository(),
         ),
+        RepositoryProvider<ImagePickerRepository>(
+          create: (context) => ImagePickerRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -55,7 +59,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<UserCubit>(
             create: (context) => UserCubit(
               firestoreRepository: context.read<FirestoreRepository>(),
-              firebaseStorageRepository: context.read<FirebaseStorageRepository>()
+              firebaseStorageRepository: context.read<FirebaseStorageRepository>(),
+              imagePickerRepository: context.read<ImagePickerRepository>(),
             ),
           ),
         ],

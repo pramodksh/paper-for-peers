@@ -40,3 +40,28 @@ class UserError extends UserState {
   List<Object?> get props => [errorMessage];
 
 }
+
+class UserEditSuccess extends UserState {
+  final File? profilePhotoFile;
+  final String? userName;
+
+  UserEditSuccess({this.profilePhotoFile, this.userName});
+
+  @override
+  List<Object?> get props => [profilePhotoFile, userName];
+}
+
+class UserEditLoading extends UserState {
+  @override
+  List<Object?> get props => [];
+}
+
+class UserEditError extends UserState {
+
+  final String errorMessage;
+
+  UserEditError({required this.errorMessage});
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
