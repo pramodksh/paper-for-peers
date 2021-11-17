@@ -56,17 +56,13 @@ class SignUpCubit extends Cubit<SignUpState> {
       return;
     }
 
-    try {
-      emit(state.copyWith(signUpStatus: SignUpStatus.loading));
-      ApiResponse signUpResponse = await _authRepository.signUpWithEmailAndPassword(email: state.email, password: state.password);
+    emit(state.copyWith(signUpStatus: SignUpStatus.loading));
+    ApiResponse signUpResponse = await _authRepository.signUpWithEmailAndPassword(email: state.email, password: state.password);
 
-      if (signUpResponse.isError) {
-        emit(state.copyWith(signUpStatus: SignUpStatus.error, errorMessage: signUpResponse.errorMessage));
-      } else {
-        emit(state.copyWith(signUpStatus: SignUpStatus.success));
-      }
-    } catch (e) {
-      emit(state.copyWith(signUpStatus: SignUpStatus.error, errorMessage: "There was an error while Signing Up: ${e.toString()}"));
+    if (signUpResponse.isError) {
+      emit(state.copyWith(signUpStatus: SignUpStatus.error, errorMessage: signUpResponse.errorMessage));
+    } else {
+      emit(state.copyWith(signUpStatus: SignUpStatus.success));
     }
 
   }

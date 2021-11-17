@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:google_sign_in/google_sign_in.dart' as googleAuth;
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
@@ -6,6 +7,7 @@ abstract class BaseAuthRepository {
   Stream<auth.User?> get user;
   Future<ApiResponse> signUpWithEmailAndPassword({required String email, required String password});
   Future<ApiResponse> signInWithEmailAndPassword({required String email, required String password});
+  Future<ApiResponse> authenticateWithGoogle();
 }
 
 class AuthRepository extends BaseAuthRepository {
@@ -64,6 +66,28 @@ class AuthRepository extends BaseAuthRepository {
       } else {
         return ApiResponse(isError: true, errorMessage: "Error while signing in");
       }
+    }
+  }
+
+  @override
+  Future<ApiResponse> authenticateWithGoogle() async {
+    try {
+      final googleAuth.GoogleSignInAccount? googleUser = await googleAuth.GoogleSignIn().signIn();
+      final googleAuth.GoogleSignInAuthentication googleSignInAuth = await googleUser!.authentication;
+      final credential = auth.GoogleAuthProvider.credential(
+        accessToken: googleSignInAuth.accessToken,
+        idToken: googleSignInAuth.idToken,
+      );
+      auth.UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      return ApiResponse<UserModel>(isError: false, data: UserModel(
+        uid: userCredential.user!.uid,
+        email: userCredential.user!.email,
+        displayName: userCredential.user!.displayName,
+        photoUrl: userCredential.user!.photoURL,
+      ));
+    } catch (e) {
+      print("GOOGLE AUTH ERROR: $e");
+      return ApiResponse(isError: true, errorMessage: "There was some error while authenticating with Google");
     }
   }
 

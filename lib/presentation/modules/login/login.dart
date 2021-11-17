@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_in/sign_in_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
+import 'package:papers_for_peers/presentation/modules/login/widgets/google_auth_widget.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/login_utils.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/sign_in_form.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/sign_up_form.dart';
@@ -30,6 +32,9 @@ class _LoginState extends State<Login> {
         ),
         BlocProvider(
           create: (context) => SignInCubit(authRepository: context.read<AuthRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => GoogleAuthCubit(authRepository: context.read<AuthRepository>()),
         ),
       ],
       child: Builder(
@@ -56,7 +61,7 @@ class _LoginState extends State<Login> {
                             SizedBox(height: 35,),
                             LoginUtils.getOrDivider(),
                             SizedBox(height: 30,),
-                            LoginUtils.getContinueWithGoogleButton(),
+                            GoogleAuthWidget(),
                             SizedBox(height: 20,),
                             RichText(
                               text: TextSpan(

@@ -22,27 +22,4 @@ class LoginUtils {
     );
   }
 
-  static Widget getContinueWithGoogleButton() {
-    return TextButton(
-      onPressed: () {
-        // todo continue with google
-        // continueWithGoogle();
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            DefaultAssets.googleIconPath,
-            height: 30,
-          ),
-          SizedBox(width: 15,),
-          Text(
-            'Continue with Google',
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-        ],
-      ),
-    );
-  }
-
 }
