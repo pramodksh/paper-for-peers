@@ -65,20 +65,6 @@ class SignUpForm extends StatelessWidget {
                   onTapObscure: () { context.read<SignUpCubit>().toggleConfirmPasswordObscure(); },
                   validator: (String? val) => context.read<SignUpCubit>().isConfirmPasswordValid(val!) ? null : "Passwords do not match",
                 ),
-                // _isSignIn ? Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     TextButton(
-                //       child: Text('Forgot Password?', style: TextStyle(color: Colors.white, fontSize: 18),),
-                //       onPressed: (){
-                //         // todo implement forgot password
-                //         Navigator.of(context).push(MaterialPageRoute(
-                //           builder: (context) => ForgotPassword(),
-                //         ));
-                //       },
-                //     ),
-                //   ],
-                // ) : Container() ,
                 SizedBox(height: 20,),
 
                 SizedBox(
