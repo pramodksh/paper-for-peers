@@ -53,7 +53,10 @@ class _MyAppState extends State<MyApp> {
             create: (context) => CourseAndSemesterCubit(),
           ),
           BlocProvider<UserCubit>(
-            create: (context) => UserCubit(firestoreRepository: context.read<FirestoreRepository>()),
+            create: (context) => UserCubit(
+              firestoreRepository: context.read<FirestoreRepository>(),
+              firebaseStorageRepository: context.read<FirebaseStorageRepository>()
+            ),
           ),
         ],
         child: Builder(

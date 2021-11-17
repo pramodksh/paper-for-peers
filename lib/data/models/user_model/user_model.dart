@@ -52,4 +52,8 @@ class UserModel {
     );
   }
 
+  @override
+  String toString() {
+    return 'UserModel{uid: $uid, displayName: $displayName, email: $email, photoUrl: $photoUrl, semester: $semester, course: $course}';
+  }
 }

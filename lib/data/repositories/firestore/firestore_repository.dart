@@ -42,13 +42,15 @@ class FirestoreRepository {
   }
 
   Future<ApiResponse> addUser({required UserModel user}) async {
+
+    print("ADD USER IN REPO ${user.toString()}");
     try {
       await usersCollection.doc(user.uid).set({
         'displayName': user.displayName,
         'email': user.email,
         'photoUrl': user.photoUrl,
-        UserModel.courseLabel: user.course!.courseName,
-        UserModel.semesterLabel: user.semester!.semester,
+        UserModel.courseLabel: user.course?.courseName,
+        UserModel.semesterLabel: user.semester?.semester,
       });
       return ApiResponse(isError: false);
     } catch (err) {

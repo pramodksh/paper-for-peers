@@ -55,9 +55,9 @@ class _UserDetailsState extends State<UserDetails> {
     return file;
   }
 
-  Widget getCircularProfileImage() {
+  Widget getCircularProfileImage({required File? photoFile}) {
     Widget circleImage;
-    if (profilePhotoFile == null) {
+    if (photoFile == null) {
       circleImage = CircleAvatar(
         radius: profileImageRadius,
         backgroundColor: Colors.grey[800],
@@ -69,7 +69,7 @@ class _UserDetailsState extends State<UserDetails> {
     } else {
       circleImage = CircleAvatar(
           radius: profileImageRadius,
-          backgroundImage: FileImage(profilePhotoFile!),
+          backgroundImage: FileImage(photoFile),
       );
     }
 
@@ -228,7 +228,7 @@ class _UserDetailsState extends State<UserDetails> {
     if (mounted) {
       setState(() { _isLoading = true; _loadingText = "Uploading Photo"; });
     }
-    ApiResponse response = await context.read<FirebaseStorageRepository>().uploadProfilePhoto(file: profilePhotoFile!, userId: widget.user!.uid);
+    ApiResponse response = await context.read<UserCubit>().uploadProfilePhotoToStorage(file: profilePhotoFile!, user: widget.user!);
     if (mounted) {
       setState(() { _isLoading = false; });
     }
@@ -292,7 +292,7 @@ class _UserDetailsState extends State<UserDetails> {
                   ),
                   Stack(
                     children: [
-                     getCircularProfileImage(),
+                     getCircularProfileImage(photoFile: profilePhotoFile),
                       Positioned(
                         bottom: 0,
                         right: 0,
