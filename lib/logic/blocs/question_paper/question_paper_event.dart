@@ -27,14 +27,19 @@ class QuestionPaperFetch extends QuestionPaperEvent {
 
 class QuestionPaperAdd extends QuestionPaperEvent {
 
-  final QuestionPaperModel questionPaper;
+  final String uploadedBy;
   final int year;
 
   @override
-  List<Object?> get props => [questionPaper, year];
+  List<Object?> get props => [uploadedBy, year];
 
   const QuestionPaperAdd({
-    required this.questionPaper,
+    required this.uploadedBy,
     required this.year,
   });
+
+  @override
+  String toString() {
+    return 'QuestionPaperAdd{questionPaper: $uploadedBy, year: $year}';
+  }
 }

@@ -192,11 +192,23 @@ class _QuestionPaperState extends State<QuestionPaper> {
                                       variants.add(SizedBox(
                                         width: 180,
                                         height: 80,
-                                        child: getAddPostContainer(
-                                          isDarkTheme: appThemeType.isDarkTheme(),
-                                          label: "Add Question Paper",
-                                          onPressed: () {},
-                                          context: context,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+
+                                            if (userState is UserLoaded) {
+                                              context.read<QuestionPaperBloc>().add(QuestionPaperAdd(
+                                                year: questionPaperYears[index].year,
+                                                uploadedBy: userState.userModel.displayName!,
+                                              ));
+                                            }
+
+                                          },
+                                          child: getAddPostContainer(
+                                            isDarkTheme: appThemeType.isDarkTheme(),
+                                            label: "Add Question Paper",
+                                            onPressed: () {},
+                                            context: context,
+                                          ),
                                         ),
                                       ));
                                     }
