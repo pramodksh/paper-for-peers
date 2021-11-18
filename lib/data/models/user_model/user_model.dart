@@ -1,8 +1,6 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
-import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 
 class UserModel {
   final String uid;

@@ -7,8 +7,6 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_options.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
-import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 import 'package:provider/provider.dart';
 
 class QuestionPaper extends StatefulWidget {
