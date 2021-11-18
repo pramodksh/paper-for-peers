@@ -42,7 +42,7 @@ class _UserCourseState extends State<UserCourse> {
 
     return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
-        if (state is UserError) {
+        if (state is UserAddError) {
           showAlertDialog(context: context, text: state.errorMessage);
         }
       },

@@ -156,7 +156,7 @@ Widget getAppropriateWidget({required UserModel user, required BuildContext cont
 
         context.read<UserCubit>().setUser(authenticatedUser);
 
-        if (authenticatedUser.displayName == null || authenticatedUser.photoUrl == null) {
+        if (authenticatedUser.displayName == null || authenticatedUser.displayName!.isEmpty) {
           return UserDetails();
         } else if (authenticatedUser.course == null || authenticatedUser.semester == null) {
           return UserCourse();

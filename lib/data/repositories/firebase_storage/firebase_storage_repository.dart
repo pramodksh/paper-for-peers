@@ -9,7 +9,7 @@ class FirebaseStorageRepository {
   FirebaseStorageRepository({storage.FirebaseStorage? firebaseStorage})
     : _firebaseStorage = firebaseStorage ?? storage.FirebaseStorage.instance;
 
-  Future<ApiResponse> uploadProfilePhoto({required File file, required String userId}) async {
+  Future<ApiResponse> uploadProfilePhotoAndGetUrl({required File file, required String userId}) async {
 
     try {
       // Reference ref = storage.ref('profile_photos/file-to-upload.png');

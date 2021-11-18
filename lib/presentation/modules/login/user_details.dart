@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -35,7 +36,7 @@ class _UserDetailsState extends State<UserDetails> {
   double borderThickness = 5;
   double profileImageRadius = 90;
 
-  Widget getCircularProfileImage({required File? photoFile, required String? userName}) {
+  Widget _getCircularProfileImage({required File? photoFile, required String? userName}) {
     Widget circleImage;
     if (photoFile == null) {
       circleImage = CircleAvatar(
@@ -71,7 +72,7 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
-  Widget buildChooseSourceDialog({required bool isDarkTheme, required BuildContext context}) {
+  Widget _buildChooseSourceDialog({required bool isDarkTheme, required BuildContext context}) {
 
     UserState userState = context.select((UserCubit cubit) => cubit.state);
 
@@ -153,97 +154,56 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
-  Widget _buildProfilePhotoEmptyDialog({required bool isDarkTheme}) {
-    return StatefulBuilder(
-      builder: (context, setState) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
-        child: Container(
-          // height: 400,
-          width: MediaQuery.of(context).size.width * 0.9,
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: 15,),
-                Text("Are you sure you don't want to upload your Profile Photo?", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic,), textAlign: TextAlign.center,),
-                SizedBox(height: 20,),
-                Text("Note: You cannot edit it once you tap on continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xff373F41),), textAlign: TextAlign.center,),
-                SizedBox(height: 20,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      style: ButtonStyle(
-                          overlayColor: MaterialStateProperty.all(Colors.black26),
-                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
-                          backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)
-                      ),
-                      child: Text("Yes, I'm sure", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+  Widget _buildIsUserWantsToUploadPhoto({required bool isDarkTheme}) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      child: Container(
+        // height: 400,
+        width: MediaQuery.of(context).size.width * 0.9,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 15,),
+              Text("Are you sure you don't want to upload your Profile Photo?", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic,), textAlign: TextAlign.center,),
+              SizedBox(height: 20,),
+              Text("Note: You cannot edit it once you tap on continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xff373F41),), textAlign: TextAlign.center,),
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(Colors.black26),
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)
                     ),
-                    SizedBox(width: 10,),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      style: ButtonStyle(
-                          overlayColor: MaterialStateProperty.all(Colors.black26),
-                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
-                          backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
-                      ),
-                      child: Text("No", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),),
+                    child: Text("Yes, I'm sure", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+                  ),
+                  SizedBox(width: 10,),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(Colors.black26),
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
                     ),
-                  ],
-                ),
-              ]
-          ),
+                    child: Text("No", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),),
+                  ),
+                ],
+              ),
+            ]
         ),
       ),
     );
-  }
-
-
-  // todo
-  Future<String?> _uploadPhotoAndGetUrl({required BuildContext context}) async {
-    // print("UPLOAD PHOTO| ${widget.user!.photoUrl}");
-    // if (mounted) {
-    //   setState(() { _isLoading = true; _loadingText = "Uploading Photo"; });
-    // }
-    // ApiResponse response = await context.read<UserCubit>().uploadProfilePhotoToStorage(file: profilePhotoFile!, user: widget.user!);
-    // if (mounted) {
-    //   setState(() { _isLoading = false; });
-    // }
-    // if (response.isError) {
-    //   showAlertDialog(context: context, text: response.errorMessage);
-    //   return null;
-    // } else {
-    //   String? url = response.data;
-    //   print("photo uploaded | $url");
-    //   return url;
-    // }
-  }
-
-  // todo
-  Future _addUser({required BuildContext context}) async {
-    // if (mounted) {
-    //   setState(() { _isLoading = true; _loadingText = "Adding user"; });
-    // }
-    // ApiResponse response = await context.read<UserCubit>().addUser(widget.user!);
-    // if (mounted) {
-    //   setState(() { _isLoading = false; });
-    // }
-    // if (response.isError) {
-    //   showAlertDialog(context: context, text: response.errorMessage);
-    // } else {
-    //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-    //     builder: (context) => UserCourse(user: widget.user,),
-    //   ));
-    // }
   }
 
   @override
@@ -257,6 +217,46 @@ class _UserDetailsState extends State<UserDetails> {
     });
 
     super.initState();
+  }
+
+  Widget getProfilePhotoWidget({
+    required File? photoFile,
+    required String? userName,
+    required bool isDarkTheme
+  }) {
+    return Stack(
+      children: [
+        _getCircularProfileImage(
+          photoFile: photoFile,
+          userName: userName,
+        ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: CustomColors.bottomNavBarColor,
+                shape: BoxShape.circle),
+            child: IconButton(
+                icon: Icon(
+                  Icons.camera_alt_outlined,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => _buildChooseSourceDialog(
+                      isDarkTheme: isDarkTheme,
+                      context: context,
+                    ),
+                  );
+                }),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -277,169 +277,145 @@ class _UserDetailsState extends State<UserDetails> {
             ),
           ),
         ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Builder(
-            builder: (context) {
+        BlocListener<UserCubit, UserState>(
+          listener: (context, state) {
+            if (state is UserEditError) {
+              showAlertDialog(context: context, text: state.errorMessage);
+            } else if (state is UserAddError) {
+              showAlertDialog(context: context, text: state.errorMessage);
+            }
 
-              UserState userState = context.watch<UserCubit>().state;
+            // if user state is changed from user edit
+            // to user loaded then reload the stream of user
+            if (state is UserLoaded) {
+              context.read<UserCubit>().reloadUser();
+            }
 
-              // todo remove
-              print("USER STATE IN USER DETAILS: ${userState}");
+          },
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Builder(
+              builder: (context) {
+                UserState userState = context.watch<UserCubit>().state;
 
-              return SingleChildScrollView(
-                child: Container(
-                  width: double.infinity,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 100,
-                      ),
-                      Builder(
-                        builder: (context) {
+                if (userState is UserLoading) {
+                  return LoadingScreen(loadingText: "Adding user",);
+                }
 
-                          if (userState is UserEditSuccess) {
-                            return Stack(
-                              children: [
-                                getCircularProfileImage(
-                                  photoFile: userState.profilePhotoFile,
-                                  userName: userState.userModel.displayName,
+                return SingleChildScrollView(
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        SizedBox(height: 100,),
+                        Builder(
+                          builder: (context) {
+
+                            if (userState is UserEditSuccess) {
+                              return getProfilePhotoWidget(
+                                isDarkTheme: appThemeType.isDarkTheme(),
+                                userName: userState.userModel.displayName,
+                                photoFile: userState.profilePhotoFile,
+                              );
+                            } else if (userState is UserEditProfilePhotoLoading) {
+                              return Container(
+                                height: 100,
+                                child: Center(child: CircularProgressIndicator.adaptive()),
+                              );
+                            } else if (userState is UserEditSubmitting) {
+                              return getProfilePhotoWidget(
+                                isDarkTheme: appThemeType.isDarkTheme(),
+                                userName: userState.userModel.displayName,
+                                photoFile: userState.profilePhotoFile,
+                              );
+                            } else {
+                              return Container();
+                            }
+
+                          },
+                        ),
+                        SizedBox(height: 80,),
+                        Text('Enter your Name', style: TextStyle(fontSize: 30),),
+                        SizedBox(height: 30,),
+                        Form(
+                          key: _formKey,
+                          child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 70),
+                              child: getCustomTextField(
+                                onChanged: (val) {
+                                  if (userState is UserEditSuccess) {
+                                    context.read<UserCubit>().editUser(
+                                      userModel: userState.userModel.copyWith(displayName: val),
+                                    );
+                                  }
+                                },
+                                hintText: "Name",
+                                validator: (String? val) => val!.isEmpty ? "Enter your name" : null,
+                              )
+                          ),
+                        ),
+                        SizedBox(height: 100,),
+                        Builder(
+                          builder: (context) {
+                            if (userState is UserEditSubmitting) {
+                              return Center(child: CircularProgressIndicator.adaptive(),);
+                            } else if (userState is UserEditSuccess) {
+                              return ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(horizontal: 30),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    )
                                 ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Container(
-                                    padding: EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
-                                        color: CustomColors.bottomNavBarColor,
-                                        shape: BoxShape.circle),
-                                    child: IconButton(
-                                        icon: Icon(
-                                          Icons.camera_alt_outlined,
-                                          color: Colors.white,
-                                          size: 30,
-                                        ),
-                                        onPressed: () {
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    UserState userState = context.read<UserCubit>().state;
+
+                                    if (userState is UserEditSuccess) {
+
+                                      if (userState.profilePhotoFile == null) {
+                                        bool? isUserWantsToUploadPhoto = await showDialog(
+                                          context: context,
+                                          builder: (context) => _buildIsUserWantsToUploadPhoto(isDarkTheme: appThemeType.isDarkTheme()),
+                                        );
+
+                                        if (isUserWantsToUploadPhoto == true) {
                                           showDialog(
                                             context: context,
-                                            builder: (context) => buildChooseSourceDialog(
+                                            builder: (context) => _buildChooseSourceDialog(
                                               isDarkTheme: appThemeType.isDarkTheme(),
                                               context: context,
                                             ),
                                           );
-                                        }),
-                                  ),
-                                ),
-                              ],
-                            );
-                          } else if (userState is UserEditLoading) {
-                            return Container(
-                              height: 100,
-                              child: Center(child: CircularProgressIndicator.adaptive()),
-                            );
-                          } else {
-                            return Container();
-                          }
+                                        } else if (isUserWantsToUploadPhoto == false) {
+                                          await context.read<UserCubit>().addUser(userState.userModel);
 
-                        },
-                      ),
-                      SizedBox(height: 80,),
-                      Text('Enter your Name', style: TextStyle(fontSize: 30),),
-                      SizedBox(height: 30,),
-                      Form(
-                        key: _formKey,
-                        child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 70),
-                            child: getCustomTextField(
-                              onChanged: (val) {
-                                if (userState is UserEditSuccess) {
-                                  context.read<UserCubit>().editUser(
-                                    userModel: userState.userModel.copyWith(displayName: val),
-                                  );
-                                }
-                              },
-                              hintText: "Name",
-                              validator: (String? val) => val!.isEmpty ? "Enter your name" : null,
-                            )
-                        ),
-                      ),
-                      SizedBox(height: 100,),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 30),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            )
-                        ),
-                        onPressed: () async {
+                                        }
 
-                          // todo
-                          if (_formKey.currentState!.validate()) {
-                            UserState userState = context.read<UserCubit>().state;
-
-                            if (userState is UserEditSuccess) {
-                              print("NAME: ${userState.userModel.displayName}");
-
-                              if (userState.profilePhotoFile == null) {
-                                bool? isDisplayChooseSourceDialog = await showDialog(
-                                  context: context,
-                                  builder: (context) => _buildProfilePhotoEmptyDialog(isDarkTheme: appThemeType.isDarkTheme()),
-                                );
-
-                                if (isDisplayChooseSourceDialog == true) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => buildChooseSourceDialog(
-                                      isDarkTheme: appThemeType.isDarkTheme(),
-                                      context: context,
-                                    ),
-                                  );
-                                } else if (isDisplayChooseSourceDialog == false) {
-                                  // context.read<UserCubit>().addUser(); //todo
-                                }
-
-                              } else {
-
-                              }
-
+                                      } else {
+                                        context.read<UserCubit>().uploadProfilePhotoToStorage(
+                                          file: userState.profilePhotoFile!,
+                                          user: userState.userModel,
+                                        );
+                                        await context.read<UserCubit>().addUser(userState.userModel);
+                                      }
+                                    }
+                                  }
+                                },
+                                child: Text("Continue", style: TextStyle(fontSize: 18),),
+                              );
+                            } else {
+                              return Container();
                             }
-
                           }
-
-
-                          // if (_formKey.currentState!.validate()) {
-                          //
-                          //   widget.user!.displayName = userNameController.text;
-                          //
-                          //   if (profilePhotoFile == null) {
-                          //     bool? shouldDisplayDismissibleDialog = await showDialog(
-                          //       context: context,
-                          //       builder: (context) => _buildProfilePhotoEmptyDialog(isDarkTheme: appThemeType.isDarkTheme()),
-                          //     );
-                          //     if (shouldDisplayDismissibleDialog == true) {
-                          //       showDialog(
-                          //         context: context,
-                          //         builder: (context) => buildChooseSourceDialog(isDarkTheme: appThemeType.isDarkTheme()),
-                          //       );
-                          //     } else if(shouldDisplayDismissibleDialog == false) {
-                          //       widget.user!.photoUrl = "";
-                          //       await _addUser(context: context);
-                          //     }
-                          //   } else {
-                          //     String? url = await _uploadPhotoAndGetUrl(context: context);
-                          //     widget.user!.photoUrl = url;
-                          //     await _addUser(context: context);
-                          //   }
-                          // }
-                        },
-                        child: Text("Continue", style: TextStyle(fontSize: 18),),
-                      ),
-                      SizedBox(height: 30,),
-                    ],
+                        ),
+                        SizedBox(height: 30,),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
+                );
+              }
+            ),
           ),
         )
       ],

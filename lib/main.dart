@@ -61,6 +61,7 @@ class _MyAppState extends State<MyApp> {
               firestoreRepository: context.read<FirestoreRepository>(),
               firebaseStorageRepository: context.read<FirebaseStorageRepository>(),
               imagePickerRepository: context.read<ImagePickerRepository>(),
+              authRepository: context.read<AuthRepository>(),
             ),
           ),
         ],

@@ -30,11 +30,11 @@ class UserLoading extends UserState {
   List<Object?> get props => [];
 }
 
-class UserError extends UserState {
+class UserAddError extends UserState {
 
   final String errorMessage;
 
-  UserError({required this.errorMessage});
+  UserAddError({required this.errorMessage});
 
   @override
   List<Object?> get props => [errorMessage];
@@ -51,10 +51,22 @@ class UserEditSuccess extends UserState {
   List<Object?> get props => [profilePhotoFile, userModel];
 }
 
-class UserEditLoading extends UserState {
+class UserEditProfilePhotoLoading extends UserState {
   @override
   List<Object?> get props => [];
 }
+
+class UserEditSubmitting extends UserState {
+
+  final File? profilePhotoFile;
+  final UserModel userModel;
+
+  UserEditSubmitting({required this.profilePhotoFile, required this.userModel});
+
+  @override
+  List<Object?> get props => [profilePhotoFile];
+}
+
 
 class UserEditError extends UserState {
 
