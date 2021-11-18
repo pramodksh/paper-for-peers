@@ -174,6 +174,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                                         onPressed: () {
                                           Navigator.of(context).push(MaterialPageRoute(
                                             builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                                              documentUrlArg: questionPaperYears[index].questionPaperModels[index].url,
                                               screenLabel: "Question Paper",
                                               parameter: PDFScreenSimpleBottomSheet(
                                                 title: questionPaperYears[index].year.toString(),
@@ -186,8 +187,6 @@ class _QuestionPaperState extends State<QuestionPaper> {
                                         nVariant: questionPaperYears[index].questionPaperModels[index].version,
                                       );
                                     });
-
-                                    // if ( 2 < 3)
 
                                     if (questionPaperYears[index].questionPaperModels.length < AppConstants.maxQuestionPapers) {
                                       variants.add(SizedBox(

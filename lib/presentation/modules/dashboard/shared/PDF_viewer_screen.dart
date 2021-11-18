@@ -14,8 +14,14 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
   final String screenLabel;
   final ParameterType parameter;
   final bool isShowBottomSheet;
+  final String documentUrl;
 
-  PDFViewerScreen({required this.screenLabel, required this.parameter, this.isShowBottomSheet = true});
+  PDFViewerScreen({
+    required this.screenLabel, required this.parameter,
+    this.isShowBottomSheet = true,
+    String? documentUrlArg, // todo make it required after all is implemented (this.documentUrl)
+  }) : documentUrl = documentUrlArg ?? "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+
 
   @override
   _PDFViewerScreenState createState() => _PDFViewerScreenState();
@@ -23,11 +29,11 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
 
 class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
-  String pdfPath = "assets/pdfs/Javanotes.pdf";
-  String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+  // String pdfPath = "assets/pdfs/Javanotes.pdf";
+  // String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
 
-  bool _isLoading = true;
-  late PDFDocument document;
+  // bool _isLoading = true;
+  // late PDFDocument document;
 
   late List<CheckBoxModel> reportReasons;
 
@@ -105,17 +111,13 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
   }
 
   Future loadDocumentFromAssetPath({required String assetPath}) async {
-    setState(() => _isLoading = true);
-    document = await PDFDocument.fromAsset(assetPath);
-    setState(() => _isLoading = false);
-    return;
+    // setState(() => _isLoading = true);
+    // document = await PDFDocument.fromAsset(assetPath);
+    // setState(() => _isLoading = false);
+    // return;
   }
 
-  void loadDocumentFromURL({required pdfURL}) async {
-    setState(() => _isLoading = true);
-    document = await PDFDocument.fromURL(pdfURL);
-    setState(() => _isLoading = false);
-  }
+  Future<PDFDocument> loadDocumentFromURL({required pdfURL}) async => await PDFDocument.fromURL(pdfURL);
 
   void loadDocumentFromFile() {
     // File file  = File('...');
@@ -482,7 +484,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   @override
   void initState() {
-    loadDocumentFromAssetPath(assetPath: pdfPath);
 
     reportReasons = AppConstants.reportReasons.map((e) => CheckBoxModel(
       label: e,
@@ -514,35 +515,41 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           ),
         ],
       ),
-      body: Center(
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : PDFViewer(
-              document: document,
-              zoomSteps: 1,
+      body: FutureBuilder(
+        future: loadDocumentFromURL(pdfURL: widget.documentUrl),
+        builder: (context, snapshot) {
 
-              showNavigation: false,
-              // navigationBuilder: customPDFBottomNavBuilder,
+          if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return Center(
+              child: PDFViewer(
+                document: snapshot.data as PDFDocument,
+                zoomSteps: 1,
+                showNavigation: false,
+                // navigationBuilder: customPDFBottomNavBuilder,
+
+                showPicker: false,
+                pickerButtonColor: Colors.black,
+                pickerIconColor: Colors.red,
+
+                enableSwipeNavigation: true,
+
+                progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
 
 
-              showPicker: false,
-              pickerButtonColor: Colors.black,
-              pickerIconColor: Colors.red,
+                indicatorPosition: IndicatorPosition.topLeft,
+                indicatorBackground: Colors.black,
+                indicatorText: Colors.white,
+                // showIndicator: false,
 
-              enableSwipeNavigation: true,
+                lazyLoad: true,
 
-              progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
-
-
-              indicatorPosition: IndicatorPosition.topLeft,
-              indicatorBackground: Colors.black,
-              indicatorText: Colors.white,
-              // showIndicator: false,
-
-              lazyLoad: true,
-
-              scrollDirection: Axis.vertical,
-        ),
+                scrollDirection: Axis.vertical,
+              ),
+            );
+          }
+        }
       ),
     );
   }
