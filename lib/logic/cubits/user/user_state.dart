@@ -43,12 +43,12 @@ class UserError extends UserState {
 
 class UserEditSuccess extends UserState {
   final File? profilePhotoFile;
-  final String? userName;
+  final UserModel userModel;
 
-  UserEditSuccess({this.profilePhotoFile, this.userName});
+  UserEditSuccess({required this.profilePhotoFile, required this.userModel});
 
   @override
-  List<Object?> get props => [profilePhotoFile, userName];
+  List<Object?> get props => [profilePhotoFile, userModel];
 }
 
 class UserEditLoading extends UserState {

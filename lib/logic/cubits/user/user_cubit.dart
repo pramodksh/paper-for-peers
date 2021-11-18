@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -26,17 +27,21 @@ class UserCubit extends Cubit<UserState> {
         _imagePickerRepository = imagePickerRepository,
         super(UserInitial());
 
-  Future<void> pickImage({required ImageSource imageSource, required String? userName}) async {
+  Future<void> pickImage({required ImageSource imageSource, UserModel? userModel}) async {
+    if (userModel == null) {
+      userModel = (state as UserEditSuccess).userModel;
+    }
+
     emit(UserEditLoading());
 
     File? file = await _imagePickerRepository.getPickedImageAsFile(imageSource: imageSource);
 
     if (file == null) {
-      emit(UserEditSuccess(profilePhotoFile: null, userName: userName));
+      emit(UserEditSuccess(profilePhotoFile: null, userModel: userModel));
     } else {
       emit(UserEditLoading());
       File? croppedFile = await _imagePickerRepository.getCroppedImage(imageFile: file);
-      emit(UserEditSuccess(profilePhotoFile: croppedFile, userName: userName));
+      emit(UserEditSuccess(profilePhotoFile: croppedFile, userModel: userModel));
     }
 
   }
@@ -46,11 +51,24 @@ class UserCubit extends Cubit<UserState> {
   }
 
   void initiateUserEdit() {
-    emit(UserEditSuccess(profilePhotoFile: null, userName: null));
+    UserModel userModel = (state as UserLoaded).userModel;
+    emit(UserEditSuccess(profilePhotoFile: null, userModel: userModel));
   }
 
-  void editUser({required File? profilePhotoFile, required String? userName,}) {
-    emit(UserEditSuccess(profilePhotoFile: profilePhotoFile, userName: userName));
+  void editUserRemoveProfilePhoto() {
+    emit(UserEditSuccess(profilePhotoFile: null, userModel: (state as UserEditSuccess).userModel));
+  }
+
+  void editUser({
+    File? profilePhotoFile,
+    UserModel? userModel,
+  }) {
+    emit(
+        UserEditSuccess(
+          profilePhotoFile: profilePhotoFile ?? (state as UserEditSuccess).profilePhotoFile,
+          userModel: userModel ?? (state as UserEditSuccess).userModel
+        )
+    );
   }
 
   Future<ApiResponse> addUser(UserModel userModel) async {

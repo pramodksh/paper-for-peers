@@ -95,7 +95,7 @@ class _UserDetailsState extends State<UserDetails> {
                   ElevatedButton(
                     onPressed: () async {
                       if (userState is UserEditSuccess) {
-                        context.read<UserCubit>().pickImage(imageSource: ImageSource.camera, userName: userState.userName);;
+                        context.read<UserCubit>().pickImage(imageSource: ImageSource.camera,);
                       }
                       Navigator.of(context).pop();
                     },
@@ -108,7 +108,7 @@ class _UserDetailsState extends State<UserDetails> {
                   ElevatedButton(
                     onPressed: () async {
                       if (userState is UserEditSuccess) {
-                        context.read<UserCubit>().pickImage(imageSource: ImageSource.gallery, userName: userState.userName);;
+                        context.read<UserCubit>().pickImage(imageSource: ImageSource.gallery,);
                       }
                       Navigator.of(context).pop();
                     },
@@ -123,7 +123,7 @@ class _UserDetailsState extends State<UserDetails> {
                       if (userState is UserEditSuccess) {
                         return ElevatedButton(
                           onPressed: userState.profilePhotoFile == null ? null : () async {
-                            context.read<UserCubit>().editUser(profilePhotoFile: null, userName: userState.userName);
+                            context.read<UserCubit>().editUserRemoveProfilePhoto();
                             Navigator.of(context).pop();
                           },
                           style: ButtonStyle(
@@ -153,7 +153,6 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
-  // todo
   Widget _buildProfilePhotoEmptyDialog({required bool isDarkTheme}) {
     return StatefulBuilder(
       builder: (context, setState) => Dialog(
@@ -304,7 +303,7 @@ class _UserDetailsState extends State<UserDetails> {
                               children: [
                                 getCircularProfileImage(
                                   photoFile: userState.profilePhotoFile,
-                                  userName: userState.userName,
+                                  userName: userState.userModel.displayName,
                                 ),
                                 Positioned(
                                   bottom: 0,
@@ -355,8 +354,7 @@ class _UserDetailsState extends State<UserDetails> {
                               onChanged: (val) {
                                 if (userState is UserEditSuccess) {
                                   context.read<UserCubit>().editUser(
-                                    profilePhotoFile: userState.profilePhotoFile,
-                                    userName: val,
+                                    userModel: userState.userModel.copyWith(displayName: val),
                                   );
                                 }
                               },
@@ -380,7 +378,30 @@ class _UserDetailsState extends State<UserDetails> {
                             UserState userState = context.read<UserCubit>().state;
 
                             if (userState is UserEditSuccess) {
-                              print("NAME: ${userState.userName}");
+                              print("NAME: ${userState.userModel.displayName}");
+
+                              if (userState.profilePhotoFile == null) {
+                                bool? isDisplayChooseSourceDialog = await showDialog(
+                                  context: context,
+                                  builder: (context) => _buildProfilePhotoEmptyDialog(isDarkTheme: appThemeType.isDarkTheme()),
+                                );
+
+                                if (isDisplayChooseSourceDialog == true) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => buildChooseSourceDialog(
+                                      isDarkTheme: appThemeType.isDarkTheme(),
+                                      context: context,
+                                    ),
+                                  );
+                                } else if (isDisplayChooseSourceDialog == false) {
+                                  // context.read<UserCubit>().addUser(); //todo
+                                }
+
+                              } else {
+
+                              }
+
                             }
 
                           }
