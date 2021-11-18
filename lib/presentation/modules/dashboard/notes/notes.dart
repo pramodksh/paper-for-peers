@@ -41,7 +41,7 @@ class _NotesState extends State<Notes> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  getCourseText(course: "BCA", semester: 6),
+                  getCourseAndSemesterText(context: context),
                   getCustomDropDown<String>(
                     context: context,
                     dropDownHint: "Subject",

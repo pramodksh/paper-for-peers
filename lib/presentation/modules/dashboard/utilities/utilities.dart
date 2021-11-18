@@ -5,10 +5,17 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/config/text_styles.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:provider/provider.dart';
 
-Widget getCourseText({required String course, required int semester}) {
-  return Text("$course $semester", style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),);
+Widget getCourseAndSemesterText({required BuildContext context}) {
+  UserState state = context.select((UserCubit cubit) => cubit.state);
+
+  if (state is UserLoaded) {
+    return Text("${state.userModel.course!.courseName} ${state.userModel.semester!.semester}", style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),);
+  } else {
+    return Container();
+  }
 }
 
 Widget getCustomDropDown<DropdownItemType>({

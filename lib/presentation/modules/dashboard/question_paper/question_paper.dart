@@ -20,12 +20,12 @@ class QuestionPaper extends StatefulWidget {
 
 class _QuestionPaperState extends State<QuestionPaper> {
 
-  List<String> subjects = [
-    "A",
-    "B",
-    "C",
-  ];
-  String? selectedSubject;
+  // List<String> subjects = [
+  //   "A",
+  //   "B",
+  //   "C",
+  // ];
+  // String? selectedSubject;
 
   List<String> years = [
     "2017",
@@ -85,101 +85,120 @@ class _QuestionPaperState extends State<QuestionPaper> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 10,),
-              Builder(
-                builder: (context) {
+          child: Builder(
+            builder: (context) {
 
-                  final UserState userState = context.select((UserCubit cubit) => cubit.state);
-
-                  if (userState is UserLoaded) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        getCourseText(
-                            course: userState.userModel.course?.courseName ?? "null",
-                            semester: userState.userModel.semester?.semester ?? 0
-                        ),
-                        getCustomDropDown<String>(
-                          context: context,
-                          dropDownHint: "Subject",
-                          dropDownItems: subjects,
-                          dropDownValue: selectedSubject,
-                          onDropDownChanged: (val) { setState(() { selectedSubject = val; }); },
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Center(child: CircularProgressIndicator.adaptive(),);
-                  }
+              final UserState userState = context.select((UserCubit cubit) => cubit.state);
 
 
-                }
-              ),
-              SizedBox(height: 30,),
-              selectedSubject == null
-                ? Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
-              ) : Column(
+              return Column(
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ShowSplitOptions(),
-                      ));
-                    },
-                    child: Text("Compare Question Papers", style: TextStyle(fontSize: 18),),
-                  ),
-                  SizedBox(height: 20,),
-                  ListView.separated(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      separatorBuilder: (context, index) => SizedBox(height: 20,),
-                      itemCount: years.length,
-                      itemBuilder: (context, index) => getQuestionYearTile(
-                        year: years[index],
-                        children: [
-                          getQuestionVariantContainer(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-                                    screenLabel: "Question Paper",
-                                    parameter: PDFScreenSimpleBottomSheet(
-                                      title: years[index],
-                                      nVariant: index + 1,
-                                      uploadedBy: "John Doe",
-                                    ),
-                                  ),
-                                ));
-                              },
-                              nVariant: index + 1,
-                          ),
-                          SizedBox(
-                            width: 180,
-                            height: 80,
-                            child: getAddPostContainer(
-                              isDarkTheme: appThemeType.isDarkTheme(),
-                              label: "Add Question Paper",
-                              onPressed: () {},
-                              context: context,
+                  SizedBox(height: 10,),
+                  Builder(
+                    builder: (context) {
+                      if (userState is UserLoaded) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
+                            Expanded(
+                              flex: 3,
+                              child: getCustomDropDown<String>(
+                                context: context,
+                                dropDownHint: "Subject",
+                                dropDownItems: userState.userModel.semester!.subjects,
+                                dropDownValue: userState.userModel.subject,
+                                onDropDownChanged: (val) {
+                                  context.read<UserCubit>().changeSubject(val!);
+                                },
+                              ),
                             ),
-                          ),
-                        ]
-                      ),
-                    ),
+                          ],
+                        );
+                      } else {
+                        return Center(child: CircularProgressIndicator.adaptive(),);
+                      }
+
+
+                    }
+                  ),
+                  SizedBox(height: 30,),
+
+                  Builder(
+                    builder: (context) {
+                      if (userState is UserLoaded) {
+                        if (userState.userModel.subject == null) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+                          );
+                        } else {
+                          return Column(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ShowSplitOptions(),
+                                  ));
+                                },
+                                child: Text("Compare Question Papers", style: TextStyle(fontSize: 18),),
+                              ),
+                              SizedBox(height: 20,),
+                              ListView.separated(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                separatorBuilder: (context, index) => SizedBox(height: 20,),
+                                itemCount: years.length,
+                                itemBuilder: (context, index) => getQuestionYearTile(
+                                    year: years[index],
+                                    children: [
+                                      getQuestionVariantContainer(
+                                        onPressed: () {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                                              screenLabel: "Question Paper",
+                                              parameter: PDFScreenSimpleBottomSheet(
+                                                title: years[index],
+                                                nVariant: index + 1,
+                                                uploadedBy: "John Doe",
+                                              ),
+                                            ),
+                                          ));
+                                        },
+                                        nVariant: index + 1,
+                                      ),
+                                      SizedBox(
+                                        width: 180,
+                                        height: 80,
+                                        child: getAddPostContainer(
+                                          isDarkTheme: appThemeType.isDarkTheme(),
+                                          label: "Add Question Paper",
+                                          onPressed: () {},
+                                          context: context,
+                                        ),
+                                      ),
+                                    ]
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
                 ],
-              ),
-            ],
+              );
+            }
           ),
         ),
       ),

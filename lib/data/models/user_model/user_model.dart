@@ -1,36 +1,43 @@
-
+import 'package:equatable/equatable.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
 
 class UserModel {
+
   final String uid;
-  String? displayName;
+  final String? displayName;
   final String? email;
-  String? photoUrl;
-  Semester? semester;
-  Course? course;
+  final String? photoUrl;
+  final Semester? semester;
+  final Course? course;
+  final String? subject;
 
   static String courseLabel = "course";
   static String semesterLabel = "semester";
 
-  static Future<UserModel> getUserModelByMap({required Map userMap, required String userId, required Function(String) getCourse}) async {
+  static Future<UserModel> getUserModelByMap({
+    required Map userMap, required String userId,
+    required Function(String) getCourse,
+  }) async {
     Course? course;
     Semester? semester;
 
     if (userMap[courseLabel] != null) {
       course = await getCourse(userMap[courseLabel].toString().toLowerCase());
       if (userMap[semesterLabel] != null) {
-        semester = course!.semesters!.firstWhere((element) => element.semester == userMap[semesterLabel]);
+        semester =
+            course!.semesters!.firstWhere((element) => element.semester ==
+                userMap[semesterLabel]);
       }
     }
 
     return UserModel(
-      uid: userId,
-      displayName: userMap['displayName'],
-      email: userMap['email'],
-      photoUrl: userMap['photoUrl'],
-      semester: semester,
-      course: course
+        uid: userId,
+        displayName: userMap['displayName'],
+        email: userMap['email'],
+        photoUrl: userMap['photoUrl'],
+        semester: semester,
+        course: course
     );
   }
 
@@ -40,7 +47,8 @@ class UserModel {
     required this.photoUrl,
     required this.uid,
     this.semester,
-    this.course
+    this.course,
+    this.subject,
   });
 
   UserModel copyWith({
@@ -50,6 +58,7 @@ class UserModel {
     String? photoUrl,
     Semester? semester,
     Course? course,
+    String? subject,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -58,6 +67,7 @@ class UserModel {
       photoUrl: photoUrl ?? this.photoUrl,
       semester: semester ?? this.semester,
       course: course ?? this.course,
+      subject: subject ?? this.subject,
     );
   }
 

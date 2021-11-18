@@ -127,7 +127,7 @@ class _JournalState extends State<Journal> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20,),
-              getCourseText(course: "BCA", semester: 6,),
+              getCourseAndSemesterText(context: context),
               SizedBox(height: 20,),
               getJournalTile(subject: "C++", nVariants: 1, appThemeType: appThemeType),
               SizedBox(height: 20,),

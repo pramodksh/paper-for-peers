@@ -30,6 +30,10 @@ class UserCubit extends Cubit<UserState> {
         _authRepository = authRepository,
         super(UserInitial());
 
+  void changeSubject(String subject) async {
+    emit(UserLoaded(userModel: (state as UserLoaded).userModel.copyWith(subject: subject)));
+  }
+
   Future<void> reloadUser() async {
     await _authRepository.reloadCurrentUser();
   }
