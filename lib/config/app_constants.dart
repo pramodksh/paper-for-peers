@@ -22,4 +22,6 @@ class AppConstants {
     {"icon": AssetImage(DefaultAssets.syllabusCopyNavIcon,), "label": "Text Book"},
   ];
 
+  static final int maxQuestionPapers = 3;
+
 }

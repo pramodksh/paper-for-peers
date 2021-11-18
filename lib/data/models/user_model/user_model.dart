@@ -26,7 +26,7 @@ class UserModel {
       course = await getCourse(userMap[courseLabel].toString().toLowerCase());
       if (userMap[semesterLabel] != null) {
         semester =
-            course!.semesters!.firstWhere((element) => element.semester ==
+            course!.semesters!.firstWhere((element) => element.nSemester ==
                 userMap[semesterLabel]);
       }
     }

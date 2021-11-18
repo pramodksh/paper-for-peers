@@ -128,7 +128,7 @@ class _UserCourseState extends State<UserCourse> {
                                           items: semesters?.map((Semester value) {
                                             return DropdownMenuItem<Semester>(
                                               value: value,
-                                              child: Text(value.semester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                              child: Text(value.nSemester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
                                                 fontSize: 18,
                                                 color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
                                               ),),

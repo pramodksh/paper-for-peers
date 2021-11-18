@@ -1,16 +1,13 @@
 import 'package:papers_for_peers/data/models/semester.dart';
 
 class Course {
-  String? _courseName;
+  String? courseName;
   List<Semester>? semesters;
 
-  String? get courseName => this._courseName?.toUpperCase();
-
-  Course({required String? courseName, required this.semesters})
-    : _courseName = courseName;
+  Course({required this.courseName, required this.semesters});
 
   @override
   String toString() {
-    return 'Course{_courseName: $_courseName, semesters: $semesters}';
+    return 'Course{_courseName: $courseName, semesters: $semesters}';
   }
 }
