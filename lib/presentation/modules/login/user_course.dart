@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
@@ -6,8 +7,8 @@ import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
+import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
-import 'package:papers_for_peers/logic/cubits/course_and_semester/course_and_semester_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
@@ -22,21 +23,13 @@ class UserCourse extends StatefulWidget {
 
 class _UserCourseState extends State<UserCourse> {
 
-  final TextStyle errorTextStyle = TextStyle(
-    fontSize: 14,
-  );
+  final TextStyle errorTextStyle = TextStyle(fontSize: 14,);
 
   @override
   Widget build(BuildContext context) {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
-
-    CourseAndSemesterState courseAndSemesterState = context.select((CourseAndSemesterCubit cubit) => cubit.state);
-    UserState userState = context.select((UserCubit cubit) => cubit.state);
-
-    if (courseAndSemesterState is CourseAndSemesterInitial) {
-      context.read<CourseAndSemesterCubit>().fetchCourses();
-    }
+    final FirestoreRepository firestoreRepository = context.select((FirestoreRepository repo) => repo);
 
     return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
@@ -59,133 +52,141 @@ class _UserCourseState extends State<UserCourse> {
             ),
             Scaffold(
               backgroundColor: Colors.transparent,
-              body: userState is UserLoading ? LoadingScreen(
-                loadingText: "Please wait...",
-              ) : Container(
+              body: Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        Text('Select Course',style: TextStyle(fontSize: 30,),),
-                        SizedBox(height: 20,),
-                        Builder(
-                            builder: (context) {
-                              if (courseAndSemesterState is CourseAndSemesterLoaded && userState is UserLoaded) {
-                                List<Course> courses = courseAndSemesterState.courses;
-                                return SizedBox(
-                                  width: 200,
-                                  child: getCustomDropDown<Course>(
-                                    isTransparent: true,
-                                    context: context,
-                                    dropDownValue: userState.userModel.course,
-                                    dropDownItems: courses,
-                                    dropDownHint: 'Courses',
-                                    items: courses.map((Course value) {
-                                      return DropdownMenuItem<Course>(
-                                        value: value,
-                                        child: Text(value.courseName.toUpperCase(), style: CustomTextStyle.bodyTextStyle.copyWith(
-                                          fontSize: 18,
-                                          color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-                                        ),),
-                                      );
-                                    }).toList(),
-                                    onDropDownChanged: (val) {
-                                      context.read<UserCubit>().setUser(userState.userModel.copyWith(course: val),);
-                                    },
-                                  ),
-                                );
-                              } else {
-                                return CircularProgressIndicator.adaptive();
-                              }
-                            }
-                        ),
-                      ],
-                    ),
+                child: FutureBuilder(
+                  future: firestoreRepository.getCourses(),
+                  builder: (context, snapshot) {
 
-                    Column(
-                      children: [
-                        Text(
-                          'Select Semester',
-                          style: TextStyle(
-                            fontSize: 30,
-                            color: userState is UserLoaded && userState.userModel.course == null
-                                ? Colors.grey : Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 20,),
-                        Builder(
-                          builder: (context) {
+                    UserState userState = context.select((UserCubit cubit) => cubit.state);
 
-                            if (userState is UserLoaded) {
+                    if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
+                    } else if (userState is UserLoaded) {
+                      List<Course> courses = snapshot.data as List<Course>;
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text('Select Course',style: TextStyle(fontSize: 30,),),
+                              SizedBox(height: 20,),
 
-                              List<Semester>? semesters = userState.userModel.course?.semesters;
-
-                              return SizedBox(
+                              SizedBox(
                                 width: 200,
-                                child: getCustomDropDown<Semester>(
+                                child: getCustomDropDown<Course>(
                                   isTransparent: true,
                                   context: context,
-                                  dropDownValue: userState.userModel.semester,
-                                  dropDownItems: semesters,
-                                  dropDownHint: 'Semester',
-                                  onDropDownChanged: userState.userModel.course == null ? null : (val) {
-                                    context.read<UserCubit>().setUser(userState.userModel.copyWith(semester: val));
-                                  },
-                                  items: semesters?.map((Semester value) {
-                                    return DropdownMenuItem<Semester>(
+                                  dropDownValue: userState.userModel.course,
+                                  dropDownItems: courses,
+                                  dropDownHint: 'Courses',
+                                  items: courses.map((Course value) {
+                                    return DropdownMenuItem<Course>(
                                       value: value,
-                                      child: Text(value.semester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                      child: Text(value.courseName!, style: CustomTextStyle.bodyTextStyle.copyWith(
                                         fontSize: 18,
                                         color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
                                       ),),
                                     );
                                   }).toList(),
+                                  onDropDownChanged: (val) {
+                                    context.read<UserCubit>().setUser(userState.userModel.copyWith(course: val),);
+                                  },
                                 ),
-                              );
-                            } else {
-                              return CircularProgressIndicator.adaptive();
-                            }
-                          }
-                        ),
-                        SizedBox(height: 20,),
-                      ],
-                    ),
+                              ),
+                            ],
+                          ),
 
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 30),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        )
-                      ),
-                      onPressed: () async {
-                        if (userState is UserLoaded) {
-                          if (!userState.isValidCourse) {
-                            showAlertDialog(context: context, text: "Please select course");
-                            return;
-                          }
+                          Column(
+                            children: [
+                              Text(
+                                'Select Semester',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  color: userState is UserLoaded && userState.userModel.course == null
+                                      ? Colors.grey : Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: 20,),
+                              Builder(
+                                  builder: (context) {
 
-                          if (!userState.isValidSemester) {
-                            showAlertDialog(context: context, text: "Please select semester");
-                            return;
-                          }
+                                    if (userState is UserLoaded) {
 
-                          ApiResponse addUserResponse = await context.read<UserCubit>().addUser(userState.userModel);
-                          if (!addUserResponse.isError) {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => IntroScreen(),
-                            ));
-                          }
+                                      List<Semester>? semesters = userState.userModel.course?.semesters;
 
-                        }
+                                      return SizedBox(
+                                        width: 200,
+                                        child: getCustomDropDown<Semester>(
+                                          isTransparent: true,
+                                          context: context,
+                                          dropDownValue: userState.userModel.semester,
+                                          dropDownItems: semesters,
+                                          dropDownHint: 'Semester',
+                                          onDropDownChanged: userState.userModel.course == null ? null : (val) {
+                                            context.read<UserCubit>().setUser(userState.userModel.copyWith(semester: val));
+                                          },
+                                          items: semesters?.map((Semester value) {
+                                            return DropdownMenuItem<Semester>(
+                                              value: value,
+                                              child: Text(value.semester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                                fontSize: 18,
+                                                color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                              ),),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      );
+                                    } else {
+                                      return CircularProgressIndicator.adaptive();
+                                    }
+                                  }
+                              ),
+                              SizedBox(height: 20,),
+                            ],
+                          ),
 
-                      },
-                      child: Text("Continue", style: TextStyle(fontSize: 18),),
-                    ),
-                  ],
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 30),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                )
+                            ),
+                            onPressed: () async {
+                              if (userState is UserLoaded) {
+                                if (!userState.isValidCourse) {
+                                  showAlertDialog(context: context, text: "Please select course");
+                                  return;
+                                }
+
+                                if (!userState.isValidSemester) {
+                                  showAlertDialog(context: context, text: "Please select semester");
+                                  return;
+                                }
+
+                                print("ADD USER: ${userState.userModel}");
+
+
+                                ApiResponse addUserResponse = await context.read<UserCubit>().addUser(userState.userModel);
+                                if (!addUserResponse.isError) {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => IntroScreen(),
+                                  ));
+                                }
+
+                              }
+
+                            },
+                            child: Text("Continue", style: TextStyle(fontSize: 18),),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
+                    }
+                  }
                 ),
               ),
             )

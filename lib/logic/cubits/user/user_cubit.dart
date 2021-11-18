@@ -102,9 +102,9 @@ class UserCubit extends Cubit<UserState> {
     ApiResponse response = await _firebaseStorageRepository.uploadProfilePhotoAndGetUrl(file: file, userId: user.uid);
 
     if (response.isError) {
-      emit(UserEditError(errorMessage: response.errorMessage!));
+      emit(UserAddError(errorMessage: response.errorMessage!));
     } else {
-      emit(UserEditSuccess(profilePhotoFile: file, userModel: userModel.copyWith(photoUrl: response.data)));
+      emit(UserAddSuccess(profilePhotoFile: file, userModel: userModel.copyWith(photoUrl: response.data)));
     }
 
   }

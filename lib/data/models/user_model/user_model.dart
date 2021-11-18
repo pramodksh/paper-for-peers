@@ -1,6 +1,8 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
+import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 
 class UserModel {
   final String uid;
@@ -13,14 +15,24 @@ class UserModel {
   static String courseLabel = "course";
   static String semesterLabel = "semester";
 
-  static UserModel getUserModelByMap({required Map userMap, required String userId}) {
+  static Future<UserModel> getUserModelByMap({required Map userMap, required String userId, required Function(String) getCourse}) async {
+    Course? course;
+    Semester? semester;
+
+    if (userMap[courseLabel] != null) {
+      course = await getCourse(userMap[courseLabel].toString().toLowerCase());
+      if (userMap[semesterLabel] != null) {
+        semester = course!.semesters!.firstWhere((element) => element.semester == userMap[semesterLabel]);
+      }
+    }
+
     return UserModel(
       uid: userId,
       displayName: userMap['displayName'],
       email: userMap['email'],
       photoUrl: userMap['photoUrl'],
-      semester: userMap[semesterLabel],
-      course: userMap[courseLabel],
+      semester: semester,
+      course: course
     );
   }
 

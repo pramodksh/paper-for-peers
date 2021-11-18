@@ -33,92 +33,92 @@ class FirebaseFireStoreService {
   //   DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
   //   return UserModel.getUserModelByMap(userMap: userDocumentSnapshot.data() as Map<dynamic, dynamic>, userId: userId);
   // }
+  //
+  // Future<ApiResponse> addUser({required UserModel user}) async {
+  //   try {
+  //     await usersCollection.doc(user.uid).set({
+  //       'displayName': user.displayName,
+  //       'email': user.email,
+  //       'photoUrl': user.photoUrl,
+  //       UserModel.courseLabel: user.course,
+  //       UserModel.semesterLabel: user.semester,
+  //     });
+  //     return ApiResponse(isError: false);
+  //   } catch (err) {
+  //     return ApiResponse(isError: true, errorMessage: "Failed to add user: ERR: $err");
+  //   }
+  // }
 
-  Future<ApiResponse> addUser({required UserModel user}) async {
-    try {
-      await usersCollection.doc(user.uid).set({
-        'displayName': user.displayName,
-        'email': user.email,
-        'photoUrl': user.photoUrl,
-        UserModel.courseLabel: user.course,
-        UserModel.semesterLabel: user.semester,
-      });
-      return ApiResponse(isError: false);
-    } catch (err) {
-      return ApiResponse(isError: true, errorMessage: "Failed to add user: ERR: $err");
-    }
-  }
+  // Future<List<Course>> getCourses() async {
+  //   QuerySnapshot coursesSnapshot = await coursesCollection.get();
+  //
+  //   List<Course> courses = [];
+  //
+  //   await Future.forEach<QueryDocumentSnapshot>(coursesSnapshot.docs, (course) async {
+  //
+  //     List<Semester> semesters = [];
+  //
+  //     QuerySnapshot semesterSnapshot = await course.reference.collection(semestersCollectionLabel).get();
+  //     Future.forEach<QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
+  //       print("\t ${semester.id}");
+  //       QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
+  //       List<String> subjects = [];
+  //       subjectsSnapshot.docs.forEach((subject) {
+  //         print("\t\t ${subject.id}");
+  //         subjects.add(subject.id);
+  //       });
+  //
+  //       Semester semesterModel = Semester(subjects: subjects, semester: int.parse(semester.id));
+  //       semesters.add(semesterModel);
+  //
+  //     });
+  //
+  //     Course courseModel = Course(courseName: course.id, semesters: semesters);
+  //     courses.add(courseModel);
+  //
+  //   });
+  //
+  //   return courses;
+  //
+  // }
 
-  Future<List<Course>> getCourses() async {
-    QuerySnapshot coursesSnapshot = await coursesCollection.get();
-
-    List<Course> courses = [];
-
-    await Future.forEach<QueryDocumentSnapshot>(coursesSnapshot.docs, (course) async {
-
-      List<Semester> semesters = [];
-
-      QuerySnapshot semesterSnapshot = await course.reference.collection(semestersCollectionLabel).get();
-      Future.forEach<QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
-        print("\t ${semester.id}");
-        QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
-        List<String> subjects = [];
-        subjectsSnapshot.docs.forEach((subject) {
-          print("\t\t ${subject.id}");
-          subjects.add(subject.id);
-        });
-
-        Semester semesterModel = Semester(subjects: subjects, semester: int.parse(semester.id));
-        semesters.add(semesterModel);
-
-      });
-
-      Course courseModel = Course(courseName: course.id, semesters: semesters);
-      courses.add(courseModel);
-
-    });
-
-    return courses;
-
-  }
-
-  Future? foo() async {
-    QuerySnapshot snapshot = await coursesCollection.get();
-    snapshot.docs.forEach((course) async {
-      print("SEE: ${course.id}");
-      QuerySnapshot semesterSnapshot = await course.reference.collection(semestersCollectionLabel).get();
-
-      semesterSnapshot.docs.forEach((semester) async {
-
-        // todo subjects
-        QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
-        subjectsSnapshot.docs.forEach((subject) {
-          print("sem: ${semester.id}, Subject: ${subject.id}");
-
-          // todo journal, notes, question paper
-          // subject.reference.collection(journalCollectionLabel);
-          // subject.reference.collection(notesCollectionLabel);
-          // subject.reference.collection(questionPaperCollectionLabel);
-
-        });
-
-        // todo syllabus copy
-        // QuerySnapshot syllabusCopySnapshot = await semester.reference.collection(syllabusCopyCollectionLabel).get();
-        // syllabusCopySnapshot.docs.forEach((syllabusCopy) {
-        //   print("sem: ${semester.id} : SYLLABUS COPY: ${syllabusCopy.data()}");
-        // });
-
-        // questionPaperSnapshot.docs.forEach((questionPaper) {
-        //   print("\t\t subjects: ${questionPaper.id}");
-        // });
-
-
-      });
-
-    });
-    // var temp = snapshot.
-    // print("TEMP: ${temp} ");
-  }
+  // Future? foo() async {
+  //   QuerySnapshot snapshot = await coursesCollection.get();
+  //   snapshot.docs.forEach((course) async {
+  //     print("SEE: ${course.id}");
+  //     QuerySnapshot semesterSnapshot = await course.reference.collection(semestersCollectionLabel).get();
+  //
+  //     semesterSnapshot.docs.forEach((semester) async {
+  //
+  //       // todo subjects
+  //       QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
+  //       subjectsSnapshot.docs.forEach((subject) {
+  //         print("sem: ${semester.id}, Subject: ${subject.id}");
+  //
+  //         // todo journal, notes, question paper
+  //         // subject.reference.collection(journalCollectionLabel);
+  //         // subject.reference.collection(notesCollectionLabel);
+  //         // subject.reference.collection(questionPaperCollectionLabel);
+  //
+  //       });
+  //
+  //       // todo syllabus copy
+  //       // QuerySnapshot syllabusCopySnapshot = await semester.reference.collection(syllabusCopyCollectionLabel).get();
+  //       // syllabusCopySnapshot.docs.forEach((syllabusCopy) {
+  //       //   print("sem: ${semester.id} : SYLLABUS COPY: ${syllabusCopy.data()}");
+  //       // });
+  //
+  //       // questionPaperSnapshot.docs.forEach((questionPaper) {
+  //       //   print("\t\t subjects: ${questionPaper.id}");
+  //       // });
+  //
+  //
+  //     });
+  //
+  //   });
+  //   // var temp = snapshot.
+  //   // print("TEMP: ${temp} ");
+  // }
 
 
 }

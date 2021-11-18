@@ -3,6 +3,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_options.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
@@ -81,6 +82,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -88,21 +90,34 @@ class _QuestionPaperState extends State<QuestionPaper> {
           child: Column(
             children: [
               SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  getCustomButton(buttonText: "demo", onPressed: () {
-                    FirebaseFireStoreService().foo();
-                  }),
-                  getCourseText(course: "BCA", semester: 6),
-                  getCustomDropDown<String>(
-                    context: context,
-                    dropDownHint: "Subject",
-                    dropDownItems: subjects,
-                    dropDownValue: selectedSubject,
-                    onDropDownChanged: (val) { setState(() { selectedSubject = val; }); },
-                  ),
-                ],
+              Builder(
+                builder: (context) {
+
+                  final UserState userState = context.select((UserCubit cubit) => cubit.state);
+
+                  if (userState is UserLoaded) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        getCourseText(
+                            course: userState.userModel.course?.courseName ?? "null",
+                            semester: userState.userModel.semester?.semester ?? 0
+                        ),
+                        getCustomDropDown<String>(
+                          context: context,
+                          dropDownHint: "Subject",
+                          dropDownItems: subjects,
+                          dropDownValue: selectedSubject,
+                          onDropDownChanged: (val) { setState(() { selectedSubject = val; }); },
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator.adaptive(),);
+                  }
+
+
+                }
               ),
               SizedBox(height: 30,),
               selectedSubject == null
