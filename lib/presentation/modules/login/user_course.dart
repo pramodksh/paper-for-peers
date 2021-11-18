@@ -6,7 +6,6 @@ import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
-import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/course_and_semester/course_and_semester_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -14,7 +13,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_s
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/presentation/modules/login/welcome_screen.dart';
-import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 import 'package:provider/provider.dart';
 
 class UserCourse extends StatefulWidget {

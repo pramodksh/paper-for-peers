@@ -4,14 +4,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
-import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
 import 'package:papers_for_peers/presentation/modules/login/user_course.dart';
 import 'package:papers_for_peers/presentation/modules/login/user_details.dart';
-import 'package:papers_for_peers/services/firebase_firestore/firebase_firestore_service.dart';
 import 'package:provider/provider.dart';
 
 extension EmailValidator on String {
@@ -151,8 +149,6 @@ Widget getAppropriateWidget({required UserModel user, required BuildContext cont
       } else {
 
         UserModel authenticatedUser = snapshot.data as UserModel;
-
-        print("GET USER BY ID: ${authenticatedUser}");
 
         context.read<UserCubit>().setUser(authenticatedUser);
 

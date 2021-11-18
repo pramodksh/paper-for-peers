@@ -5,6 +5,7 @@ import 'package:papers_for_peers/presentation/modules/login/login.dart';
 import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
 import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
 import 'package:provider/provider.dart';
+
 import 'data/models/user_model/user_model.dart';
 
 class Wrapper extends StatefulWidget {

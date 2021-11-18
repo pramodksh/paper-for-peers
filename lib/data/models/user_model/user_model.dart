@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
