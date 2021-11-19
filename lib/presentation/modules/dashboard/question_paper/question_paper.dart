@@ -192,23 +192,23 @@ class _QuestionPaperState extends State<QuestionPaper> {
                                       variants.add(SizedBox(
                                         width: 180,
                                         height: 80,
-                                        child: ElevatedButton(
+                                        child: getAddPostContainer(
+                                          isDarkTheme: appThemeType.isDarkTheme(),
+                                          label: "Add Question Paper",
                                           onPressed: () {
-
                                             if (userState is UserLoaded) {
+                                              print("ADD QUESTION PAPER");
                                               context.read<QuestionPaperBloc>().add(QuestionPaperAdd(
                                                 year: questionPaperYears[index].year,
                                                 uploadedBy: userState.userModel.displayName!,
+                                                course: userState.userModel.course!.courseName!,
+                                                semester: userState.userModel.semester!.nSemester!,
+                                                subject: userState.userModel.subject!,
+                                                nVersion: questionPaperYears[index].questionPaperModels.length + 1,
                                               ));
                                             }
-
                                           },
-                                          child: getAddPostContainer(
-                                            isDarkTheme: appThemeType.isDarkTheme(),
-                                            label: "Add Question Paper",
-                                            onPressed: () {},
-                                            context: context,
-                                          ),
+                                          context: context,
                                         ),
                                       ));
                                     }

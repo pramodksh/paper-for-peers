@@ -29,17 +29,26 @@ class QuestionPaperAdd extends QuestionPaperEvent {
 
   final String uploadedBy;
   final int year;
+  final String course;
+  final String subject;
+  final int semester;
+  final int nVersion;
 
   @override
-  List<Object?> get props => [uploadedBy, year];
+  List<Object?> get props => [uploadedBy, year, course, subject, semester, nVersion];
+
 
   const QuestionPaperAdd({
     required this.uploadedBy,
     required this.year,
+    required this.course,
+    required this.subject,
+    required this.semester,
+    required this.nVersion,
   });
 
   @override
   String toString() {
-    return 'QuestionPaperAdd{questionPaper: $uploadedBy, year: $year}';
+    return 'QuestionPaperAdd{uploadedBy: $uploadedBy, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion}';
   }
 }

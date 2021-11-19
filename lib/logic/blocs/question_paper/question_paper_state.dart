@@ -36,3 +36,32 @@ class QuestionPaperFetchError extends QuestionPaperState {
     required this.errorMessage,
   });
 }
+
+class QuestionPaperAddLoading extends QuestionPaperState {
+
+  @override
+  List<Object?> get props => [];
+}
+
+class QuestionPaperAddSuccess extends QuestionPaperState {
+  @override
+  List<Object?> get props => [];
+}
+
+class QuestionPaperAddCanceled extends QuestionPaperState {
+
+  @override
+  List<Object?> get props => [];
+}
+
+class QuestionPaperAddError extends QuestionPaperState {
+
+  final String errorMessage;
+
+  @override
+  List<Object?> get props => [errorMessage];
+
+  const QuestionPaperAddError({
+    required this.errorMessage,
+  });
+}

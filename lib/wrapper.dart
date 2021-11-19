@@ -8,16 +8,9 @@ import 'package:provider/provider.dart';
 
 import 'data/models/user_model/user_model.dart';
 
-class Wrapper extends StatefulWidget {
-  @override
-  _WrapperState createState() => _WrapperState();
-}
-
-class _WrapperState extends State<Wrapper> {
-
+class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     AuthRepository _authRepository = context.select((AuthRepository repo) => repo);
     // _authRepository.logoutUser();// todo delete
     return StreamBuilder(
@@ -44,3 +37,4 @@ class _WrapperState extends State<Wrapper> {
     );
   }
 }
+

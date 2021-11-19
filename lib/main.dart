@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
@@ -14,21 +15,22 @@ import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  print("RUN MAIN");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
+    print("BUILD MAIN()");
+
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
@@ -43,6 +45,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<ImagePickerRepository>(
           create: (context) => ImagePickerRepository(),
         ),
+        RepositoryProvider<FilePickerRepository>(
+          create: (context) => FilePickerRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -53,30 +58,32 @@ class _MyAppState extends State<MyApp> {
             create: (context) => KudNotificationsBloc(),
           ),
           BlocProvider<QuestionPaperBloc>(
-            create: (context) => QuestionPaperBloc(firestoreRepository: context.read<FirestoreRepository>(),),
+            create: (context) =>
+                QuestionPaperBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                  firebaseStorageRepository: context.read<FirebaseStorageRepository>()
+                ),
           ),
           BlocProvider<UserCubit>(
-            create: (context) => UserCubit(
-              firestoreRepository: context.read<FirestoreRepository>(),
-              firebaseStorageRepository: context.read<FirebaseStorageRepository>(),
-              imagePickerRepository: context.read<ImagePickerRepository>(),
-              authRepository: context.read<AuthRepository>(),
-            ),
+            create: (context) =>
+                UserCubit(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseStorageRepository: context.read<
+                      FirebaseStorageRepository>(),
+                  imagePickerRepository: context.read<ImagePickerRepository>(),
+                  authRepository: context.read<AuthRepository>(),
+                ),
           ),
         ],
-        child: Builder(
-            builder: (context) {
-              final AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
-
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: Styles.themeData(
-                  context: context,
-                  appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
-                ),
-                home: Wrapper(),
-              );
-            }
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: Styles.themeData(
+            context: context,
+            // appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
+            appThemeType: AppThemeType.dark,
+          ),
+          home: Wrapper(),
         ),
       ),
     );

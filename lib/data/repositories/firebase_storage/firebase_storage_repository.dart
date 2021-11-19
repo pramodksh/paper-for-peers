@@ -24,4 +24,28 @@ class FirebaseStorageRepository {
       return ApiResponse(isError: false, errorMessage: "Couldn't upload data");
     }
   }
+
+  Future<ApiResponse> uploadQuestionPaper({
+    required File document, required int year,
+    required String course, required int semester,
+    required String subject, required int version,
+  }) async {
+    try {
+
+      print("UPLOADING IT");
+      // /courses_new/bca/semesters/1/subjects/java/question_paper/2019/versions/1
+
+      storage.Reference ref = _firebaseStorage.ref('courses').child(course)
+          .child(semester.toString()).child(subject).child('question_paper')
+          .child(year.toString()).child("$version.pdf");
+
+      await ref.putFile(document);
+      print("UPLOADED QUESTION PAPER");
+      String url = await ref.getDownloadURL();
+      return ApiResponse<String>(isError: false, data: url);
+    } on storage.FirebaseException catch (e) {
+      print("Question paper FILE UPLOAD ERROR: $e");
+      return ApiResponse(isError: false, errorMessage: "Couldn't upload question paper to storage");
+    }
+  }
 }
