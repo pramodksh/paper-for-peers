@@ -5,6 +5,7 @@ import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
+import 'package:papers_for_peers/config/firebase_collection_config.dart';
 
 class FirestoreRepository {
 
@@ -13,85 +14,16 @@ class FirestoreRepository {
   FirestoreRepository({firestore.FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance {
     usersCollection =  _firebaseFirestore.collection(usersCollectionLabel);
-    coursesCollection =  _firebaseFirestore.collection(coursesCollectionLabel);
+    coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
   }
 
   static final String usersCollectionLabel = "users";
   // static String documentsCollectionLabel = "";
 
-  // static final String coursesCollectionLabel = "courses";
-  static final String coursesCollectionLabel = "courses_new";
-  static final String semestersCollectionLabel = "semesters";
-  static final String syllabusCopyCollectionLabel = "syllabus_copy";
-  static final String subjectsCollectionLabel = "subjects";
-  static final String journalCollectionLabel = "journal";
-  static final String notesCollectionLabel = "notes";
-  static final String questionPaperCollectionLabel = "question_paper";
-  static final String versionsCollectionLabel = "versions";
-
   // static final String yearsCollectionLabel = "years"; // todo delete if not used
 
   static late final firestore.CollectionReference usersCollection;
   static late final firestore.CollectionReference coursesCollection;
-
-
-  Future<ApiResponse> getQuestionPapers({
-    required String course, required int semester,
-    required String subject,
-  }) async {
-    print("GET QUESTION PAPER");
-
-    try {
-
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(subjectsCollectionLabel).doc(subject).get();
-      firestore.QuerySnapshot questionPaperSnapshot = await subjectSnapshot.reference.collection(questionPaperCollectionLabel).get();
-
-      print("LEN: ${questionPaperSnapshot.docs.length}");
-
-      List<QuestionPaperYearModel> questionPaperYears = [];
-
-      await Future.forEach<firestore.QueryDocumentSnapshot>(questionPaperSnapshot.docs, (questionPaper) async {
-
-        print("Question paper year: ${questionPaper.id}");
-
-        firestore.QuerySnapshot versionsSnapshot = await questionPaper.reference.collection(versionsCollectionLabel).get();
-
-        List<QuestionPaperModel> questionPapers = [];
-
-        await Future.forEach<firestore.QueryDocumentSnapshot>(versionsSnapshot.docs, (version) async {
-          print("VERSION ID: ${version.id}");
-          // print("VERSION: ${version.data().runtimeType}");
-
-
-
-          Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
-
-          print("VERSION DATA: ${versionData}");
-
-          questionPapers.add(QuestionPaperModel(
-            version: int.parse(version.id),
-            uploadedBy: versionData['uploaded_by']!,
-            url: versionData['url'],
-          ));
-
-        });
-
-        questionPaperYears.add(QuestionPaperYearModel(
-          year: int.parse(questionPaper.id),
-          questionPaperModels: questionPapers,
-        ));
-
-      });
-
-      return ApiResponse<List<QuestionPaperYearModel>>(isError: false, data: questionPaperYears);
-    } catch (e) {
-      print("ERR IN QUESTION PAPER: ${e}");
-      return ApiResponse(isError: true, errorMessage: "Error while fetching question papers: ${e}");
-    }
-
-  }
 
 
 
@@ -128,13 +60,13 @@ class FirestoreRepository {
   Future<Course> getCourse(String name) async {
 
     firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(name).get();
-    firestore.QuerySnapshot semesterSnapshot = await coursesSnapshot.reference.collection(semestersCollectionLabel).get();
+    firestore.QuerySnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).get();
 
     List<Semester> semesters = [];
 
     await Future.forEach<firestore.QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
       print("\t ${semester.id}");
-      firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
+      firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
       List<String> subjects = [];
       subjectsSnapshot.docs.forEach((subject) {
         print("\t\t ${subject.id}");
@@ -159,10 +91,10 @@ class FirestoreRepository {
 
       List<Semester> semesters = [];
 
-      firestore.QuerySnapshot semesterSnapshot = await course.reference.collection(semestersCollectionLabel).get();
+      firestore.QuerySnapshot semesterSnapshot = await course.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).get();
       await Future.forEach<firestore.QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
         print("\t ${semester.id}");
-        firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(subjectsCollectionLabel).get();
+        firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
         List<String> subjects = [];
         subjectsSnapshot.docs.forEach((subject) {
           print("\t\t ${subject.id}");

@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
@@ -14,23 +15,22 @@ part 'question_paper_event.dart';
 part 'question_paper_state.dart';
 
 class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
-
-  final FirestoreRepository _firestoreRepository;
+  final QuestionPaperRepository _questionPaperRepository;
   final FirebaseStorageRepository _firebaseStorageRepository;
   final FilePickerRepository _filePickerRepository;
 
   QuestionPaperBloc({
-    required FirestoreRepository firestoreRepository,
+    required QuestionPaperRepository questionPaperRepository,
     required FilePickerRepository filePickerRepository,
     required FirebaseStorageRepository firebaseStorageRepository,
-  }) : _firestoreRepository = firestoreRepository,
+  }) : _questionPaperRepository = questionPaperRepository,
       _filePickerRepository = filePickerRepository,
       _firebaseStorageRepository = firebaseStorageRepository,
       super(QuestionPaperInitial()) {
 
     on<QuestionPaperFetch>((event, emit) async {
       emit(QuestionPaperFetchLoading());
-      ApiResponse response = await _firestoreRepository.getQuestionPapers(
+      ApiResponse response = await _questionPaperRepository.getQuestionPapers(
         course: event.course,
         semester: event.semester,
         subject: event.subject,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
@@ -48,6 +49,10 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<FilePickerRepository>(
           create: (context) => FilePickerRepository(),
         ),
+
+        RepositoryProvider<QuestionPaperRepository>(
+          create: (context) => QuestionPaperRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -60,7 +65,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<QuestionPaperBloc>(
             create: (context) =>
                 QuestionPaperBloc(
-                  firestoreRepository: context.read<FirestoreRepository>(),
+                  questionPaperRepository: context.read<QuestionPaperRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                   firebaseStorageRepository: context.read<FirebaseStorageRepository>()
                 ),
