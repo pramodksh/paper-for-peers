@@ -92,7 +92,6 @@ Widget getAddPostContainer({
   required bool isDarkTheme,
   required String label,
   required Function() onPressed,
-  required BuildContext context,
   double containerRadius = 15,
 }) {
 

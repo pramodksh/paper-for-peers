@@ -2,6 +2,7 @@ import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class QuestionPaperRepository {
 
@@ -11,6 +12,30 @@ class QuestionPaperRepository {
   QuestionPaperRepository({firestore.FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance {
     coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+  }
+
+  Future<ApiResponse> addQuestionPaper({
+    required String course, required int semester,
+    required String subject, required UserModel user,
+    required int version, required int year, required String documentUrl,
+  }) async {
+    try {
+      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
+      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
+      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
+      firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
+      await yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(version.toString()).set(
+          {
+            "uploaded_by": user.displayName,
+            "url": documentUrl,
+          }
+      );
+      return ApiResponse(isError: false,);
+
+    } catch (err) {
+      return ApiResponse(isError: true, errorMessage: "There was an error while setting question paper: $err");
+    }
+
   }
 
   Future<ApiResponse> getQuestionPapers({

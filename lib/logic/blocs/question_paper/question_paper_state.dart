@@ -39,17 +39,17 @@ class QuestionPaperFetchError extends QuestionPaperState {
 
 class QuestionPaperAddLoading extends QuestionPaperState {
 
+  final List<QuestionPaperYearModel> questionPaperYears;
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [questionPaperYears];
+
+  const QuestionPaperAddLoading({
+    required this.questionPaperYears,
+  });
 }
 
 class QuestionPaperAddSuccess extends QuestionPaperState {
-  @override
-  List<Object?> get props => [];
-}
-
-class QuestionPaperAddCanceled extends QuestionPaperState {
-
   @override
   List<Object?> get props => [];
 }

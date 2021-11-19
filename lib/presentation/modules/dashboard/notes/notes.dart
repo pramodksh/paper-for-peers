@@ -98,7 +98,6 @@ class _NotesState extends State<Notes> {
                 height: 140,
                 child: getAddPostContainer(
                   isDarkTheme: appThemeType.isDarkTheme(),
-                  context: context,
                   onPressed: () {},
                   label: "Add Notes",
                 ),

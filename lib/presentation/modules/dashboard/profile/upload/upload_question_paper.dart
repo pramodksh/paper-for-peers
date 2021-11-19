@@ -35,7 +35,6 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
               height: 200,
               child: getAddPostContainer(
                 isDarkTheme: appThemeType.isDarkTheme(),
-                context: context,
                 label: "Select File",
                 onPressed: () {},
               ),

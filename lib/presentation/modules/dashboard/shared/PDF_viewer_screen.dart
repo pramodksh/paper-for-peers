@@ -296,7 +296,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           isDarkTheme: isDarkTheme,
           label: "Add Syllabus Copy",
           onPressed: () {},
-          context: context,
         ));
       }
       return Stack(

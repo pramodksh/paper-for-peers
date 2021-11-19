@@ -27,15 +27,17 @@ class QuestionPaperFetch extends QuestionPaperEvent {
 
 class QuestionPaperAdd extends QuestionPaperEvent {
 
+  final List<QuestionPaperYearModel> questionPaperYears;
   final String uploadedBy;
   final int year;
   final String course;
   final String subject;
   final int semester;
   final int nVersion;
+  final UserModel user;
 
   @override
-  List<Object?> get props => [uploadedBy, year, course, subject, semester, nVersion];
+  List<Object?> get props => [uploadedBy, year, course, subject, semester, nVersion, user, questionPaperYears];
 
 
   const QuestionPaperAdd({
@@ -45,6 +47,8 @@ class QuestionPaperAdd extends QuestionPaperEvent {
     required this.subject,
     required this.semester,
     required this.nVersion,
+    required this.user,
+    required this.questionPaperYears,
   });
 
   @override

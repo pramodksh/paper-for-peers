@@ -87,7 +87,6 @@ class _JournalState extends State<Journal> {
     if (nVariants < 2) {
       gridChildren.add(getAddPostContainer(
         isDarkTheme: appThemeType.isDarkTheme(),
-        context: context,
         onPressed: onAddJournalPressed,
         label: "Add Journal",
       ));

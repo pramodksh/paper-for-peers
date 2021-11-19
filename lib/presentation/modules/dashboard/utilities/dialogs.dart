@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showAlertDialog({required BuildContext context, required String? text}) => showDialog(
+Future showAlertDialog({required BuildContext context, required String? text}) => showDialog(
   context: context,
   builder: (context) => AlertDialog(
     shape: RoundedRectangleBorder(
