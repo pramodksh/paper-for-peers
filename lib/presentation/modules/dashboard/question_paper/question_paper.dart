@@ -154,7 +154,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
       ],
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
 
@@ -174,13 +174,13 @@ class _QuestionPaperState extends State<QuestionPaper> {
         }
         if (state is QuestionPaperAddSuccess) {
           showAlertDialog(context: context, text: "Question Paper Added Successfully").then((value) {
-            // if (userState is UserLoaded) {
-            //   context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
-            //       course: userState.userModel.course!.courseName!,
-            //       semester: userState.userModel.semester!.nSemester!,
-            //       subject: userState.userModel.subject!
-            //   ));
-            // }
+            if (userState is UserLoaded) {
+              context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
+                  course: userState.userModel.course!.courseName!,
+                  semester: userState.userModel.semester!.nSemester!,
+                  subject: userState.userModel.subject!
+              ));
+            }
           });
         }
       },
@@ -253,6 +253,22 @@ class _QuestionPaperState extends State<QuestionPaper> {
                               context: context,
                             );
                           } else if (questionPaperState is QuestionPaperAddLoading) {
+                            return _getQuestionPaperListWidget(
+                              questionPaperYears:  questionPaperState.questionPaperYears,
+                              isDarkTheme: appThemeType.isDarkTheme(),
+                              questionPaperState: questionPaperState,
+                              userState: userState,
+                              context: context,
+                            );
+                          } else if (questionPaperState is QuestionPaperAddError) {
+                            return _getQuestionPaperListWidget(
+                              questionPaperYears:  questionPaperState.questionPaperYears,
+                              isDarkTheme: appThemeType.isDarkTheme(),
+                              questionPaperState: questionPaperState,
+                              userState: userState,
+                              context: context,
+                            );
+                          } else if (questionPaperState is QuestionPaperAddSuccess) {
                             return _getQuestionPaperListWidget(
                               questionPaperYears:  questionPaperState.questionPaperYears,
                               isDarkTheme: appThemeType.isDarkTheme(),

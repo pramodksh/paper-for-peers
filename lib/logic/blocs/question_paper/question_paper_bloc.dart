@@ -6,7 +6,6 @@ import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
-import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_stream_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 
@@ -47,36 +46,23 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
 
     on<QuestionPaperAdd>((event, emit) async {
       File? file = await _filePickerRepository.pickFile();
-
       if (file != null) {
-
         emit(QuestionPaperAddLoading(questionPaperYears: event.questionPaperYears));
-
-        ApiResponse storageResponse = await _firebaseStorageRepository.uploadQuestionPaper(
-          document: file, year: event.year, subject: event.subject,
-          semester: event.semester, course: event.course, version: event.nVersion,
+        
+        ApiResponse addResponse = await _questionPaperRepository.uploadAndAddQuestionPaper(
+          version: event.nVersion,
+          course: event.course,
+          semester: event.semester,
+          subject: event.subject,
+          year: event.year,
+          document: file,
+          user: event.user,
         );
 
-        if (storageResponse.isError) {
-          emit(QuestionPaperAddError(errorMessage: storageResponse.errorMessage!));
+        if (addResponse.isError) {
+          emit(QuestionPaperAddError(errorMessage: addResponse.errorMessage!, questionPaperYears: event.questionPaperYears));
         } else {
-          String documentUrl = storageResponse.data;
-
-          ApiResponse addResponse = await _questionPaperRepository.addQuestionPaper(
-            version: event.nVersion,
-            course: event.course,
-            semester: event.semester,
-            subject: event.subject,
-            year: event.year,
-            documentUrl: documentUrl,
-            user: event.user,
-          );
-
-          if (addResponse.isError) {
-            emit(QuestionPaperAddError(errorMessage: addResponse.errorMessage!));
-          } else {
-            emit(QuestionPaperAddSuccess());
-          }
+          emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears));
         }
       }
     });

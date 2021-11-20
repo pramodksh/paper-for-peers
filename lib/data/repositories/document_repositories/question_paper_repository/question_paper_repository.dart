@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
+import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
@@ -7,24 +11,66 @@ import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 class QuestionPaperRepository {
 
   final firestore.FirebaseFirestore _firebaseFirestore;
+  final storage.FirebaseStorage _firebaseStorage;
   static late final firestore.CollectionReference coursesCollection;
 
-  QuestionPaperRepository({firestore.FirebaseFirestore? firebaseFirestore})
-      : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance {
+  QuestionPaperRepository({
+    firestore.FirebaseFirestore? firebaseFirestore,
+    storage.FirebaseStorage? firebaseStorage,
+  }) : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance,
+        _firebaseStorage = firebaseStorage ?? storage.FirebaseStorage.instance {
     coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
   }
 
-  Future<ApiResponse> addQuestionPaper({
+  Future<ApiResponse> uploadQuestionPaper({
+    required File document, required int year,
+    required String course, required int semester,
+    required String subject, required int version,
+  }) async {
+    try {
+
+      print("UPLOADING IT");
+      // /courses_new/bca/semesters/1/subjects/java/question_paper/2019/versions/1
+
+      storage.Reference ref = _firebaseStorage.ref('courses').child(course)
+          .child(semester.toString()).child(subject).child('question_paper')
+          .child(year.toString()).child("$version.pdf");
+
+      await ref.putFile(document);
+      print("UPLOADED QUESTION PAPER");
+      String url = await ref.getDownloadURL();
+      return ApiResponse<String>(isError: false, data: url);
+    } on storage.FirebaseException catch (e) {
+      print("Question paper FILE UPLOAD ERROR: $e");
+      return ApiResponse(isError: false, errorMessage: "Couldn't upload question paper to storage");
+    }
+  }
+
+  Future<ApiResponse> uploadAndAddQuestionPaper({
     required String course, required int semester,
     required String subject, required UserModel user,
-    required int version, required int year, required String documentUrl,
+    required int version, required int year, required File document,
   }) async {
     try {
       firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
       firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
       firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
       firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
-      await yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(version.toString()).set(
+      firestore.CollectionReference versionCollectionReference = yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel);
+      firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
+      
+      if (versionSnapshot.docs.length >= AppConstants.maxQuestionPapers) {
+        return ApiResponse(isError: true, errorMessage: "The year $year has maximum versions. Please refresh");
+      }
+      
+      ApiResponse uploadResponse = await uploadQuestionPaper(document: document, year: year, course: course, semester: semester, subject: subject, version: version);
+      
+      if (uploadResponse.isError) {
+        return uploadResponse;
+      } 
+      
+      String documentUrl = uploadResponse.data;
+      await versionCollectionReference.doc(version.toString()).set(
           {
             "uploaded_by": user.displayName,
             "url": documentUrl,

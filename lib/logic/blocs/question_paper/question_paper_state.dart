@@ -50,18 +50,26 @@ class QuestionPaperAddLoading extends QuestionPaperState {
 }
 
 class QuestionPaperAddSuccess extends QuestionPaperState {
+  final List<QuestionPaperYearModel> questionPaperYears;
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [questionPaperYears];
+
+  const QuestionPaperAddSuccess({
+    required this.questionPaperYears,
+  });
 }
 
 class QuestionPaperAddError extends QuestionPaperState {
 
   final String errorMessage;
+  final List<QuestionPaperYearModel> questionPaperYears;
 
   @override
-  List<Object?> get props => [errorMessage];
+  List<Object?> get props => [errorMessage, questionPaperYears];
 
   const QuestionPaperAddError({
     required this.errorMessage,
+    required this.questionPaperYears,
   });
 }
