@@ -15,16 +15,13 @@ part 'question_paper_state.dart';
 class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
 
   final QuestionPaperRepository _questionPaperRepository;
-  final FirebaseStorageRepository _firebaseStorageRepository;
   final FilePickerRepository _filePickerRepository;
 
   QuestionPaperBloc({
     required QuestionPaperRepository questionPaperRepository,
     required FilePickerRepository filePickerRepository,
-    required FirebaseStorageRepository firebaseStorageRepository,
   }) : _questionPaperRepository = questionPaperRepository,
       _filePickerRepository = filePickerRepository,
-      _firebaseStorageRepository = firebaseStorageRepository,
       super(QuestionPaperInitial()) {
 
     on<QuestionPaperFetch>((event, emit) async {

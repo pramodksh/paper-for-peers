@@ -12,7 +12,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewe
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 
 class QuestionPaper extends StatefulWidget {
   final bool isDarkTheme;
@@ -25,7 +24,7 @@ class QuestionPaper extends StatefulWidget {
 
 class _QuestionPaperState extends State<QuestionPaper> {
 
-  Widget getQuestionVariantContainer({
+  Widget _getQuestionVariantContainer({
     required int nVariant,
     required Function() onPressed,
     double containerRadius = 15,
@@ -48,7 +47,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
     );
   }
 
-  Widget getQuestionYearTile({required String year, required List<Widget> children}) {
+  Widget _getQuestionYearTile({required String year, required List<Widget> children}) {
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +100,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
           itemBuilder: (context, questionPaperYearIndex) {
 
             List<Widget> variants = List.generate(questionPaperYears[questionPaperYearIndex].questionPaperModels.length, (questionPaperIndex) {
-              return getQuestionVariantContainer(
+              return _getQuestionVariantContainer(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
@@ -144,7 +143,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
               ));
             }
 
-            return getQuestionYearTile(
+            return _getQuestionYearTile(
               year: questionPaperYears[questionPaperYearIndex].year.toString(),
               children: variants,
             );
@@ -161,8 +160,6 @@ class _QuestionPaperState extends State<QuestionPaper> {
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
     final QuestionPaperState questionPaperState = context.watch<QuestionPaperBloc>().state;
-
-    print("questionPaperState: ${questionPaperState}");
 
     return BlocListener<QuestionPaperBloc, QuestionPaperState>(
       listener: (context, state) {
@@ -189,7 +186,6 @@ class _QuestionPaperState extends State<QuestionPaper> {
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Builder(
               builder: (context) {
-
                 return SingleChildScrollView(
                   child: Column(
                     children: [
@@ -233,8 +229,6 @@ class _QuestionPaperState extends State<QuestionPaper> {
 
                       Builder(
                         builder: (context) {
-
-                          print("CHECK: ${questionPaperState}");
 
                           if (userState is UserLoaded && userState.userModel.subject == null) {
                             return Container(

@@ -68,7 +68,6 @@ class _MyAppState extends State<MyApp> {
                 QuestionPaperBloc(
                   questionPaperRepository: context.read<QuestionPaperRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
-                  firebaseStorageRepository: context.read<FirebaseStorageRepository>()
                 ),
           ),
           BlocProvider<UserCubit>(

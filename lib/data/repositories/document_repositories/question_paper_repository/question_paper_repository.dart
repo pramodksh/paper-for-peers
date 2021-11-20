@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
@@ -28,20 +27,14 @@ class QuestionPaperRepository {
     required String subject, required int version,
   }) async {
     try {
-
-      print("UPLOADING IT");
-      // /courses_new/bca/semesters/1/subjects/java/question_paper/2019/versions/1
-
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
           .child(semester.toString()).child(subject).child('question_paper')
           .child(year.toString()).child("$version.pdf");
 
       await ref.putFile(document);
-      print("UPLOADED QUESTION PAPER");
       String url = await ref.getDownloadURL();
       return ApiResponse<String>(isError: false, data: url);
     } on storage.FirebaseException catch (e) {
-      print("Question paper FILE UPLOAD ERROR: $e");
       return ApiResponse(isError: false, errorMessage: "Couldn't upload question paper to storage");
     }
   }
@@ -60,7 +53,7 @@ class QuestionPaperRepository {
       firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
       
       if (versionSnapshot.docs.length >= AppConstants.maxQuestionPapers) {
-        return ApiResponse(isError: true, errorMessage: "The year $year has maximum versions. Please refresh");
+        return ApiResponse(isError: true, errorMessage: "The year $year has maximum versions. Please refresh to view them");
       }
       
       ApiResponse uploadResponse = await uploadQuestionPaper(document: document, year: year, course: course, semester: semester, subject: subject, version: version);
