@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -11,6 +12,7 @@ import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
 
@@ -28,11 +30,7 @@ class _JournalState extends State<Journal> {
 
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
-  void onAddJournalPressed() {
-
-  }
-
-  Widget getJournalVariantDetailsTile({required int nVariant, required DateTime uploadedOn, required String uploadedBy, required Function() onTap}) {
+  Widget _getJournalVariantDetailsTile({required int nVariant, required DateTime uploadedOn, required String uploadedBy, required Function() onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -68,9 +66,13 @@ class _JournalState extends State<Journal> {
     );
   }
 
-  Widget _getJournalTile({required String subject, required List<JournalModel> journals, required AppThemeType appThemeType}) {
+  Widget _getJournalTile({
+    required String subject, required List<JournalModel> journals,
+    required AppThemeType appThemeType, required UserState userState,
+    required Function() onJournalAdd, required bool isAddJournalLoading,
+  }) {
 
-    List<Widget> gridChildren = List.generate(journals.length, (index) => getJournalVariantDetailsTile(
+    List<Widget> gridChildren = List.generate(journals.length, (index) => _getJournalVariantDetailsTile(
       nVariant: index + 1,
       uploadedOn: journals[index].uploadedOn,
       uploadedBy: journals[index].uploadedBy,
@@ -92,11 +94,10 @@ class _JournalState extends State<Journal> {
     if (journals.length < AppConstants.maxJournals) {
       gridChildren.add(getAddPostContainer(
         isDarkTheme: appThemeType.isDarkTheme(),
-        onPressed: onAddJournalPressed,
-        label: "Add Journal",
+        onPressed: isAddJournalLoading ? () {} : onJournalAdd,
+        label: isAddJournalLoading ? "Loading" : "Add Journal",
       ));
     }
-
 
     return Container(
       child: Column(
@@ -117,23 +118,40 @@ class _JournalState extends State<Journal> {
     );
   }
 
-  @override
-  void initState() {
-
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
-      UserState userState = context.read<UserCubit>().state;
-
-      if (userState is UserLoaded) {
-        context.read<JournalBloc>().add(
-            JournalFetch(
-                course: userState.userModel.course!.courseName!,
-                semester: userState.userModel.semester!.nSemester!,
-            )
+  Widget _getJournalListWidget({
+    required UserState userState,
+    required List<JournalSubjectModel> journalSubjects,
+    required AppThemeType appThemeType,
+    required bool isAddJournalLoading,
+  }) {
+    return ListView.separated(
+      separatorBuilder: (context, index) => SizedBox(height: 20,),
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: journalSubjects.length,
+      itemBuilder: (context, journalSubjectIndex) {
+        return _getJournalTile(
+            isAddJournalLoading: isAddJournalLoading,
+            journals: journalSubjects[journalSubjectIndex].journalModels,
+            subject: journalSubjects[journalSubjectIndex].subject,
+            appThemeType: appThemeType,
+            userState: userState,
+            onJournalAdd: () {
+              if (userState is UserLoaded) {
+                context.read<JournalBloc>().add(JournalAdd(
+                  journalSubjects: journalSubjects,
+                  uploadedBy: userState.userModel.displayName!,
+                  course: userState.userModel.course!.courseName!,
+                  semester: userState.userModel.semester!.nSemester!,
+                  subject: journalSubjects[journalSubjectIndex].subject,
+                  nVersion: journalSubjects[journalSubjectIndex].journalModels.length + 1,
+                  user: userState.userModel,
+                ));
+              }
+            }
         );
-      }
-    });
-
-    super.initState();
+      },
+    );
   }
 
   @override
@@ -145,58 +163,100 @@ class _JournalState extends State<Journal> {
 
     print("JOURNAL STATE: ${journalState}");
 
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20,),
+    if (journalState is JournalInitial) {
+      if (userState is UserLoaded)
+      context.read<JournalBloc>().add(
+          JournalFetch(
+            course: userState.userModel.course!.courseName!,
+            semester: userState.userModel.semester!.nSemester!,
+          )
+      );
+    }
 
-              Builder(
-                  builder: (context) {
-                    if (userState is UserLoaded) {
-                      return getCourseAndSemesterText(context: context,);
-                    } else {
-                      return Center(child: CircularProgressIndicator.adaptive(),);
-                    }
-                  }
-              ),
+    return BlocListener<JournalBloc, JournalState>(
+      listener: (context, state) {
+        if (state is JournalFetchError) {
+          showAlertDialog(context: context, text: state.errorMessage);
+        }
+        if (state is JournalAddError) {
+          showAlertDialog(context: context, text: state.errorMessage);
+        }
+        if (state is JournalAddSuccess) {
+          showAlertDialog(context: context, text: "Journal Added Successfully").then((value) {
+            if (userState is UserLoaded) {
+              context.read<JournalBloc>().add(
+                  JournalFetch(
+                    course: userState.userModel.course!.courseName!,
+                    semester: userState.userModel.semester!.nSemester!,
+                  )
+              );
+            }
+          });
+        }
+      },
+      child: Scaffold(
+          body: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20,),
 
-              SizedBox(height: 20,),
+                  Builder(
+                      builder: (context) {
+                        if (userState is UserLoaded) {
+                          return getCourseAndSemesterText(context: context,);
+                        } else {
+                          return Center(child: CircularProgressIndicator.adaptive(),);
+                        }
+                      }
+                  ),
 
-              Builder(
-                builder: (context) {
-                  if (journalState is JournalFetchLoading) {
-                    return Center(child: CircularProgressIndicator.adaptive(),);
-                  } else if (journalState is JournalFetchSuccess) {
+                  SizedBox(height: 20,),
 
-                    List<JournalSubjectModel> journalSubjects = journalState.journalSubjects;
-
-                    return ListView.separated(
-                      separatorBuilder: (context, index) => SizedBox(height: 20,),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: journalSubjects.length,
-                      itemBuilder: (context, index) {
-                        // todo display variants of journal
-                        return _getJournalTile(
-                          journals: journalSubjects[index].journalModels,
-                          subject: journalSubjects[index].subject,
-                          appThemeType: appThemeType
+                  Builder(
+                    builder: (context) {
+                      if (journalState is JournalFetchLoading) {
+                        return Center(child: CircularProgressIndicator.adaptive(),);
+                      } else if (journalState is JournalFetchSuccess) {
+                        return _getJournalListWidget(
+                          userState: userState,
+                          journalSubjects: journalState.journalSubjects,
+                          appThemeType: appThemeType,
+                          isAddJournalLoading: false,
                         );
-                      },
-                    );
-                  } else {
-                    return Center(child: CircularProgressIndicator.adaptive(),);
-                  }
-                }
+                      } else if (journalState is JournalAddError) {
+                        return _getJournalListWidget(
+                          userState: userState,
+                          journalSubjects: journalState.journalSubjects,
+                          appThemeType: appThemeType,
+                          isAddJournalLoading: false,
+                        );
+                      } else if (journalState is JournalAddSuccess) {
+                        return _getJournalListWidget(
+                          userState: userState,
+                          journalSubjects: journalState.journalSubjects,
+                          appThemeType: appThemeType,
+                          isAddJournalLoading: false,
+                        );
+                      } else if (journalState is JournalAddLoading) {
+                        return _getJournalListWidget(
+                          userState: userState,
+                          journalSubjects: journalState.journalSubjects,
+                          appThemeType: appThemeType,
+                          isAddJournalLoading: true,
+                        );
+                      } else {
+                        return Center(child: CircularProgressIndicator.adaptive(),);
+                      }
+                    }
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
     );
   }
 }
