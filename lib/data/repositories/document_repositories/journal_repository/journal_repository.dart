@@ -19,34 +19,58 @@ class JournalRepository {
 
   Future<ApiResponse> getJournals({
     required String course, required int semester,
-    required String subject,
   }) async {
     try {
 
       firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
       firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.QuerySnapshot questionPaperSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
+
+      firestore.QuerySnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
+
       List<JournalSubjectModel> journalSubjects = [];
+      await Future.forEach<firestore.QueryDocumentSnapshot>(subjectSnapshot.docs, (subject) async {
+        print("SUBJECT: ${subject.id}");
 
-      await Future.forEach<firestore.QueryDocumentSnapshot>(questionPaperSnapshot.docs, (questionPaper) async {
-        firestore.QuerySnapshot versionsSnapshot = await questionPaper.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).get();
         List<JournalModel> journals = [];
-
-        await Future.forEach<firestore.QueryDocumentSnapshot>(versionsSnapshot.docs, (version) async {
-          Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
+        firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
+        await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
+          print("\t\t${journal.id} || ${journal.data()}");
+          Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
           journals.add(JournalModel(
-            uploadedOn: DateTime.now(),
-            version: int.parse(version.id),
-            uploadedBy: versionData['uploaded_by'],
-            url: versionData['url'],
+            uploadedOn: DateTime.now(), // todo change to database value
+            version: int.parse(journal.id),
+            uploadedBy: journalData['uploaded_by'],
+            url: journalData['url'],
           ));
         });
+
         journalSubjects.add(JournalSubjectModel(
-          subject: "sub",
+          subject: subject.id,
           journalModels: journals,
         ));
       });
+
+      // firestore.QuerySnapshot questionPaperSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
+      // List<JournalSubjectModel> journalSubjects = [];
+
+      // await Future.forEach<firestore.QueryDocumentSnapshot>(questionPaperSnapshot.docs, (questionPaper) async {
+      //   firestore.QuerySnapshot versionsSnapshot = await questionPaper.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).get();
+      //   List<JournalModel> journals = [];
+      //
+      //   await Future.forEach<firestore.QueryDocumentSnapshot>(versionsSnapshot.docs, (version) async {
+      //     Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
+      //     journals.add(JournalModel(
+      //       uploadedOn: DateTime.now(), // todo change to database value
+      //       version: int.parse(version.id),
+      //       uploadedBy: versionData['uploaded_by'],
+      //       url: versionData['url'],
+      //     ));
+      //   });
+      //   journalSubjects.add(JournalSubjectModel(
+      //     subject: "sub",
+      //     journalModels: journals,
+      //   ));
+      // });
       return ApiResponse<List<JournalSubjectModel>>(isError: false, data: journalSubjects);
     } catch (_) {
       return ApiResponse(isError: true, errorMessage: "Error while fetching journals");

@@ -1,19 +1,18 @@
 part of 'journal_bloc.dart';
 
 abstract class JournalState extends Equatable {
-  final String? selectedSubject;
-  const JournalState({required this.selectedSubject});
+  const JournalState();
 }
 
 class JournalInitial extends JournalState {
-  JournalInitial() : super(selectedSubject: null);
+  JournalInitial() : super();
 
   @override
   List<Object> get props => [];
 }
 
 class JournalFetchLoading extends JournalState {
-  JournalFetchLoading({required String selectedSubject}) : super(selectedSubject: selectedSubject);
+  JournalFetchLoading() : super();
 
   @override
   List<Object?> get props => [];
@@ -25,8 +24,7 @@ class JournalFetchSuccess extends JournalState {
   
   JournalFetchSuccess({
     required this.journalSubjects,
-    required String selectedSubject, 
-  }) : super(selectedSubject: selectedSubject);
+  }) : super();
 
   @override
   List<Object?> get props => [journalSubjects];
@@ -38,8 +36,7 @@ class JournalFetchError extends JournalState {
   
   JournalFetchError({
     required this.errorMessage,
-    required String selectedSubject,
-  }) : super(selectedSubject: selectedSubject);
+  }) : super();
   
   @override
   List<Object?> get props => [errorMessage];
@@ -55,8 +52,7 @@ class JournalAddLoading extends JournalState {
 
   const JournalAddLoading({
     required this.journalSubjects,
-    required String selectedSubject,
-  }) : super(selectedSubject: selectedSubject);
+  }) : super();
 }
 
 class JournalAddSuccess extends JournalState {
@@ -67,8 +63,7 @@ class JournalAddSuccess extends JournalState {
 
   const JournalAddSuccess({
     required this.journalSubjects,
-    required String selectedSubject,
-  }) : super(selectedSubject: selectedSubject);
+  }) : super();
 }
 
 class JournalAddError extends JournalState {
@@ -82,7 +77,6 @@ class JournalAddError extends JournalState {
   const JournalAddError({
     required this.errorMessage,
     required this.journalSubjects,
-    required String selectedSubject,
-  }) : super(selectedSubject: selectedSubject);
+  }) : super();
 }
 

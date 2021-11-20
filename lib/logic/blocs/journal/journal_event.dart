@@ -8,19 +8,17 @@ class JournalFetch extends JournalEvent {
 
   final String course;
   final int semester;
-  final String subject;
 
   @override
-  List<Object?> get props => [course, semester, subject];
+  List<Object?> get props => [course, semester];
 
   const JournalFetch({
     required this.course,
     required this.semester,
-    required this.subject,
   });
 
   @override
   String toString() {
-    return 'JournalFetch{course: $course, semester: $semester, subject: $subject}';
+    return 'JournalFetch{course: $course, semester: $semester,}';
   }
 }
