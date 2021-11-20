@@ -68,21 +68,21 @@ class _JournalState extends State<Journal> {
     );
   }
 
-  Widget getJournalTile({required String subject, required int nVariants, required AppThemeType appThemeType}) {
+  Widget _getJournalTile({required String subject, required List<JournalModel> journals, required AppThemeType appThemeType}) {
 
-    assert(nVariants <= 2);
+    // assert(nVariants <= 2);
 
-    List<Widget> gridChildren = List.generate(nVariants, (index) => getJournalVariantDetailsTile(
+    List<Widget> gridChildren = List.generate(journals.length, (index) => getJournalVariantDetailsTile(
       nVariant: index + 1,
-      uploadedOn: DateTime.now(),
-      uploadedBy: "John Doe",
+      uploadedOn: journals[index].uploadedOn,
+      uploadedBy: journals[index].uploadedBy,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
             screenLabel: "Journal",
             parameter: PDFScreenSimpleBottomSheet(
-                nVariant: index + 1,
-                uploadedBy: "John Doe",
+                nVariant: journals[index].version,
+                uploadedBy: journals[index].uploadedBy,
                 title: subject
             ),
           ),
@@ -90,7 +90,7 @@ class _JournalState extends State<Journal> {
       }
     ));
 
-    if (nVariants < 2) {
+    if (journals.length < AppConstants.maxJournals) {
       gridChildren.add(getAddPostContainer(
         isDarkTheme: appThemeType.isDarkTheme(),
         onPressed: onAddJournalPressed,
@@ -182,7 +182,11 @@ class _JournalState extends State<Journal> {
                       itemCount: journalSubjects.length,
                       itemBuilder: (context, index) {
                         // todo display variants of journal
-                        return getJournalTile(subject: journalSubjects[index].subject, nVariants: 2, appThemeType: appThemeType);
+                        return _getJournalTile(
+                          journals: journalSubjects[index].journalModels,
+                          subject: journalSubjects[index].subject,
+                          appThemeType: appThemeType
+                        );
                       },
                     );
                   } else {
