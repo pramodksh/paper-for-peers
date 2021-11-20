@@ -9,7 +9,6 @@ class UserModel {
   final String? photoUrl;
   final Semester? semester;
   final Course? course;
-  final String? subject;
 
   static String courseLabel = "course";
   static String semesterLabel = "semester";
@@ -47,7 +46,6 @@ class UserModel {
     required this.uid,
     this.semester,
     this.course,
-    this.subject,
   });
 
   UserModel copyWith({
@@ -57,7 +55,6 @@ class UserModel {
     String? photoUrl,
     Semester? semester,
     Course? course,
-    String? subject,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -66,7 +63,6 @@ class UserModel {
       photoUrl: photoUrl ?? this.photoUrl,
       semester: semester ?? this.semester,
       course: course ?? this.course,
-      subject: subject ?? this.subject,
     );
   }
 

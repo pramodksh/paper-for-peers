@@ -24,7 +24,7 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
       super(QuestionPaperInitial()) {
 
     on<QuestionPaperFetch>((event, emit) async {
-      emit(QuestionPaperFetchLoading());
+      emit(QuestionPaperFetchLoading(selectedSubject: event.subject));
       ApiResponse response = await _questionPaperRepository.getQuestionPapers(
         course: event.course,
         semester: event.semester,
@@ -32,9 +32,9 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
       );
 
       if (response.isError) {
-        emit(QuestionPaperFetchError(errorMessage: response.errorMessage!));
+        emit(QuestionPaperFetchError(errorMessage: response.errorMessage!, selectedSubject: event.subject));
       } else {
-        emit(QuestionPaperFetchSuccess(questionPaperYears: response.data as List<QuestionPaperYearModel>));
+        emit(QuestionPaperFetchSuccess(questionPaperYears: response.data as List<QuestionPaperYearModel>, selectedSubject: event.subject));
       }
 
     });
@@ -43,7 +43,7 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
     on<QuestionPaperAdd>((event, emit) async {
       File? file = await _filePickerRepository.pickFile();
       if (file != null) {
-        emit(QuestionPaperAddLoading(questionPaperYears: event.questionPaperYears));
+        emit(QuestionPaperAddLoading(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
         
         ApiResponse addResponse = await _questionPaperRepository.uploadAndAddQuestionPaper(
           version: event.nVersion,
@@ -56,11 +56,14 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
         );
 
         if (addResponse.isError) {
-          emit(QuestionPaperAddError(errorMessage: addResponse.errorMessage!, questionPaperYears: event.questionPaperYears));
+          emit(QuestionPaperAddError(errorMessage: addResponse.errorMessage!, questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
         } else {
-          emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears));
+          emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
         }
       }
     });
   }
+
+
+
 }

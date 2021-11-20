@@ -1,15 +1,21 @@
 part of 'question_paper_bloc.dart';
 
 abstract class QuestionPaperState extends Equatable {
-  const QuestionPaperState();
+  final String? selectedSubject;
+
+  const QuestionPaperState({required this.selectedSubject});
 }
 
 class QuestionPaperInitial extends QuestionPaperState {
+  QuestionPaperInitial() : super(selectedSubject: null);
+
   @override
   List<Object> get props => [];
 }
 
 class QuestionPaperFetchLoading extends QuestionPaperState {
+  QuestionPaperFetchLoading({required String selectedSubject}) : super(selectedSubject: selectedSubject);
+
   @override
   List<Object?> get props => [];
 }
@@ -23,7 +29,8 @@ class QuestionPaperFetchSuccess extends QuestionPaperState {
 
   const QuestionPaperFetchSuccess({
     required this.questionPaperYears,
-  });
+    required String selectedSubject,
+  }) : super(selectedSubject: selectedSubject);
 }
 
 class QuestionPaperFetchError extends QuestionPaperState {
@@ -34,7 +41,8 @@ class QuestionPaperFetchError extends QuestionPaperState {
 
   const QuestionPaperFetchError({
     required this.errorMessage,
-  });
+    required String selectedSubject,
+  }) : super(selectedSubject: selectedSubject);
 }
 
 class QuestionPaperAddLoading extends QuestionPaperState {
@@ -46,7 +54,8 @@ class QuestionPaperAddLoading extends QuestionPaperState {
 
   const QuestionPaperAddLoading({
     required this.questionPaperYears,
-  });
+    required String selectedSubject,
+  }) : super(selectedSubject: selectedSubject);
 }
 
 class QuestionPaperAddSuccess extends QuestionPaperState {
@@ -57,7 +66,8 @@ class QuestionPaperAddSuccess extends QuestionPaperState {
 
   const QuestionPaperAddSuccess({
     required this.questionPaperYears,
-  });
+    required String selectedSubject,
+  }) : super(selectedSubject: selectedSubject);
 }
 
 class QuestionPaperAddError extends QuestionPaperState {
@@ -71,5 +81,6 @@ class QuestionPaperAddError extends QuestionPaperState {
   const QuestionPaperAddError({
     required this.errorMessage,
     required this.questionPaperYears,
-  });
+    required String selectedSubject,
+  }) : super(selectedSubject: selectedSubject);
 }

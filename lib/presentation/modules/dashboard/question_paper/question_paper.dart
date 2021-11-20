@@ -133,7 +133,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                         uploadedBy: userState.userModel.displayName!,
                         course: userState.userModel.course!.courseName!,
                         semester: userState.userModel.semester!.nSemester!,
-                        subject: userState.userModel.subject!,
+                        subject: questionPaperState.selectedSubject!,
                         nVersion: questionPaperYears[questionPaperYearIndex].questionPaperModels.length + 1,
                         user: userState.userModel,
                       ));
@@ -175,7 +175,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
               context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
                   course: userState.userModel.course!.courseName!,
                   semester: userState.userModel.semester!.nSemester!,
-                  subject: userState.userModel.subject!
+                  subject: questionPaperState.selectedSubject!
               ));
             }
           });
@@ -203,18 +203,15 @@ class _QuestionPaperState extends State<QuestionPaper> {
                                       context: context,
                                       dropDownHint: "Subject",
                                       dropDownItems: userState.userModel.semester!.subjects,
-                                      dropDownValue: userState.userModel.subject,
+                                      dropDownValue: questionPaperState.selectedSubject,
                                       onDropDownChanged: (val) {
-                                        context.read<UserCubit>().changeSubject(val!);
-
                                         context.read<QuestionPaperBloc>().add(
                                             QuestionPaperFetch(
                                                 course: userState.userModel.course!.courseName!,
                                                 semester: userState.userModel.semester!.nSemester!,
-                                                subject: val
+                                                subject: val!
                                             )
                                         );
-
                                       },
                                     ),
                                   ),
@@ -229,8 +226,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
 
                       Builder(
                         builder: (context) {
-
-                          if (userState is UserLoaded && userState.userModel.subject == null) {
+                          if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
                             return Container(
                               padding: EdgeInsets.symmetric(horizontal: 20),
                               height: MediaQuery.of(context).size.height * 0.6,
