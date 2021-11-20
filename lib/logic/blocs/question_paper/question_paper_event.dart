@@ -11,7 +11,7 @@ class QuestionPaperFetch extends QuestionPaperEvent {
   final String subject;
 
   @override
-  List<Object?> get props => [course, semester, subject];
+  List<Object?> get props => [course, semester, subject,];
 
   const QuestionPaperFetch({
     required this.course,

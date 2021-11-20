@@ -58,7 +58,7 @@ class QuestionPaperRepository {
           Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
           questionPapers.add(QuestionPaperModel(
             version: int.parse(version.id),
-            uploadedBy: versionData['uploaded_by']!,
+            uploadedBy: versionData['uploaded_by'],
             url: versionData['url'],
           ));
         });

@@ -1,13 +1,12 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_stream_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 
@@ -15,6 +14,7 @@ part 'question_paper_event.dart';
 part 'question_paper_state.dart';
 
 class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
+
   final QuestionPaperRepository _questionPaperRepository;
   final FirebaseStorageRepository _firebaseStorageRepository;
   final FilePickerRepository _filePickerRepository;
@@ -79,10 +79,6 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
           }
         }
       }
-
     });
-
-
   }
-
 }

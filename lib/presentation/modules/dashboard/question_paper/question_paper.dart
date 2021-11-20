@@ -174,13 +174,13 @@ class _QuestionPaperState extends State<QuestionPaper> {
         }
         if (state is QuestionPaperAddSuccess) {
           showAlertDialog(context: context, text: "Question Paper Added Successfully").then((value) {
-            if (userState is UserLoaded) {
-              context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
-                  course: userState.userModel.course!.courseName!,
-                  semester: userState.userModel.semester!.nSemester!,
-                  subject: userState.userModel.subject!
-              ));
-            }
+            // if (userState is UserLoaded) {
+            //   context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
+            //       course: userState.userModel.course!.courseName!,
+            //       semester: userState.userModel.semester!.nSemester!,
+            //       subject: userState.userModel.subject!
+            //   ));
+            // }
           });
         }
       },
@@ -233,6 +233,9 @@ class _QuestionPaperState extends State<QuestionPaper> {
 
                       Builder(
                         builder: (context) {
+
+                          print("CHECK: ${questionPaperState}");
+
                           if (userState is UserLoaded && userState.userModel.subject == null) {
                             return Container(
                               padding: EdgeInsets.symmetric(horizontal: 20),
