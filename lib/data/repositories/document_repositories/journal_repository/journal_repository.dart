@@ -29,12 +29,10 @@ class JournalRepository {
 
       List<JournalSubjectModel> journalSubjects = [];
       await Future.forEach<firestore.QueryDocumentSnapshot>(subjectSnapshot.docs, (subject) async {
-        print("SUBJECT: ${subject.id}");
 
         List<JournalModel> journals = [];
         firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
         await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
-          print("\t\t${journal.id} || ${journal.data()}");
           Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
           journals.add(JournalModel(
             uploadedOn: DateTime.now(), // todo change to database value
@@ -49,28 +47,6 @@ class JournalRepository {
           journalModels: journals,
         ));
       });
-
-      // firestore.QuerySnapshot questionPaperSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
-      // List<JournalSubjectModel> journalSubjects = [];
-
-      // await Future.forEach<firestore.QueryDocumentSnapshot>(questionPaperSnapshot.docs, (questionPaper) async {
-      //   firestore.QuerySnapshot versionsSnapshot = await questionPaper.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).get();
-      //   List<JournalModel> journals = [];
-      //
-      //   await Future.forEach<firestore.QueryDocumentSnapshot>(versionsSnapshot.docs, (version) async {
-      //     Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
-      //     journals.add(JournalModel(
-      //       uploadedOn: DateTime.now(), // todo change to database value
-      //       version: int.parse(version.id),
-      //       uploadedBy: versionData['uploaded_by'],
-      //       url: versionData['url'],
-      //     ));
-      //   });
-      //   journalSubjects.add(JournalSubjectModel(
-      //     subject: "sub",
-      //     journalModels: journals,
-      //   ));
-      // });
       return ApiResponse<List<JournalSubjectModel>>(isError: false, data: journalSubjects);
     } catch (_) {
       return ApiResponse(isError: true, errorMessage: "Error while fetching journals");

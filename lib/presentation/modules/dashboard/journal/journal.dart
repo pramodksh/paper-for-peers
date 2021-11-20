@@ -28,7 +28,7 @@ class _JournalState extends State<Journal> {
 
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
-  void onAddJournalPressed(){
+  void onAddJournalPressed() {
 
   }
 
@@ -69,8 +69,6 @@ class _JournalState extends State<Journal> {
   }
 
   Widget _getJournalTile({required String subject, required List<JournalModel> journals, required AppThemeType appThemeType}) {
-
-    // assert(nVariants <= 2);
 
     List<Widget> gridChildren = List.generate(journals.length, (index) => getJournalVariantDetailsTile(
       nVariant: index + 1,

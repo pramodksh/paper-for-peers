@@ -21,11 +21,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
   }) : _journalRepository = journalRepository,
         _filePickerRepository = filePickerRepository ,
         super(JournalInitial()) {
+
     on<JournalFetch>((event, emit) async {
-
-      print("FETCH JOURNAL: ${event}");
-
-
       emit(JournalFetchLoading());
       ApiResponse getResponse = await _journalRepository.getJournals(course: event.course, semester: event.semester);
 
