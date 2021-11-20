@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
@@ -120,7 +121,7 @@ class _JournalState extends State<Journal> {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
-
+    final JournalState journalState = context.select((JournalBloc bloc) => bloc.state);
 
     return Scaffold(
       body: Container(
@@ -131,33 +132,38 @@ class _JournalState extends State<Journal> {
             children: [
               SizedBox(height: 20,),
 
-              // Builder(
-              //     builder: (context) {
-              //       if (userState is UserLoaded) {
-              //         return Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [
-              //             Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
-              //             Expanded(
-              //               flex: 3,
-              //               child: getCustomDropDown<String>(
-              //                 context: context,
-              //                 dropDownHint: "Subject",
-              //                 dropDownItems: userState.userModel.semester!.subjects,
-              //                 dropDownValue: userState.userModel.subject,
-              //                 onDropDownChanged: (val) {
-              //                   context.read<UserCubit>().changeSubject(val!);
-              //
-              //                 },
-              //               ),
-              //             ),
-              //           ],
-              //         );
-              //       } else {
-              //         return Center(child: CircularProgressIndicator.adaptive(),);
-              //       }
-              //     }
-              // ),
+              Builder(
+                  builder: (context) {
+                    if (userState is UserLoaded) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
+                          Expanded(
+                            flex: 3,
+                            child: getCustomDropDown<String>(
+                              context: context,
+                              dropDownHint: "Subject",
+                              dropDownItems: userState.userModel.semester!.subjects,
+                              dropDownValue: journalState.selectedSubject,
+                              onDropDownChanged: (val) {
+                                context.read<JournalBloc>().add(
+                                    JournalFetch(
+                                        course: userState.userModel.course!.courseName!,
+                                        semester: userState.userModel.semester!.nSemester!,
+                                        subject: val!
+                                    )
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
+                    }
+                  }
+              ),
 
 
               SizedBox(height: 20,),
