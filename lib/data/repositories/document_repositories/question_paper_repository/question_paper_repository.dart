@@ -34,7 +34,7 @@ class QuestionPaperRepository {
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
       return ApiResponse<String>(isError: false, data: url);
-    } on storage.FirebaseException catch (e) {
+    } on storage.FirebaseException catch (_) {
       return ApiResponse(isError: false, errorMessage: "Couldn't upload question paper to storage");
     }
   }
@@ -107,8 +107,8 @@ class QuestionPaperRepository {
         ));
       });
       return ApiResponse<List<QuestionPaperYearModel>>(isError: false, data: questionPaperYears);
-    } catch (e) {
-      return ApiResponse(isError: true, errorMessage: "Error while fetching question papers: ${e}");
+    } catch (_) {
+      return ApiResponse(isError: true, errorMessage: "Error while fetching question papers");
     }
   }
 
