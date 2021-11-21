@@ -8,4 +8,5 @@ class FirebaseCollectionConfig {
   static final String notesCollectionLabel = "notes";
   static final String questionPaperCollectionLabel = "question_paper";
   static final String versionsCollectionLabel = "versions";
+  static final String textBookCollectionLabel = "text_book";
 }

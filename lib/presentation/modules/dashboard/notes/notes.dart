@@ -29,6 +29,7 @@ class _NotesState extends State<Notes> {
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
     final NotesState notesState = context.select((NotesBloc bloc) => bloc.state);
 
+    // todo remove scaffold if possible
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),

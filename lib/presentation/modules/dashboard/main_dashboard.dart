@@ -11,6 +11,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.
 import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/text_book/text_book.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +31,7 @@ class _MainDashboardState extends State<MainDashboard> {
   bool _isLoading = false;
   String _loadingText = "";
 
-  int selectedItemPosition = 3; // todo change to 0
+  int selectedItemPosition = 4; // todo change to 0
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
@@ -274,8 +275,10 @@ class _MainDashboardState extends State<MainDashboard> {
             return Notes(isDarkTheme: appThemeType.isDarkTheme(),);
           } else if (selectedItemPosition == 2) {
             return Journal(isDarkTheme: appThemeType.isDarkTheme(),);
-          } else {
+          } else if (selectedItemPosition == 3) {
             return SyllabusCopy();
+          } else {
+            return TextBook(isDarkTheme: appThemeType.isDarkTheme());
           }
         },
       ),

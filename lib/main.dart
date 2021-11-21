@@ -7,6 +7,7 @@ import 'package:papers_for_peers/data/repositories/document_repositories/journal
 import 'package:papers_for_peers/data/repositories/document_repositories/notes_repository/notes_repository.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/syllabus_copy_repository/syllabus_copy_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/text_book_repository/text_book_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
@@ -16,6 +17,7 @@ import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications
 import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
 import 'package:papers_for_peers/logic/blocs/question_paper/question_paper_bloc.dart';
 import 'package:papers_for_peers/logic/blocs/syllabus_copy/syllabus_copy_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/text_book/text_book_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/wrapper.dart';
@@ -68,6 +70,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<SyllabusCopyRepository>(
           create: (context) => SyllabusCopyRepository(),
         ),
+        RepositoryProvider<TextBookRepository>(
+          create: (context) => TextBookRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -102,6 +107,13 @@ class _MyAppState extends State<MyApp> {
             create: (context) =>
                 SyllabusCopyBloc(
                   syllabusCopyRepository: context.read<SyllabusCopyRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                ),
+          ),
+          BlocProvider<TextBookBloc>(
+            create: (context) =>
+                TextBookBloc(
+                  textBookRepository: context.read<TextBookRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
           ),

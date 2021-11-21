@@ -1,18 +1,19 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
-import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
+import 'package:papers_for_peers/data/models/document_models/text_book.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
-class JournalRepository {
+class TextBookRepository {
   final firestore.FirebaseFirestore _firebaseFirestore;
   final storage.FirebaseStorage _firebaseStorage;
   static late final firestore.CollectionReference coursesCollection;
 
-  JournalRepository({
+  TextBookRepository({
     firestore.FirebaseFirestore? firebaseFirestore,
     storage.FirebaseStorage? firebaseStorage,
   }) : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance,
@@ -20,26 +21,26 @@ class JournalRepository {
     coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
   }
 
-  Future<ApiResponse> uploadJournal({
+  Future<ApiResponse> uploadTextBook({
     required File document,
     required String course, required int semester,
     required String subject, required int version,
   }) async {
     try {
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
-          .child(semester.toString()).child(subject).child('journals')
+          .child(semester.toString()).child(subject).child('text_book')
           .child("$version.pdf");
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
       return ApiResponse<String>(isError: false, data: url);
     } on storage.FirebaseException catch (_) {
-      return ApiResponse(isError: false, errorMessage: "Couldn't upload journal to storage");
+      return ApiResponse(isError: false, errorMessage: "Couldn't upload text book to storage");
     }
   }
 
 
-  Future<ApiResponse> uploadAndAddJournal({
+  Future<ApiResponse> uploadAndAddTextBook({
     required String course, required int semester,
     required String subject, required UserModel user,
     required int version, required File document,
@@ -49,21 +50,21 @@ class JournalRepository {
       firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
       firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
 
-      firestore.CollectionReference journalCollectionReference = subjectSnapshot.reference.collection(FirebaseCollectionConfig.journalCollectionLabel);
-      firestore.QuerySnapshot journalSnapshot = await journalCollectionReference.get();
+      firestore.CollectionReference textBookCollectionReference = subjectSnapshot.reference.collection(FirebaseCollectionConfig.textBookCollectionLabel);
+      firestore.QuerySnapshot journalSnapshot = await textBookCollectionReference.get();
 
-      if (journalSnapshot.docs.length >= AppConstants.maxJournals) {
+      if (journalSnapshot.docs.length >= AppConstants.maxTextBooks) {
         return ApiResponse(isError: true, errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
       }
 
-      ApiResponse uploadResponse = await uploadJournal(document: document, course: course, semester: semester, subject: subject, version: version);
+      ApiResponse uploadResponse = await uploadTextBook(document: document, course: course, semester: semester, subject: subject, version: version);
 
       if (uploadResponse.isError) {
         return uploadResponse;
       }
 
       String documentUrl = uploadResponse.data;
-      await journalCollectionReference.doc(version.toString()).set(
+      await textBookCollectionReference.doc(version.toString()).set(
           {
             "uploaded_by": user.displayName,
             "url": documentUrl,
@@ -101,7 +102,7 @@ class JournalRepository {
   }
 
 
-  Future<ApiResponse> getJournals({
+  Future<ApiResponse> getTextBook({
     required String course, required int semester,
   }) async {
     try {
@@ -111,14 +112,14 @@ class JournalRepository {
 
       firestore.QuerySnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
 
-      List<JournalSubjectModel> journalSubjects = [];
+      List<TextBookSubjectModel> textBookSubjects = [];
       await Future.forEach<firestore.QueryDocumentSnapshot>(subjectSnapshot.docs, (subject) async {
 
-        List<JournalModel> journals = [];
-        firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
+        List<TextBookModel> textBooks = [];
+        firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.textBookCollectionLabel).get();
         await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
           Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
-          journals.add(JournalModel(
+          textBooks.add(TextBookModel(
             uploadedOn: DateTime.now(), // todo change to database value
             version: int.parse(journal.id),
             uploadedBy: journalData['uploaded_by'],
@@ -126,14 +127,14 @@ class JournalRepository {
           ));
         });
 
-        journalSubjects.add(JournalSubjectModel(
+        textBookSubjects.add(TextBookSubjectModel(
           subject: subject.id,
-          journalModels: journals,
+          textBookModels: textBooks,
         ));
       });
-      return ApiResponse<List<JournalSubjectModel>>(isError: false, data: journalSubjects);
+      return ApiResponse<List<TextBookSubjectModel>>(isError: false, data: textBookSubjects);
     } catch (_) {
-      return ApiResponse(isError: true, errorMessage: "Error while fetching journals");
+      return ApiResponse(isError: true, errorMessage: "Error while fetching textBooks");
     }
   }
 
