@@ -25,7 +25,7 @@ class SyllabusCopyRepository {
     required File document, required String course,
     required int semester, required int version,
   }) async {
-    // /courses_new/bca/semesters/1/syllabus_copy
+
     try {
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
           .child(semester.toString()).child('syllabus_copy')
@@ -70,27 +70,6 @@ class SyllabusCopyRepository {
           }
       );
 
-      // firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
-      // firestore.CollectionReference versionCollectionReference = yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel);
-      // firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
-
-      // if (versionSnapshot.docs.length >= AppConstants.maxQuestionPapers) {
-      //   return ApiResponse(isError: true, errorMessage: "The year $year has maximum versions. Please refresh to view them");
-      // }
-
-      // ApiResponse uploadResponse = await uploadQuestionPaper(document: document, year: year, course: course, semester: semester, subject: subject, version: version);
-      //
-      // if (uploadResponse.isError) {
-      //   return uploadResponse;
-      // }
-
-      // String documentUrl = uploadResponse.data;
-      // await versionCollectionReference.doc(version.toString()).set(
-      //     {
-      //       "uploaded_by": user.displayName,
-      //       "url": documentUrl,
-      //     }
-      // );
       return ApiResponse(isError: false,);
 
     } catch (err) {

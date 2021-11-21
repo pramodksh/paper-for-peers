@@ -23,21 +23,22 @@ class SyllabusCopyFetch extends SyllabusCopyEvent {
 }
 
 class SyllabusCopyAdd extends SyllabusCopyEvent {
-  final String course;
-  final int semester;
+
+  final List<SyllabusCopyModel> syllabusCopies;
+  final UserModel user;
   final int version;
 
   @override
-  List<Object?> get props => [course, semester, version];
+  List<Object?> get props => [version, user, syllabusCopies];
 
   const SyllabusCopyAdd({
-    required this.course,
-    required this.semester,
+    required this.syllabusCopies,
+    required this.user,
     required this.version,
   });
 
   @override
   String toString() {
-    return 'SyllabusCopyAdd{course: $course, semester: $semester, version: $version}';
+    return 'SyllabusCopyAdd{syllabusCopies: $syllabusCopies, user: $user, version: $version}';
   }
 }
