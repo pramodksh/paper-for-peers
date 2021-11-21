@@ -43,6 +43,18 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
     on<NotesAdd>((event, emit) {
       print("NOTES ADD: ${event}");
+
+      if (event.file == null) {
+        emit(NotesAddError(
+            errorMessage: "Please select a file ", selectedSubject: event.subject,
+            file: null, title: event.title, description: event.description,
+        ));
+      } else {
+        print("UPLOAD FILE");
+
+        print("ADD TO DATABASE");
+      }
+
     });
 
     on<NotesFetch>((event, emit) async {

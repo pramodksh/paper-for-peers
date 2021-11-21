@@ -85,11 +85,17 @@ class NotesAddSuccess extends NotesState {
 class NotesAddError extends NotesState {
 
   final String errorMessage;
+  final String? title;
+  final String? description;
+  final File? file;
 
   @override
-  List<Object?> get props => [errorMessage,];
+  List<Object?> get props => [errorMessage, file, title, description];
 
   const NotesAddError({
+    required this.title,
+    required this.description,
+    required this.file,
     required this.errorMessage,
     required String selectedSubject,
   }) : super(selectedSubject: selectedSubject);

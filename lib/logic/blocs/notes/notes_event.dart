@@ -45,17 +45,19 @@ class NotesAddEdit extends NotesEvent {
 
 class NotesAdd extends NotesEvent {
 
+  final File? file;
   final String title;
   final String description;
   final UserModel user;
   final String course;
-  final String semester;
+  final int semester;
   final String subject;
 
   @override
   List<Object?> get props => [title, description, user, course, semester, subject];
 
   const NotesAdd({
+    required this.file,
     required this.title,
     required this.description,
     required this.user,
@@ -66,6 +68,6 @@ class NotesAdd extends NotesEvent {
 
   @override
   String toString() {
-    return 'NotesAdd{title: $title, description: $description, user: $user, course: $course, semester: $semester, subject: $subject}';
+    return 'NotesAdd{file: $file, title: $title, description: $description, user: $user, course: $course, semester: $semester, subject: $subject}';
   }
 }

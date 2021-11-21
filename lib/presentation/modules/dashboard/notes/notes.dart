@@ -120,7 +120,10 @@ class _NotesState extends State<Notes> {
 
                     if (userState is UserLoaded) {
                       await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UploadNotes(selectedSubject: notesState.selectedSubject!,),
+                        builder: (context) => UploadNotes(
+                          selectedSubject: notesState.selectedSubject!,
+                          user: userState.userModel,
+                        ),
                       ));
                     }
 
