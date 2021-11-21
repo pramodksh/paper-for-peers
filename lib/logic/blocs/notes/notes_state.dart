@@ -74,10 +74,17 @@ class NotesAddLoading extends NotesState {
 
 class NotesAddSuccess extends NotesState {
 
+  final String? title;
+  final String? description;
+  final File? file;
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [file, title, description];
 
   const NotesAddSuccess({
+    required this.title,
+    required this.description,
+    required this.file,
     required String selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }

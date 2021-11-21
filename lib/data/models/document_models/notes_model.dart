@@ -1,4 +1,6 @@
 class NotesModel {
+
+  String url;
   String title;
   String description;
   DateTime uploadedOn;
@@ -6,6 +8,7 @@ class NotesModel {
   double rating;
 
   NotesModel({
+    required this.url,
     required this.title,
     required this.description,
     required this.uploadedOn,

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/notes_repository/notes_repository.dart';
@@ -41,15 +42,40 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
     });
 
-    on<NotesAdd>((event, emit) {
+    on<NotesAdd>((event, emit) async {
       print("NOTES ADD: ${event}");
 
       if (event.file == null) {
         emit(NotesAddError(
-            errorMessage: "Please select a file ", selectedSubject: event.subject,
+            errorMessage: "Please select a file", selectedSubject: event.subject,
             file: null, title: event.title, description: event.description,
         ));
       } else {
+
+        emit(NotesAddLoading(selectedSubject: event.subject));
+
+        ApiResponse uploadResponse = await _notesRepository.uploadAndAddNotes(
+          description: event.description,
+          title: event.title,
+          user: event.user,
+          subject: event.subject,
+          course: event.user.course!.courseName!,
+          semester: event.user.semester!.nSemester!,
+          document: event.file!,
+        );
+
+        if (uploadResponse.isError) {
+          emit(NotesAddError(
+            errorMessage: uploadResponse.errorMessage!, selectedSubject: event.subject,
+            file: null, title: event.title, description: event.description,
+          ));
+        } else {
+          emit(NotesAddSuccess(
+            selectedSubject: event.subject, title: event.title,
+            description: event.description, file: event.file,
+          ));
+        }
+
         print("UPLOAD FILE");
 
         print("ADD TO DATABASE");

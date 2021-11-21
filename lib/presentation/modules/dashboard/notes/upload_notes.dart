@@ -74,6 +74,13 @@ class _UploadNotesState extends State<UploadNotes> {
               title: state.title, description: state.description, subject: state.selectedSubject!,
           ));
         }
+
+        if (state is NotesAddSuccess) {
+          showAlertDialog(context: context, text: "Successfully uploaded").then((value) {
+            Navigator.of(context).pop();
+          });
+        }
+
       },
       child: Scaffold(
           appBar: AppBar(
@@ -81,92 +88,112 @@ class _UploadNotesState extends State<UploadNotes> {
               "Upload Notes",
             ),
           ),
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Builder(
-                    builder: (context) {
-
-                      if (notesState is NotesAddEditing) {
-                        return _getSelectFileWidget(
-                            appThemeType: appThemeType,
-                            file: notesState.file,
-                            onPressed: () {
-                              context.read<NotesBloc>().add(NotesAddEdit(
-                                title: notesState.title, description: notesState.description,
-                                subject: widget.selectedSubject, isFileEdit: true,
-                              ));
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Builder(
+                builder: (context) {
+                  if (notesState is NotesAddLoading) {
+                    return Center(child: CircularProgressIndicator.adaptive(),);
+                  }
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Builder(
+                          builder: (context) {
+                            if (notesState is NotesAddEditing) {
+                              return _getSelectFileWidget(
+                                  appThemeType: appThemeType,
+                                  file: notesState.file,
+                                  onPressed: () {
+                                    context.read<NotesBloc>().add(NotesAddEdit(
+                                      title: notesState.title, description: notesState.description,
+                                      subject: widget.selectedSubject, isFileEdit: true,
+                                    ));
+                                  }
+                              );
+                            } else if (notesState is NotesAddError) {
+                              return _getSelectFileWidget(
+                                  appThemeType: appThemeType,
+                                  file: notesState.file,
+                                  onPressed: () {
+                                    context.read<NotesBloc>().add(NotesAddEdit(
+                                      title: notesState.title, description: notesState.description,
+                                      subject: widget.selectedSubject, isFileEdit: true,
+                                    ));
+                                  }
+                              );
+                            } else if (notesState is NotesAddSuccess) {
+                              return _getSelectFileWidget(
+                                  appThemeType: appThemeType,
+                                  file: notesState.file,
+                                  onPressed: () {
+                                    context.read<NotesBloc>().add(NotesAddEdit(
+                                      title: notesState.title, description: notesState.description,
+                                      subject: widget.selectedSubject, isFileEdit: true,
+                                    ));
+                                  }
+                              );
+                            } else {
+                              return Container();
                             }
-                        );
-                      } else if (notesState is NotesAddError) {
-                        return _getSelectFileWidget(
-                            appThemeType: appThemeType,
-                            file: notesState.file,
-                            onPressed: () {
-                              context.read<NotesBloc>().add(NotesAddEdit(
-                                title: notesState.title, description: notesState.description,
-                                subject: widget.selectedSubject, isFileEdit: true,
-                              ));
-                            }
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }
-                  ),
-                  SizedBox(height: 30,),
+                          }
+                        ),
+                        SizedBox(height: 30,),
 
-                  Container(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 30,),
-                          getCustomTextField(
-                            labelText: 'Title',
-                            onChanged: (val) {
-                              if (notesState is NotesAddEditing) {
-                                context.read<NotesBloc>().add(NotesAddEdit(
-                                    title: val, description: notesState.description, subject: widget.selectedSubject
-                                ));
-                              }
-                            },
-                            validator: (String? val) => val!.isNotEmpty ? null : "Please enter title",
+                        Container(
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                SizedBox(height: 30,),
+                                getCustomTextField(
+                                  labelText: 'Title',
+                                  onChanged: (val) {
+                                    if (notesState is NotesAddEditing) {
+                                      context.read<NotesBloc>().add(NotesAddEdit(
+                                          title: val, description: notesState.description, subject: widget.selectedSubject
+                                      ));
+                                    }
+                                  },
+                                  validator: (String? val) => val!.isNotEmpty ? null : "Please enter title",
+                                ),
+                                SizedBox(height: 30,),
+                                getCustomTextField(
+                                  labelText: 'Description',
+                                  onChanged: (val) {
+                                    if (notesState is NotesAddEditing) {
+                                      context.read<NotesBloc>().add(NotesAddEdit(
+                                          title: notesState.title, description: val, subject: widget.selectedSubject
+                                      ));
+                                    }
+                                  },
+                                  validator: (String? val) => val!.isNotEmpty ? null : "Please enter Description",
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 30,),
-                          getCustomTextField(
-                            labelText: 'Description',
-                            onChanged: (val) {
-                              if (notesState is NotesAddEditing) {
-                                context.read<NotesBloc>().add(NotesAddEdit(
-                                    title: notesState.title, description: val, subject: widget.selectedSubject
-                                ));
-                              }
-                            },
-                            validator: (String? val) => val!.isNotEmpty ? null : "Please enter Description",
-                          ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: 50,),
+                        getUploadButton(onPressed: () {
+                          if(_formKey.currentState!.validate()) {
+                            if (notesState is NotesAddEditing)
+                            context.read<NotesBloc>().add(NotesAdd(
+                              file: notesState.file,
+                              title: notesState.title!,
+                              description: notesState.description!,
+                              subject: widget.selectedSubject,
+                              user: widget.user,
+                            ));
+                          }
+                        }),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 50,),
-                  getUploadButton(onPressed: () {
-                    if(_formKey.currentState!.validate()) {
-                      if (notesState is NotesAddEditing)
-                      context.read<NotesBloc>().add(NotesAdd(
-                        file: notesState.file,
-                        title: notesState.title!,
-                        description: notesState.description!,
-                        subject: widget.selectedSubject,
-                        course: widget.user.course!.courseName!,
-                        semester: widget.user.semester!.nSemester!,
-                        user: widget.user,
-                      ));
-                    }
-                  }),
-                ],
+                  );
+                }
               ),
             ),
           ),
