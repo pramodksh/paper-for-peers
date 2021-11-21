@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/journal_repository/journal_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/notes_repository/notes_repository.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
@@ -11,6 +12,7 @@ import 'package:papers_for_peers/data/repositories/firestore/firestore_repositor
 import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
 import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
 import 'package:papers_for_peers/logic/blocs/question_paper/question_paper_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -58,6 +60,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<JournalRepository>(
           create: (context) => JournalRepository(),
         ),
+        RepositoryProvider<NotesRepository>(
+          create: (context) => NotesRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -78,6 +83,13 @@ class _MyAppState extends State<MyApp> {
             create: (context) =>
                 JournalBloc(
                   journalRepository: context.read<JournalRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                ),
+          ),
+          BlocProvider<NotesBloc>(
+            create: (context) =>
+                  NotesBloc(
+                  notesRepository: context.read<NotesRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
           ),

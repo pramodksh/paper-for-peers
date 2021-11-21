@@ -30,7 +30,7 @@ class _MainDashboardState extends State<MainDashboard> {
   bool _isLoading = false;
   String _loadingText = "";
 
-  int selectedItemPosition = 2;
+  int selectedItemPosition = 1; // todo change to 0
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
@@ -265,6 +265,7 @@ class _MainDashboardState extends State<MainDashboard> {
       appBar: getAppBar(),
       body: Builder(
         builder: (context) {
+          // todo remove is dark theme parameter from all
           if (_isLoading ) {
             return LoadingScreen(loadingText: _loadingText,);
           } else if (selectedItemPosition == 0) {
