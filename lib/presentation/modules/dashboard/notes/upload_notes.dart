@@ -6,6 +6,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/notes/notes.dart
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/shared.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
 import 'package:provider/provider.dart';
 
 class UploadNotes extends StatefulWidget {
@@ -23,29 +24,6 @@ class UploadNotes extends StatefulWidget {
 class _UploadNotesState extends State<UploadNotes> {
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  Widget getNotesDetailsTextField({
-    required String hintText,
-    required Function(String) onChanged,
-  }) {
-    return TextFormField(
-      onChanged: onChanged,
-      validator: (val) => val!.isEmpty ? "Please enter $hintText" : null,
-      style: TextStyle(fontSize: 16, color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hintText,
-        isDense: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white24),
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -107,33 +85,39 @@ class _UploadNotesState extends State<UploadNotes> {
                   child: Column(
                     children: [
                       SizedBox(height: 30,),
-                      getNotesDetailsTextField(
-                        hintText: "Title",
+                      getCustomTextField(
+                        labelText: 'Title',
                         onChanged: (val) {
                           if (notesState is NotesAddEditing) {
                             context.read<NotesBloc>().add(NotesAddEdit(
-                              title: val, description: notesState.description, subject: widget.selectedSubject
+                                title: val, description: notesState.description, subject: widget.selectedSubject
                             ));
                           }
-                        }
+                        },
+                        validator: (String? val) => val!.isNotEmpty ? null : "Please enter title",
                       ),
                       SizedBox(height: 30,),
-                      getNotesDetailsTextField(
-                        hintText: "Description",
+                      getCustomTextField(
+                        labelText: 'Description',
                         onChanged: (val) {
                           if (notesState is NotesAddEditing) {
                             context.read<NotesBloc>().add(NotesAddEdit(
-                              title: notesState.title, description: val, subject: widget.selectedSubject
+                                title: notesState.title, description: val, subject: widget.selectedSubject
                             ));
                           }
-                        }
+                        },
+                        validator: (String? val) => val!.isNotEmpty ? null : "Please enter Description",
                       ),
                     ],
                   ),
                 ),
               ),
               SizedBox(height: 50,),
-              getUploadButton(onPressed: () {}),
+              getUploadButton(onPressed: () {
+                if(_formKey.currentState!.validate()) {
+
+                }
+              }),
             ],
           ),
         ),
