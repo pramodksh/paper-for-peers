@@ -24,5 +24,6 @@ class AppConstants {
 
   static final int maxQuestionPapers = 3;
   static final int maxJournals = 2;
+  static final int maxSyllabusCopy = 2;
 
 }
