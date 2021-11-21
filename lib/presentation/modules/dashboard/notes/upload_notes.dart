@@ -17,8 +17,6 @@ import 'package:provider/provider.dart';
 class UploadNotes extends StatefulWidget {
 
   final String selectedSubject;
-  // final String course;
-  // final int semester;
   final UserModel user;
 
   @override
@@ -26,8 +24,6 @@ class UploadNotes extends StatefulWidget {
 
   const UploadNotes({
     required this.selectedSubject,
-    // required this.course,
-    // required this.semester,
     required this.user,
   });
 }
@@ -77,7 +73,7 @@ class _UploadNotesState extends State<UploadNotes> {
 
         if (state is NotesAddSuccess) {
           showAlertDialog(context: context, text: "Successfully uploaded").then((value) {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           });
         }
 

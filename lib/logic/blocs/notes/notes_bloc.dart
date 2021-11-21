@@ -27,8 +27,6 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
 
     on<NotesAddEdit>((event, emit) async {
-      print("NOTES EDIT: ${event}");
-
       if (state is! NotesAddEditing) {
         emit(NotesAddEditing(selectedSubject: event.subject, file: null, description: event.description, title: event.title));
       }
@@ -43,17 +41,13 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
     });
 
     on<NotesAdd>((event, emit) async {
-      print("NOTES ADD: ${event}");
-
       if (event.file == null) {
         emit(NotesAddError(
             errorMessage: "Please select a file", selectedSubject: event.subject,
             file: null, title: event.title, description: event.description,
         ));
       } else {
-
         emit(NotesAddLoading(selectedSubject: event.subject));
-
         ApiResponse uploadResponse = await _notesRepository.uploadAndAddNotes(
           description: event.description,
           title: event.title,
@@ -75,23 +69,21 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
             description: event.description, file: event.file,
           ));
         }
-
-        print("UPLOAD FILE");
-
-        print("ADD TO DATABASE");
       }
-
     });
 
     on<NotesFetch>((event, emit) async {
-
-      print("FETCH: ${event}");
-
       emit(NotesFetchLoading(selectedSubject: event.subject));
-      await Future.delayed(Duration(seconds: 3));
-      emit(NotesFetchSuccess(notes: [], selectedSubject: event.subject));
+      ApiResponse fetchResponse = await _notesRepository.getNotes(course: event.course, semester: event.semester, subject: event.subject);
+      
+      if (fetchResponse.isError) {
+        emit(NotesFetchError(errorMessage: fetchResponse.errorMessage!, selectedSubject: event.subject));
+      } else {
+        List<NotesModel> notes = fetchResponse.data;
+        print("BLOC LEN: ${notes.length}");
+        emit(NotesFetchSuccess(notes: notes, selectedSubject: event.subject));
+      }
     });
-
   }
 
 }

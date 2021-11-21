@@ -104,6 +104,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
       padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
       children: List.generate(10, (index) {
         return getNotesDetailsTile(
+          appThemeType: AppThemeType.dark, // todo change
           isYourPostTile: true,
           yourPostTileOnDelete: () {},
           yourPostTileOnEdit: () {},

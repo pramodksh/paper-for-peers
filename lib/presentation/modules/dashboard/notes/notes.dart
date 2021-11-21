@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
+import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
@@ -27,8 +28,6 @@ class _NotesState extends State<Notes> {
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
     final NotesState notesState = context.select((NotesBloc bloc) => bloc.state);
-
-    print("NOTES STATE: ${notesState} || ${notesState.selectedSubject}");
 
     return Scaffold(
       body: Container(
@@ -70,67 +69,81 @@ class _NotesState extends State<Notes> {
                   }
               ),
               SizedBox(height: 20,),
-              getNotesDetailsTile(
-                context: context,
-                onTileTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PDFViewerScreen<PDFScreenNotesBottomSheet>(
-                      screenLabel: "Notes",
-                      parameter: PDFScreenNotesBottomSheet(
-                        rating: 3.5,
-                        uploadedBy: "John Doe",
-                        description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John",
-                        title: "Title Title Title Title Title Title Title Title",
-
-                      ),
-                    ),
-                  ));
-                },
-                title: "Title Title Title Title Title Title Title Title",
-                description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
-                uploadedBy: "John Doe",
-                rating: 3.5,
-                uploadedOn: DateTime.now(),
-              ),
-              // getNotesDetailsTile(
-              //   context: context,
-              //   onTileTap: () {},
-              //   title: "Title Title Title Title",
-              //   description: "John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
-              //   uploadedBy: "John Doe",
-              //   rating: 3.5,
-              //   uploadedOn: DateTime.now(),
-              // ),
-              // getNotesDetailsTile(
-              //   context: context,
-              //   onTileTap: () {},
-              //   title: "Title Title Title",
-              //   description: "Lorem John Doe  John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe John Doe",
-              //   uploadedBy: "John Doe",
-              //   rating: 3.5,
-              //   uploadedOn: DateTime.now(),
-              // ),
-              SizedBox(height: 20,),
-              notesState.selectedSubject != null ? SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 140,
-                child: getAddPostContainer(
-                  isDarkTheme: appThemeType.isDarkTheme(),
-                  onPressed: () async {
-
-                    if (userState is UserLoaded) {
-                      await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UploadNotes(
-                          selectedSubject: notesState.selectedSubject!,
-                          user: userState.userModel,
+              Builder(
+                builder: (context) {
+                  if (notesState.selectedSubject == null) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+                    );
+                  } else if (notesState is NotesFetchLoading) {
+                    return Center(child: CircularProgressIndicator.adaptive(),);
+                  } else if (notesState is NotesFetchSuccess) {
+                    List<NotesModel> notes = notesState.notes;
+                    return Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: notes.length,
+                          itemBuilder: (context, index) => getNotesDetailsTile(
+                            context: context,
+                            appThemeType: appThemeType,
+                            onTileTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PDFViewerScreen<PDFScreenNotesBottomSheet>(
+                                  screenLabel: "Notes",
+                                  parameter: PDFScreenNotesBottomSheet(
+                                    rating: notes[index].rating,
+                                    uploadedBy: notes[index].uploadedBy,
+                                    description: notes[index].description,
+                                    title: notes[index].title,
+                                  ),
+                                ),
+                              ));
+                            },
+                            title: notes[index].title,
+                            description: notes[index].description,
+                            uploadedBy: notes[index].uploadedBy,
+                            rating: notes[index].rating,
+                            uploadedOn: notes[index].uploadedOn,
+                          ),
                         ),
-                      ));
-                    }
+                        SizedBox(height: 20,),
+                        notesState.selectedSubject != null ? SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: 140,
+                          child: getAddPostContainer(
+                            isDarkTheme: appThemeType.isDarkTheme(),
+                            onPressed: () async {
 
-                  },
-                  label: "Add Notes",
-                ),
-              ) : Container(),
+                              if (userState is UserLoaded) {
+                                bool? isRefresh = await Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => UploadNotes(
+                                    selectedSubject: notesState.selectedSubject!,
+                                    user: userState.userModel,
+                                  ),
+                                ));
+
+                                if (isRefresh == true) {
+
+                                }
+
+                              }
+
+                            },
+                            label: "Add Notes",
+                          ),
+                        ) : Container(),
+                      ],
+                    );
+                  } else if (notesState is NotesFetchError) {
+                    return Container();
+                  }
+                  return Container();
+                },
+              ),
             ],
           ),
         ),

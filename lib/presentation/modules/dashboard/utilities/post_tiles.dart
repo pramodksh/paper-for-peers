@@ -12,6 +12,7 @@ Widget getNotesDetailsTile({
   required double rating,
   required onTileTap,
   required BuildContext context,
+  required AppThemeType appThemeType,
   String? uploadedBy,
   DateTime? uploadedOn,
   bool isYourPostTile = false,
@@ -19,8 +20,6 @@ Widget getNotesDetailsTile({
   Function()? yourPostTileOnDelete,
 }) {
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
-
-  final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
   double ratingHeight = 30;
   double ratingWidth = 100;
