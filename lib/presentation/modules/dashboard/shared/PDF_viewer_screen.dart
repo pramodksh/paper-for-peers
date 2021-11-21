@@ -275,29 +275,9 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         ],
       );
     } else if (widget.parameter.runtimeType == PDFScreenSyllabusCopy) {
-      double modelHeight = 340;
+      double modelHeight = 250;
       PDFScreenSyllabusCopy parameter = widget.parameter;
 
-      List<Widget> gridChildren = List.generate(parameter.totalVariants, (index) => ElevatedButton(
-        onPressed: () {},
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(
-            isDarkTheme ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
-          ),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            side: BorderSide(color: Colors.white38),
-          ))
-        ),
-        child: Text("Variant ${index + 1}"),
-      ));
-      if (parameter.totalVariants < 2) {
-        gridChildren.add(getAddPostContainer(
-          isDarkTheme: isDarkTheme,
-          label: "Add Syllabus Copy",
-          onPressed: () {},
-        ));
-      }
       return Stack(
         children: [
           Container(
@@ -328,24 +308,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     ),
                   ),
                   SizedBox(height: 20,),
-
-
-                  GridView.count(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    crossAxisSpacing: 10,
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    physics: NeverScrollableScrollPhysics(),
-                    childAspectRatio: 18/7,
-                    children: gridChildren,
-                  ),
-
-
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: children,
-                  // ),
                   Spacer(),
                   getPostReportButton(
                     isDarkTheme: isDarkTheme,

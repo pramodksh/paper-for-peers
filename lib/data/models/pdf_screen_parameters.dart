@@ -9,12 +9,9 @@ class PDFScreenSimpleBottomSheet {
 
 class PDFScreenSyllabusCopy {
   int? nVariant;
-  int totalVariants;
   String? uploadedBy;
 
-  PDFScreenSyllabusCopy({this.uploadedBy, this.nVariant, required this.totalVariants}) {
-    assert(totalVariants <= 2);
-  }
+  PDFScreenSyllabusCopy({this.uploadedBy, this.nVariant,});
 }
 
 class PDFScreenNotesBottomSheet {

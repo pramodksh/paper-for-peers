@@ -61,8 +61,7 @@ class _SyllabusCopyState extends State<SyllabusCopy> {
                             isShowBottomSheet: false,
                             parameter: PDFScreenSyllabusCopy(
                               uploadedBy: syllabusCopies[index].uploadedBy,
-                              nVariant: 1,
-                              totalVariants: 1,
+                              nVariant: syllabusCopies[index].version,
                             ),
                           ),
                         ));
