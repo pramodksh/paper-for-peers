@@ -8,7 +8,7 @@ enum AppThemeType {
   light,
 }
 
-extension GetBoolValue on AppThemeType {
+extension AppThemeTypeExtension on AppThemeType {
 
   bool isDarkTheme() {
     if (this == AppThemeType.dark) {
@@ -38,7 +38,6 @@ class Styles {
         ),
       ),
 
-
       textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
             textStyle: MaterialStateProperty.all(
@@ -48,12 +47,6 @@ class Styles {
             ),
           )
       ),
-
-      // buttonTheme: ButtonThemeData(
-      //   splashColor: Colors.red
-      // ),
-
-
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
@@ -91,41 +84,10 @@ class Styles {
         subtitle1: CustomTextStyle.bodyTextStyle.copyWith(
           color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         ),
-      ).apply(
-        // todo check and delete
-        // bodyColor: Colors.white,
-        // displayColor: Colors.white,
       ),
-
-      // iconTheme: IconThemeData(
-      //   color: Colors.red,
-      //   // color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarSelectedIconColor : Colors.red,
-      // ),
 
       scaffoldBackgroundColor: appThemeType.isDarkTheme() ? CustomColors.backGroundColor : Colors.white,
 
-      // primarySwatch: Colors.red,
-      // primaryColor: appThemeType.isDarkTheme() ? Colors.black : Colors.white,
-      //
-      // backgroundColor: appThemeType.isDarkTheme() ? Colors.black : Color(0xffF1F5FB),
-      //
-      // indicatorColor: appThemeType.isDarkTheme() ? Color(0xff0E1D36) : Color(0xffCBDCF8),
-      // buttonColor: appThemeType.isDarkTheme() ? Color(0xff3B3B3B) : Color(0xffF1F5FB),
-      //
-      // hintColor: appThemeType.isDarkTheme() ? Color(0xff280C0B) : Color(0xffEECED3),
-      //
-      // highlightColor: appThemeType.isDarkTheme() ? Color(0xff372901) : Color(0xffFCE192),
-      // hoverColor: appThemeType.isDarkTheme() ? Color(0xff3A3A3B) : Color(0xff4285F4),
-      //
-      // focusColor: appThemeType.isDarkTheme() ? Color(0xff0B2512) : Color(0xffA8DAB5),
-      // disabledColor: Colors.grey,
-      // // textSelectionTheme: TextSelectionThemeData.lerp(a, b, t),
-      // // textSelectionColor: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
-      // cardColor: appThemeType.isDarkTheme() ? Color(0xFF151515) : Colors.white,
-      // canvasColor: appThemeType.isDarkTheme() ? Colors.black : Colors.grey[50],
-      // brightness: appThemeType.isDarkTheme() ? Brightness.dark : Brightness.light,
-      // buttonTheme: Theme.of(context).buttonTheme.copyWith(
-      //     colorScheme: appThemeType.isDarkTheme() ? ColorScheme.dark() : ColorScheme.light()),
     );
 
   }

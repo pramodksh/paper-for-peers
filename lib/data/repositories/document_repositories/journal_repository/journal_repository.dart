@@ -67,32 +67,14 @@ class JournalRepository {
       await journalCollectionReference.doc(version.toString()).set(
           {
             "uploaded_by": user.displayName,
-            "url": documentUrl,
+            "user_uid": user.uid,
+            "user_profile_photo_url": user.photoUrl,
+            "user_email": user.email,
+            "document_url": documentUrl,
             "uploaded_on": DateTime.now(),
           }
       );
 
-      // firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
-      // firestore.CollectionReference versionCollectionReference = yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel);
-      // firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
-
-      // if (versionSnapshot.docs.length >= AppConstants.maxQuestionPapers) {
-      //   return ApiResponse(isError: true, errorMessage: "The year $year has maximum versions. Please refresh to view them");
-      // }
-
-      // ApiResponse uploadResponse = await uploadQuestionPaper(document: document, year: year, course: course, semester: semester, subject: subject, version: version);
-      //
-      // if (uploadResponse.isError) {
-      //   return uploadResponse;
-      // }
-
-      // String documentUrl = uploadResponse.data;
-      // await versionCollectionReference.doc(version.toString()).set(
-      //     {
-      //       "uploaded_by": user.displayName,
-      //       "url": documentUrl,
-      //     }
-      // );
       return ApiResponse(isError: false,);
 
     } catch (err) {
@@ -119,12 +101,7 @@ class JournalRepository {
         firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
         await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
           Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
-          journals.add(JournalModel(
-            uploadedOn: DateTime.now(), // todo change to database value
-            version: int.parse(journal.id),
-            uploadedBy: journalData['uploaded_by'],
-            url: journalData['url'],
-          ));
+          journals.add(JournalModel.fromFirestoreMap(map: journalData, version: int.parse(journal.id)));
         });
 
         journalSubjects.add(JournalSubjectModel(
@@ -133,7 +110,8 @@ class JournalRepository {
         ));
       });
       return ApiResponse<List<JournalSubjectModel>>(isError: false, data: journalSubjects);
-    } catch (_) {
+    } catch (e) {
+      print("ERR: $e");
       return ApiResponse(isError: true, errorMessage: "Error while fetching journals");
     }
   }
