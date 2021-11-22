@@ -16,14 +16,8 @@ class FirestoreRepository {
   }
 
   static final String usersCollectionLabel = "users";
-  // static String documentsCollectionLabel = "";
-
-  // static final String yearsCollectionLabel = "years"; // todo delete if not used
-
   static late final firestore.CollectionReference usersCollection;
   static late final firestore.CollectionReference coursesCollection;
-
-
 
   Future<bool> isUserExists({required String userId}) async {
     firestore.DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
@@ -40,7 +34,6 @@ class FirestoreRepository {
 
   Future<ApiResponse> addUser({required UserModel user}) async {
 
-    print("ADD USER IN REPO ${user.toString()}");
     try {
       await usersCollection.doc(user.uid).set({
         'displayName': user.displayName,

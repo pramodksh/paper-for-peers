@@ -14,9 +14,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 import 'package:provider/provider.dart';
 
 class QuestionPaper extends StatefulWidget {
-  final bool isDarkTheme;
-
-  QuestionPaper({required this.isDarkTheme});
 
   @override
   _QuestionPaperState createState() => _QuestionPaperState();
@@ -31,6 +28,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
     double containerHeight = 80,
     double containerWidth = 180,
     double containerMargin = 20,
+    required AppThemeType appThemeType,
   }) {
     return GestureDetector(
       onTap: onPressed,
@@ -40,7 +38,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
         width: containerWidth,
         child: Center(child: Text("Variant $nVariant", style: TextStyle(fontSize: 18, color: CustomColors.bottomNavBarUnselectedIconColor, fontStyle: FontStyle.italic, fontWeight: FontWeight.w500),)),
         decoration: BoxDecoration(
-          color: widget.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+          color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
           borderRadius: BorderRadius.all(Radius.circular(containerRadius)),
         ),
       ),
@@ -73,6 +71,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
     required QuestionPaperState questionPaperState,
     required UserState userState,
     required BuildContext context,
+    required AppThemeType appThemeType,
   }) {
     return Column(
       children: [
@@ -101,6 +100,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
 
             List<Widget> variants = List.generate(questionPaperYears[questionPaperYearIndex].questionPaperModels.length, (questionPaperIndex) {
               return _getQuestionVariantContainer(
+                appThemeType: appThemeType,
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
@@ -181,103 +181,105 @@ class _QuestionPaperState extends State<QuestionPaper> {
           });
         }
       },
-      child: Scaffold(
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Builder(
-              builder: (context) {
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10,),
-                      Builder(
-                          builder: (context) {
-                            if (userState is UserLoaded) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
-                                  Expanded(
-                                    flex: 3,
-                                    child: getCustomDropDown<String>(
-                                      context: context,
-                                      dropDownHint: "Subject",
-                                      dropDownItems: userState.userModel.semester!.subjects,
-                                      dropDownValue: questionPaperState.selectedSubject,
-                                      onDropDownChanged: (val) {
-                                        context.read<QuestionPaperBloc>().add(
-                                            QuestionPaperFetch(
-                                                course: userState.userModel.course!.courseName!,
-                                                semester: userState.userModel.semester!.nSemester!,
-                                                subject: val!
-                                            )
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Center(child: CircularProgressIndicator.adaptive(),);
-                            }
-                          }
-                      ),
-                      SizedBox(height: 30,),
-
-                      Builder(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Builder(
+            builder: (context) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 10,),
+                    Builder(
                         builder: (context) {
-                          if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              height: MediaQuery.of(context).size.height * 0.6,
-                              child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
-                            );
-                          } else if (questionPaperState is QuestionPaperFetchLoading) {
-                            return Center(child: CircularProgressIndicator.adaptive(),);
-                          } else if (questionPaperState is QuestionPaperFetchSuccess) {
-                            return _getQuestionPaperListWidget(
-                              questionPaperYears:  questionPaperState.questionPaperYears,
-                              isDarkTheme: appThemeType.isDarkTheme(),
-                              questionPaperState: questionPaperState,
-                              userState: userState,
-                              context: context,
-                            );
-                          } else if (questionPaperState is QuestionPaperAddLoading) {
-                            return _getQuestionPaperListWidget(
-                              questionPaperYears:  questionPaperState.questionPaperYears,
-                              isDarkTheme: appThemeType.isDarkTheme(),
-                              questionPaperState: questionPaperState,
-                              userState: userState,
-                              context: context,
-                            );
-                          } else if (questionPaperState is QuestionPaperAddError) {
-                            return _getQuestionPaperListWidget(
-                              questionPaperYears:  questionPaperState.questionPaperYears,
-                              isDarkTheme: appThemeType.isDarkTheme(),
-                              questionPaperState: questionPaperState,
-                              userState: userState,
-                              context: context,
-                            );
-                          } else if (questionPaperState is QuestionPaperAddSuccess) {
-                            return _getQuestionPaperListWidget(
-                              questionPaperYears:  questionPaperState.questionPaperYears,
-                              isDarkTheme: appThemeType.isDarkTheme(),
-                              questionPaperState: questionPaperState,
-                              userState: userState,
-                              context: context,
+                          if (userState is UserLoaded) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
+                                Expanded(
+                                  flex: 3,
+                                  child: getCustomDropDown<String>(
+                                    context: context,
+                                    dropDownHint: "Subject",
+                                    dropDownItems: userState.userModel.semester!.subjects,
+                                    dropDownValue: questionPaperState.selectedSubject,
+                                    onDropDownChanged: (val) {
+                                      context.read<QuestionPaperBloc>().add(
+                                          QuestionPaperFetch(
+                                              course: userState.userModel.course!.courseName!,
+                                              semester: userState.userModel.semester!.nSemester!,
+                                              subject: val!
+                                          )
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             );
                           } else {
                             return Center(child: CircularProgressIndicator.adaptive(),);
                           }
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }
-            ),
-          ),
+                        }
+                    ),
+                    SizedBox(height: 30,),
+
+                    Builder(
+                      builder: (context) {
+                        if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+                          );
+                        } else if (questionPaperState is QuestionPaperFetchLoading) {
+                          return Center(child: CircularProgressIndicator.adaptive(),);
+                        } else if (questionPaperState is QuestionPaperFetchSuccess) {
+                          return _getQuestionPaperListWidget(
+                            questionPaperYears:  questionPaperState.questionPaperYears,
+                            isDarkTheme: appThemeType.isDarkTheme(),
+                            questionPaperState: questionPaperState,
+                            userState: userState,
+                            context: context,
+                            appThemeType: appThemeType,
+                          );
+                        } else if (questionPaperState is QuestionPaperAddLoading) {
+                          return _getQuestionPaperListWidget(
+                            appThemeType: appThemeType,
+                            questionPaperYears:  questionPaperState.questionPaperYears,
+                            isDarkTheme: appThemeType.isDarkTheme(),
+                            questionPaperState: questionPaperState,
+                            userState: userState,
+                            context: context,
+                          );
+                        } else if (questionPaperState is QuestionPaperAddError) {
+                          return _getQuestionPaperListWidget(
+                            appThemeType: appThemeType,
+                            questionPaperYears:  questionPaperState.questionPaperYears,
+                            isDarkTheme: appThemeType.isDarkTheme(),
+                            questionPaperState: questionPaperState,
+                            userState: userState,
+                            context: context,
+                          );
+                        } else if (questionPaperState is QuestionPaperAddSuccess) {
+                          return _getQuestionPaperListWidget(
+                            appThemeType: appThemeType,
+                            questionPaperYears:  questionPaperState.questionPaperYears,
+                            isDarkTheme: appThemeType.isDarkTheme(),
+                            questionPaperState: questionPaperState,
+                            userState: userState,
+                            context: context,
+                          );
+                        } else {
+                          return Center(child: CircularProgressIndicator.adaptive(),);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }
         ),
+      ),
     );
   }
 }

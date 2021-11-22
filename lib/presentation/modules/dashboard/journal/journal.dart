@@ -16,9 +16,6 @@ import 'package:provider/provider.dart';
 
 
 class Journal extends StatefulWidget {
-  final bool isDarkTheme;
-
-  Journal({required this.isDarkTheme});
 
   @override
   _JournalState createState() => _JournalState();
@@ -28,13 +25,17 @@ class _JournalState extends State<Journal> {
 
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
-  Widget _getJournalVariantDetailsTile({required int nVariant, required DateTime uploadedOn, required String uploadedBy, required Function() onTap}) {
+  Widget _getJournalVariantDetailsTile({
+    required int nVariant, required DateTime uploadedOn,
+    required String uploadedBy, required Function() onTap,
+    required AppThemeType appThemeType,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: widget.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+          color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Column(
@@ -71,6 +72,7 @@ class _JournalState extends State<Journal> {
   }) {
 
     List<Widget> gridChildren = List.generate(journals.length, (index) => _getJournalVariantDetailsTile(
+      appThemeType: appThemeType,
       nVariant: index + 1,
       uploadedOn: journals[index].uploadedOn,
       uploadedBy: journals[index].uploadedBy,
@@ -159,8 +161,6 @@ class _JournalState extends State<Journal> {
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
     final JournalState journalState = context.select((JournalBloc bloc) => bloc.state);
 
-    print("JOURNAL STATE: ${journalState}");
-
     if (journalState is JournalInitial) {
       if (userState is UserLoaded)
       context.read<JournalBloc>().add(
@@ -192,69 +192,67 @@ class _JournalState extends State<Journal> {
           });
         }
       },
-      child: Scaffold(
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20,),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20,),
 
-                  Builder(
-                      builder: (context) {
-                        if (userState is UserLoaded) {
-                          return getCourseAndSemesterText(context: context,);
-                        } else {
-                          return Center(child: CircularProgressIndicator.adaptive(),);
-                        }
-                      }
-                  ),
-
-                  SizedBox(height: 20,),
-
-                  Builder(
-                    builder: (context) {
-                      if (journalState is JournalFetchLoading) {
-                        return Center(child: CircularProgressIndicator.adaptive(),);
-                      } else if (journalState is JournalFetchSuccess) {
-                        return _getJournalListWidget(
-                          userState: userState,
-                          journalSubjects: journalState.journalSubjects,
-                          appThemeType: appThemeType,
-                          isAddJournalLoading: false,
-                        );
-                      } else if (journalState is JournalAddError) {
-                        return _getJournalListWidget(
-                          userState: userState,
-                          journalSubjects: journalState.journalSubjects,
-                          appThemeType: appThemeType,
-                          isAddJournalLoading: false,
-                        );
-                      } else if (journalState is JournalAddSuccess) {
-                        return _getJournalListWidget(
-                          userState: userState,
-                          journalSubjects: journalState.journalSubjects,
-                          appThemeType: appThemeType,
-                          isAddJournalLoading: false,
-                        );
-                      } else if (journalState is JournalAddLoading) {
-                        return _getJournalListWidget(
-                          userState: userState,
-                          journalSubjects: journalState.journalSubjects,
-                          appThemeType: appThemeType,
-                          isAddJournalLoading: true,
-                        );
-                      } else {
-                        return Center(child: CircularProgressIndicator.adaptive(),);
-                      }
+              Builder(
+                  builder: (context) {
+                    if (userState is UserLoaded) {
+                      return getCourseAndSemesterText(context: context,);
+                    } else {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
                     }
-                  ),
-                ],
+                  }
               ),
-            ),
+
+              SizedBox(height: 20,),
+
+              Builder(
+                  builder: (context) {
+                    if (journalState is JournalFetchLoading) {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
+                    } else if (journalState is JournalFetchSuccess) {
+                      return _getJournalListWidget(
+                        userState: userState,
+                        journalSubjects: journalState.journalSubjects,
+                        appThemeType: appThemeType,
+                        isAddJournalLoading: false,
+                      );
+                    } else if (journalState is JournalAddError) {
+                      return _getJournalListWidget(
+                        userState: userState,
+                        journalSubjects: journalState.journalSubjects,
+                        appThemeType: appThemeType,
+                        isAddJournalLoading: false,
+                      );
+                    } else if (journalState is JournalAddSuccess) {
+                      return _getJournalListWidget(
+                        userState: userState,
+                        journalSubjects: journalState.journalSubjects,
+                        appThemeType: appThemeType,
+                        isAddJournalLoading: false,
+                      );
+                    } else if (journalState is JournalAddLoading) {
+                      return _getJournalListWidget(
+                        userState: userState,
+                        journalSubjects: journalState.journalSubjects,
+                        appThemeType: appThemeType,
+                        isAddJournalLoading: true,
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
+                    }
+                  }
+              ),
+            ],
           ),
         ),
+      ),
     );
   }
 }

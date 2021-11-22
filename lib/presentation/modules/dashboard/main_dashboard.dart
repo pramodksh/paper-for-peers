@@ -266,19 +266,18 @@ class _MainDashboardState extends State<MainDashboard> {
       appBar: getAppBar(),
       body: Builder(
         builder: (context) {
-          // todo remove is dark theme parameter from all
           if (_isLoading ) {
             return LoadingScreen(loadingText: _loadingText,);
           } else if (selectedItemPosition == 0) {
-            return QuestionPaper(isDarkTheme: appThemeType.isDarkTheme(),);
+            return QuestionPaper();
           } else if (selectedItemPosition == 1) {
-            return Notes(isDarkTheme: appThemeType.isDarkTheme(),);
+            return Notes();
           } else if (selectedItemPosition == 2) {
-            return Journal(isDarkTheme: appThemeType.isDarkTheme(),);
+            return Journal();
           } else if (selectedItemPosition == 3) {
             return SyllabusCopy();
           } else {
-            return TextBook(isDarkTheme: appThemeType.isDarkTheme());
+            return TextBook();
           }
         },
       ),

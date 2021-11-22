@@ -16,9 +16,6 @@ import 'package:provider/provider.dart';
 
 
 class TextBook extends StatefulWidget {
-  final bool isDarkTheme;
-
-  TextBook({required this.isDarkTheme});
 
   @override
   _TextBookState createState() => _TextBookState();
@@ -28,13 +25,16 @@ class _TextBookState extends State<TextBook> {
 
   DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
-  Widget _getTextBookVariantDetailsTile({required int nVariant, required DateTime uploadedOn, required String uploadedBy, required Function() onTap}) {
+  Widget _getTextBookVariantDetailsTile({
+    required int nVariant, required DateTime uploadedOn, required String uploadedBy,
+    required Function() onTap, required AppThemeType appThemeType,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: widget.isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+          color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Column(
@@ -71,6 +71,7 @@ class _TextBookState extends State<TextBook> {
   }) {
 
     List<Widget> gridChildren = List.generate(subjects.length, (index) => _getTextBookVariantDetailsTile(
+        appThemeType: appThemeType,
         nVariant: index + 1,
         uploadedOn: subjects[index].uploadedOn,
         uploadedBy: subjects[index].uploadedBy,
@@ -159,8 +160,6 @@ class _TextBookState extends State<TextBook> {
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
     final TextBookState textBookState = context.select((TextBookBloc bloc) => bloc.state);
 
-    print("TextBook STATE: ${textBookState}");
-
     if (textBookState is TextBookInitial) {
       if (userState is UserLoaded)
         context.read<TextBookBloc>().add(
@@ -192,66 +191,64 @@ class _TextBookState extends State<TextBook> {
           });
         }
       },
-      child: Scaffold(
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 20,),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20,),
 
-                Builder(
-                    builder: (context) {
-                      if (userState is UserLoaded) {
-                        return getCourseAndSemesterText(context: context,);
-                      } else {
-                        return Center(child: CircularProgressIndicator.adaptive(),);
-                      }
+              Builder(
+                  builder: (context) {
+                    if (userState is UserLoaded) {
+                      return getCourseAndSemesterText(context: context,);
+                    } else {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
                     }
-                ),
+                  }
+              ),
 
-                SizedBox(height: 20,),
+              SizedBox(height: 20,),
 
-                Builder(
-                    builder: (context) {
-                      if (textBookState is TextBookFetchLoading) {
-                        return Center(child: CircularProgressIndicator.adaptive(),);
-                      } else if (textBookState is TextBookFetchSuccess) {
-                        return _getTextBookListWidget(
-                          userState: userState,
-                          textBookSubjects: textBookState.textBookSubjects,
-                          appThemeType: appThemeType,
-                          isAddTextBookLoading: false,
-                        );
-                      } else if (textBookState is TextBookAddError) {
-                        return _getTextBookListWidget(
-                          userState: userState,
-                          textBookSubjects: textBookState.textBookSubjects,
-                          appThemeType: appThemeType,
-                          isAddTextBookLoading: false,
-                        );
-                      } else if (textBookState is TextBookAddSuccess) {
-                        return _getTextBookListWidget(
-                          userState: userState,
-                          textBookSubjects: textBookState.textBookSubjects,
-                          appThemeType: appThemeType,
-                          isAddTextBookLoading: false,
-                        );
-                      } else if (textBookState is TextBookAddLoading) {
-                        return _getTextBookListWidget(
-                          userState: userState,
-                          textBookSubjects: textBookState.textBookSubjects,
-                          appThemeType: appThemeType,
-                          isAddTextBookLoading: true,
-                        );
-                      } else {
-                        return Center(child: CircularProgressIndicator.adaptive(),);
-                      }
+              Builder(
+                  builder: (context) {
+                    if (textBookState is TextBookFetchLoading) {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
+                    } else if (textBookState is TextBookFetchSuccess) {
+                      return _getTextBookListWidget(
+                        userState: userState,
+                        textBookSubjects: textBookState.textBookSubjects,
+                        appThemeType: appThemeType,
+                        isAddTextBookLoading: false,
+                      );
+                    } else if (textBookState is TextBookAddError) {
+                      return _getTextBookListWidget(
+                        userState: userState,
+                        textBookSubjects: textBookState.textBookSubjects,
+                        appThemeType: appThemeType,
+                        isAddTextBookLoading: false,
+                      );
+                    } else if (textBookState is TextBookAddSuccess) {
+                      return _getTextBookListWidget(
+                        userState: userState,
+                        textBookSubjects: textBookState.textBookSubjects,
+                        appThemeType: appThemeType,
+                        isAddTextBookLoading: false,
+                      );
+                    } else if (textBookState is TextBookAddLoading) {
+                      return _getTextBookListWidget(
+                        userState: userState,
+                        textBookSubjects: textBookState.textBookSubjects,
+                        appThemeType: appThemeType,
+                        isAddTextBookLoading: true,
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
                     }
-                ),
-              ],
-            ),
+                  }
+              ),
+            ],
           ),
         ),
       ),
