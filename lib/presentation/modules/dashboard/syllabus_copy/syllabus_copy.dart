@@ -41,7 +41,7 @@ class _SyllabusCopyState extends State<SyllabusCopy> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
-                      documentUrlArg: syllabusCopies[index].url,
+                      documentUrlArg: syllabusCopies[index].documentUrl,
                       screenLabel: "Syllabus Copy",
                       isShowBottomSheet: false,
                       parameter: PDFScreenSyllabusCopy(
