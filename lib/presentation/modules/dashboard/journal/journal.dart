@@ -10,6 +10,7 @@ import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
@@ -123,6 +124,7 @@ class _JournalState extends State<Journal> {
     required List<JournalSubjectModel> journalSubjects,
     required AppThemeType appThemeType,
     required bool isAddJournalLoading,
+    bool isWidgetLoading = false,
   }) {
     return ListView.separated(
       separatorBuilder: (context, index) => SizedBox(height: 20,),
@@ -136,7 +138,7 @@ class _JournalState extends State<Journal> {
             subject: journalSubjects[journalSubjectIndex].subject,
             appThemeType: appThemeType,
             userState: userState,
-            onJournalAdd: () {
+            onJournalAdd: isWidgetLoading ? () {} : () {
               if (userState is UserLoaded) {
                 context.read<JournalBloc>().add(JournalAdd(
                   journalSubjects: journalSubjects,
@@ -215,7 +217,27 @@ class _JournalState extends State<Journal> {
               Builder(
                   builder: (context) {
                     if (journalState is JournalFetchLoading) {
-                      return Center(child: CircularProgressIndicator.adaptive(),);
+                      return SkeletonLoader(
+                        appThemeType: appThemeType,
+                        child: _getJournalListWidget(
+                          isWidgetLoading: true,
+                          userState: userState,
+                          journalSubjects: List.generate(3, (index) => JournalSubjectModel(
+                            subject: "",
+                            journalModels: List.generate(2, (index) => JournalModel(
+                              documentUrl: "",
+                              uploadedOn: DateTime.now(),
+                              userEmail: "",
+                              userProfilePhotoUrl: "",
+                              userUid: "",
+                              uploadedBy: "",
+                              version: index,
+                            )),
+                          )),
+                          appThemeType: appThemeType,
+                          isAddJournalLoading: false,
+                        ),
+                      );
                     } else if (journalState is JournalFetchSuccess) {
                       return _getJournalListWidget(
                         userState: userState,
