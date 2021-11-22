@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class JournalSubjectModel {
   String subject;
@@ -41,4 +42,14 @@ class JournalModel {
     );
   }
 
+  static Map<String, dynamic> toFirestoreMap({required UserModel user, required String documentUrl}) {
+    return {
+      "uploaded_by": user.displayName,
+      "user_uid": user.uid,
+      "user_profile_photo_url": user.photoUrl,
+      "user_email": user.email,
+      "document_url": documentUrl,
+      "uploaded_on": DateTime.now(),
+    };
+  }
 }

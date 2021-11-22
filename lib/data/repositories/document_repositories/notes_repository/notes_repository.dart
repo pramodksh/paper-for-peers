@@ -60,17 +60,7 @@ class NotesRepository {
       }
 
       String documentUrl = uploadResponse.data;
-      await notesCollection.doc().set({
-        "document_url": documentUrl,
-        "uploaded_by": user.displayName,
-        "title": title,
-        "description": description,
-        "uploaded_on": DateTime.now(),
-        "rating": 0.0,
-        "user_email": user.email,
-        "user_profile_photo_url": user.photoUrl,
-        "user_uid": user.uid,
-      });
+      await notesCollection.doc().set(NotesModel.toFirestoreMap(documentUrl: documentUrl, user: user, title: title, description: description));
       return ApiResponse(isError: false,);
     } catch (err) {
       return ApiResponse(isError: true, errorMessage: "There was an error while setting notes: $err");

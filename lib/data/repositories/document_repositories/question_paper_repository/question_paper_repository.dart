@@ -64,16 +64,9 @@ class QuestionPaperRepository {
       } 
       
       String documentUrl = uploadResponse.data;
-      await versionCollectionReference.doc(version.toString()).set(
-          {
-            "uploaded_by": user.displayName,
-            "document_url": documentUrl,
-            "user_profile_photo_url": user.photoUrl,
-            "user_email": user.email,
-            "user_uid": user.uid,
-            "uploaded_on": DateTime.now(),
-          }
-      );
+      await versionCollectionReference.doc(version.toString()).set(QuestionPaperModel.toFirestoreMap(
+        user: user, documentUrl: documentUrl,
+      ));
       return ApiResponse(isError: false,);
 
     } catch (err) {

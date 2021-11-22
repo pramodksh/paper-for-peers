@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class NotesModel {
 
-  final String url;
+  final String documentUurl;
   final String title;
   final String description;
   final DateTime uploadedOn;
@@ -13,7 +14,7 @@ class NotesModel {
   final String userUid;
 
   NotesModel({
-    required this.url,
+    required this.documentUurl,
     required this.title,
     required this.description,
     required this.uploadedOn,
@@ -24,20 +25,26 @@ class NotesModel {
     required this.userUid,
   });
 
-  Map<String, dynamic> toMap() {
+  static Map<String, dynamic> toFirestoreMap({
+    required String documentUrl, required UserModel user,
+    required String title, required String description,
+  }) {
     return {
-      'document_url': this.url,
-      'title': this.title,
-      'description': this.description,
-      'uploadedOn': this.uploadedOn,
-      'uploadedBy': this.uploadedBy,
-      'rating': this.rating,
+      "document_url": documentUrl,
+      "uploaded_by": user.displayName,
+      "title": title,
+      "description": description,
+      "uploaded_on": DateTime.now(),
+      "rating": 0.0,
+      "user_email": user.email,
+      "user_profile_photo_url": user.photoUrl,
+      "user_uid": user.uid,
     };
   }
 
   factory NotesModel.fromFirestoreMap(Map<String, dynamic> map) {
     return NotesModel(
-      url: map['document_url'] as String,
+      documentUurl: map['document_url'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class SyllabusCopyModel {
 
@@ -20,14 +21,6 @@ class SyllabusCopyModel {
     required this.uploadedOn,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'url': this.documentUrl,
-      'version': this.version,
-      'uploadedBy': this.uploadedBy,
-    };
-  }
-
   factory SyllabusCopyModel.fromFirestoreMap({required Map<String, dynamic> map, required int version}) {
     return SyllabusCopyModel(
       documentUrl: map['document_url'] as String,
@@ -39,4 +32,16 @@ class SyllabusCopyModel {
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),
     );
   }
+
+  static Map<String, dynamic> toFirestoreMap({required String documentUrl, required UserModel user}) {
+    return {
+      "uploaded_by": user.displayName,
+      "document_url": documentUrl,
+      "user_uid": user.uid,
+      "user_profile_photo_url": user.photoUrl,
+      "user_email": user.email,
+      "uploaded_on": DateTime.now(),
+    };
+  }
+
 }

@@ -63,16 +63,7 @@ class SyllabusCopyRepository {
       }
 
       String documentUrl = uploadResponse.data;
-      await syllabusCopyCollection.doc(version.toString()).set(
-          {
-            "uploaded_by": user.displayName,
-            "document_url": documentUrl,
-            "user_uid": user.uid,
-            "user_profile_photo_url": user.photoUrl,
-            "user_email": user.email,
-            "uploaded_on": DateTime.now(),
-          }
-      );
+      await syllabusCopyCollection.doc(version.toString()).set(SyllabusCopyModel.toFirestoreMap(documentUrl: documentUrl, user: user));
 
       return ApiResponse(isError: false,);
 

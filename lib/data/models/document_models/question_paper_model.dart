@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class QuestionPaperYearModel {
   int year;
@@ -30,17 +31,6 @@ class QuestionPaperModel {
     required this.uploadedOn,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'version': this.version,
-      'documentUrl': this.documentUrl,
-      'uploadedBy': this.uploadedBy,
-      'userProfilePhotoUrl': this.userProfilePhotoUrl,
-      'userEmail': this.userEmail,
-      'userUid': this.userUid,
-    };
-  }
-
   factory QuestionPaperModel.fromFirestoreMap({required Map<String, dynamic> map, required int version}) {
     return QuestionPaperModel(
       version: version,
@@ -52,4 +42,16 @@ class QuestionPaperModel {
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate()
     );
   }
+
+  static Map<String, dynamic> toFirestoreMap({required String documentUrl, required UserModel user}) {
+    return {
+      "uploaded_by": user.displayName,
+      "document_url": documentUrl,
+      "user_profile_photo_url": user.photoUrl,
+      "user_email": user.email,
+      "user_uid": user.uid,
+      "uploaded_on": DateTime.now(),
+    };
+  }
+
 }

@@ -64,16 +64,9 @@ class JournalRepository {
       }
 
       String documentUrl = uploadResponse.data;
-      await journalCollectionReference.doc(version.toString()).set(
-          {
-            "uploaded_by": user.displayName,
-            "user_uid": user.uid,
-            "user_profile_photo_url": user.photoUrl,
-            "user_email": user.email,
-            "document_url": documentUrl,
-            "uploaded_on": DateTime.now(),
-          }
-      );
+      await journalCollectionReference.doc(version.toString()).set(JournalModel.toFirestoreMap(
+          user: user, documentUrl: documentUrl
+      ));
 
       return ApiResponse(isError: false,);
 

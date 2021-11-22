@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class TextBookSubjectModel {
   String subject;
@@ -30,18 +31,6 @@ class TextBookModel {
     required this.userUid,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'version': this.version,
-      'url': this.url,
-      'uploadedBy': this.uploadedBy,
-      'uploadedOn': this.uploadedOn,
-      'userProfilePhotoUrl': this.userProfilePhotoUrl,
-      'userEmail': this.userEmail,
-      'userUid': this.userUid,
-    };
-  }
-
   factory TextBookModel.fromFirestoreMap({required Map<String, dynamic> map, required int version}) {
     return TextBookModel(
       version: version,
@@ -53,4 +42,16 @@ class TextBookModel {
       userUid: map['user_uid'] as String,
     );
   }
+
+  static Map<String, dynamic> toFirestoreMap({required String documentUrl, required UserModel user}) {
+    return {
+      "uploaded_by": user.displayName,
+      "document_url": documentUrl,
+      "uploaded_on": DateTime.now(),
+      "user_profile_photo_url": user.photoUrl,
+      "user_email": user.email,
+      "user_uid": user.uid,
+    };
+  }
+
 }
