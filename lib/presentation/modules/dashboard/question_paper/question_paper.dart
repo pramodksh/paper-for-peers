@@ -104,7 +104,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-                      documentUrlArg: questionPaperYears[questionPaperIndex].questionPaperModels[questionPaperIndex].url,
+                      documentUrlArg: questionPaperYears[questionPaperIndex].questionPaperModels[questionPaperIndex].documentUrl,
                       screenLabel: "Question Paper",
                       parameter: PDFScreenSimpleBottomSheet(
                         title: questionPaperYears[questionPaperYearIndex].year.toString(),

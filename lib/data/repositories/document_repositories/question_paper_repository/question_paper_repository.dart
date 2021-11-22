@@ -67,7 +67,10 @@ class QuestionPaperRepository {
       await versionCollectionReference.doc(version.toString()).set(
           {
             "uploaded_by": user.displayName,
-            "url": documentUrl,
+            "document_url": documentUrl,
+            "user_profile_photo_url": user.photoUrl,
+            "user_email": user.email,
+            "user_uid": user.uid,
           }
       );
       return ApiResponse(isError: false,);
@@ -96,11 +99,7 @@ class QuestionPaperRepository {
 
         await Future.forEach<firestore.QueryDocumentSnapshot>(versionsSnapshot.docs, (version) async {
           Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
-          questionPapers.add(QuestionPaperModel(
-            version: int.parse(version.id),
-            uploadedBy: versionData['uploaded_by'],
-            url: versionData['url'],
-          ));
+          questionPapers.add(QuestionPaperModel.fromFirestoreMap(map: versionData, version: int.parse(version.id)));
         });
         questionPaperYears.add(QuestionPaperYearModel(
           year: int.parse(questionPaper.id),
