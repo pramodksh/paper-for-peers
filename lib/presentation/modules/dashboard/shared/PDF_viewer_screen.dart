@@ -7,7 +7,11 @@ import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/checkbox_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:provider/provider.dart';
+
+import 'package:path_provider/path_provider.dart' as path;
+import 'package:url_launcher/url_launcher.dart';
 
 class PDFViewerScreen<ParameterType> extends StatefulWidget {
   final String screenLabel;
@@ -50,8 +54,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     );
   }
 
-  Widget getDownloadPostButton({required Function() onPressed}) {
-    // todo implement download
+  Widget getDownloadPostButton({required String documentUrl}) {
     return SizedBox(
       height: 60,
       width: 100,
@@ -62,7 +65,13 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           )),
           backgroundColor: MaterialStateProperty.all(CustomColors.downloadButtonColor),
         ),
-        onPressed: onPressed,
+        onPressed: () async {
+          if (await canLaunch(documentUrl)) {
+            await launch(documentUrl);
+          } else {
+            showAlertDialog(context: context, text: "Couldn't open url - $documentUrl");
+          }
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -235,7 +244,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Variant ${parameter.nVariant}", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic)),
-                            getDownloadPostButton(onPressed: () {}),
+                            getDownloadPostButton(documentUrl: widget.documentUrl),
                           ],
                         ),
                         SizedBox(height: 15,),
@@ -283,7 +292,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Variant ${parameter.nVariant}", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600, fontStyle: FontStyle.italic)),
-                            getDownloadPostButton(onPressed: () {}),
+                            getDownloadPostButton(documentUrl: widget.documentUrl),
                           ],
                         ),
                         SizedBox(height: 15,),
@@ -358,7 +367,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
-                              getDownloadPostButton(onPressed: () {}),
+                              getDownloadPostButton(documentUrl: widget.documentUrl),
                             ],
                           ),
                           SizedBox(height: 15,),
