@@ -127,6 +127,15 @@ class AuthRepository extends BaseAuthRepository {
     }
   }
 
+  Future<bool> sendForgotEmail(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> reloadCurrentUser() async {
     await _firebaseAuth.currentUser!.reload();
   }

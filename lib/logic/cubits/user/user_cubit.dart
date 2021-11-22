@@ -30,6 +30,8 @@ class UserCubit extends Cubit<UserState> {
         _authRepository = authRepository,
         super(UserInitial());
 
+  Future<bool> sendPasswordResetEmail(String email) async => await _authRepository.sendForgotEmail(email);
+
   Future<void> reloadUser() async {
     await _authRepository.reloadCurrentUser();
   }
@@ -66,10 +68,7 @@ class UserCubit extends Cubit<UserState> {
     emit(UserEditSuccess(profilePhotoFile: null, userModel: (state as UserEditSuccess).userModel.copyWith(photoUrl: null)));
   }
 
-  void editUser({
-    File? profilePhotoFile,
-    UserModel? userModel,
-  }) {
+  void editUser({File? profilePhotoFile, UserModel? userModel,}) {
     emit(
         UserEditSuccess(
           profilePhotoFile: profilePhotoFile ?? (state as UserEditSuccess).profilePhotoFile,

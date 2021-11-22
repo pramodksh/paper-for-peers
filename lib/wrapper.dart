@@ -12,7 +12,7 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthRepository _authRepository = context.select((AuthRepository repo) => repo);
-    // _authRepository.logoutUser();// todo delete
+
     return StreamBuilder(
       stream: _authRepository.user,
       builder: (context, snapshot) {

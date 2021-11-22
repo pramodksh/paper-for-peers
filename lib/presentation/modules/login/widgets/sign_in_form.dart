@@ -62,7 +62,6 @@ class SignInForm extends StatelessWidget {
                     TextButton(
                       child: Text('Forgot Password?', style: TextStyle(color: Colors.white, fontSize: 18),),
                       onPressed: (){
-                        // todo implement forgot password
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ForgotPassword(),
                         ));

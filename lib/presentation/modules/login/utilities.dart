@@ -12,14 +12,6 @@ import 'package:papers_for_peers/presentation/modules/login/user_course.dart';
 import 'package:papers_for_peers/presentation/modules/login/user_details.dart';
 import 'package:provider/provider.dart';
 
-extension EmailValidator on String {
-  bool isValidEmail() {
-    return RegExp(
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-        .hasMatch(this);
-  }
-}
-
 Widget getCustomPasswordField({
   required String? Function(String?)? validator,
   TextEditingController? controller,
