@@ -67,8 +67,11 @@ class TextBookRepository {
       await textBookCollectionReference.doc(version.toString()).set(
           {
             "uploaded_by": user.displayName,
-            "url": documentUrl,
+            "document_url": documentUrl,
             "uploaded_on": DateTime.now(),
+            "user_profile_photo_url": user.photoUrl,
+            "user_email": user.email,
+            "user_uid": user.uid,
           }
       );
 
@@ -119,12 +122,7 @@ class TextBookRepository {
         firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.textBookCollectionLabel).get();
         await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
           Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
-          textBooks.add(TextBookModel(
-            uploadedOn: DateTime.now(), // todo change to database value
-            version: int.parse(journal.id),
-            uploadedBy: journalData['uploaded_by'],
-            url: journalData['url'],
-          ));
+          textBooks.add(TextBookModel.fromFirestoreMap(map: journalData, version: int.parse(journal.id)));
         });
 
         textBookSubjects.add(TextBookSubjectModel(
