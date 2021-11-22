@@ -129,14 +129,18 @@ class _MyAppState extends State<MyApp> {
                 ),
           ),
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: Styles.themeData(
-            context: context,
-            // appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
-            appThemeType: AppThemeType.dark,
-          ),
-          home: Wrapper(),
+        child: Builder(
+          builder: (context) {
+            AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: Styles.themeData(
+                context: context,
+                appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
+              ),
+              home: Wrapper(),
+            );
+          }
         ),
       ),
     );

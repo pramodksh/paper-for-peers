@@ -9,9 +9,11 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_options.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class QuestionPaper extends StatefulWidget {
 
@@ -226,6 +228,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
 
                     Builder(
                       builder: (context) {
+
                         if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
                           return Container(
                             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -233,10 +236,31 @@ class _QuestionPaperState extends State<QuestionPaper> {
                             child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
                           );
                         } else if (questionPaperState is QuestionPaperFetchLoading) {
-                          return Center(child: CircularProgressIndicator.adaptive(),);
+                          return SkeletonLoader(
+                            appThemeType: appThemeType,
+                            child: _getQuestionPaperListWidget(
+                              questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
+                                  year: DateTime.now().year - index,
+                                  questionPaperModels: List.generate(2, (index) => QuestionPaperModel(
+                                      documentUrl: "",
+                                      uploadedOn: DateTime.now(),
+                                      userEmail: "",
+                                      userProfilePhotoUrl: "",
+                                      userUid: "",
+                                      version: 0,
+                                      uploadedBy: ""
+                                  ))
+                              )),
+                              isDarkTheme: appThemeType.isDarkTheme(),
+                              questionPaperState: questionPaperState,
+                              userState: userState,
+                              context: context,
+                              appThemeType: appThemeType,
+                            ),
+                          );
                         } else if (questionPaperState is QuestionPaperFetchSuccess) {
                           return _getQuestionPaperListWidget(
-                            questionPaperYears:  questionPaperState.questionPaperYears,
+                            questionPaperYears: questionPaperState.questionPaperYears,
                             isDarkTheme: appThemeType.isDarkTheme(),
                             questionPaperState: questionPaperState,
                             userState: userState,
