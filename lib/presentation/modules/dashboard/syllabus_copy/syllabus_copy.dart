@@ -8,6 +8,7 @@ import 'package:papers_for_peers/logic/blocs/syllabus_copy/syllabus_copy_bloc.da
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ class _SyllabusCopyState extends State<SyllabusCopy> {
     required bool isDarkTheme,
     required UserState userState,
     required SyllabusCopyState syllabusCopyState,
+    bool isWidgetLoading = false,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -74,7 +76,7 @@ class _SyllabusCopyState extends State<SyllabusCopy> {
                     child: getAddPostContainer(
                       isDarkTheme: isDarkTheme,
                       label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
-                      onPressed: syllabusCopyState is SyllabusCopyAddLoading ? () {} :  () {
+                      onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
                         if (userState is UserLoaded) {
                           context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
                             syllabusCopies: syllabusCopies,
@@ -105,6 +107,8 @@ class _SyllabusCopyState extends State<SyllabusCopy> {
     final SyllabusCopyState syllabusCopyState = context.select((SyllabusCopyBloc bloc) => bloc.state);
     AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
 
+    print("CHECKK: ${syllabusCopyState}");
+
     if (syllabusCopyState is SyllabusCopyInitial) {
       if (userState is UserLoaded)
       context.read<SyllabusCopyBloc>().add(SyllabusCopyFetch(
@@ -131,7 +135,23 @@ class _SyllabusCopyState extends State<SyllabusCopy> {
         builder: (context) {
 
           if (syllabusCopyState is SyllabusCopyFetchLoading) {
-            return Center(child: CircularProgressIndicator.adaptive(),);
+            return SkeletonLoader(
+              appThemeType: appThemeState.appThemeType,
+              child: _getSyllabusCopyListWidget(
+                syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
+                  version: index,
+                  uploadedBy: "",
+                  userUid: "",
+                  userProfilePhotoUrl: "",
+                  userEmail: "",
+                  uploadedOn: DateTime.now(),
+                  documentUrl: "",
+                )),
+                isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
+                userState: userState,
+                syllabusCopyState: syllabusCopyState,
+              ),
+            );
           } else if (syllabusCopyState is SyllabusCopyFetchSuccess) {
             List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
             return _getSyllabusCopyListWidget(

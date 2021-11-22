@@ -47,6 +47,7 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
     on<SyllabusCopyFetch>((event, emit) async {
       print("FETCH: ${event}");
 
+      emit(SyllabusCopyFetchLoading());
       ApiResponse fetchResponse = await _syllabusCopyRepository.getSyllabusCopies(course: event.course, semester: event.semester);
 
       if (fetchResponse.isError) {
