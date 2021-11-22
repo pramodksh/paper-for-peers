@@ -23,7 +23,9 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         _filePickerRepository = filePickerRepository,
         super(NotesInitial()) {
 
-
+    on<NotesResetToNotesFetch>((event, emit) {
+      emit(NotesFetchSuccess(notes: event.notes, selectedSubject: event.selectedSubject));
+    });
 
     on<NotesAddEdit>((event, emit) async {
       if (state is! NotesAddEditing) {

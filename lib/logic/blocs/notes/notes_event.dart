@@ -52,7 +52,7 @@ class NotesAdd extends NotesEvent {
   final String subject;
 
   @override
-  List<Object?> get props => [title, description, user, subject];
+  List<Object?> get props => [title, description, user, subject,];
 
   const NotesAdd({
     required this.file,
@@ -64,6 +64,19 @@ class NotesAdd extends NotesEvent {
 
   @override
   String toString() {
-    return 'NotesAdd{file: $file, title: $title, description: $description, user: $user, subject: $subject}';
+    return 'NotesAdd{file: $file, title: $title, description: $description, user: $user, subject: $subject,}';
   }
+}
+
+class NotesResetToNotesFetch extends NotesEvent {
+  final List<NotesModel> notes;
+  final String selectedSubject;
+
+  @override
+  List<Object?> get props => [notes];
+
+  const NotesResetToNotesFetch({
+    required this.notes,
+    required this.selectedSubject,
+  });
 }

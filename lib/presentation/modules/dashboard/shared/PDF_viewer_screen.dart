@@ -51,6 +51,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
   }
 
   Widget getDownloadPostButton({required Function() onPressed}) {
+    // todo implement download
     return SizedBox(
       height: 60,
       width: 100,
@@ -384,6 +385,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                                     color: Colors.amber,
                                   ),
                                   onRatingUpdate: (rating) {
+                                    // todo implement rating 
                                     print(rating);
                                   },
                                 ),

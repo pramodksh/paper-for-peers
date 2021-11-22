@@ -26,6 +26,8 @@ class _NotesState extends State<Notes> {
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
     final NotesState notesState = context.select((NotesBloc bloc) => bloc.state);
 
+    print("NOTES: ${notesState}");
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: SingleChildScrollView(
@@ -118,10 +120,13 @@ class _NotesState extends State<Notes> {
                             if (userState is UserLoaded) {
                               bool? isRefresh = await Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => UploadNotes(
+                                  notes: notesState.notes,
                                   selectedSubject: notesState.selectedSubject!,
                                   user: userState.userModel,
                                 ),
                               ));
+
+                              if (mounted) setState(() {});
 
                               if (isRefresh == true) {
                                 context.read<NotesBloc>().add(

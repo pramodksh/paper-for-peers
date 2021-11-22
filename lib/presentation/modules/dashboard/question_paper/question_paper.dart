@@ -83,6 +83,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
             padding: EdgeInsets.symmetric(horizontal: 20),
           ),
           onPressed: () {
+            // todo implement compare question paper
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ShowSplitOptions(),
             ));
