@@ -14,7 +14,7 @@ class TextBookSubjectModel {
 
 class TextBookModel {
   final int version;
-  final String url;
+  final String documentUrl;
   final String uploadedBy;
   final DateTime uploadedOn;
   final String? userProfilePhotoUrl;
@@ -23,7 +23,7 @@ class TextBookModel {
 
   const TextBookModel({
     required this.version,
-    required this.url,
+    required this.documentUrl,
     required this.uploadedBy,
     required this.uploadedOn,
     required this.userEmail,
@@ -34,7 +34,7 @@ class TextBookModel {
   factory TextBookModel.fromFirestoreMap({required Map<String, dynamic> map, required int version}) {
     return TextBookModel(
       version: version,
-      url: map['document_url'] as String,
+      documentUrl: map['document_url'] as String,
       uploadedBy: map['uploaded_by'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),
       userProfilePhotoUrl: map['user_profile_photo_url'] as String?,

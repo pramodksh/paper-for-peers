@@ -10,6 +10,7 @@ import 'package:papers_for_peers/logic/blocs/text_book/text_book_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
@@ -78,7 +79,7 @@ class _TextBookState extends State<TextBook> {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-              documentUrl: subjects[index].url,
+              documentUrl: subjects[index].documentUrl,
               screenLabel: "Text Book",
               parameter: PDFScreenSimpleBottomSheet(
                   nVariant: subjects[index].version,
@@ -122,6 +123,7 @@ class _TextBookState extends State<TextBook> {
     required List<TextBookSubjectModel> textBookSubjects,
     required AppThemeType appThemeType,
     required bool isAddTextBookLoading,
+    bool isWidgetLoading = false,
   }) {
     return ListView.separated(
       separatorBuilder: (context, index) => SizedBox(height: 20,),
@@ -135,7 +137,7 @@ class _TextBookState extends State<TextBook> {
             subject: textBookSubjects[textbookSubjectIndex].subject,
             appThemeType: appThemeType,
             userState: userState,
-            onTextBookAdd: () {
+            onTextBookAdd: isWidgetLoading ? () {} : () {
               if (userState is UserLoaded) {
                 context.read<TextBookBloc>().add(TextBookAdd(
                   textBookSubjects: textBookSubjects,
@@ -214,7 +216,26 @@ class _TextBookState extends State<TextBook> {
               Builder(
                   builder: (context) {
                     if (textBookState is TextBookFetchLoading) {
-                      return Center(child: CircularProgressIndicator.adaptive(),);
+                      return SkeletonLoader(
+                        appThemeType: appThemeType,
+                        child: _getTextBookListWidget(
+                          userState: userState,
+                          textBookSubjects: List.generate(2, (index) => TextBookSubjectModel(
+                            subject: "",
+                            textBookModels: List.generate(2, (index) => TextBookModel(
+                              uploadedOn: DateTime.now(),
+                              userEmail: "",
+                              userProfilePhotoUrl: "",
+                              userUid: "",
+                              uploadedBy: "",
+                              version: index,
+                              documentUrl: "",
+                            ))
+                          )),
+                          appThemeType: appThemeType,
+                          isAddTextBookLoading: false,
+                        ),
+                      );
                     } else if (textBookState is TextBookFetchSuccess) {
                       return _getTextBookListWidget(
                         userState: userState,
