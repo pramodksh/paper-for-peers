@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
-import 'package:provider/provider.dart';
 
 Widget getNotesDetailsTile({
   required String title,

@@ -7,7 +7,6 @@ import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/checkbox_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
 
 class PDFViewerScreen<ParameterType> extends StatefulWidget {

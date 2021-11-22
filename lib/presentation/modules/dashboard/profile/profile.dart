@@ -5,7 +5,6 @@ import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/notes/upload_notes.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_notes.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/your_posts/your_posts.dart';
