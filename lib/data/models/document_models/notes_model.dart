@@ -3,7 +3,7 @@ import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class NotesModel {
 
-  final String documentUurl;
+  final String documentUrl;
   final String title;
   final String description;
   final DateTime uploadedOn;
@@ -14,7 +14,7 @@ class NotesModel {
   final String userUid;
 
   NotesModel({
-    required this.documentUurl,
+    required this.documentUrl,
     required this.title,
     required this.description,
     required this.uploadedOn,
@@ -44,7 +44,7 @@ class NotesModel {
 
   factory NotesModel.fromFirestoreMap(Map<String, dynamic> map) {
     return NotesModel(
-      documentUurl: map['document_url'] as String,
+      documentUrl: map['document_url'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),

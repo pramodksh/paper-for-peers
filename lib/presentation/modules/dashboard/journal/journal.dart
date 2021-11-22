@@ -79,7 +79,7 @@ class _JournalState extends State<Journal> {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-            documentUrlArg: journals[index].documentUrl,
+            documentUrl: journals[index].documentUrl,
             screenLabel: "Journal",
             parameter: PDFScreenSimpleBottomSheet(
               nVariant: journals[index].version,

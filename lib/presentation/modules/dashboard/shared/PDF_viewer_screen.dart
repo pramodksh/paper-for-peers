@@ -18,8 +18,8 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
   PDFViewerScreen({
     required this.screenLabel, required this.parameter,
     this.isShowBottomSheet = true,
-    String? documentUrlArg, // todo make it required after all is implemented (this.documentUrl)
-  }) : documentUrl = documentUrlArg ?? "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+    required this.documentUrl,
+  });
 
 
   @override
@@ -145,7 +145,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   Widget _buildReportDialog({required bool isDarkTheme}) {
     return StatefulBuilder(
-      builder: (context, setDialogState) => Dialog(
+      builder: (context, setState) => Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -172,7 +172,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         checkColor: Colors.white,
                         activeColor: Color(0xff3C64B1),
                         controlAffinity: ListTileControlAffinity.leading,
-                        onChanged: (val) { if (mounted) setDialogState(() {
+                        onChanged: (val) { if (mounted) setState(() {
                           reportReasons[index].isChecked = !reportReasons[index].isChecked;
                         }); },
                         value: reportReasons[index].isChecked,

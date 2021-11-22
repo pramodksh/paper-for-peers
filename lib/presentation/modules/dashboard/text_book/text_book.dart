@@ -78,7 +78,7 @@ class _TextBookState extends State<TextBook> {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-              documentUrlArg: subjects[index].url,
+              documentUrl: subjects[index].url,
               screenLabel: "Text Book",
               parameter: PDFScreenSimpleBottomSheet(
                   nVariant: subjects[index].version,

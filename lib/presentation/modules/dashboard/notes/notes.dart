@@ -89,6 +89,7 @@ class _NotesState extends State<Notes> {
                           onTileTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => PDFViewerScreen<PDFScreenNotesBottomSheet>(
+                                documentUrl: notes[index].documentUrl,
                                 screenLabel: "Notes",
                                 parameter: PDFScreenNotesBottomSheet(
                                   rating: notes[index].rating,
