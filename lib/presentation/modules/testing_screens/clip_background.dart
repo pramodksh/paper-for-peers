@@ -9,7 +9,6 @@ class CustomRect extends CustomClipper<Rect>{
 
   @override
   bool shouldReclip(CustomRect oldClipper) {
-    // TODO: implement shouldReclip
     return false;
   }
 }
