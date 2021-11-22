@@ -74,6 +74,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
     required UserState userState,
     required BuildContext context,
     required AppThemeType appThemeType,
+    bool isWidgetLoading = false,
   }) {
     return Column(
       children: [
@@ -128,7 +129,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                 child: getAddPostContainer(
                   isDarkTheme: isDarkTheme,
                   label: questionPaperState is QuestionPaperAddLoading ? "Loading" : "Add Question Paper",
-                  onPressed: questionPaperState is QuestionPaperAddLoading ? () {} : () {
+                  onPressed: questionPaperState is QuestionPaperAddLoading || isWidgetLoading ? () {} : () {
                     if (userState is UserLoaded) {
                       context.read<QuestionPaperBloc>().add(QuestionPaperAdd(
                         questionPaperYears: questionPaperYears,
@@ -239,6 +240,7 @@ class _QuestionPaperState extends State<QuestionPaper> {
                           return SkeletonLoader(
                             appThemeType: appThemeType,
                             child: _getQuestionPaperListWidget(
+                              isWidgetLoading: true,
                               questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
                                   year: DateTime.now().year - index,
                                   questionPaperModels: List.generate(2, (index) => QuestionPaperModel(
