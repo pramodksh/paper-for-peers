@@ -28,11 +28,7 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
 
 class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
-  // String pdfPath = "assets/pdfs/Javanotes.pdf";
   // String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-
-  // bool _isLoading = true;
-  // late PDFDocument document;
 
   late List<CheckBoxModel> reportReasons;
 
@@ -109,19 +105,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     );
   }
 
-  Future loadDocumentFromAssetPath({required String assetPath}) async {
-    // setState(() => _isLoading = true);
-    // document = await PDFDocument.fromAsset(assetPath);
-    // setState(() => _isLoading = false);
-    // return;
-  }
-
   Future<PDFDocument> loadDocumentFromURL({required pdfURL}) async => await PDFDocument.fromURL(pdfURL);
-
-  void loadDocumentFromFile() {
-    // File file  = File('...');
-    // PDFDocument doc = await PDFDocument.fromFile(file);
-  }
 
   Widget getUploadedByColumn({required String uploadedBy}) {
     return Column(
@@ -444,7 +428,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   @override
   void initState() {
-
     reportReasons = AppConstants.reportReasons.map((e) => CheckBoxModel(
       label: e,
       isChecked: false,
