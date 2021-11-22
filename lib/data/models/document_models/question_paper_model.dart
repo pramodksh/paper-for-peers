@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class QuestionPaperYearModel {
   int year;
   List<QuestionPaperModel> questionPaperModels;
@@ -16,6 +18,7 @@ class QuestionPaperModel {
   final String? userProfilePhotoUrl;
   final String userEmail;
   final String userUid;
+  final DateTime uploadedOn;
 
   const QuestionPaperModel({
     required this.version,
@@ -24,6 +27,7 @@ class QuestionPaperModel {
     required this.userUid,
     required this.userProfilePhotoUrl,
     required this.userEmail,
+    required this.uploadedOn,
   });
 
   Map<String, dynamic> toMap() {
@@ -45,6 +49,7 @@ class QuestionPaperModel {
       userProfilePhotoUrl: map['user_profile_photo_url'] as String?,
       userEmail: map['user_email'] as String,
       userUid: map['user_uid'] as String,
+      uploadedOn: (map['uploaded_on'] as Timestamp).toDate()
     );
   }
 }
