@@ -128,7 +128,13 @@ class _NotesState extends State<Notes> {
                                 ));
 
                                 if (isRefresh == true) {
-
+                                  context.read<NotesBloc>().add(
+                                      NotesFetch(
+                                          course: userState.userModel.course!.courseName!,
+                                          semester: userState.userModel.semester!.nSemester!,
+                                          subject: notesState.selectedSubject!
+                                      )
+                                  );
                                 }
 
                               }

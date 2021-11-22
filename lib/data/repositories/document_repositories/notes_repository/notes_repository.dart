@@ -61,12 +61,15 @@ class NotesRepository {
 
       String documentUrl = uploadResponse.data;
       await notesCollection.doc().set({
-        "url": documentUrl,
+        "document_url": documentUrl,
         "uploaded_by": user.displayName,
         "title": title,
         "description": description,
         "uploaded_on": DateTime.now(),
         "rating": 0.0,
+        "user_email": user.email,
+        "user_profile_photo_url": user.photoUrl,
+        "user_uid": user.uid,
       });
       return ApiResponse(isError: false,);
     } catch (err) {

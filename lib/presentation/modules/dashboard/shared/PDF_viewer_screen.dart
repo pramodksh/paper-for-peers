@@ -145,7 +145,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   Widget _buildReportDialog({required bool isDarkTheme}) {
     return StatefulBuilder(
-      builder: (context, setState) => Dialog(
+      builder: (context, setDialogState) => Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -172,7 +172,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                         checkColor: Colors.white,
                         activeColor: Color(0xff3C64B1),
                         controlAffinity: ListTileControlAffinity.leading,
-                        onChanged: (val) { setState(() {
+                        onChanged: (val) { if (mounted) setDialogState(() {
                           reportReasons[index].isChecked = !reportReasons[index].isChecked;
                         }); },
                         value: reportReasons[index].isChecked,
