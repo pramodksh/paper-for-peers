@@ -11,11 +11,10 @@ class FirestoreRepository {
 
   FirestoreRepository({firestore.FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance {
-    usersCollection =  _firebaseFirestore.collection(usersCollectionLabel);
+    usersCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel);
     coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
   }
 
-  static final String usersCollectionLabel = "users";
   static late final firestore.CollectionReference usersCollection;
   static late final firestore.CollectionReference coursesCollection;
 

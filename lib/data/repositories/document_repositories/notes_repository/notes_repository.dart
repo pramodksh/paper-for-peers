@@ -68,6 +68,7 @@ class NotesRepository {
     }
   }
 
+
   Future<ApiResponse> addRatingToNotes({
     required String noteId, required double rating, required UserModel user,
     required String course, required int semester, required String subject,
@@ -94,6 +95,28 @@ class NotesRepository {
       return ApiResponse.success();
     } catch (e) {
       return ApiResponse.error(errorMessage: "There was some error while updating rating");
+    }
+
+  }
+
+  Future<ApiResponse> addRatingToUser({required UserModel user, required double rating, required String noteId}) async {
+    try {
+      firestore.DocumentSnapshot userDocumentSnapshot = await _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel).doc(user.uid).get();
+      firestore.DocumentSnapshot ratingSnapshot = await userDocumentSnapshot.reference.collection(FirebaseCollectionConfig.ratingCollectionLabel).doc(noteId).get();
+
+      if(ratingSnapshot.exists) {
+        await ratingSnapshot.reference.update({
+          'rating': rating,
+        });
+
+      } else {
+        await ratingSnapshot.reference.set({
+          'rating': rating,
+        });
+      }
+      return ApiResponse.success();
+    } catch(e) {
+      return ApiResponse.error(errorMessage: "There was an error while updating user rating");
     }
 
   }

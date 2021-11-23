@@ -28,6 +28,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         noteId: event.noteId, rating: event.rating, course: event.course,
         semester: event.semester, subject: event.subject, user: event.user,
       );
+      await _notesRepository.addRatingToUser(user: event.user, rating: event.rating, noteId: event.noteId);
     });
 
     on<NotesResetToNotesFetch>((event, emit) {
