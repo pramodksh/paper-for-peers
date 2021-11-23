@@ -127,7 +127,11 @@ class _MainDashboardState extends State<MainDashboard> {
                 context: context,
                 dropDownHint: "Semester",
                 dropDownItems: List.generate(6, (index) => (index + 1).toString()),
-                onDropDownChanged: (val) { setState(() { selectedSemester = val; }); },
+                onDropDownChanged: (val) {
+                  setState(() { selectedSemester = val;
+                  // todo implement change semester
+                  });
+                },
                 dropDownValue: selectedSemester,
               ),
             ),
