@@ -18,6 +18,7 @@ class UserModel {
   static Future<UserModel> getUserModelByMap({
     required Map userMap, required String userId,
     required Function(String) getCourse,
+    required int totalRatings, required double avgRating,
   }) async {
     Course? course;
     Semester? semester;
@@ -29,8 +30,6 @@ class UserModel {
       }
     }
 
-
-
     return UserModel(
       uid: userId,
       displayName: userMap['displayName'],
@@ -38,8 +37,8 @@ class UserModel {
       photoUrl: userMap['photoUrl'],
       semester: semester,
       course: course,
-      avgRating: 0,
-      totalRating: 0,
+      avgRating: avgRating,
+      totalRating: totalRatings,
     );
   }
 

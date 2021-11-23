@@ -220,20 +220,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           SizedBox(height: 20,),
                           Text(userState.userModel.displayName!, style: TextStyle(fontSize: 25),),
                           SizedBox(height: 40,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              getCircularStat(title: 'Average\nRating', value: userState.userModel.avgRating!.toStringAsPrecision(3), isDarkTheme: appThemeType.isDarkTheme()),
+                              getCircularStat(title: 'Total\nRating', value: userState.userModel.totalRating.toString(), isDarkTheme: appThemeType.isDarkTheme()),
+                            ],
+                          ),
                         ],
                       ),
                     );
                   }
                   return Container();
                 }
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  getCircularStat(title: 'Average\nRating', value: avgRating.toString(), isDarkTheme: appThemeType.isDarkTheme()),
-                  getCircularStat(title: 'Total\nRating', value: totalDownloads.toString(), isDarkTheme: appThemeType.isDarkTheme()),
-                ],
               ),
               SizedBox(height: 30,),
               getProfileCustomButton(

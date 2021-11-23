@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/course.dart';
@@ -23,11 +24,31 @@ class FirestoreRepository {
     return userDocumentSnapshot.exists;
   }
 
+  // List<double> getRatingsOfUser(firestore.QuerySnapshot ratingSnapshot) {
+  //   // ratingSnapshot.docs.forEach((element) {
+  //   //   List<double> ratings = (element.data() as Map).values.toList().map((e) => e['rating'] as double).toList();
+  //   //   print("CHECK HERE: ${ratings}");
+  //   // });
+  // }
+
   Future<UserModel> getUserByUserId({required String userId}) async {
     firestore.DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
+
+    firestore.QuerySnapshot ratingSnapshot = await userDocumentSnapshot.reference.collection(FirebaseCollectionConfig.ratingCollectionLabel).get();
+
+    List<double> totalRatings = [];
+    ratingSnapshot.docs.forEach((element) {
+
+      List<double> ratings = (element.data() as Map).values.toList().map((e) => e['rating'] as double).toList();
+      totalRatings.addAll(ratings);
+      print("CHECK HERE: ${ratings}");
+    });
+
     return await UserModel.getUserModelByMap(
       userMap: userDocumentSnapshot.data() as Map<dynamic, dynamic>,
       userId: userId, getCourse: getCourse,
+      avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
+      totalRatings: totalRatings.length,
     );
   }
 

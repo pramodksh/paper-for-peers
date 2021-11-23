@@ -99,19 +99,22 @@ class NotesRepository {
 
   }
 
-  Future<ApiResponse> addRatingToUser({required String ratingAcceptedUserId, required double rating, required String noteId}) async {
+  Future<ApiResponse> addRatingToUser({
+    required String ratingAcceptedUserId, required double rating,
+    required String noteId, required String ratingGivenUserId,
+  }) async {
     try {
       firestore.DocumentSnapshot userDocumentSnapshot = await _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel).doc(ratingAcceptedUserId).get();
       firestore.DocumentSnapshot ratingSnapshot = await userDocumentSnapshot.reference.collection(FirebaseCollectionConfig.ratingCollectionLabel).doc(noteId).get();
 
       if(ratingSnapshot.exists) {
         await ratingSnapshot.reference.update({
-          'rating': rating,
+          ratingGivenUserId : {"rating": rating,},
         });
 
       } else {
         await ratingSnapshot.reference.set({
-          'rating': rating,
+          ratingGivenUserId : {"rating": rating,},
         });
       }
       return ApiResponse.success();
@@ -142,13 +145,14 @@ class NotesRepository {
 
         notes.add(NotesModel.fromFirestoreMap(
           map: note.data() as Map<String, dynamic>,
-          avgRating: ratings.average,
+          avgRating: ratings.length == 0 ? 0 : ratings.average,
           notesId: note.id,
         ));
       });
       return ApiResponse<List<NotesModel>>.success(data: notes);
-    } catch (_) {
-      return ApiResponse.error(errorMessage: "Error while fetching journals");
+    } catch (e) {
+      print("ERR: $e");
+      return ApiResponse.error(errorMessage: "Error while fetching notes");
     }
   }
   
