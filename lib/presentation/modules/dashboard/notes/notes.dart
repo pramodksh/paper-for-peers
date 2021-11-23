@@ -77,7 +77,7 @@ class Notes extends StatelessWidget {
             onPressed: isWidgetLoading ? () {} : () async {
 
               if (userState is UserLoaded) {
-                bool? isRefresh = await Navigator.of(context).push(MaterialPageRoute(
+                Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => UploadNotes(
                     notes: notes,
                     selectedSubject: notesState.selectedSubject!,

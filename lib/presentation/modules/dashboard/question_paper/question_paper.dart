@@ -13,7 +13,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 class QuestionPaper extends StatelessWidget {
 

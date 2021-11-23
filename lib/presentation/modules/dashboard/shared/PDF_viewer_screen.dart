@@ -9,8 +9,6 @@ import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:provider/provider.dart';
-
-import 'package:path_provider/path_provider.dart' as path;
 import 'package:url_launcher/url_launcher.dart';
 
 class PDFViewerScreen<ParameterType> extends StatefulWidget {
