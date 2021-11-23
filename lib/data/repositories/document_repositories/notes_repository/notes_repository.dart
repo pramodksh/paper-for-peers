@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:collection/collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
@@ -67,6 +67,36 @@ class NotesRepository {
     }
   }
 
+  Future<ApiResponse> addRatingToNotes({
+    required String noteId, required double rating, required UserModel user,
+    required String course, required int semester, required String subject,
+  }) async {
+
+    try {
+
+      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
+      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
+      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
+      firestore.DocumentSnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
+      firestore.DocumentSnapshot starsSnapshot = await notesSnapshot.reference.collection(FirebaseCollectionConfig.starsCollectionLabel).doc(user.uid).get();
+
+      if(starsSnapshot.exists) {
+        await starsSnapshot.reference.update({
+          'rating': rating,
+        });
+
+      } else {
+        await starsSnapshot.reference.set({
+          'rating': rating,
+        });
+      }
+      return ApiResponse(isError: false);
+    } catch (e) {
+      return ApiResponse(isError: true);
+    }
+
+  }
+
   Future<ApiResponse> getNotes({
     required String course, required int semester,
     required String subject,
@@ -79,14 +109,23 @@ class NotesRepository {
       firestore.QuerySnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).get();
 
       List<NotesModel> notes = [];
-      notesSnapshot.docs.forEach((note) {
-        notes.add(NotesModel.fromFirestoreMap(note.data() as Map<String, dynamic>));
+      await Future.forEach<firestore.QueryDocumentSnapshot>(notesSnapshot.docs ,(note) async {
+
+        firestore.QuerySnapshot starsSnapshot = await note.reference.collection(FirebaseCollectionConfig.starsCollectionLabel).get();
+        List<double> ratings = starsSnapshot.docs.map((e) {
+          return ((e.data() as Map<String, dynamic>)['rating']) as double;
+        }).toList();
+
+        notes.add(NotesModel.fromFirestoreMap(
+          map: note.data() as Map<String, dynamic>,
+          avgRating: ratings.average,
+          notesId: note.id,
+        ));
       });
       return ApiResponse<List<NotesModel>>(isError: false, data: notes);
     } catch (_) {
       return ApiResponse(isError: true, errorMessage: "Error while fetching journals");
     }
   }
-
-
+  
 }

@@ -23,6 +23,13 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         _filePickerRepository = filePickerRepository,
         super(NotesInitial()) {
 
+    on<NotesRatingChanged>((event, emit) async {
+      await _notesRepository.addRatingToNotes(
+        noteId: event.noteId, rating: event.rating, course: event.course,
+        semester: event.semester, subject: event.subject, user: event.user,
+      );
+    });
+
     on<NotesResetToNotesFetch>((event, emit) {
       emit(NotesFetchSuccess(notes: event.notes, selectedSubject: event.selectedSubject));
     });

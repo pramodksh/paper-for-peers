@@ -80,3 +80,30 @@ class NotesResetToNotesFetch extends NotesEvent {
     required this.selectedSubject,
   });
 }
+
+class NotesRatingChanged extends NotesEvent {
+
+  final UserModel user;
+  final String noteId;
+  final double rating;
+  final String course;
+  final int semester;
+  final String subject;
+
+  @override
+  List<Object?> get props => [rating, noteId, user, rating, course, semester, subject];
+
+  const NotesRatingChanged({
+    required this.user,
+    required this.course,
+    required this.semester,
+    required this.subject,
+    required this.rating,
+    required this.noteId,
+  });
+
+  @override
+  String toString() {
+    return 'NotesRatingChanged{noteId: $noteId, rating: $rating}';
+  }
+}

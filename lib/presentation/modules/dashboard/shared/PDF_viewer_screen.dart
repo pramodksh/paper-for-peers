@@ -32,9 +32,9 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
 
 class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
-  // String pdfOnlinePath = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-
   late List<CheckBoxModel> reportReasons;
+  bool isRatingChanged = false;
+  double rating = 0.0;
 
   Widget getPostReportButton({required Function() onPressed, required bool isDarkTheme}) {
     return SizedBox(
@@ -318,108 +318,114 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       );
     } else {
       PDFScreenNotesBottomSheet parameter = widget.parameter;
-      return Stack(
-        children: [
-          Positioned(
-            child: Container(
-              decoration: BoxDecoration(
-                color: CustomColors.ratingBackgroundColor,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
-              ),
-              height: ratingHeight,
-              width: ratingWidth,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(parameter.rating.toString(), style: TextStyle(fontWeight: FontWeight.w600),),
-                  SizedBox(width: 5,),
-                  Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 20,
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Stack(
+            children: [
+              Positioned(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: CustomColors.ratingBackgroundColor,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
                   ),
-                ],
+                  height: ratingHeight,
+                  width: ratingWidth,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(parameter.rating.toString(), style: TextStyle(fontWeight: FontWeight.w600),),
+                      SizedBox(width: 5,),
+                      Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+                right: ratingRightPosition,
               ),
-            ),
-            right: ratingRightPosition,
-          ),
-          Container(
-              padding: EdgeInsets.only(top: 10,),
-              margin: EdgeInsets.only(top: ratingHeight),
-              decoration: BoxDecoration(
-                  color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20))
-              ),
-              // height: modelHeight,
-              width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 20, right: 20,),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 10,),
-                          Text(parameter.title!, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600)),
-                          SizedBox(height: 20,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Container(
+                  padding: EdgeInsets.only(top: 10,),
+                  margin: EdgeInsets.only(top: ratingHeight),
+                  decoration: BoxDecoration(
+                      color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20))
+                  ),
+                  // height: modelHeight,
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 20, right: 20,),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
-                              getDownloadPostButton(documentUrl: widget.documentUrl),
+                              SizedBox(height: 10,),
+                              Text(parameter.title!, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600)),
+                              SizedBox(height: 20,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
+                                  getDownloadPostButton(documentUrl: widget.documentUrl),
+                                ],
+                              ),
+                              SizedBox(height: 15,),
+                              Text("Description", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                              SizedBox(height: 10,),
+                              Text(parameter.description!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                              SizedBox(height: 20,),
+                              Container(
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    children: [
+                                      Text("Rate this Post", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+                                      SizedBox(height: 15,),
+                                      RatingBar.builder(
+                                        initialRating: 3,
+                                        minRating: 0,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        glow: false,
+                                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (val) {
+                                          if (mounted) setState(() {
+                                            isRatingChanged = true;
+                                            rating = val;
+                                          });
+                                        },
+                                      ),
+                                      SizedBox(height: 15,),
+                                    ],
+                                  )
+                              ),
+
                             ],
                           ),
-                          SizedBox(height: 15,),
-                          Text("Description", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                          SizedBox(height: 10,),
-                          Text(parameter.description!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                          SizedBox(height: 20,),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                Text("Rate this Post", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-                                SizedBox(height: 15,),
-                                RatingBar.builder(
-                                  initialRating: 3,
-                                  minRating: 0,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  glow: false,
-                                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                  itemBuilder: (context, _) => Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                                  onRatingUpdate: (rating) {
-                                    // todo implement rating 
-                                    print(rating);
-                                  },
-                                ),
-                                SizedBox(height: 15,),
-                              ],
-                            )
-                          ),
-
-                        ],
-                      ),
+                        ),
+                        getPostReportButton(
+                            isDarkTheme: isDarkTheme,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => _buildReportDialog(isDarkTheme: isDarkTheme),
+                              );
+                            }
+                        ),
+                      ],
                     ),
-                    getPostReportButton(
-                      isDarkTheme: isDarkTheme,
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                            builder: (context) => _buildReportDialog(isDarkTheme: isDarkTheme),
-                        );
-                      }
-                    ),
-                  ],
-                ),
-              )
-          ),
-        ],
+                  )
+              ),
+            ],
+          );
+        },
       );
     }
   }
@@ -452,58 +458,64 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.screenLabel),
-        actions: [
-          Container(
-            padding: EdgeInsets.only(right: 10),
-            margin: EdgeInsets.symmetric(vertical: 5),
-            child: ElevatedButton(
-              onPressed: () {
-                _showCustomBottomSheet(isDarkTheme: appThemeType.isDarkTheme());
-              },
-              child: Text("Details", style: TextStyle(fontSize: 16,),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop({"isRatingChanged": isRatingChanged, "rating": rating});
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.screenLabel),
+          actions: [
+            Container(
+              padding: EdgeInsets.only(right: 10),
+              margin: EdgeInsets.symmetric(vertical: 5),
+              child: ElevatedButton(
+                onPressed: () {
+                  _showCustomBottomSheet(isDarkTheme: appThemeType.isDarkTheme());
+                },
+                child: Text("Details", style: TextStyle(fontSize: 16,),
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: FutureBuilder(
-        future: loadDocumentFromURL(pdfURL: widget.documentUrl),
-        builder: (context, snapshot) {
+          ],
+        ),
+        body: FutureBuilder(
+          future: loadDocumentFromURL(pdfURL: widget.documentUrl),
+          builder: (context, snapshot) {
 
-          if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            return Center(
-              child: PDFViewer(
-                document: snapshot.data as PDFDocument,
-                zoomSteps: 1,
-                showNavigation: false,
-                // navigationBuilder: customPDFBottomNavBuilder,
+            if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              return Center(
+                child: PDFViewer(
+                  document: snapshot.data as PDFDocument,
+                  zoomSteps: 1,
+                  showNavigation: false,
+                  // navigationBuilder: customPDFBottomNavBuilder,
 
-                showPicker: false,
-                pickerButtonColor: Colors.black,
-                pickerIconColor: Colors.red,
+                  showPicker: false,
+                  pickerButtonColor: Colors.black,
+                  pickerIconColor: Colors.red,
 
-                enableSwipeNavigation: true,
+                  enableSwipeNavigation: true,
 
-                progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
+                  progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
 
 
-                indicatorPosition: IndicatorPosition.topLeft,
-                indicatorBackground: Colors.black,
-                indicatorText: Colors.white,
-                // showIndicator: false,
+                  indicatorPosition: IndicatorPosition.topLeft,
+                  indicatorBackground: Colors.black,
+                  indicatorText: Colors.white,
+                  // showIndicator: false,
 
-                lazyLoad: true,
+                  lazyLoad: true,
 
-                scrollDirection: Axis.vertical,
-              ),
-            );
+                  scrollDirection: Axis.vertical,
+                ),
+              );
+            }
           }
-        }
+        ),
       ),
     );
   }

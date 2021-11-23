@@ -32,8 +32,8 @@ class Notes extends StatelessWidget {
           itemBuilder: (context, index) => getNotesDetailsTile(
             context: context,
             appThemeType: appThemeType,
-            onTileTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
+            onTileTap: () async {
+              Map<String, dynamic> ratingDetails = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => PDFViewerScreen<PDFScreenNotesBottomSheet>(
                   documentUrl: notes[index].documentUrl,
                   screenLabel: "Notes",
@@ -45,6 +45,21 @@ class Notes extends StatelessWidget {
                   ),
                 ),
               ));
+
+              bool isRatingChanged = ratingDetails['isRatingChanged'];
+              if (isRatingChanged) {
+                double rating = ratingDetails['rating'];
+                if (userState is UserLoaded) {
+                  context.read<NotesBloc>().add(NotesRatingChanged(
+                    user: userState.userModel,
+                    rating: rating,
+                    noteId: notes[index].noteId,
+                    subject: notesState.selectedSubject!,
+                    semester: userState.userModel.semester!.nSemester!,
+                    course: userState.userModel.course!.courseName!,
+                  ));
+                }
+              }
             },
             title: notes[index].title,
             description: notes[index].description,
@@ -84,8 +99,8 @@ class Notes extends StatelessWidget {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
-    // final NotesState notesState = context.select((NotesBloc bloc) => bloc.state);
     final NotesState notesState = context.watch<NotesBloc>().state;
+
     return BlocListener<NotesBloc, NotesState>(
       listener: (context, state) {
         if (state is NotesFetchError) {
@@ -166,6 +181,7 @@ class Notes extends StatelessWidget {
                           notesState: notesState,
                           isWidgetLoading: true,
                           notes: List.generate(3, (index) => NotesModel(
+                            noteId: "",
                             uploadedBy: "",
                             userUid: "",
                             userProfilePhotoUrl: "",

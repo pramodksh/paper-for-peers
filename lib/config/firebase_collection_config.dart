@@ -6,6 +6,7 @@ class FirebaseCollectionConfig {
   static final String subjectsCollectionLabel = "subjects";
   static final String journalCollectionLabel = "journal";
   static final String notesCollectionLabel = "notes";
+  static final String starsCollectionLabel = "stars";
   static final String questionPaperCollectionLabel = "question_paper";
   static final String versionsCollectionLabel = "versions";
   static final String textBookCollectionLabel = "text_book";

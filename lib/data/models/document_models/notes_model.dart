@@ -3,6 +3,7 @@ import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class NotesModel {
 
+  final String noteId;
   final String documentUrl;
   final String title;
   final String description;
@@ -14,6 +15,7 @@ class NotesModel {
   final String userUid;
 
   NotesModel({
+    required this.noteId,
     required this.documentUrl,
     required this.title,
     required this.description,
@@ -35,21 +37,21 @@ class NotesModel {
       "title": title,
       "description": description,
       "uploaded_on": DateTime.now(),
-      "rating": 0.0,
       "user_email": user.email,
       "user_profile_photo_url": user.photoUrl,
       "user_uid": user.uid,
     };
   }
 
-  factory NotesModel.fromFirestoreMap(Map<String, dynamic> map) {
+  factory NotesModel.fromFirestoreMap({required Map<String, dynamic> map, required String notesId, required double avgRating}) {
     return NotesModel(
+      noteId: notesId,
       documentUrl: map['document_url'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),
       uploadedBy: map['uploaded_by'] as String,
-      rating: map['rating'] as double,
+      rating: avgRating,
       userEmail: map["user_email"] as String,
       userProfilePhotoUrl: map["user_profile_photo_url"] as String?,
       userUid: map['user_uid'] as String,
