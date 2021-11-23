@@ -98,7 +98,7 @@ class Notifications extends StatelessWidget {
     AppBar _appBar = _getAppBar(context: context);
 
     return RefreshIndicator(
-      triggerMode: RefreshIndicatorTriggerMode.anywhere,
+      triggerMode: RefreshIndicatorTriggerMode.onEdge,
       onRefresh: () {
         context.read<KudNotificationsBloc>().add(KudNotificationsFetch());
         return Future.value(true);
