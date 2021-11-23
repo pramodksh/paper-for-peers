@@ -39,6 +39,12 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
           emit(JournalAddError(errorMessage: uploadResponse.errorMessage!, journalSubjects: event.journalSubjects));
         } else {
           emit(JournalAddSuccess(journalSubjects: event.journalSubjects));
+          add(
+              JournalFetch(
+                course: event.course,
+                semester: event.semester,
+              )
+          );
         }
 
       }

@@ -157,7 +157,7 @@ class Journal extends StatelessWidget {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
-    final JournalState journalState = context.select((JournalBloc bloc) => bloc.state);
+    final JournalState journalState = context.watch<JournalBloc>().state;
 
     if (journalState is JournalInitial) {
       if (userState is UserLoaded)
@@ -178,7 +178,13 @@ class Journal extends StatelessWidget {
           showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is JournalAddSuccess) {
-          showAlertDialog(context: context, text: "Journal Added Successfully").then((value) {
+          showAlertDialog(context: context, text: "Journal Added Successfully");
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: RefreshIndicator(
+          onRefresh: () async {
             if (userState is UserLoaded) {
               context.read<JournalBloc>().add(
                   JournalFetch(
@@ -187,14 +193,8 @@ class Journal extends StatelessWidget {
                   )
               );
             }
-          });
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          },
+          child: ListView(
             children: [
               SizedBox(height: 20,),
 
