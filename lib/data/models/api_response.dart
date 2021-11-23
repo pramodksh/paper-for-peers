@@ -1,5 +1,3 @@
-
-// todo change to named constructor (.error, .success)
 class ApiResponse<Type> {
 
   bool isError;
