@@ -34,9 +34,9 @@ class QuestionPaperRepository {
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
-      return ApiResponse<String>(isError: false, data: url);
+      return ApiResponse<String>.success(data: url);
     } on storage.FirebaseException catch (_) {
-      return ApiResponse(isError: false, errorMessage: "Couldn't upload question paper to storage");
+      return ApiResponse.error(errorMessage: "Couldn't upload question paper to storage");
     }
   }
 
@@ -54,7 +54,7 @@ class QuestionPaperRepository {
       firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
       
       if (versionSnapshot.docs.length >= AppConstants.maxQuestionPapers) {
-        return ApiResponse(isError: true, errorMessage: "The year $year has maximum versions. Please refresh to view them");
+        return ApiResponse.error(errorMessage: "The year $year has maximum versions. Please refresh to view them");
       }
       
       ApiResponse uploadResponse = await uploadQuestionPaper(document: document, year: year, course: course, semester: semester, subject: subject, version: version);
@@ -67,10 +67,10 @@ class QuestionPaperRepository {
       await versionCollectionReference.doc(version.toString()).set(QuestionPaperModel.toFirestoreMap(
         user: user, documentUrl: documentUrl,
       ));
-      return ApiResponse(isError: false,);
+      return ApiResponse.success();
 
     } catch (err) {
-      return ApiResponse(isError: true, errorMessage: "There was an error while setting question paper: $err");
+      return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
     }
 
   }
@@ -100,9 +100,9 @@ class QuestionPaperRepository {
           questionPaperModels: questionPapers,
         ));
       });
-      return ApiResponse<List<QuestionPaperYearModel>>(isError: false, data: questionPaperYears);
+      return ApiResponse<List<QuestionPaperYearModel>>.success(data: questionPaperYears);
     } catch (_) {
-      return ApiResponse(isError: true, errorMessage: "Error while fetching question papers");
+      return ApiResponse.error(errorMessage: "Error while fetching question papers");
     }
   }
 

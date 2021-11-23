@@ -33,9 +33,9 @@ class JournalRepository {
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
-      return ApiResponse<String>(isError: false, data: url);
+      return ApiResponse<String>.success(data: url);
     } on storage.FirebaseException catch (_) {
-      return ApiResponse(isError: false, errorMessage: "Couldn't upload journal to storage");
+      return ApiResponse.error(errorMessage: "Couldn't upload journal to storage");
     }
   }
 
@@ -54,7 +54,7 @@ class JournalRepository {
       firestore.QuerySnapshot journalSnapshot = await journalCollectionReference.get();
 
       if (journalSnapshot.docs.length >= AppConstants.maxJournals) {
-        return ApiResponse(isError: true, errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
+        return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
       }
 
       ApiResponse uploadResponse = await uploadJournal(document: document, course: course, semester: semester, subject: subject, version: version);
@@ -68,10 +68,10 @@ class JournalRepository {
           user: user, documentUrl: documentUrl
       ));
 
-      return ApiResponse(isError: false,);
+      return ApiResponse.success();
 
     } catch (err) {
-      return ApiResponse(isError: true, errorMessage: "There was an error while setting question paper: $err");
+      return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
     }
 
   }
@@ -102,10 +102,10 @@ class JournalRepository {
           journalModels: journals,
         ));
       });
-      return ApiResponse<List<JournalSubjectModel>>(isError: false, data: journalSubjects);
+      return ApiResponse<List<JournalSubjectModel>>.success(data: journalSubjects);
     } catch (e) {
       print("ERR: $e");
-      return ApiResponse(isError: true, errorMessage: "Error while fetching journals");
+      return ApiResponse.error(errorMessage: "Error while fetching journals");
     }
   }
 

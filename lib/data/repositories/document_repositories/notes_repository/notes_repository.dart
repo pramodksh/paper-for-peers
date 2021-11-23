@@ -33,9 +33,9 @@ class NotesRepository {
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
-      return ApiResponse<String>(isError: false, data: url);
+      return ApiResponse<String>.success(data: url);
     } on storage.FirebaseException catch (_) {
-      return ApiResponse(isError: false, errorMessage: "Couldn't upload notes to storage");
+      return ApiResponse.error(errorMessage: "Couldn't upload notes to storage");
     }
   }
 
@@ -61,9 +61,9 @@ class NotesRepository {
 
       String documentUrl = uploadResponse.data;
       await notesCollection.doc().set(NotesModel.toFirestoreMap(documentUrl: documentUrl, user: user, title: title, description: description));
-      return ApiResponse(isError: false,);
+      return ApiResponse.success();
     } catch (err) {
-      return ApiResponse(isError: true, errorMessage: "There was an error while setting notes: $err");
+      return ApiResponse.error(errorMessage: "There was an error while setting notes: $err");
     }
   }
 
@@ -90,9 +90,9 @@ class NotesRepository {
           'rating': rating,
         });
       }
-      return ApiResponse(isError: false);
+      return ApiResponse.success();
     } catch (e) {
-      return ApiResponse(isError: true);
+      return ApiResponse.error(errorMessage: "There was some error while updating rating");
     }
 
   }
@@ -122,9 +122,9 @@ class NotesRepository {
           notesId: note.id,
         ));
       });
-      return ApiResponse<List<NotesModel>>(isError: false, data: notes);
+      return ApiResponse<List<NotesModel>>.success(data: notes);
     } catch (_) {
-      return ApiResponse(isError: true, errorMessage: "Error while fetching journals");
+      return ApiResponse.error(errorMessage: "Error while fetching journals");
     }
   }
   

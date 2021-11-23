@@ -28,7 +28,7 @@ class AuthRepository extends BaseAuthRepository {
         password: password,
       );
       print("EMAIL PASSWORD SIGN UP DONE | ${userCredential.user.toString()}");
-      return ApiResponse<UserModel>(isError: false, data: UserModel(
+      return ApiResponse<UserModel>.success(data: UserModel(
         uid: userCredential.user!.uid,
         email: userCredential.user!.email,
         photoUrl: userCredential.user!.photoURL,
@@ -36,14 +36,14 @@ class AuthRepository extends BaseAuthRepository {
       ));
     } on auth.FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return ApiResponse(isError: true, errorMessage: "The password provided is too weak");
+        return ApiResponse.error(errorMessage: "The password provided is too weak");
       } else if (e.code == 'email-already-in-use') {
-        return ApiResponse(isError: true, errorMessage: "The account already exists for that email");
+        return ApiResponse.error(errorMessage: "The account already exists for that email");
       } else {
-        return ApiResponse(isError: true, errorMessage: "Error signing in with email and password");
+        return ApiResponse.error(errorMessage: "Error signing in with email and password");
       }
     } catch (e) {
-      return ApiResponse(isError: true, errorMessage: "Error signing in with email and password");
+      return ApiResponse.error(errorMessage: "Error signing in with email and password");
     }
   }
 
@@ -55,7 +55,7 @@ class AuthRepository extends BaseAuthRepository {
         password: password,
       );
       print("EMAIL PASSWORD SIGN IN DONE | ${userCredential.user!.email}");
-      return ApiResponse<UserModel>(isError: false, data: UserModel(
+      return ApiResponse<UserModel>.success(data: UserModel(
         uid: userCredential.user!.uid,
         email: userCredential.user!.email,
         photoUrl: userCredential.user!.photoURL,
@@ -64,11 +64,11 @@ class AuthRepository extends BaseAuthRepository {
     } on auth.FirebaseAuthException catch (e) {
       print("SIGN In ERROR: $e");
       if (e.code == 'user-not-found') {
-        return ApiResponse(isError: true, errorMessage: "No user found for that email");
+        return ApiResponse.error(errorMessage: "No user found for that email");
       } else if (e.code == 'wrong-password') {
-        return ApiResponse(isError: true, errorMessage: "Wrong password provided for that user");
+        return ApiResponse.error(errorMessage: "Wrong password provided for that user");
       } else {
-        return ApiResponse(isError: true, errorMessage: "Error while signing in");
+        return ApiResponse.error(errorMessage: "Error while signing in");
       }
     }
   }
@@ -83,7 +83,7 @@ class AuthRepository extends BaseAuthRepository {
         idToken: googleSignInAuth.idToken,
       );
       auth.UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
-      return ApiResponse<UserModel>(isError: false, data: UserModel(
+      return ApiResponse<UserModel>.success(data: UserModel(
         uid: userCredential.user!.uid,
         email: userCredential.user!.email,
         displayName: userCredential.user!.displayName,
@@ -91,7 +91,7 @@ class AuthRepository extends BaseAuthRepository {
       ));
     } catch (e) {
       print("GOOGLE AUTH ERROR: $e");
-      return ApiResponse(isError: true, errorMessage: "There was some error while authenticating with Google");
+      return ApiResponse.error(errorMessage: "There was some error while authenticating with Google");
     }
   }
 

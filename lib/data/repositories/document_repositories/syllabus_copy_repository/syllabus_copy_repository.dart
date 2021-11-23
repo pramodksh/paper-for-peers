@@ -33,9 +33,9 @@ class SyllabusCopyRepository {
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
-      return ApiResponse<String>(isError: false, data: url);
+      return ApiResponse<String>.success(data: url);
     } on storage.FirebaseException catch (_) {
-      return ApiResponse(isError: false, errorMessage: "Couldn't upload syllabus copy to storage");
+      return ApiResponse.error(errorMessage: "Couldn't upload syllabus copy to storage");
     }
   }
 
@@ -53,7 +53,7 @@ class SyllabusCopyRepository {
       firestore.QuerySnapshot syllabusCopySnapshot = await syllabusCopyCollection.get();
 
       if (syllabusCopySnapshot.docs.length >= AppConstants.maxSyllabusCopy) {
-        return ApiResponse(isError: true, errorMessage: "The course $course $semester has the maximum syllabus copies. Please refresh to view them");
+        return ApiResponse.error(errorMessage: "The course $course $semester has the maximum syllabus copies. Please refresh to view them");
       }
 
       ApiResponse uploadResponse = await uploadSyllabusCopy(document: document, course: course, semester: semester, version: version);
@@ -65,10 +65,10 @@ class SyllabusCopyRepository {
       String documentUrl = uploadResponse.data;
       await syllabusCopyCollection.doc(version.toString()).set(SyllabusCopyModel.toFirestoreMap(documentUrl: documentUrl, user: user));
 
-      return ApiResponse(isError: false,);
+      return ApiResponse.success();
 
     } catch (err) {
-      return ApiResponse(isError: true, errorMessage: "There was an error while setting question paper: $err");
+      return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
     }
 
   }
@@ -92,10 +92,10 @@ class SyllabusCopyRepository {
         ));
       });
 
-      return ApiResponse<List<SyllabusCopyModel>>(isError: false, data: syllabusCopies);
+      return ApiResponse<List<SyllabusCopyModel>>.success(data: syllabusCopies);
     } catch (e) {
       print("ERR: $e");
-      return ApiResponse(isError: true, errorMessage: "Error while fetching journals");
+      return ApiResponse.error(errorMessage: "Error while fetching journals");
     }
   }
 }

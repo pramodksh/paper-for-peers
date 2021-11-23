@@ -17,11 +17,11 @@ class FirebaseStorageRepository {
       await ref.putFile(file);
       print("UPLOADED");
       String url = await ref.getDownloadURL();
-      return ApiResponse<String>(isError: false, data: url);
+      return ApiResponse<String>.success(data: url);
     } on storage.FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
       print("FILE UPLOAD ERROR: $e");
-      return ApiResponse(isError: false, errorMessage: "Couldn't upload data");
+      return ApiResponse.error(errorMessage: "Couldn't upload data");
     }
   }
 }

@@ -33,9 +33,9 @@ class TextBookRepository {
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
-      return ApiResponse<String>(isError: false, data: url);
+      return ApiResponse<String>.success(data: url);
     } on storage.FirebaseException catch (_) {
-      return ApiResponse(isError: false, errorMessage: "Couldn't upload text book to storage");
+      return ApiResponse.error(errorMessage: "Couldn't upload text book to storage");
     }
   }
 
@@ -54,7 +54,7 @@ class TextBookRepository {
       firestore.QuerySnapshot journalSnapshot = await textBookCollectionReference.get();
 
       if (journalSnapshot.docs.length >= AppConstants.maxTextBooks) {
-        return ApiResponse(isError: true, errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
+        return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
       }
 
       ApiResponse uploadResponse = await uploadTextBook(document: document, course: course, semester: semester, subject: subject, version: version);
@@ -66,10 +66,10 @@ class TextBookRepository {
       String documentUrl = uploadResponse.data;
       await textBookCollectionReference.doc(version.toString()).set(TextBookModel.toFirestoreMap(documentUrl: documentUrl, user: user));
 
-      return ApiResponse(isError: false,);
+      return ApiResponse.success();
 
     } catch (err) {
-      return ApiResponse(isError: true, errorMessage: "There was an error while setting question paper: $err");
+      return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
     }
 
   }
@@ -100,9 +100,9 @@ class TextBookRepository {
           textBookModels: textBooks,
         ));
       });
-      return ApiResponse<List<TextBookSubjectModel>>(isError: false, data: textBookSubjects);
+      return ApiResponse<List<TextBookSubjectModel>>.success(data: textBookSubjects);
     } catch (_) {
-      return ApiResponse(isError: true, errorMessage: "Error while fetching textBooks");
+      return ApiResponse.error(errorMessage: "Error while fetching textBooks");
     }
   }
 

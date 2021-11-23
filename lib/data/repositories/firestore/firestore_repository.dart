@@ -42,9 +42,9 @@ class FirestoreRepository {
         UserModel.courseLabel: user.course?.courseName,
         UserModel.semesterLabel: user.semester?.nSemester,
       });
-      return ApiResponse(isError: false);
+      return ApiResponse.success();
     } catch (err) {
-      return ApiResponse(isError: true, errorMessage: "Failed to add user: ERR: $err");
+      return ApiResponse.error(errorMessage: "Failed to add user: ERR: $err");
     }
   }
 

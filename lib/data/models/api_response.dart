@@ -1,9 +1,14 @@
 
 // todo change to named constructor (.error, .success)
 class ApiResponse<Type> {
-  Type? data;
+
   bool isError;
+  Type? data;
   String? errorMessage;
 
-  ApiResponse({this.data, this.errorMessage, required this.isError});
+  ApiResponse._({this.data, this.errorMessage, required this.isError});
+
+  ApiResponse.success({Type? data}) : this._(isError: false, data: data);
+
+  ApiResponse.error({required String errorMessage}) : this._(isError: true, errorMessage: errorMessage);
 }
