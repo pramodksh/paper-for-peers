@@ -70,7 +70,9 @@ class QuestionPaper extends StatelessWidget {
     required AppThemeType appThemeType,
     bool isWidgetLoading = false,
   }) {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       children: [
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -180,8 +182,19 @@ class QuestionPaper extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: SingleChildScrollView(
-          child: Column(
+        child: RefreshIndicator(
+          onRefresh: questionPaperState.selectedSubject == null ? () async {
+            showAlertDialog(context: context, text: "Select subject to refresh");
+          } : () async {
+            if (userState is UserLoaded) {
+              context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
+                  course: userState.userModel.course!.courseName!,
+                  semester: userState.userModel.semester!.nSemester!,
+                  subject: questionPaperState.selectedSubject!
+              ));
+            }
+          },
+          child: ListView(
             children: [
               SizedBox(height: 10,),
               Builder(
@@ -217,96 +230,79 @@ class QuestionPaper extends StatelessWidget {
                   }
               ),
               SizedBox(height: 30,),
+              Builder(
+                builder: (context) {
 
-              RefreshIndicator(
-                onRefresh: questionPaperState.selectedSubject == null ? () async {
-                  showAlertDialog(context: context, text: "Select subject to refresh");
-                } : () async {
-                  if (userState is UserLoaded) {
-                    context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
-                        course: userState.userModel.course!.courseName!,
-                        semester: userState.userModel.semester!.nSemester!,
-                        subject: questionPaperState.selectedSubject!
-                    ));
+                  if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+                    );
+                  } else if (questionPaperState is QuestionPaperFetchLoading) {
+                    return SkeletonLoader(
+                      appThemeType: appThemeType,
+                      child: _getQuestionPaperListWidget(
+                        isWidgetLoading: true,
+                        questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
+                            year: DateTime.now().year - index,
+                            questionPaperModels: List.generate(2, (index) => QuestionPaperModel(
+                                documentUrl: "",
+                                uploadedOn: DateTime.now(),
+                                userEmail: "",
+                                userProfilePhotoUrl: "",
+                                userUid: "",
+                                version: 0,
+                                uploadedBy: ""
+                            ))
+                        )),
+                        isDarkTheme: appThemeType.isDarkTheme(),
+                        questionPaperState: questionPaperState,
+                        userState: userState,
+                        context: context,
+                        appThemeType: appThemeType,
+                      ),
+                    );
+                  } else if (questionPaperState is QuestionPaperFetchSuccess) {
+                    return _getQuestionPaperListWidget(
+                      questionPaperYears: questionPaperState.questionPaperYears,
+                      isDarkTheme: appThemeType.isDarkTheme(),
+                      questionPaperState: questionPaperState,
+                      userState: userState,
+                      context: context,
+                      appThemeType: appThemeType,
+                    );
+                  } else if (questionPaperState is QuestionPaperAddLoading) {
+                    return _getQuestionPaperListWidget(
+                      appThemeType: appThemeType,
+                      questionPaperYears:  questionPaperState.questionPaperYears,
+                      isDarkTheme: appThemeType.isDarkTheme(),
+                      questionPaperState: questionPaperState,
+                      userState: userState,
+                      context: context,
+                    );
+                  } else if (questionPaperState is QuestionPaperAddError) {
+                    return _getQuestionPaperListWidget(
+                      appThemeType: appThemeType,
+                      questionPaperYears:  questionPaperState.questionPaperYears,
+                      isDarkTheme: appThemeType.isDarkTheme(),
+                      questionPaperState: questionPaperState,
+                      userState: userState,
+                      context: context,
+                    );
+                  } else if (questionPaperState is QuestionPaperAddSuccess) {
+                    return _getQuestionPaperListWidget(
+                      appThemeType: appThemeType,
+                      questionPaperYears:  questionPaperState.questionPaperYears,
+                      isDarkTheme: appThemeType.isDarkTheme(),
+                      questionPaperState: questionPaperState,
+                      userState: userState,
+                      context: context,
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator.adaptive(),);
                   }
                 },
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Builder(
-                    builder: (context) {
-
-                      if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
-                        return Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
-                        );
-                      } else if (questionPaperState is QuestionPaperFetchLoading) {
-                        return SkeletonLoader(
-                          appThemeType: appThemeType,
-                          child: _getQuestionPaperListWidget(
-                            isWidgetLoading: true,
-                            questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
-                                year: DateTime.now().year - index,
-                                questionPaperModels: List.generate(2, (index) => QuestionPaperModel(
-                                    documentUrl: "",
-                                    uploadedOn: DateTime.now(),
-                                    userEmail: "",
-                                    userProfilePhotoUrl: "",
-                                    userUid: "",
-                                    version: 0,
-                                    uploadedBy: ""
-                                ))
-                            )),
-                            isDarkTheme: appThemeType.isDarkTheme(),
-                            questionPaperState: questionPaperState,
-                            userState: userState,
-                            context: context,
-                            appThemeType: appThemeType,
-                          ),
-                        );
-                      } else if (questionPaperState is QuestionPaperFetchSuccess) {
-                        return _getQuestionPaperListWidget(
-                          questionPaperYears: questionPaperState.questionPaperYears,
-                          isDarkTheme: appThemeType.isDarkTheme(),
-                          questionPaperState: questionPaperState,
-                          userState: userState,
-                          context: context,
-                          appThemeType: appThemeType,
-                        );
-                      } else if (questionPaperState is QuestionPaperAddLoading) {
-                        return _getQuestionPaperListWidget(
-                          appThemeType: appThemeType,
-                          questionPaperYears:  questionPaperState.questionPaperYears,
-                          isDarkTheme: appThemeType.isDarkTheme(),
-                          questionPaperState: questionPaperState,
-                          userState: userState,
-                          context: context,
-                        );
-                      } else if (questionPaperState is QuestionPaperAddError) {
-                        return _getQuestionPaperListWidget(
-                          appThemeType: appThemeType,
-                          questionPaperYears:  questionPaperState.questionPaperYears,
-                          isDarkTheme: appThemeType.isDarkTheme(),
-                          questionPaperState: questionPaperState,
-                          userState: userState,
-                          context: context,
-                        );
-                      } else if (questionPaperState is QuestionPaperAddSuccess) {
-                        return _getQuestionPaperListWidget(
-                          appThemeType: appThemeType,
-                          questionPaperYears:  questionPaperState.questionPaperYears,
-                          isDarkTheme: appThemeType.isDarkTheme(),
-                          questionPaperState: questionPaperState,
-                          userState: userState,
-                          context: context,
-                        );
-                      } else {
-                        return Center(child: CircularProgressIndicator.adaptive(),);
-                      }
-                    },
-                  ),
-                ),
               ),
             ],
           ),

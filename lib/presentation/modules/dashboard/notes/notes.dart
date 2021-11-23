@@ -143,46 +143,65 @@ class Notes extends StatelessWidget {
                     }
                 ),
                 SizedBox(height: 20,),
-                Builder(
-                  builder: (context) {
-                    if (notesState.selectedSubject == null) {
-                      return Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+
+                RefreshIndicator(
+                  onRefresh: notesState.selectedSubject == null ? () async {
+                    showAlertDialog(context: context, text: "Select subject to refresh");
+                  } : () async {
+                    if (userState is UserLoaded) {
+                      context.read<NotesBloc>().add(
+                          NotesFetch(
+                              course: userState.userModel.course!.courseName!,
+                              semester: userState.userModel.semester!.nSemester!,
+                              subject: notesState.selectedSubject!
+                          )
                       );
-                    } else if (notesState is NotesFetchLoading) {
-                      return SkeletonLoader(
-                        appThemeType: appThemeType,
-                        child: _getNotesListWidget(
-                          context: context,
-                          appThemeType: appThemeType,
-                          userState: userState,
-                          notesState: notesState,
-                          isWidgetLoading: true,
-                          notes: List.generate(3, (index) => NotesModel(
-                            uploadedBy: "",
-                            userUid: "",
-                            userProfilePhotoUrl: "",
-                            userEmail: "",
-                            uploadedOn: DateTime.now(),
-                            documentUrl: "",
-                            title: "",
-                            description: "",
-                            rating: 0,
-                          ),),
-                        ),
-                      );
-                    } else if (notesState is NotesFetchSuccess) {
-                      return _getNotesListWidget(
-                        notes: notesState.notes, notesState: notesState, userState: userState,
-                        appThemeType: appThemeType, context: context,
-                      );
-                    } else if (notesState is NotesFetchError) {
-                      return Container();
                     }
-                    return Container();
                   },
+                  child: SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Builder(
+                      builder: (context) {
+                        if (notesState.selectedSubject == null) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+                          );
+                        } else if (notesState is NotesFetchLoading) {
+                          return SkeletonLoader(
+                            appThemeType: appThemeType,
+                            child: _getNotesListWidget(
+                              context: context,
+                              appThemeType: appThemeType,
+                              userState: userState,
+                              notesState: notesState,
+                              isWidgetLoading: true,
+                              notes: List.generate(3, (index) => NotesModel(
+                                uploadedBy: "",
+                                userUid: "",
+                                userProfilePhotoUrl: "",
+                                userEmail: "",
+                                uploadedOn: DateTime.now(),
+                                documentUrl: "",
+                                title: "",
+                                description: "",
+                                rating: 0,
+                              ),),
+                            ),
+                          );
+                        } else if (notesState is NotesFetchSuccess) {
+                          return _getNotesListWidget(
+                            notes: notesState.notes, notesState: notesState, userState: userState,
+                            appThemeType: appThemeType, context: context,
+                          );
+                        } else if (notesState is NotesFetchError) {
+                          return Container();
+                        }
+                        return Container();
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
