@@ -51,7 +51,8 @@ class Notes extends StatelessWidget {
                 double rating = ratingDetails['rating'];
                 if (userState is UserLoaded) {
                   context.read<NotesBloc>().add(NotesRatingChanged(
-                    user: userState.userModel,
+                    ratingAcceptedUserId: notes[index].userUid,
+                    ratingGivenUser: userState.userModel,
                     rating: rating,
                     noteId: notes[index].noteId,
                     subject: notesState.selectedSubject!,

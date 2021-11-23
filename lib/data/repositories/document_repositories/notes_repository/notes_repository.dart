@@ -99,9 +99,9 @@ class NotesRepository {
 
   }
 
-  Future<ApiResponse> addRatingToUser({required UserModel user, required double rating, required String noteId}) async {
+  Future<ApiResponse> addRatingToUser({required String ratingAcceptedUserId, required double rating, required String noteId}) async {
     try {
-      firestore.DocumentSnapshot userDocumentSnapshot = await _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel).doc(user.uid).get();
+      firestore.DocumentSnapshot userDocumentSnapshot = await _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel).doc(ratingAcceptedUserId).get();
       firestore.DocumentSnapshot ratingSnapshot = await userDocumentSnapshot.reference.collection(FirebaseCollectionConfig.ratingCollectionLabel).doc(noteId).get();
 
       if(ratingSnapshot.exists) {

@@ -83,7 +83,8 @@ class NotesResetToNotesFetch extends NotesEvent {
 
 class NotesRatingChanged extends NotesEvent {
 
-  final UserModel user;
+  final String ratingAcceptedUserId;
+  final UserModel ratingGivenUser;
   final String noteId;
   final double rating;
   final String course;
@@ -91,10 +92,11 @@ class NotesRatingChanged extends NotesEvent {
   final String subject;
 
   @override
-  List<Object?> get props => [rating, noteId, user, rating, course, semester, subject];
+  List<Object?> get props => [rating, noteId, ratingGivenUser, rating, course, semester, subject, ratingAcceptedUserId];
 
   const NotesRatingChanged({
-    required this.user,
+    required this.ratingAcceptedUserId,
+    required this.ratingGivenUser,
     required this.course,
     required this.semester,
     required this.subject,
