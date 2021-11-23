@@ -69,6 +69,13 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
             selectedSubject: event.subject, title: event.title,
             description: event.description, file: event.file,
           ));
+          add(
+              NotesFetch(
+                  course: event.user.course!.courseName!,
+                  semester: event.user.semester!.nSemester!,
+                  subject: event.subject,
+              )
+          );
         }
       }
     });

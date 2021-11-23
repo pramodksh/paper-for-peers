@@ -21,7 +21,9 @@ class Notes extends StatelessWidget {
     required NotesState notesState, required UserState userState,
     required AppThemeType appThemeType, required BuildContext context,
   }) {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       children: [
         ListView.builder(
           shrinkWrap: true,
@@ -67,17 +69,6 @@ class Notes extends StatelessWidget {
                     user: userState.userModel,
                   ),
                 ));
-
-                if (isRefresh == true) {
-                  context.read<NotesBloc>().add(
-                      NotesFetch(
-                          course: userState.userModel.course!.courseName!,
-                          semester: userState.userModel.semester!.nSemester!,
-                          subject: notesState.selectedSubject!
-                      )
-                  );
-                }
-
               }
 
             },
@@ -93,8 +84,8 @@ class Notes extends StatelessWidget {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
-    final NotesState notesState = context.select((NotesBloc bloc) => bloc.state);
-
+    // final NotesState notesState = context.select((NotesBloc bloc) => bloc.state);
+    final NotesState notesState = context.watch<NotesBloc>().state;
     return BlocListener<NotesBloc, NotesState>(
       listener: (context, state) {
         if (state is NotesFetchError) {
@@ -106,8 +97,21 @@ class Notes extends StatelessWidget {
       },
       child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: SingleChildScrollView(
-            child: Column(
+          child: RefreshIndicator(
+            onRefresh: notesState.selectedSubject == null ? () async {
+              showAlertDialog(context: context, text: "Select subject to refresh");
+            } : () async {
+              if (userState is UserLoaded) {
+                context.read<NotesBloc>().add(
+                    NotesFetch(
+                        course: userState.userModel.course!.courseName!,
+                        semester: userState.userModel.semester!.nSemester!,
+                        subject: notesState.selectedSubject!
+                    )
+                );
+              }
+            },
+            child: ListView(
               children: [
                 SizedBox(height: 10,),
                 Builder(
@@ -144,64 +148,46 @@ class Notes extends StatelessWidget {
                 ),
                 SizedBox(height: 20,),
 
-                RefreshIndicator(
-                  onRefresh: notesState.selectedSubject == null ? () async {
-                    showAlertDialog(context: context, text: "Select subject to refresh");
-                  } : () async {
-                    if (userState is UserLoaded) {
-                      context.read<NotesBloc>().add(
-                          NotesFetch(
-                              course: userState.userModel.course!.courseName!,
-                              semester: userState.userModel.semester!.nSemester!,
-                              subject: notesState.selectedSubject!
-                          )
+                Builder(
+                  builder: (context) {
+                    if (notesState.selectedSubject == null) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
                       );
+                    } else if (notesState is NotesFetchLoading) {
+                      return SkeletonLoader(
+                        appThemeType: appThemeType,
+                        child: _getNotesListWidget(
+                          context: context,
+                          appThemeType: appThemeType,
+                          userState: userState,
+                          notesState: notesState,
+                          isWidgetLoading: true,
+                          notes: List.generate(3, (index) => NotesModel(
+                            uploadedBy: "",
+                            userUid: "",
+                            userProfilePhotoUrl: "",
+                            userEmail: "",
+                            uploadedOn: DateTime.now(),
+                            documentUrl: "",
+                            title: "",
+                            description: "",
+                            rating: 0,
+                          ),),
+                        ),
+                      );
+                    } else if (notesState is NotesFetchSuccess) {
+                      return _getNotesListWidget(
+                        notes: notesState.notes, notesState: notesState, userState: userState,
+                        appThemeType: appThemeType, context: context,
+                      );
+                    } else if (notesState is NotesFetchError) {
+                      return Container();
                     }
+                    return Container();
                   },
-                  child: SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    child: Builder(
-                      builder: (context) {
-                        if (notesState.selectedSubject == null) {
-                          return Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
-                          );
-                        } else if (notesState is NotesFetchLoading) {
-                          return SkeletonLoader(
-                            appThemeType: appThemeType,
-                            child: _getNotesListWidget(
-                              context: context,
-                              appThemeType: appThemeType,
-                              userState: userState,
-                              notesState: notesState,
-                              isWidgetLoading: true,
-                              notes: List.generate(3, (index) => NotesModel(
-                                uploadedBy: "",
-                                userUid: "",
-                                userProfilePhotoUrl: "",
-                                userEmail: "",
-                                uploadedOn: DateTime.now(),
-                                documentUrl: "",
-                                title: "",
-                                description: "",
-                                rating: 0,
-                              ),),
-                            ),
-                          );
-                        } else if (notesState is NotesFetchSuccess) {
-                          return _getNotesListWidget(
-                            notes: notesState.notes, notesState: notesState, userState: userState,
-                            appThemeType: appThemeType, context: context,
-                          );
-                        } else if (notesState is NotesFetchError) {
-                          return Container();
-                        }
-                        return Container();
-                      },
-                    ),
-                  ),
                 ),
               ],
             ),
