@@ -4,7 +4,7 @@ abstract class KudNotificationsEvent extends Equatable {
   const KudNotificationsEvent();
 }
 
-class KudNotificationsFetched extends KudNotificationsEvent {
+class KudNotificationsFetch extends KudNotificationsEvent {
   @override
   List<Object?> get props => [];
 }

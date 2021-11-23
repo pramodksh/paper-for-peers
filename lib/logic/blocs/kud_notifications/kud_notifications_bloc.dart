@@ -54,7 +54,7 @@ class KudNotificationsBloc extends Bloc<KudNotificationsEvent, KudNotificationsS
   }
 
   KudNotificationsBloc() : super(KudNotificationsInitial()) {
-    on<KudNotificationsFetched>((event, emit) async {
+    on<KudNotificationsFetch>((event, emit) async {
       emit(KudNotificationsFetchLoading());
       List<NotificationModel>? notifications =  await getKudNotificationsFromWeb();
 

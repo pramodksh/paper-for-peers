@@ -100,7 +100,7 @@ class Notifications extends StatelessWidget {
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () {
-        context.read<KudNotificationsBloc>().add(KudNotificationsFetched());
+        context.read<KudNotificationsBloc>().add(KudNotificationsFetch());
         return Future.value(true);
       },
       child: Scaffold(
@@ -109,6 +109,10 @@ class Notifications extends StatelessWidget {
           builder: (context) {
             KudNotificationsState kudNotificationsState = context.watch<KudNotificationsBloc>().state;
             AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
+
+            if (kudNotificationsState is KudNotificationsInitial) {
+              context.read<KudNotificationsBloc>().add(KudNotificationsFetch());
+            }
 
             if (kudNotificationsState is KudNotificationsFetchLoading) {
               return LoadingScreen(loadingText: "Loading URL - ${AppConstants.KUDNotificationsURL}",);
