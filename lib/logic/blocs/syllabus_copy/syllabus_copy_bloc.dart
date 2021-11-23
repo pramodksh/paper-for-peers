@@ -38,6 +38,10 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
           emit(SyllabusCopyAddError(errorMessage: uploadAndAddResponse.errorMessage!, syllabusCopies: event.syllabusCopies));
         } else {
           emit(SyllabusCopyAddSuccess(syllabusCopies: event.syllabusCopies));
+          add(SyllabusCopyFetch(
+            course: event.user.course!.courseName!,
+            semester: event.user.semester!.nSemester!,
+          ));
         }
 
       }

@@ -24,7 +24,9 @@ class SyllabusCopy extends StatelessWidget {
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-      child: Column(
+      child: ListView(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         children: [
           SizedBox(height: 30,),
           Text("Syllabus Copy", style: TextStyle(fontSize: 25),),
@@ -99,10 +101,8 @@ class SyllabusCopy extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
-    final SyllabusCopyState syllabusCopyState = context.select((SyllabusCopyBloc bloc) => bloc.state);
-    AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
-
-    print("CHECKK: ${syllabusCopyState}");
+    final SyllabusCopyState syllabusCopyState = context.watch<SyllabusCopyBloc>().state;
+    final AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
 
     if (syllabusCopyState is SyllabusCopyInitial) {
       if (userState is UserLoaded)
@@ -119,63 +119,79 @@ class SyllabusCopy extends StatelessWidget {
         }
         if (state is SyllabusCopyAddSuccess) {
           showAlertDialog(context: context, text: "Syllabus Copy successfully updated");
-          if (userState is UserLoaded)
+        }
+      },
+      child: RefreshIndicator(
+        onRefresh: () async {
+          if (userState is UserLoaded) {
             context.read<SyllabusCopyBloc>().add(SyllabusCopyFetch(
               course: userState.userModel.course!.courseName!,
               semester: userState.userModel.semester!.nSemester!,
             ));
-        }
-      },
-      child: Builder(
-        builder: (context) {
-
-          if (syllabusCopyState is SyllabusCopyFetchLoading) {
-            return SkeletonLoader(
-              appThemeType: appThemeState.appThemeType,
-              child: _getSyllabusCopyListWidget(
-                syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
-                  version: index,
-                  uploadedBy: "",
-                  userUid: "",
-                  userProfilePhotoUrl: "",
-                  userEmail: "",
-                  uploadedOn: DateTime.now(),
-                  documentUrl: "",
-                )),
-                isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
-                userState: userState,
-                syllabusCopyState: syllabusCopyState,
-              ),
-            );
-          } else if (syllabusCopyState is SyllabusCopyFetchSuccess) {
-            List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
-            return _getSyllabusCopyListWidget(
-              syllabusCopies: syllabusCopies,
-              isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
-              userState: userState,
-              syllabusCopyState: syllabusCopyState,
-            );
-          } else if (syllabusCopyState is SyllabusCopyAddError) {
-            List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
-            return _getSyllabusCopyListWidget(
-              syllabusCopies: syllabusCopies,
-              isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
-              userState: userState,
-              syllabusCopyState: syllabusCopyState,
-            );
-          } else if (syllabusCopyState is SyllabusCopyAddSuccess) {
-            List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
-            return _getSyllabusCopyListWidget(
-              syllabusCopies: syllabusCopies,
-              isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
-              userState: userState,
-              syllabusCopyState: syllabusCopyState,
-            );
-          } else {
-            return Center(child: CircularProgressIndicator.adaptive(),);
           }
-
         },
+        child: ListView(
+          children: [
+            Builder(
+              builder: (context) {
+                if (syllabusCopyState is SyllabusCopyFetchLoading) {
+                  return SkeletonLoader(
+                    appThemeType: appThemeState.appThemeType,
+                    child: _getSyllabusCopyListWidget(
+                      syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
+                        version: index,
+                        uploadedBy: "",
+                        userUid: "",
+                        userProfilePhotoUrl: "",
+                        userEmail: "",
+                        uploadedOn: DateTime.now(),
+                        documentUrl: "",
+                      )),
+                      isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
+                      userState: userState,
+                      syllabusCopyState: syllabusCopyState,
+                    ),
+                  );
+                } else if (syllabusCopyState is SyllabusCopyAddLoading) {
+                  List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
+                  return _getSyllabusCopyListWidget(
+                    syllabusCopies: syllabusCopies,
+                    isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
+                    userState: userState,
+                    syllabusCopyState: syllabusCopyState,
+                  );
+                } else if (syllabusCopyState is SyllabusCopyFetchSuccess) {
+                  List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
+                  return _getSyllabusCopyListWidget(
+                    syllabusCopies: syllabusCopies,
+                    isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
+                    userState: userState,
+                    syllabusCopyState: syllabusCopyState,
+                  );
+                } else if (syllabusCopyState is SyllabusCopyAddError) {
+                  List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
+                  return _getSyllabusCopyListWidget(
+                    syllabusCopies: syllabusCopies,
+                    isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
+                    userState: userState,
+                    syllabusCopyState: syllabusCopyState,
+                  );
+                } else if (syllabusCopyState is SyllabusCopyAddSuccess) {
+                  List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
+                  return _getSyllabusCopyListWidget(
+                    syllabusCopies: syllabusCopies,
+                    isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
+                    userState: userState,
+                    syllabusCopyState: syllabusCopyState,
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator.adaptive(),);
+                }
+
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
