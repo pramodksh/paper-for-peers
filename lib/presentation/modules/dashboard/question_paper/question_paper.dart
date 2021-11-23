@@ -82,7 +82,7 @@ class QuestionPaper extends StatelessWidget {
           onPressed: () {
             // todo implement compare question paper
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ShowSplitOptions(),
+              builder: (context) => ShowSplitOptions(questionPaperYears: questionPaperYears,),
             ));
           },
           child: Text("Compare Question Papers", style: TextStyle(fontSize: 18),),

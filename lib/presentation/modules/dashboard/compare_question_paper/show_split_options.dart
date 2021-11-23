@@ -2,24 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/data/models/api_response.dart';
+import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
+import 'package:papers_for_peers/logic/blocs/question_paper/question_paper_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_pdf.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
 
 class ShowSplitOptions extends StatefulWidget {
+  final List<QuestionPaperYearModel> questionPaperYears;
+
+
+
   @override
   _ShowSplitOptionsState createState() => _ShowSplitOptionsState();
+
+  const ShowSplitOptions({
+    required this.questionPaperYears,
+  });
 }
 
 class _ShowSplitOptionsState extends State<ShowSplitOptions> {
-  List<String> subjects = [
-    "A",
-    "B",
-    "C",
-  ];
 
-  String? selectedSubject;
 
   List<Map> splitOptions= [
     {'image': DefaultAssets.splitIntoTwo, 'label': "2 Splits"},
@@ -33,6 +41,8 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
   Widget build(BuildContext context) {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+    final UserState userState = context.select((UserCubit cubit) => cubit.state);
+    final QuestionPaperState questionPaperState = context.watch<QuestionPaperBloc>().state;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,18 +54,11 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
           // crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            getCustomDropDown<String>(
-              context: context,
-              dropDownHint: "Subject",
-              dropDownItems: subjects,
-              dropDownValue: selectedSubject,
-              onDropDownChanged: (val) {
-                setState(() {
-                  selectedSubject = val;
-                });
-              },
+            Text(
+              "How many Question Papers you want to Compare?",
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
             ),
-            Text("How many Question Papers you want to Compare?"),
             Container(
                 // color: Colors.red,
                 child: Row(
@@ -105,8 +108,10 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ShowSplitPdf(numberOfSplits: selectedItemPosition + 2,),
-
+                  builder: (context) => ShowSplitPdf(
+                    numberOfSplits: selectedItemPosition + 2,
+                    questionPaperYears: widget.questionPaperYears,
+                  ),
                 ));
               },
               child: Text("Apply"),
