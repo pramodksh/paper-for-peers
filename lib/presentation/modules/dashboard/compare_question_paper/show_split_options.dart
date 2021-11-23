@@ -41,8 +41,6 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
   Widget build(BuildContext context) {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
-    final UserState userState = context.select((UserCubit cubit) => cubit.state);
-    final QuestionPaperState questionPaperState = context.watch<QuestionPaperBloc>().state;
 
     return Scaffold(
       appBar: AppBar(
