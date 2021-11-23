@@ -5,7 +5,7 @@ class DefaultAssets {
   static const String welcomeScreen1Path = "assets/images/welcomeScreen1.png";
   static const String welcomeScreen2Path = "assets/images/welcomeScreen2.png";
   static const String lockImagePath = "assets/images/lock-image.png";
-  static const String profileImagePath = "assets/images/profile_image.jpg";
+  static const String profileImagePath = "assets/images/profile_image.jpg"; // todo delete
 
   // logos
   static const googleIconPath = "assets/logo/google-icon.png";

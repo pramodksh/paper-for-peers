@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
@@ -5,9 +6,11 @@ import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_notes.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/your_posts/your_posts.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
 
 enum TypesOfPost {
@@ -40,15 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     { "label": "Syllabus Copy", "enum": TypesOfPost.SyllabusCopy },
   ];
 
-  // List<String> typesOfPosts = [
-  //   "Question Paper",
-  //   "Notes",
-  //   "Journal",
-  //   "Syllabus Copy",
-  // ];
-
-
-  Widget getCircularProfileImage({required imagePath}) {
+  Widget _getCircularProfileImage({required String? url, required String username}) {
     return Container(
       padding: EdgeInsets.all(borderThickness),
       decoration: BoxDecoration(
@@ -63,9 +58,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-      child: CircleAvatar(
+      child: url == null ? CircleAvatar(
         radius: profileImageRadius,
-        backgroundImage: AssetImage(imagePath),
+        child: Text(getUserNameForProfilePhoto(username), style: TextStyle(fontSize: 50),),
+      ) : CachedNetworkImage(
+        imageUrl: url,
+        imageBuilder: (context, imageProvider) {
+          return CircleAvatar(
+            radius: profileImageRadius,
+            backgroundImage: imageProvider,
+          );
+        },
       ),
     );
   }
@@ -194,6 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+    final UserState userState = context.select((UserCubit cubit) => cubit.state);
 
     return Scaffold(
       appBar: AppBar(
@@ -204,20 +208,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
-                height: 30,
+
+              Builder(
+                builder: (context) {
+                  if (userState is UserLoaded) {
+                    return Container(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 30,),
+                          _getCircularProfileImage(url: userState.userModel.photoUrl, username: userState.userModel.displayName!),
+                          SizedBox(height: 20,),
+                          Text(userState.userModel.displayName!, style: TextStyle(fontSize: 25),),
+                          SizedBox(height: 40,),
+                        ],
+                      ),
+                    );
+                  }
+                  return Container();
+                }
               ),
-              getCircularProfileImage(imagePath: DefaultAssets.profileImagePath),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'John Doe',
-                style: TextStyle(fontSize: 25),
-              ),
-              SizedBox(
-                height: 40,
-              ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
