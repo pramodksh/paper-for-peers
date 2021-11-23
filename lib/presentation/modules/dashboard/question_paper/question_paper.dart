@@ -169,15 +169,7 @@ class QuestionPaper extends StatelessWidget {
           showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is QuestionPaperAddSuccess) {
-          showAlertDialog(context: context, text: "Question Paper Added Successfully").then((value) {
-            if (userState is UserLoaded) {
-              context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
-                  course: userState.userModel.course!.courseName!,
-                  semester: userState.userModel.semester!.nSemester!,
-                  subject: questionPaperState.selectedSubject!
-              ));
-            }
-          });
+          showAlertDialog(context: context, text: "Question Paper Added Successfully");
         }
       },
       child: Container(

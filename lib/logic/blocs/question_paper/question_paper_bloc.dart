@@ -59,6 +59,11 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
           emit(QuestionPaperAddError(errorMessage: addResponse.errorMessage!, questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
         } else {
           emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
+          add(QuestionPaperFetch(
+              course: event.course,
+              semester: event.semester,
+              subject: event.subject,
+          ));
         }
       }
     });
