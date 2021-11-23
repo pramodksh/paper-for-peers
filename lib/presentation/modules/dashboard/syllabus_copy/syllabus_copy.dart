@@ -13,13 +13,8 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialog
 import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:provider/provider.dart';
 
-class SyllabusCopy extends StatefulWidget {
-  @override
-  _SyllabusCopyState createState() => _SyllabusCopyState();
-}
+class SyllabusCopy extends StatelessWidget {
 
-class _SyllabusCopyState extends State<SyllabusCopy> {
-  
   Widget _getSyllabusCopyListWidget({
     required List<SyllabusCopyModel> syllabusCopies,
     required bool isDarkTheme,

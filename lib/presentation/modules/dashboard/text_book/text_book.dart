@@ -16,15 +16,9 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 import 'package:provider/provider.dart';
 
 
-class TextBook extends StatefulWidget {
+class TextBook extends StatelessWidget {
 
-  @override
-  _TextBookState createState() => _TextBookState();
-}
-
-class _TextBookState extends State<TextBook> {
-
-  DateFormat dateFormat = DateFormat("dd MMMM yyyy");
+  final DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
   Widget _getTextBookVariantDetailsTile({
     required int nVariant, required DateTime uploadedOn, required String uploadedBy,
@@ -69,6 +63,7 @@ class _TextBookState extends State<TextBook> {
     required String subject, required List<TextBookModel> subjects,
     required AppThemeType appThemeType, required UserState userState,
     required Function() onTextBookAdd, required bool isAddTextBookLoading,
+    required BuildContext context
   }) {
 
     List<Widget> gridChildren = List.generate(subjects.length, (index) => _getTextBookVariantDetailsTile(
@@ -132,6 +127,7 @@ class _TextBookState extends State<TextBook> {
       itemCount: textBookSubjects.length,
       itemBuilder: (context, textbookSubjectIndex) {
         return _getTextBookTile(
+            context: context,
             isAddTextBookLoading: isAddTextBookLoading,
             subjects: textBookSubjects[textbookSubjectIndex].textBookModels,
             subject: textBookSubjects[textbookSubjectIndex].subject,

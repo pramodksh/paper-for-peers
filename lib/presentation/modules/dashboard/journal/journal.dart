@@ -16,15 +16,9 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 import 'package:provider/provider.dart';
 
 
-class Journal extends StatefulWidget {
+class Journal extends StatelessWidget {
 
-  @override
-  _JournalState createState() => _JournalState();
-}
-
-class _JournalState extends State<Journal> {
-
-  DateFormat dateFormat = DateFormat("dd MMMM yyyy");
+  final DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
   Widget _getJournalVariantDetailsTile({
     required int nVariant, required DateTime uploadedOn,
@@ -70,6 +64,7 @@ class _JournalState extends State<Journal> {
     required String subject, required List<JournalModel> journals,
     required AppThemeType appThemeType, required UserState userState,
     required Function() onJournalAdd, required bool isAddJournalLoading,
+    required BuildContext context,
   }) {
 
     List<Widget> gridChildren = List.generate(journals.length, (index) => _getJournalVariantDetailsTile(
@@ -133,6 +128,7 @@ class _JournalState extends State<Journal> {
       itemCount: journalSubjects.length,
       itemBuilder: (context, journalSubjectIndex) {
         return _getJournalTile(
+            context: context,
             isAddJournalLoading: isAddJournalLoading,
             journals: journalSubjects[journalSubjectIndex].journalModels,
             subject: journalSubjects[journalSubjectIndex].subject,

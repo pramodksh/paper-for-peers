@@ -15,13 +15,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilit
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-class QuestionPaper extends StatefulWidget {
-
-  @override
-  _QuestionPaperState createState() => _QuestionPaperState();
-}
-
-class _QuestionPaperState extends State<QuestionPaper> {
+class QuestionPaper extends StatelessWidget {
 
   Widget _getQuestionVariantContainer({
     required int nVariant,
