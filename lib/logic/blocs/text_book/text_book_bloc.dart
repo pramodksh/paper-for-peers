@@ -39,6 +39,12 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
           emit(TextBookAddError(errorMessage: uploadResponse.errorMessage!, textBookSubjects: event.textBookSubjects));
         } else {
           emit(TextBookAddSuccess(textBookSubjects: event.textBookSubjects));
+          add(
+              TextBookFetch(
+                course: event.course,
+                semester: event.semester,
+              )
+          );
         }
 
       }

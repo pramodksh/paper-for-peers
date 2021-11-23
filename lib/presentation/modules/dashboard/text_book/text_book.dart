@@ -156,7 +156,7 @@ class TextBook extends StatelessWidget {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
     final UserState userState = context.select((UserCubit cubit) => cubit.state);
-    final TextBookState textBookState = context.select((TextBookBloc bloc) => bloc.state);
+    final TextBookState textBookState = context.watch<TextBookBloc>().state;
 
     if (textBookState is TextBookInitial) {
       if (userState is UserLoaded)
@@ -177,7 +177,13 @@ class TextBook extends StatelessWidget {
           showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is TextBookAddSuccess) {
-          showAlertDialog(context: context, text: "Text Book Added Successfully").then((value) {
+          showAlertDialog(context: context, text: "Text Book Added Successfully");
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: RefreshIndicator(
+          onRefresh: () async {
             if (userState is UserLoaded) {
               context.read<TextBookBloc>().add(
                   TextBookFetch(
@@ -186,14 +192,8 @@ class TextBook extends StatelessWidget {
                   )
               );
             }
-          });
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          },
+          child: ListView(
             children: [
               SizedBox(height: 20,),
 
