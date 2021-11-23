@@ -180,124 +180,136 @@ class QuestionPaper extends StatelessWidget {
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Builder(
-            builder: (context) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(height: 10,),
-                    Builder(
-                        builder: (context) {
-                          if (userState is UserLoaded) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
-                                Expanded(
-                                  flex: 3,
-                                  child: getCustomDropDown<String>(
-                                    context: context,
-                                    dropDownHint: "Subject",
-                                    dropDownItems: userState.userModel.semester!.subjects,
-                                    dropDownValue: questionPaperState.selectedSubject,
-                                    onDropDownChanged: (val) {
-                                      context.read<QuestionPaperBloc>().add(
-                                          QuestionPaperFetch(
-                                              course: userState.userModel.course!.courseName!,
-                                              semester: userState.userModel.semester!.nSemester!,
-                                              subject: val!
-                                          )
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            );
-                          } else {
-                            return Center(child: CircularProgressIndicator.adaptive(),);
-                          }
-                        }
-                    ),
-                    SizedBox(height: 30,),
-
-                    Builder(
-                      builder: (context) {
-
-                        if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
-                          return Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
-                          );
-                        } else if (questionPaperState is QuestionPaperFetchLoading) {
-                          return SkeletonLoader(
-                            appThemeType: appThemeType,
-                            child: _getQuestionPaperListWidget(
-                              isWidgetLoading: true,
-                              questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
-                                  year: DateTime.now().year - index,
-                                  questionPaperModels: List.generate(2, (index) => QuestionPaperModel(
-                                      documentUrl: "",
-                                      uploadedOn: DateTime.now(),
-                                      userEmail: "",
-                                      userProfilePhotoUrl: "",
-                                      userUid: "",
-                                      version: 0,
-                                      uploadedBy: ""
-                                  ))
-                              )),
-                              isDarkTheme: appThemeType.isDarkTheme(),
-                              questionPaperState: questionPaperState,
-                              userState: userState,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 10,),
+              Builder(
+                  builder: (context) {
+                    if (userState is UserLoaded) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
+                          Expanded(
+                            flex: 3,
+                            child: getCustomDropDown<String>(
                               context: context,
-                              appThemeType: appThemeType,
+                              dropDownHint: "Subject",
+                              dropDownItems: userState.userModel.semester!.subjects,
+                              dropDownValue: questionPaperState.selectedSubject,
+                              onDropDownChanged: (val) {
+                                context.read<QuestionPaperBloc>().add(
+                                    QuestionPaperFetch(
+                                        course: userState.userModel.course!.courseName!,
+                                        semester: userState.userModel.semester!.nSemester!,
+                                        subject: val!
+                                    )
+                                );
+                              },
                             ),
-                          );
-                        } else if (questionPaperState is QuestionPaperFetchSuccess) {
-                          return _getQuestionPaperListWidget(
-                            questionPaperYears: questionPaperState.questionPaperYears,
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator.adaptive(),);
+                    }
+                  }
+              ),
+              SizedBox(height: 30,),
+
+              RefreshIndicator(
+                onRefresh: questionPaperState.selectedSubject == null ? () async {
+                  showAlertDialog(context: context, text: "Select subject to refresh");
+                } : () async {
+                  if (userState is UserLoaded) {
+                    context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
+                        course: userState.userModel.course!.courseName!,
+                        semester: userState.userModel.semester!.nSemester!,
+                        subject: questionPaperState.selectedSubject!
+                    ));
+                  }
+                },
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Builder(
+                    builder: (context) {
+
+                      if (userState is UserLoaded && questionPaperState.selectedSubject == null) {
+                        return Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: Center(child: Text("Select Subject to Continue", style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)),
+                        );
+                      } else if (questionPaperState is QuestionPaperFetchLoading) {
+                        return SkeletonLoader(
+                          appThemeType: appThemeType,
+                          child: _getQuestionPaperListWidget(
+                            isWidgetLoading: true,
+                            questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
+                                year: DateTime.now().year - index,
+                                questionPaperModels: List.generate(2, (index) => QuestionPaperModel(
+                                    documentUrl: "",
+                                    uploadedOn: DateTime.now(),
+                                    userEmail: "",
+                                    userProfilePhotoUrl: "",
+                                    userUid: "",
+                                    version: 0,
+                                    uploadedBy: ""
+                                ))
+                            )),
                             isDarkTheme: appThemeType.isDarkTheme(),
                             questionPaperState: questionPaperState,
                             userState: userState,
                             context: context,
                             appThemeType: appThemeType,
-                          );
-                        } else if (questionPaperState is QuestionPaperAddLoading) {
-                          return _getQuestionPaperListWidget(
-                            appThemeType: appThemeType,
-                            questionPaperYears:  questionPaperState.questionPaperYears,
-                            isDarkTheme: appThemeType.isDarkTheme(),
-                            questionPaperState: questionPaperState,
-                            userState: userState,
-                            context: context,
-                          );
-                        } else if (questionPaperState is QuestionPaperAddError) {
-                          return _getQuestionPaperListWidget(
-                            appThemeType: appThemeType,
-                            questionPaperYears:  questionPaperState.questionPaperYears,
-                            isDarkTheme: appThemeType.isDarkTheme(),
-                            questionPaperState: questionPaperState,
-                            userState: userState,
-                            context: context,
-                          );
-                        } else if (questionPaperState is QuestionPaperAddSuccess) {
-                          return _getQuestionPaperListWidget(
-                            appThemeType: appThemeType,
-                            questionPaperYears:  questionPaperState.questionPaperYears,
-                            isDarkTheme: appThemeType.isDarkTheme(),
-                            questionPaperState: questionPaperState,
-                            userState: userState,
-                            context: context,
-                          );
-                        } else {
-                          return Center(child: CircularProgressIndicator.adaptive(),);
-                        }
-                      },
-                    ),
-                  ],
+                          ),
+                        );
+                      } else if (questionPaperState is QuestionPaperFetchSuccess) {
+                        return _getQuestionPaperListWidget(
+                          questionPaperYears: questionPaperState.questionPaperYears,
+                          isDarkTheme: appThemeType.isDarkTheme(),
+                          questionPaperState: questionPaperState,
+                          userState: userState,
+                          context: context,
+                          appThemeType: appThemeType,
+                        );
+                      } else if (questionPaperState is QuestionPaperAddLoading) {
+                        return _getQuestionPaperListWidget(
+                          appThemeType: appThemeType,
+                          questionPaperYears:  questionPaperState.questionPaperYears,
+                          isDarkTheme: appThemeType.isDarkTheme(),
+                          questionPaperState: questionPaperState,
+                          userState: userState,
+                          context: context,
+                        );
+                      } else if (questionPaperState is QuestionPaperAddError) {
+                        return _getQuestionPaperListWidget(
+                          appThemeType: appThemeType,
+                          questionPaperYears:  questionPaperState.questionPaperYears,
+                          isDarkTheme: appThemeType.isDarkTheme(),
+                          questionPaperState: questionPaperState,
+                          userState: userState,
+                          context: context,
+                        );
+                      } else if (questionPaperState is QuestionPaperAddSuccess) {
+                        return _getQuestionPaperListWidget(
+                          appThemeType: appThemeType,
+                          questionPaperYears:  questionPaperState.questionPaperYears,
+                          isDarkTheme: appThemeType.isDarkTheme(),
+                          questionPaperState: questionPaperState,
+                          userState: userState,
+                          context: context,
+                        );
+                      } else {
+                        return Center(child: CircularProgressIndicator.adaptive(),);
+                      }
+                    },
+                  ),
                 ),
-              );
-            }
+              ),
+            ],
+          ),
         ),
       ),
     );
