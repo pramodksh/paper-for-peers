@@ -63,6 +63,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Text(getUserNameForProfilePhoto(username), style: TextStyle(fontSize: 50),),
       ) : CachedNetworkImage(
         imageUrl: url,
+        progressIndicatorBuilder: (context, url, progress) {
+          return CircleAvatar(
+            radius: profileImageRadius,
+            child: Center(child: CircularProgressIndicator.adaptive(),),
+          );
+        },
         imageBuilder: (context, imageProvider) {
           return CircleAvatar(
             radius: profileImageRadius,
@@ -73,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget getCircularStat({required String title, required String value, required bool isDarkTheme}) {
+  Widget _getCircularStat({required String title, required String value, required bool isDarkTheme}) {
     return Container(
       padding: EdgeInsets.all(statCircleBorderThickness),
       decoration: BoxDecoration(
@@ -223,8 +229,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              getCircularStat(title: 'Average\nRating', value: userState.userModel.avgRating!.toStringAsPrecision(3), isDarkTheme: appThemeType.isDarkTheme()),
-                              getCircularStat(title: 'Total\nRating', value: userState.userModel.totalRating.toString(), isDarkTheme: appThemeType.isDarkTheme()),
+                              _getCircularStat(title: 'Average\nRating', value: userState.userModel.avgRating!.toStringAsPrecision(3), isDarkTheme: appThemeType.isDarkTheme()),
+                              _getCircularStat(title: 'Total\nRating', value: userState.userModel.totalRating.toString(), isDarkTheme: appThemeType.isDarkTheme()),
                             ],
                           ),
                         ],
