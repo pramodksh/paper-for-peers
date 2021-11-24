@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
@@ -274,10 +275,8 @@ class _UserDetailsState extends State<UserDetails> {
               Utils.showAlertDialog(context: context, text: state.errorMessage);
             }
 
-            // if user state is changed from user edit
-            // to user loaded then reload the stream of user
             if (state is UserLoaded) {
-              context.read<UserCubit>().reloadUser();
+              context.read<AuthRepository>().reloadCurrentUser();
             }
 
           },
@@ -307,6 +306,11 @@ class _UserDetailsState extends State<UserDetails> {
                                 photoFile: userState.profilePhotoFile,
                               );
                             } else if (userState is UserEditProfilePhotoLoading) {
+                              return Container(
+                                height: 100,
+                                child: Center(child: CircularProgressIndicator.adaptive()),
+                              );
+                            } else if (userState is UserLoaded) {
                               return Container(
                                 height: 100,
                                 child: Center(child: CircularProgressIndicator.adaptive()),

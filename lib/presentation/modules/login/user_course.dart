@@ -168,7 +168,7 @@ class _UserCourseState extends State<UserCourse> {
 
                                 ApiResponse addUserResponse = await context.read<UserCubit>().addUser(userState.userModel);
                                 if (!addUserResponse.isError) {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).pushReplacement(MaterialPageRoute(
                                     builder: (context) => IntroScreen(),
                                   ));
                                 }

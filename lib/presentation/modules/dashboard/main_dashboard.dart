@@ -12,6 +12,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/q
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/text_book/text_book.dart';
+import 'package:papers_for_peers/presentation/modules/login/login.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -85,7 +86,7 @@ class _MainDashboardState extends State<MainDashboard> {
     );
   }
 
-  Drawer getDrawer({required bool isDarkTheme}) {
+  Drawer getDrawer({required bool isDarkTheme, required BuildContext context}) {
     return Drawer(
       child: Container(
         color: isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
@@ -163,7 +164,20 @@ class _MainDashboardState extends State<MainDashboard> {
                   if (mounted) {
                     setState(() { _isLoading = true; _loadingText = "Logging out.."; });
                   }
-                  await context.read<AuthRepository>().logoutUser();
+                  await context.read<AuthRepository>().logoutUser().then((value) {
+                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    //   builder: (context) => Login(),
+                    // ));
+
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                      builder: (context) => Login(),
+                    ), (route) => false).then((value) {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => Login(),
+                      ));
+                    });
+                  });
                   if (mounted) {
                     setState(() { _isLoading = false; });
                   }
@@ -265,7 +279,7 @@ class _MainDashboardState extends State<MainDashboard> {
       key: _scaffoldkey,
       endDrawer: ClipRRect(
         borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
-        child: getDrawer(isDarkTheme: appThemeType.isDarkTheme()),
+        child: getDrawer(isDarkTheme: appThemeType.isDarkTheme(), context: context),
       ),
       appBar: getAppBar(),
       body: Builder(

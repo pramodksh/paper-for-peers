@@ -74,4 +74,9 @@ class UserModel {
       avgRating: avgRating ?? this.avgRating,
     );
   }
+
+  @override
+  String toString() {
+    return 'UserModel{uid: $uid, displayName: $displayName, email: $email, photoUrl: $photoUrl, semester: $semester, course: $course, totalRating: $totalRating, avgRating: $avgRating}';
+  }
 }
