@@ -188,11 +188,14 @@ class SignUpForm_Demo extends StatelessWidget {
           child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  DefaultAssets.mainLogoPath,
-                  height: 110,
-                  alignment: Alignment.center,
+                Center(
+                  child: Image.asset(
+                    DefaultAssets.mainLogoPath,
+                    height: 110,
+                    alignment: Alignment.center,
+                  ),
                 ),
                 SizedBox(
                   height: 50,
@@ -248,128 +251,130 @@ class SignUpForm_Demo extends StatelessWidget {
                 Text("Course Details:", style: TextStyle(fontSize: 20),),
                 SizedBox(height: 30,),
 
-                Builder(
-                    builder: (context) {
+                Center(
+                  child: Builder(
+                      builder: (context) {
 
-                      if (signUpState.isCoursesLoading) {
-                        return Center(child: CircularProgressIndicator.adaptive(),);
-                      } else {
-                        List<Course> courses = signUpState.courses!;
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                Text('Select Course',style: TextStyle(fontSize: 24,),),
-                                SizedBox(height: 20,),
+                        if (signUpState.isCoursesLoading) {
+                          return Center(child: CircularProgressIndicator.adaptive(),);
+                        } else {
+                          List<Course> courses = signUpState.courses!;
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  Text('Select Course',style: TextStyle(fontSize: 24,),),
+                                  SizedBox(height: 20,),
 
-                                SizedBox(
-                                  width: 200,
-                                  child: Utils.getCustomDropDown<Course>(
-                                    isTransparent: true,
-                                    context: context,
-                                    dropDownValue: signUpState.selectedCourse,
-                                    dropDownItems: courses,
-                                    dropDownHint: 'Courses',
-                                    items: courses.map((Course value) {
-                                      return DropdownMenuItem<Course>(
-                                        value: value,
-                                        child: Text(value.courseName!, style: CustomTextStyle.bodyTextStyle.copyWith(
-                                          fontSize: 18,
-                                          color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-                                        ),),
-                                      );
-                                    }).toList(),
-                                    onDropDownChanged: (val) {
-                                      context.read<SignUpDemoCubit>().courseChanged(val!);
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            SizedBox(height: 30,),
-
-                            Column(
-                              children: [
-                                Text(
-                                  'Select Semester',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    color: signUpState.selectedCourse == null ? Colors.grey : Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: 20,),
-                                Builder(
-                                    builder: (context) {
-                                      // if (signUpState.selectedCourse != null) {
-                                        List<Semester>? semesters = signUpState.selectedCourse == null ? [] : signUpState.selectedCourse!.semesters;
-                                        return SizedBox(
-                                          width: 200,
-                                          child: Utils.getCustomDropDown<Semester>(
-                                            isTransparent: true,
-                                            context: context,
-                                            dropDownValue: signUpState.selectedSemester,
-                                            dropDownItems: semesters,
-                                            dropDownHint: 'Semester',
-                                            onDropDownChanged: signUpState.selectedCourse == null ? null : (val) {
-                                              context.read<SignUpDemoCubit>().semesterChanged(val!);
-                                            },
-                                            items: semesters?.map((Semester value) {
-                                              return DropdownMenuItem<Semester>(
-                                                value: value,
-                                                child: Text(value.nSemester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
-                                                  fontSize: 18,
-                                                  color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-                                                ),),
-                                              );
-                                            }).toList(),
-                                          ),
+                                  SizedBox(
+                                    width: 200,
+                                    child: Utils.getCustomDropDown<Course>(
+                                      isTransparent: true,
+                                      context: context,
+                                      dropDownValue: signUpState.selectedCourse,
+                                      dropDownItems: courses,
+                                      dropDownHint: 'Courses',
+                                      items: courses.map((Course value) {
+                                        return DropdownMenuItem<Course>(
+                                          value: value,
+                                          child: Text(value.courseName!, style: CustomTextStyle.bodyTextStyle.copyWith(
+                                            fontSize: 18,
+                                            color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                          ),),
                                         );
-                                      // }
-                                    }
-                                ),
-                                SizedBox(height: 20,),
-                              ],
-                            ),
-                            // ElevatedButton(
-                            //   style: ElevatedButton.styleFrom(
-                            //       padding: EdgeInsets.symmetric(horizontal: 30),
-                            //       shape: RoundedRectangleBorder(
-                            //         borderRadius: BorderRadius.circular(20),
-                            //       )
-                            //   ),
-                            //   onPressed: () async {
-                            //     if (userState is UserLoaded) {
-                            //       if (!userState.isValidCourse) {
-                            //         Utils.showAlertDialog(context: context, text: "Please select course");
-                            //         return;
-                            //       }
-                            //
-                            //       if (!userState.isValidSemester) {
-                            //         Utils.showAlertDialog(context: context, text: "Please select semester");
-                            //         return;
-                            //       }
-                            //
-                            //       print("ADD USER: ${userState.userModel}");
-                            //
-                            //
-                            //       ApiResponse addUserResponse = await context.read<UserCubit>().addUser(userState.userModel);
-                            //       if (!addUserResponse.isError) {
-                            //         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            //           builder: (context) => IntroScreen(),
-                            //         ));
-                            //       }
-                            //
-                            //     }
-                            //
-                            //   },
-                            //   child: Text("Continue", style: TextStyle(fontSize: 18),),
-                            // ),
-                          ],
-                        );
+                                      }).toList(),
+                                      onDropDownChanged: (val) {
+                                        context.read<SignUpDemoCubit>().courseChanged(val!);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 30,),
+
+                              Column(
+                                children: [
+                                  Text(
+                                    'Select Semester',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      color: signUpState.selectedCourse == null ? Colors.grey : Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(height: 20,),
+                                  Builder(
+                                      builder: (context) {
+                                        // if (signUpState.selectedCourse != null) {
+                                          List<Semester>? semesters = signUpState.selectedCourse == null ? [] : signUpState.selectedCourse!.semesters;
+                                          return SizedBox(
+                                            width: 200,
+                                            child: Utils.getCustomDropDown<Semester>(
+                                              isTransparent: true,
+                                              context: context,
+                                              dropDownValue: signUpState.selectedSemester,
+                                              dropDownItems: semesters,
+                                              dropDownHint: 'Semester',
+                                              onDropDownChanged: signUpState.selectedCourse == null ? null : (val) {
+                                                context.read<SignUpDemoCubit>().semesterChanged(val!);
+                                              },
+                                              items: semesters?.map((Semester value) {
+                                                return DropdownMenuItem<Semester>(
+                                                  value: value,
+                                                  child: Text(value.nSemester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                                    fontSize: 18,
+                                                    color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                                  ),),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          );
+                                        // }
+                                      }
+                                  ),
+                                  SizedBox(height: 20,),
+                                ],
+                              ),
+                              // ElevatedButton(
+                              //   style: ElevatedButton.styleFrom(
+                              //       padding: EdgeInsets.symmetric(horizontal: 30),
+                              //       shape: RoundedRectangleBorder(
+                              //         borderRadius: BorderRadius.circular(20),
+                              //       )
+                              //   ),
+                              //   onPressed: () async {
+                              //     if (userState is UserLoaded) {
+                              //       if (!userState.isValidCourse) {
+                              //         Utils.showAlertDialog(context: context, text: "Please select course");
+                              //         return;
+                              //       }
+                              //
+                              //       if (!userState.isValidSemester) {
+                              //         Utils.showAlertDialog(context: context, text: "Please select semester");
+                              //         return;
+                              //       }
+                              //
+                              //       print("ADD USER: ${userState.userModel}");
+                              //
+                              //
+                              //       ApiResponse addUserResponse = await context.read<UserCubit>().addUser(userState.userModel);
+                              //       if (!addUserResponse.isError) {
+                              //         Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              //           builder: (context) => IntroScreen(),
+                              //         ));
+                              //       }
+                              //
+                              //     }
+                              //
+                              //   },
+                              //   child: Text("Continue", style: TextStyle(fontSize: 18),),
+                              // ),
+                            ],
+                          );
+                        }
                       }
-                    }
+                  ),
                 ),
 
                 SizedBox(height: 40,),
