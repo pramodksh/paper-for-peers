@@ -9,9 +9,8 @@ import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
 import 'package:papers_for_peers/presentation/modules/login/welcome_screen.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class UserCourse extends StatefulWidget {
@@ -32,7 +31,7 @@ class _UserCourseState extends State<UserCourse> {
     return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
         if (state is UserAddError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Stack(
@@ -73,7 +72,7 @@ class _UserCourseState extends State<UserCourse> {
 
                               SizedBox(
                                 width: 200,
-                                child: getCustomDropDown<Course>(
+                                child: Utils.getCustomDropDown<Course>(
                                   isTransparent: true,
                                   context: context,
                                   dropDownValue: userState.userModel.course,
@@ -116,7 +115,7 @@ class _UserCourseState extends State<UserCourse> {
 
                                       return SizedBox(
                                         width: 200,
-                                        child: getCustomDropDown<Semester>(
+                                        child: Utils.getCustomDropDown<Semester>(
                                           isTransparent: true,
                                           context: context,
                                           dropDownValue: userState.userModel.semester,
@@ -155,12 +154,12 @@ class _UserCourseState extends State<UserCourse> {
                             onPressed: () async {
                               if (userState is UserLoaded) {
                                 if (!userState.isValidCourse) {
-                                  showAlertDialog(context: context, text: "Please select course");
+                                  Utils.showAlertDialog(context: context, text: "Please select course");
                                   return;
                                 }
 
                                 if (!userState.isValidSemester) {
-                                  showAlertDialog(context: context, text: "Please select semester");
+                                  Utils.showAlertDialog(context: context, text: "Please select semester");
                                   return;
                                 }
 

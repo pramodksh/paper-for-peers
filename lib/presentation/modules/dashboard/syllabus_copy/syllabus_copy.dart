@@ -9,8 +9,7 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class SyllabusCopy extends StatelessWidget {
@@ -70,7 +69,7 @@ class SyllabusCopy extends StatelessWidget {
                 if (syllabusCopies.length < AppConstants.maxSyllabusCopy) {
                   return SizedBox(
                     height: 100,
-                    child: getAddPostContainer(
+                    child: Utils.getAddPostContainer(
                       isDarkTheme: isDarkTheme,
                       label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
                       onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
@@ -115,10 +114,10 @@ class SyllabusCopy extends StatelessWidget {
     return BlocListener<SyllabusCopyBloc, SyllabusCopyState>(
       listener: (context, state) {
         if (state is SyllabusCopyAddError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is SyllabusCopyAddSuccess) {
-          showAlertDialog(context: context, text: "Syllabus Copy successfully updated");
+          Utils.showAlertDialog(context: context, text: "Syllabus Copy successfully updated");
         }
       },
       child: RefreshIndicator(

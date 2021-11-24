@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class GoogleAuthWidget extends StatelessWidget {
@@ -13,7 +13,7 @@ class GoogleAuthWidget extends StatelessWidget {
     return BlocListener<GoogleAuthCubit, GoogleAuthState>(
       listener: (context, state) {
         if (state.googleAuthStatus.isError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: TextButton(

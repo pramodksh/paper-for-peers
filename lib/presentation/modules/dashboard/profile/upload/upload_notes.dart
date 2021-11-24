@@ -3,7 +3,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/shared.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class UploadNotesAndJournal extends StatefulWidget {
@@ -57,7 +57,7 @@ class _UploadNotesAndJournalState extends State<UploadNotesAndJournal> {
             children: [
               SizedBox(
                 height: 200,
-                child: getAddPostContainer(
+                child: Utils.getAddPostContainer(
                   isDarkTheme: appThemeType.isDarkTheme(),
                   label: "Select File",
                   onPressed: () {},
@@ -67,7 +67,7 @@ class _UploadNotesAndJournalState extends State<UploadNotesAndJournal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  widget.typesOfPost != TypesOfPost.SyllabusCopy ? getCustomDropDown<String>(
+                  widget.typesOfPost != TypesOfPost.SyllabusCopy ? Utils.getCustomDropDown<String>(
                     context: context,
                     dropDownHint: "Subject",
                     dropDownItems: ["CPP", "JAVA"],
@@ -75,7 +75,7 @@ class _UploadNotesAndJournalState extends State<UploadNotesAndJournal> {
                     dropDownValue: selectedSubject,
                   ) : Container(),
                   widget.typesOfPost != TypesOfPost.SyllabusCopy ? SizedBox(width: 20,) : Container(),
-                  getCustomDropDown<String>(
+                  Utils.getCustomDropDown<String>(
                     context: context,
                     dropDownHint: "Semester",
                     dropDownItems: List.generate(6, (index) => (index + 1).toString()),

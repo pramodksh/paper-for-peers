@@ -7,7 +7,7 @@ import 'package:papers_for_peers/data/models/notification_model.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -52,7 +52,7 @@ class Notifications extends StatelessWidget {
                 if (await canLaunch(url)) {
                   await launch(url);
                 } else {
-                  showAlertDialog(context: context, text: "Couldn't open url - $url");
+                  Utils.showAlertDialog(context: context, text: "Couldn't open url - $url");
                 }
               },
               leading: Text((index + 1).toString()),

@@ -1,7 +1,7 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 class VariantGenerator {
 
@@ -70,7 +70,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                getCustomDropDown<int>(
+                Utils.getCustomDropDown<int>(
                   context: context,
                   dropDownHint: "Year",
                   dropDownItems: variants.map((e) => e.questionPaperYears.map((e) => e.year).toList()).toList()[index],
@@ -87,7 +87,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
                       QuestionPaperYearModel selectedYearModel = variants[index].questionPaperYears.firstWhere((element) => element.year == variants[index].selectedYear!);
                       print("SEE: ${selectedYearModel.questionPaperModels.map((e) => e.version).toList()}");
 
-                      return getCustomDropDown<int>(
+                      return Utils.getCustomDropDown<int>(
                         context: context,
                         dropDownHint: "Variant",
                         dropDownItems: selectedYearModel.questionPaperModels.map((e) => e.version).toList(),

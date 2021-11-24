@@ -9,11 +9,9 @@ import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-import 'utilities.dart';
 
 class UserDetails extends StatefulWidget {
   @override
@@ -34,7 +32,7 @@ class _UserDetailsState extends State<UserDetails> {
         radius: profileImageRadius,
         backgroundColor: Colors.grey[800],
         child: Text(
-          getUserNameForProfilePhoto(userName ?? ""),
+          Utils.getUserNameForProfilePhoto(userName ?? ""),
           style: TextStyle(color: Colors.white, fontSize: 40),
         ),
       );
@@ -271,9 +269,9 @@ class _UserDetailsState extends State<UserDetails> {
         BlocListener<UserCubit, UserState>(
           listener: (context, state) {
             if (state is UserEditError) {
-              showAlertDialog(context: context, text: state.errorMessage);
+              Utils.showAlertDialog(context: context, text: state.errorMessage);
             } else if (state is UserAddError) {
-              showAlertDialog(context: context, text: state.errorMessage);
+              Utils.showAlertDialog(context: context, text: state.errorMessage);
             }
 
             // if user state is changed from user edit
@@ -332,7 +330,7 @@ class _UserDetailsState extends State<UserDetails> {
                           key: _formKey,
                           child: Container(
                               margin: EdgeInsets.symmetric(horizontal: 70),
-                              child: getCustomTextField(
+                              child: Utils.getCustomTextField(
                                 onChanged: (val) {
                                   if (userState is UserEditSuccess) {
                                     context.read<UserCubit>().editUser(

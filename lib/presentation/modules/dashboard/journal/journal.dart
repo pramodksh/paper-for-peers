@@ -11,8 +11,7 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 
@@ -88,7 +87,7 @@ class Journal extends StatelessWidget {
     ));
 
     if (journals.length < AppConstants.maxJournals) {
-      gridChildren.add(getAddPostContainer(
+      gridChildren.add(Utils.getAddPostContainer(
         isDarkTheme: appThemeType.isDarkTheme(),
         onPressed: isAddJournalLoading ? () {} : onJournalAdd,
         label: isAddJournalLoading ? "Loading" : "Add Journal",
@@ -172,13 +171,13 @@ class Journal extends StatelessWidget {
     return BlocListener<JournalBloc, JournalState>(
       listener: (context, state) {
         if (state is JournalFetchError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is JournalAddError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is JournalAddSuccess) {
-          showAlertDialog(context: context, text: "Journal Added Successfully");
+          Utils.showAlertDialog(context: context, text: "Journal Added Successfully");
         }
       },
       child: Container(
@@ -201,7 +200,7 @@ class Journal extends StatelessWidget {
               Builder(
                   builder: (context) {
                     if (userState is UserLoaded) {
-                      return getCourseAndSemesterText(context: context,);
+                      return Utils.getCourseAndSemesterText(context: context,);
                     } else {
                       return Center(child: CircularProgressIndicator.adaptive(),);
                     }

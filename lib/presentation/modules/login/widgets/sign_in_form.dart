@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/sign_in/sign_in_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
 import 'package:papers_for_peers/presentation/modules/login/forgot_password.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class SignInForm extends StatelessWidget {
@@ -19,7 +18,7 @@ class SignInForm extends StatelessWidget {
     return BlocListener<SignInCubit, SignInState>(
       listener: (context, state) {
         if (state.signInStatus.isError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Container(
@@ -39,7 +38,7 @@ class SignInForm extends StatelessWidget {
                   height: 50,
                 ),
                 SizedBox(height: 20,),
-                getCustomTextField(
+                Utils.getCustomTextField(
                   labelText: 'Email Address',
                   onChanged: (val) {
                     context.read<SignInCubit>().emailChanged(val);
@@ -47,7 +46,7 @@ class SignInForm extends StatelessWidget {
                   validator: (String? val) => context.read<SignInCubit>().isEmailValid(val!) ? null : "Please enter valid email",
                 ),
                 SizedBox(height: 20,),
-                getCustomPasswordField(
+                Utils.getCustomPasswordField(
                   inputBoxText: 'Password',
                   onChanged: (val) {
                     context.read<SignInCubit>().passwordChanged(val);
@@ -76,7 +75,7 @@ class SignInForm extends StatelessWidget {
                   height: 50,
                   child: signInState.signInStatus.isLoading
                     ? Center(child: CircularProgressIndicator.adaptive())
-                    : getCustomButton(
+                    : Utils.getCustomButton(
                         buttonText: 'Sign in',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {

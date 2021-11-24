@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
@@ -9,12 +11,124 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/notes/upload_notes.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/post_tiles.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class Notes extends StatelessWidget {
+
+  Widget _getNotesDetailsTile({
+    required String title,
+    required String description,
+    required double rating,
+    required onTileTap,
+    required BuildContext context,
+    required AppThemeType appThemeType,
+    String? uploadedBy,
+    DateTime? uploadedOn,
+    bool isYourPostTile = false,
+    Function()? yourPostTileOnEdit,
+    Function()? yourPostTileOnDelete,
+  }) {
+    DateFormat dateFormat = DateFormat("dd MMMM yyyy");
+
+    double ratingHeight = 30;
+    double ratingWidth = 100;
+    double ratingBorderRadius = 20;
+
+    return GestureDetector(
+      onTap: onTileTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Stack(
+          children: [
+            Positioned(
+              child: Container(
+                padding: EdgeInsets.only(top: 6),
+                decoration: BoxDecoration(
+                  color: appThemeType.isDarkTheme() ? CustomColors.ratingBackgroundColor : CustomColors.lightModeRatingBackgroundColor,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(ratingBorderRadius), topRight: Radius.circular(ratingBorderRadius)),
+                ),
+                height: 50,
+                width: ratingWidth,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(rating.toString(), style: TextStyle(fontWeight: FontWeight.w600),),
+                      SizedBox(width: 10,),
+                      Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              right: 0,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              margin: EdgeInsets.only(top: ratingHeight),
+              decoration: BoxDecoration(
+                  color: appThemeType.isDarkTheme() ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              // height: 200,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 5,),
+                        Text(title, style: TextStyle(fontSize: 28,),),
+                        SizedBox(height: 10,),
+                        Text(description, style: TextStyle(fontSize: 16,),),
+                        SizedBox(height: 10,),
+                        isYourPostTile ? Row(
+                          children: [
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
+                              ),
+                              onPressed: yourPostTileOnEdit,
+                              child: Text("Edit", style: TextStyle(fontSize: 16),),
+                            ),
+                            SizedBox(width: 10,),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
+                              ),
+                              onPressed: yourPostTileOnDelete,
+                              child: Text("Delete", style: TextStyle(fontSize: 16),),
+                            ),
+                          ],
+                        ) : Row(
+                          children: [
+                            CircleAvatar(
+                              child: FlutterLogo(),
+                              radius: 20,
+                            ),
+                            SizedBox(width: 10,),
+                            Text(uploadedBy!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                            Spacer(),
+                            Text(dateFormat.format(uploadedOn!)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _getNotesListWidget({
     required List<NotesModel> notes, bool isWidgetLoading = false,
@@ -29,7 +143,7 @@ class Notes extends StatelessWidget {
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: notes.length,
-          itemBuilder: (context, index) => getNotesDetailsTile(
+          itemBuilder: (context, index) => _getNotesDetailsTile(
             context: context,
             appThemeType: appThemeType,
             onTileTap: () async {
@@ -73,7 +187,7 @@ class Notes extends StatelessWidget {
         notesState.selectedSubject != null ? SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 140,
-          child: getAddPostContainer(
+          child: Utils.getAddPostContainer(
             isDarkTheme: appThemeType.isDarkTheme(),
             onPressed: isWidgetLoading ? () {} : () async {
 
@@ -105,17 +219,17 @@ class Notes extends StatelessWidget {
     return BlocListener<NotesBloc, NotesState>(
       listener: (context, state) {
         if (state is NotesFetchError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is NotesAddError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: RefreshIndicator(
             onRefresh: notesState.selectedSubject == null ? () async {
-              showAlertDialog(context: context, text: "Select subject to refresh");
+              Utils.showAlertDialog(context: context, text: "Select subject to refresh");
             } : () async {
               if (userState is UserLoaded) {
                 context.read<NotesBloc>().add(
@@ -136,10 +250,10 @@ class Notes extends StatelessWidget {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
+                            Expanded(flex: 2,child: Utils.getCourseAndSemesterText(context: context,)),
                             Expanded(
                               flex: 3,
-                              child: getCustomDropDown<String>(
+                              child: Utils.getCustomDropDown<String>(
                                 context: context,
                                 dropDownHint: "Subject",
                                 dropDownItems: userState.userModel.semester!.subjects,

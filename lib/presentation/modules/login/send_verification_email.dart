@@ -6,8 +6,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/login_utils.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class SendVerificationEmail extends StatefulWidget {
@@ -35,7 +35,7 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
       AuthRepository _authRepository = context.read<AuthRepository>();
       sendVerificationEmail(authRepository: _authRepository).then((isSuccess) {
         if (!isSuccess) {
-          showAlertDialog(context: context, text: "There was some error while sending verification Email");
+          Utils.showAlertDialog(context: context, text: "There was some error while sending verification Email");
         } else {
           Future(() async {
             _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
@@ -44,7 +44,7 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
               User user = _authRepository.currentUser;
               if (user.emailVerified) {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => addUserIfNotExistsAndGetWidget(
+                  builder: (context) => LoginUtils.addUserIfNotExistsAndGetWidget(
                     context: context,
                     user: widget.user!,
                   ),

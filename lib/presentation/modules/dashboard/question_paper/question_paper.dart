@@ -10,8 +10,7 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/compare_question_paper/show_split_options.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class QuestionPaper extends StatelessWidget {
@@ -120,7 +119,7 @@ class QuestionPaper extends StatelessWidget {
               variants.add(SizedBox(
                 width: 180,
                 height: 80,
-                child: getAddPostContainer(
+                child: Utils.getAddPostContainer(
                   isDarkTheme: isDarkTheme,
                   label: questionPaperState is QuestionPaperAddLoading ? "Loading" : "Add Question Paper",
                   onPressed: questionPaperState is QuestionPaperAddLoading || isWidgetLoading ? () {} : () {
@@ -162,20 +161,20 @@ class QuestionPaper extends StatelessWidget {
     return BlocListener<QuestionPaperBloc, QuestionPaperState>(
       listener: (context, state) {
         if (state is QuestionPaperFetchError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is QuestionPaperAddError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is QuestionPaperAddSuccess) {
-          showAlertDialog(context: context, text: "Question Paper Added Successfully");
+          Utils.showAlertDialog(context: context, text: "Question Paper Added Successfully");
         }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: RefreshIndicator(
           onRefresh: questionPaperState.selectedSubject == null ? () async {
-            showAlertDialog(context: context, text: "Select subject to refresh");
+            Utils.showAlertDialog(context: context, text: "Select subject to refresh");
           } : () async {
             if (userState is UserLoaded) {
               context.read<QuestionPaperBloc>().add(QuestionPaperFetch(
@@ -194,10 +193,10 @@ class QuestionPaper extends StatelessWidget {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(flex: 2,child: getCourseAndSemesterText(context: context,)),
+                          Expanded(flex: 2,child: Utils.getCourseAndSemesterText(context: context,)),
                           Expanded(
                             flex: 3,
-                            child: getCustomDropDown<String>(
+                            child: Utils.getCustomDropDown<String>(
                               context: context,
                               dropDownHint: "Subject",
                               dropDownItems: userState.userModel.semester!.subjects,

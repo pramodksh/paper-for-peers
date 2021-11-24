@@ -8,9 +8,7 @@ import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/shared.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class UploadNotes extends StatefulWidget {
@@ -47,7 +45,7 @@ class _UploadNotesState extends State<UploadNotes> {
   Widget _getSelectFileWidget({required AppThemeType appThemeType, required Function() onPressed, required File? file}) {
     return SizedBox(
       height: 200,
-      child: getAddPostContainer(
+      child: Utils.getAddPostContainer(
         isDarkTheme: appThemeType.isDarkTheme(),
         label: file == null ? "Select File" : "File Selected: ${file.path.split("/").last}",
         onPressed: onPressed,
@@ -73,14 +71,14 @@ class _UploadNotesState extends State<UploadNotes> {
     return BlocListener<NotesBloc, NotesState>(
       listener: (context, state) {
         if (state is NotesAddError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
           context.read<NotesBloc>().add(NotesAddEdit(
               title: state.title, description: state.description, subject: state.selectedSubject!,
           ));
         }
 
         if (state is NotesAddSuccess) {
-          showAlertDialog(context: context, text: "Successfully uploaded").then((value) {
+          Utils.showAlertDialog(context: context, text: "Successfully uploaded").then((value) {
             resetNotesState(context: context, selectedSubject: state.selectedSubject!, notes: widget.notes);
             Navigator.of(context).pop();
           });
@@ -161,7 +159,7 @@ class _UploadNotesState extends State<UploadNotes> {
                               child: Column(
                                 children: [
                                   SizedBox(height: 30,),
-                                  getCustomTextField(
+                                  Utils.getCustomTextField(
                                     labelText: 'Title',
                                     onChanged: (val) {
                                       if (notesState is NotesAddEditing) {
@@ -173,7 +171,7 @@ class _UploadNotesState extends State<UploadNotes> {
                                     validator: (String? val) => val!.isNotEmpty ? null : "Please enter title",
                                   ),
                                   SizedBox(height: 30,),
-                                  getCustomTextField(
+                                  Utils.getCustomTextField(
                                     labelText: 'Description',
                                     onChanged: (val) {
                                       if (notesState is NotesAddEditing) {

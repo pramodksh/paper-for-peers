@@ -3,7 +3,7 @@ import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
 import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/login_utils.dart';
 import 'package:provider/provider.dart';
 
 import 'data/models/user_model/user_model.dart';
@@ -27,7 +27,7 @@ class Wrapper extends StatelessWidget {
             if (!_authRepository.isCurrentUserEmailVerified) {
               return SendVerificationEmail(user: user,);
             } else {
-              return addUserIfNotExistsAndGetWidget(context: context, user: user);
+              return LoginUtils.addUserIfNotExistsAndGetWidget(context: context, user: user);
             }
           }
         } else {

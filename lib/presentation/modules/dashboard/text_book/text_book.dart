@@ -11,8 +11,7 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewer_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 
@@ -87,7 +86,7 @@ class TextBook extends StatelessWidget {
     ));
 
     if (subjects.length < AppConstants.maxTextBooks) {
-      gridChildren.add(getAddPostContainer(
+      gridChildren.add(Utils.getAddPostContainer(
         isDarkTheme: appThemeType.isDarkTheme(),
         onPressed: isAddTextBookLoading ? () {} : onTextBookAdd,
         label: isAddTextBookLoading ? "Loading" : "Add Text Book",
@@ -171,13 +170,13 @@ class TextBook extends StatelessWidget {
     return BlocListener<TextBookBloc, TextBookState>(
       listener: (context, state) {
         if (state is TextBookFetchError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is TextBookAddError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
         if (state is TextBookAddSuccess) {
-          showAlertDialog(context: context, text: "Text Book Added Successfully");
+          Utils.showAlertDialog(context: context, text: "Text Book Added Successfully");
         }
       },
       child: Container(
@@ -200,7 +199,7 @@ class TextBook extends StatelessWidget {
               Builder(
                   builder: (context) {
                     if (userState is UserLoaded) {
-                      return getCourseAndSemesterText(context: context,);
+                      return Utils.getCourseAndSemesterText(context: context,);
                     } else {
                       return Center(child: CircularProgressIndicator.adaptive(),);
                     }

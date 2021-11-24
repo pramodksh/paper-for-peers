@@ -9,9 +9,9 @@ import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart
 import 'package:papers_for_peers/logic/cubits/sign_in/sign_in_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/google_auth_widget.dart';
-import 'package:papers_for_peers/presentation/modules/login/widgets/login_utils.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/sign_in_form.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/sign_up_form.dart';
+import 'package:papers_for_peers/presentation/modules/utils/login_utils.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {

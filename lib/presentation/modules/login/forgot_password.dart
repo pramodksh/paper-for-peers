@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 extension EmailValidator on String {
@@ -83,7 +82,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   Form(
                     key: _formKey,
-                    child: getCustomTextField(
+                    child: Utils.getCustomTextField(
                       labelText: 'Email Address',
                       controller: emailController,
                       validator: (String? val) => val!.isValidEmail() ? null : "Please enter valid email",
@@ -94,7 +93,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   isResetPasswordLoading ? Center(
                     child: CircularProgressIndicator.adaptive(),
-                  ) : getCustomButton(
+                  ) : Utils.getCustomButton(
                       buttonText: 'Reset Password',
                       width: 250,
                       verticalPadding: 14,
@@ -106,10 +105,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           if (mounted) setState(() { isResetPasswordLoading = false; });
 
                           if (isSuccess) {
-                            await showAlertDialog(context: context, text: "Password Reset Email Sent!");
+                            await Utils.showAlertDialog(context: context, text: "Password Reset Email Sent!");
                             Navigator.pop(context);
                           } else {
-                            await showAlertDialog(context: context, text: "There was some error while sending password reset email");
+                            await Utils.showAlertDialog(context: context, text: "There was some error while sending password reset email");
                           }
                         }
                       }

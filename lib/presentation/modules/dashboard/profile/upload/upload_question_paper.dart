@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/shared.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class UploadQuestionPaper extends StatefulWidget {
@@ -33,7 +33,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
           children: [
             SizedBox(
               height: 200,
-              child: getAddPostContainer(
+              child: Utils.getAddPostContainer(
                 isDarkTheme: appThemeType.isDarkTheme(),
                 label: "Select File",
                 onPressed: () {},
@@ -45,7 +45,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
-                    child: getCustomDropDown<String>(
+                    child: Utils.getCustomDropDown<String>(
                       context: context,
                       dropDownHint: "Subject",
                       dropDownItems: ["CPP", "JAVA"],
@@ -56,7 +56,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
 
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
-                    child: getCustomDropDown<String>(
+                    child: Utils.getCustomDropDown<String>(
                       context: context,
                       dropDownHint: "Year",
                       dropDownItems: ["2016", "2107"],
@@ -67,7 +67,7 @@ class _UploadQuestionPaperState extends State<UploadQuestionPaper> {
 
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
-                    child: getCustomDropDown<String>(
+                    child: Utils.getCustomDropDown<String>(
                       context: context,
                       dropDownHint: "Semester",
                       dropDownItems: List.generate(6, (index) => "Semester - ${index + 1}"),

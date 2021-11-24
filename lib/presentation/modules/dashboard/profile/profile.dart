@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/colors.dart';
-import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_notes.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/your_posts/your_posts.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 enum TypesOfPost {
@@ -60,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: url == null ? CircleAvatar(
         radius: profileImageRadius,
-        child: Text(getUserNameForProfilePhoto(username), style: TextStyle(fontSize: 50),),
+        child: Text(Utils.getUserNameForProfilePhoto(username), style: TextStyle(fontSize: 50),),
       ) : CachedNetworkImage(
         imageUrl: url,
         progressIndicatorBuilder: (context, url, progress) {

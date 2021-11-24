@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
-import 'package:papers_for_peers/presentation/modules/login/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class SignUpForm extends StatelessWidget {
@@ -18,7 +17,7 @@ class SignUpForm extends StatelessWidget {
     return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state.signUpStatus.isError) {
-          showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Container(
@@ -38,7 +37,7 @@ class SignUpForm extends StatelessWidget {
                   height: 50,
                 ),
                 SizedBox(height: 20,),
-                getCustomTextField(
+                Utils.getCustomTextField(
                   labelText: 'Email Address',
                   onChanged: (val) {
                     context.read<SignUpCubit>().emailChanged(val);
@@ -46,7 +45,7 @@ class SignUpForm extends StatelessWidget {
                   validator: (String? val) => context.read<SignUpCubit>().isEmailValid(val!) ? null : "Please enter valid email",
                 ),
                 SizedBox(height: 20,),
-                getCustomPasswordField(
+                Utils.getCustomPasswordField(
                   inputBoxText: 'Password',
                   onChanged: (val) {
                     context.read<SignUpCubit>().passwordChanged(val);
@@ -56,7 +55,7 @@ class SignUpForm extends StatelessWidget {
                   validator: (String? val) => context.read<SignUpCubit>().isPasswordValid(val!) ? null : "Enter Password",
                 ),
                 SizedBox(height: 20,),
-                getCustomPasswordField(
+                Utils.getCustomPasswordField(
                   inputBoxText: 'Confirm Password',
                   onChanged: (val) {
                     context.read<SignUpCubit>().confirmPasswordChanged(val);
@@ -72,7 +71,7 @@ class SignUpForm extends StatelessWidget {
                   height: 50,
                   child: signUpState.signUpStatus.isLoading
                       ? Center(child: CircularProgressIndicator.adaptive())
-                      : getCustomButton(
+                      : Utils.getCustomButton(
                     buttonText: 'Sign Up',
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {

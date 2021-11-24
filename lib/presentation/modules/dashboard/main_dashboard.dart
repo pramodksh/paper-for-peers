@@ -12,7 +12,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/q
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/text_book/text_book.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/utilities.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'journal/journal.dart';
@@ -123,7 +123,7 @@ class _MainDashboardState extends State<MainDashboard> {
             SizedBox(height: 10,),
             SizedBox(
               width: 180,
-              child: getCustomDropDown<String>(
+              child: Utils.getCustomDropDown<String>(
                 context: context,
                 dropDownHint: "Semester",
                 dropDownItems: List.generate(6, (index) => (index + 1).toString()),

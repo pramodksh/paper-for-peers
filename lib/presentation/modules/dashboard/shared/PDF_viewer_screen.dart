@@ -7,7 +7,7 @@ import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/checkbox_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/utilities/dialogs.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,7 +67,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
           if (await canLaunch(documentUrl)) {
             await launch(documentUrl);
           } else {
-            showAlertDialog(context: context, text: "Couldn't open url - $documentUrl");
+            Utils.showAlertDialog(context: context, text: "Couldn't open url - $documentUrl");
           }
         },
         child: Column(
@@ -215,7 +215,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     double ratingBorderRadius = 20;
     double ratingWidth = 100;
     double ratingRightPosition = 10;
-    
+
     if (widget.parameter.runtimeType == PDFScreenSimpleBottomSheet) {
       double modelHeight = 300;
       PDFScreenSimpleBottomSheet parameter = widget.parameter;
