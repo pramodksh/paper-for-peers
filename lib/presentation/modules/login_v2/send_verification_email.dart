@@ -39,18 +39,7 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
         } else {
           Future(() async {
             _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
-              print("RELOAD USER");
               await _authRepository.reloadCurrentUser();
-              // User user = _authRepository.currentUser;
-              // if (user.emailVerified) {
-              //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-              //     builder: (context) => LoginUtils.addUserIfNotExistsAndGetWidget(
-              //       context: context,
-              //       user: widget.user!,
-              //     ),
-              //   ));
-              //   timer.cancel();
-              // }
             });
           });
         }

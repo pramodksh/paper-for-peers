@@ -8,6 +8,7 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
+import 'package:papers_for_peers/presentation/modules/login_v2/send_verification_email.dart';
 import 'package:papers_for_peers/presentation/modules/login_v2/widgets_demo/user_course.dart';
 import 'package:papers_for_peers/presentation/modules/login_v2/login_demo.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
@@ -72,6 +73,8 @@ class Wrapper extends StatelessWidget {
         UserModel? userFromStream = snapshot.data as UserModel?;
         if (userFromStream == null) {
           return LoginDemo();
+        } else if (!_authRepository.currentUser.emailVerified){
+          return SendVerificationEmail(user: userFromStream,);
         } else {
           return MainDashboardWrapper(userModel: userFromStream,);
         }
