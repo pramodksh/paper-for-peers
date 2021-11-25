@@ -13,26 +13,41 @@ extension GoogleAuthStatusExtension on GoogleAuthStatus {
 }
 
 class GoogleAuthState extends Equatable {
+
+  final List<Course>? courses;
+  final bool isCoursesLoading;
+
+  final Course? selectedCourse;
+  final Semester? selectedSemester;
+
   final GoogleAuthStatus googleAuthStatus;
-  final String errorMessage;
+  final String? errorMessage;
 
   const GoogleAuthState({
     required this.googleAuthStatus,
-    required this.errorMessage,
+    this.errorMessage,
+    this.selectedSemester,
+    this.selectedCourse,
+    this.courses,
+    required this.isCoursesLoading,
   });
-
-  factory GoogleAuthState.initial() {
-    return GoogleAuthState(googleAuthStatus: GoogleAuthStatus.initial, errorMessage: "");
-  }
 
   @override
   List<Object?> get props => [googleAuthStatus, errorMessage];
 
   GoogleAuthState copyWith({
+    List<Course>? courses,
+    bool? isCoursesLoading,
+    Course? selectedCourse,
+    Semester? selectedSemester,
     GoogleAuthStatus? googleAuthStatus,
     String? errorMessage,
   }) {
     return GoogleAuthState(
+      courses: courses ?? this.courses,
+      isCoursesLoading: isCoursesLoading ?? this.isCoursesLoading,
+      selectedCourse: selectedCourse ?? this.selectedCourse,
+      selectedSemester: selectedSemester ?? this.selectedSemester,
       googleAuthStatus: googleAuthStatus ?? this.googleAuthStatus,
       errorMessage: errorMessage ?? this.errorMessage,
     );

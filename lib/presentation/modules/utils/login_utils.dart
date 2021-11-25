@@ -49,7 +49,7 @@ class LoginUtils {
           if (authenticatedUser.displayName == null || authenticatedUser.displayName!.isEmpty) {
             return UserDetails();
           } else if (authenticatedUser.course == null || authenticatedUser.semester == null) {
-            return UserCourse();
+            return UserCourse(userModel: authenticatedUser,);
           } else {
             return MainDashboard();
           }

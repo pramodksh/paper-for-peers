@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_in/sign_in_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
@@ -34,7 +35,7 @@ class _LoginState extends State<Login> {
           create: (context) => SignInCubit(authRepository: context.read<AuthRepository>()),
         ),
         BlocProvider(
-          create: (context) => GoogleAuthCubit(authRepository: context.read<AuthRepository>()),
+          create: (context) => GoogleAuthCubit(authRepository: context.read<AuthRepository>(), firestoreRepository: context.read<FirestoreRepository>(),),
         ),
       ],
       child: Builder(

@@ -5,7 +5,14 @@ import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class GoogleAuthWidget extends StatelessWidget {
+class GoogleAuthForm_Demo extends StatelessWidget {
+  
+  final bool isSignIn;
+
+  GoogleAuthForm_Demo({
+    required this.isSignIn,
+  });
+  
   @override
   Widget build(BuildContext context) {
     GoogleAuthState googleAuthState = context.watch<GoogleAuthCubit>().state;
@@ -18,7 +25,17 @@ class GoogleAuthWidget extends StatelessWidget {
       },
       child: TextButton(
         onPressed: googleAuthState.googleAuthStatus.isLoading ? null : () {
-          // context.read<GoogleAuthCubit>().authenticateWithGoogle(isSignIn: true);
+
+          context.read<GoogleAuthCubit>().authenticateWithGoogle(isSignIn: isSignIn);
+
+          // if (isSignIn) {
+          //   context.read<GoogleAuthCubit>().signInWithGoogle();
+          // } else {
+          //   // todo show courses and semester dialog, check not null
+          //   context.read<GoogleAuthCubit>().signUpWithGoogle(course: googleAuthState.selectedCourse!, semester: googleAuthState.selectedSemester!);
+          // }
+
+
         },
         child: googleAuthState.googleAuthStatus.isLoading ? Center(
           child: CircularProgressIndicator.adaptive(),

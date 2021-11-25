@@ -92,6 +92,10 @@ class _MainDashboardState extends State<MainDashboard> {
         color: isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
         child: Column(
           children: [
+
+            Utils.getCustomButton(buttonText: "REFRESH", onPressed: () {
+              context.read<AuthRepository>().reloadCurrentUser();
+            }),
             SizedBox(height: 50,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -164,20 +168,21 @@ class _MainDashboardState extends State<MainDashboard> {
                   if (mounted) {
                     setState(() { _isLoading = true; _loadingText = "Logging out.."; });
                   }
-                  await context.read<AuthRepository>().logoutUser().then((value) {
-                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    //   builder: (context) => Login(),
-                    // ));
-
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ), (route) => false).then((value) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => Login(),
-                      ));
-                    });
-                  });
+                  await context.read<AuthRepository>().logoutUser();
+                  //     .then((value) {
+                  //   // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //   //   builder: (context) => Login(),
+                  //   // ));
+                  //
+                  //   Navigator.of(context).pop();
+                  //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                  //     builder: (context) => Login(),
+                  //   ), (route) => false).then((value) {
+                  //     Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //       builder: (context) => Login(),
+                  //     ));
+                  //   });
+                  // });
                   if (mounted) {
                     setState(() { _isLoading = false; });
                   }

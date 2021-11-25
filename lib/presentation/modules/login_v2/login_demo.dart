@@ -15,6 +15,7 @@ import 'package:papers_for_peers/logic/cubits/sign_up_demo/sign_up_demo_cubit.da
 import 'package:papers_for_peers/presentation/modules/login/widgets/google_auth_widget.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/sign_in_form.dart';
 import 'package:papers_for_peers/presentation/modules/login/widgets/sign_up_form.dart';
+import 'package:papers_for_peers/presentation/modules/login_v2/widgets_demo/google_form_demo.dart';
 import 'package:papers_for_peers/presentation/modules/login_v2/widgets_demo/sign_in_demo.dart';
 import 'package:papers_for_peers/presentation/modules/login_v2/widgets_demo/sign_up_demo.dart';
 import 'package:papers_for_peers/presentation/modules/utils/login_utils.dart';
@@ -46,6 +47,12 @@ class _LoginDemoState extends State<LoginDemo> {
             authRepository: context.read<AuthRepository>(),
           ),
         ),
+        BlocProvider<GoogleAuthCubit>(
+          create: (context) => GoogleAuthCubit(
+            authRepository: context.read<AuthRepository>(),
+            firestoreRepository: context.read<FirestoreRepository>(),
+          ),
+        ),
       ],
       child: Builder(
           builder: (context) {
@@ -71,7 +78,7 @@ class _LoginDemoState extends State<LoginDemo> {
                         SizedBox(height: 35,),
                         LoginUtils.getOrDivider(),
                         SizedBox(height: 30,),
-                        // GoogleAuthWidget(),
+                        GoogleAuthForm_Demo(isSignIn: _isSignIn,),
                         SizedBox(height: 20,),
                         RichText(
                           text: TextSpan(
