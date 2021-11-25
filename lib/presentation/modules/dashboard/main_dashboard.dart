@@ -170,31 +170,9 @@ class _MainDashboardState extends State<MainDashboard> {
                     setState(() { _isLoading = true; _loadingText = "Logging out.."; });
                   }
                   await context.read<AuthRepository>().logoutUser();
-                  //     .then((value) {
-                  //   // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  //   //   builder: (context) => Login(),
-                  //   // ));
-                  //
-                  //   Navigator.of(context).pop();
-                  //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                  //     builder: (context) => Login(),
-                  //   ), (route) => false).then((value) {
-                  //     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  //       builder: (context) => Login(),
-                  //     ));
-                  //   });
-                  // });
                   if (mounted) {
                     setState(() { _isLoading = false; });
                   }
-
-                  // todo check logging out when user first signs up
-                  // print("CAP POP: ${Navigator.of(context).canPop()}");
-                  // SchedulerBinding.instance.addPostFrameCallback((_) {
-                  //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  //     builder: (context) => Login(),
-                  //   ));
-                  // });
                 },
                 child: Text("Log Out", style: TextStyle(fontSize: 18),),
               ),
