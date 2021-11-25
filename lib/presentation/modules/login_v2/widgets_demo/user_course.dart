@@ -170,12 +170,6 @@ class _UserCourseState extends State<UserCourse> {
                                       semester: selectedSemester,
                                     ));
                                     context.read<AuthRepository>().reloadCurrentUser();
-                                    // if (!addUserResponse.isError) {
-                                    //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                    //     builder: (context) => IntroScreen(),
-                                    //   ));
-                                    // }
-
                                   }
 
                                 },

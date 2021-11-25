@@ -21,7 +21,6 @@ import 'package:papers_for_peers/logic/blocs/text_book/text_book_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/wrapper.dart';
-import 'package:papers_for_peers/wrapper_demo.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -139,7 +138,7 @@ class _MyAppState extends State<MyApp> {
                 context: context,
                 appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
               ),
-              home: WrapperDemo(),
+              home: Wrapper(),
             );
           }
         ),

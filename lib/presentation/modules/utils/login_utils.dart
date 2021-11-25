@@ -6,7 +6,7 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
-import 'package:papers_for_peers/presentation/modules/login/user_course.dart';
+import 'package:papers_for_peers/presentation/modules/login_v2/widgets_demo/user_course.dart';
 import 'package:papers_for_peers/presentation/modules/login/user_details.dart';
 import 'package:provider/provider.dart';
 
