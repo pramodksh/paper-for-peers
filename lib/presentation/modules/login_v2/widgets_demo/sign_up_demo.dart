@@ -165,6 +165,58 @@ class SignUpForm_Demo extends StatelessWidget {
     );
   }
 
+  Widget _buildIsUserWantsToUploadPhoto({required bool isDarkTheme, required BuildContext context}) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      child: Container(
+        // height: 400,
+        width: MediaQuery.of(context).size.width * 0.9,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 15,),
+              Text("Are you sure you don't want to upload your Profile Photo?", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xff373F41), fontStyle: FontStyle.italic,), textAlign: TextAlign.center,),
+              SizedBox(height: 20,),
+              Text("Note: You cannot edit it once you tap on continue", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xff373F41),), textAlign: TextAlign.center,),
+              SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(Colors.black26),
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(CustomColors.lightModeBottomNavBarColor)
+                    ),
+                    child: Text("Yes, I'm sure", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+                  ),
+                  SizedBox(width: 10,),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(Colors.black26),
+                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
+                        backgroundColor: MaterialStateProperty.all(CustomColors.bottomNavBarColor)
+                    ),
+                    child: Text("No", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),),
+                  ),
+                ],
+              ),
+            ]
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -386,8 +438,27 @@ class SignUpForm_Demo extends StatelessWidget {
                       ? Center(child: CircularProgressIndicator.adaptive())
                       : Utils.getCustomButton(
                     buttonText: 'Sign Up',
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate())  {
+
+                        if (signUpState.profilePhotoFile == null) {
+                          bool? isUserWantsToUploadPhoto = await showDialog(
+                            context: context,
+                            builder: (context) => _buildIsUserWantsToUploadPhoto(isDarkTheme: appThemeType.isDarkTheme(), context: context),
+                          );
+
+                          if (isUserWantsToUploadPhoto == true) {
+                            showDialog(
+                              context: context,
+                              builder: (_) => _buildChooseSourceDialog(
+                                isDarkTheme: appThemeType.isDarkTheme(),
+                                context: context,
+                                isDisplayRemoveButton: signUpState.profilePhotoFile != null,
+                              ),
+                            );
+                          }
+                        }
+
                         context.read<SignUpDemoCubit>().buttonClicked();
                       }
                     },

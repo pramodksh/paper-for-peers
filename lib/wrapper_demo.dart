@@ -10,7 +10,7 @@ class WrapperDemo extends StatelessWidget {
     AuthRepository _authRepository = context.select((AuthRepository repo) => repo);
 
     // todo remove
-    // _authRepository.logoutUser();
+    _authRepository.logoutUser();
 
     return StreamBuilder(
       stream: _authRepository.user,
