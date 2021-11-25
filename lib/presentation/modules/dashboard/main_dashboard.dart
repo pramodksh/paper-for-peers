@@ -6,8 +6,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
@@ -40,8 +42,6 @@ class _MainDashboardState extends State<MainDashboard> {
   int selectedItemPosition = 0;
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
-
-  String? selectedSemester;
 
 
   String get greeting {
@@ -127,19 +127,39 @@ class _MainDashboardState extends State<MainDashboard> {
               ),
             ),
             SizedBox(height: 10,),
-            SizedBox(
-              width: 180,
-              child: Utils.getCustomDropDown<String>(
-                context: context,
-                dropDownHint: "Semester",
-                dropDownItems: List.generate(6, (index) => (index + 1).toString()),
-                onDropDownChanged: (val) {
-                  setState(() { selectedSemester = val;
-                  // todo implement change semester
-                  });
-                },
-                dropDownValue: selectedSemester,
-              ),
+            Builder(
+              builder: (context) {
+                UserState userState = context.watch<UserCubit>().state;
+
+                if (userState is UserLoaded) {
+                  return SizedBox(
+                    width: 180,
+                    child: Utils.getCustomDropDown<Semester>(
+                      context: context,
+                      dropDownHint: "Semester",
+                      dropDownItems: userState.userModel.course!.semesters,
+                      onDropDownChanged: (val) {
+                        context.read<UserCubit>().changeSemester(val!);
+                      },
+                      dropDownValue: userState.userModel.semester,
+                      items: userState.userModel.course!.semesters!.map((Semester value) {
+                        return DropdownMenuItem<Semester>(
+                          value: value,
+                          child: Text(value.nSemester.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                            fontSize: 18,
+                            color: isDarkTheme ? Colors.white60 : Colors.black,
+                          ),),
+                        );
+                      }).toList(),
+                    ),
+                  );
+                } else if (userState is UserLoading){
+                  return Center(child: CircularProgressIndicator.adaptive(),);
+                } else {
+                  return Container();
+                }
+
+              }
             ),
             Divider(height: 40,),
             Spacer(),

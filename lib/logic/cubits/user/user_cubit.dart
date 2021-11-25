@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
+import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
@@ -111,4 +112,16 @@ class UserCubit extends Cubit<UserState> {
   Future<bool> isUserExists(UserModel user) async => await _firestoreRepository.isUserExists(userId: user.uid);
 
   Future<UserModel> getUserById({required String userId}) async => await _firestoreRepository.getUserByUserId(userId: userId);
+
+  Future<void> changeSemester(Semester semester) async {
+    UserModel changedUser = (state as UserLoaded).userModel.copyWith(semester: semester);
+    emit(UserLoading());
+    ApiResponse response = await _firestoreRepository.addUser(user: changedUser);
+    if (response.isError) {
+      emit(UserEditError(errorMessage: response.errorMessage!));
+    } else {
+      emit(UserLoaded(userModel: changedUser));
+    }
+  }
+
 }
