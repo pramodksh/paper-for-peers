@@ -24,6 +24,10 @@ class Styles {
   static ThemeData themeData({required AppThemeType appThemeType, required BuildContext context}) {
     return ThemeData(
 
+      dialogTheme: DialogTheme(
+        titleTextStyle: CustomTextStyle.bodyTextStyle.copyWith(color: Colors.black,),
+      ),
+
       dividerTheme: DividerThemeData(
         color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
         thickness: 0.6,

@@ -9,13 +9,16 @@ import 'package:provider/provider.dart';
 
 class Utils {
 
-  static Future showAlertDialog({required BuildContext context, required String? text}) => showDialog(
+  static Future showAlertDialog({required BuildContext context, required String text}) => showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      titlePadding: EdgeInsets.all(30),
+      contentPadding: EdgeInsets.all(30),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      title: Center(child: Text(text!)),
+      backgroundColor: context.select((AppThemeCubit cubit) => cubit.state).appThemeType.isDarkTheme() ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      title: Center(child: Text(text, style: TextStyle(fontSize: 18),),),
     ),
   );
 

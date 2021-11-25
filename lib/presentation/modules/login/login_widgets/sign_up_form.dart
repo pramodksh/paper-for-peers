@@ -227,7 +227,7 @@ class SignUpForm extends StatelessWidget {
     return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state.signUpDemoStateStatus.isError) {
-          Utils.showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage!);
           context.read<SignUpCubit>().resetErrorToSuccess();
         }
       },

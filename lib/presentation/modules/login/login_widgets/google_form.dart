@@ -20,7 +20,7 @@ class GoogleAuthForm extends StatelessWidget {
     return BlocListener<GoogleAuthCubit, GoogleAuthState>(
       listener: (context, state) {
         if (state.googleAuthStatus.isError) {
-          Utils.showAlertDialog(context: context, text: state.errorMessage);
+          Utils.showAlertDialog(context: context, text: state.errorMessage!);
         }
       },
       child: TextButton(
