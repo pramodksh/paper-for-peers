@@ -213,12 +213,12 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
     );
   }
   
-  Widget _getNotes({required bool isDarkTheme}) {
+  Widget _getNotes({required bool isDarkTheme, required AppThemeType appThemeType}) {
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: tabBarViewPadding),
       children: List.generate(10, (index) {
         return _getNotesDetailsTile(
-          appThemeType: AppThemeType.dark, // todo change
+          appThemeType: appThemeType,
           isYourPostTile: true,
           yourPostTileOnDelete: () {},
           yourPostTileOnEdit: () {},
@@ -327,7 +327,7 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
                 controller: _tabController,
                 children: <Widget>[
                   _getQuestionPapers(isDarkTheme: appThemeType.isDarkTheme()),
-                  _getNotes(isDarkTheme: appThemeType.isDarkTheme()),
+                  _getNotes(isDarkTheme: appThemeType.isDarkTheme(), appThemeType: appThemeType),
                   _getJournal(isDarkTheme: appThemeType.isDarkTheme()),
                   _getSyllabusCopy(isDarkTheme: appThemeType.isDarkTheme()),
                   _getTextBooks(isDarkTheme: appThemeType.isDarkTheme()),
