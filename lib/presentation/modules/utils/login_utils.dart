@@ -51,7 +51,7 @@ class LoginUtils {
           } else if (authenticatedUser.course == null || authenticatedUser.semester == null) {
             return UserCourse(userModel: authenticatedUser,);
           } else {
-            return MainDashboard();
+            return MainDashboard(isDisplayWelcomeScreen: false,);
           }
         }
       },

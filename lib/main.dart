@@ -12,6 +12,7 @@ import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repos
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
+import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
 import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
 import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
@@ -56,6 +57,9 @@ class _MyAppState extends State<MyApp> {
         ),
         RepositoryProvider<FilePickerRepository>(
           create: (context) => FilePickerRepository(),
+        ),
+        RepositoryProvider<SharedPreferenceRepository>(
+          create: (context) => SharedPreferenceRepository(),
         ),
 
         RepositoryProvider<QuestionPaperRepository>(

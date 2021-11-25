@@ -8,6 +8,7 @@ import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
+import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
 import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_in/sign_in_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
@@ -40,6 +41,7 @@ class _LoginDemoState extends State<LoginDemo> {
             firestoreRepository: context.read<FirestoreRepository>(),
             imagePickerRepository: context.read<ImagePickerRepository>(),
             firebaseStorageRepository: context.read<FirebaseStorageRepository>(),
+            sharedPreferenceRepository: context.read<SharedPreferenceRepository>(),
           ),
         ),
         BlocProvider<SignInCubit>(
@@ -49,6 +51,7 @@ class _LoginDemoState extends State<LoginDemo> {
         ),
         BlocProvider<GoogleAuthCubit>(
           create: (context) => GoogleAuthCubit(
+            sharedPreferenceRepository: context.read<SharedPreferenceRepository>(),
             authRepository: context.read<AuthRepository>(),
             firestoreRepository: context.read<FirestoreRepository>(),
           ),

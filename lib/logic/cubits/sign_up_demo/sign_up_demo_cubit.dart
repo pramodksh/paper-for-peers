@@ -10,6 +10,7 @@ import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
+import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
 
 part 'sign_up_demo_state.dart';
 
@@ -27,14 +28,17 @@ class SignUpDemoCubit extends Cubit<SignUpDemoState> {
   final FirestoreRepository _firestoreRepository;
   final ImagePickerRepository _imagePickerRepository;
   final FirebaseStorageRepository _firebaseStorageRepository;
+  final SharedPreferenceRepository _sharedPreferenceRepository;
 
   SignUpDemoCubit({
     required AuthRepository authRepository, required FirestoreRepository firestoreRepository,
     required ImagePickerRepository imagePickerRepository, required FirebaseStorageRepository firebaseStorageRepository,
+    required SharedPreferenceRepository sharedPreferenceRepository,
   }) : _authRepository = authRepository,
         _firestoreRepository = firestoreRepository,
         _imagePickerRepository = imagePickerRepository,
         _firebaseStorageRepository = firebaseStorageRepository,
+        _sharedPreferenceRepository = sharedPreferenceRepository,
       super(SignUpDemoState(
           isPasswordObscure: true, isConfirmPasswordObscure: true,
           signUpDemoStateStatus: SignUpDemoStateStatus.initial, isCoursesLoading: false,
@@ -127,6 +131,7 @@ class SignUpDemoCubit extends Cubit<SignUpDemoState> {
 
 
   Future<void> buttonClicked() async {
+
     if (state.selectedCourse == null) {
       emit(state.copyWith(signUpDemoStateStatus: SignUpDemoStateStatus.error, errorMessage: "Please select your Course"));
       return;
@@ -161,6 +166,8 @@ class SignUpDemoCubit extends Cubit<SignUpDemoState> {
         photoUrl = uploadResponse.data;
       }
     }
+
+    await _sharedPreferenceRepository.setIsShowIntroScreen(true);
 
     ApiResponse addResponse = await _firestoreRepository.addUser(user: userModel.copyWith(
       displayName: state.username,

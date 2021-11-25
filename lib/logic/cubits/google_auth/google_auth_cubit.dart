@@ -6,16 +6,19 @@ import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
 
 part 'google_auth_state.dart';
 
 class GoogleAuthCubit extends Cubit<GoogleAuthState> {
   final AuthRepository _authRepository;
   final FirestoreRepository _firestoreRepository;
+  final SharedPreferenceRepository _sharedPreferenceRepository;
 
-  GoogleAuthCubit({required AuthRepository authRepository, required FirestoreRepository firestoreRepository})
+  GoogleAuthCubit({required AuthRepository authRepository, required FirestoreRepository firestoreRepository, required SharedPreferenceRepository sharedPreferenceRepository})
       : _authRepository = authRepository,
         _firestoreRepository = firestoreRepository,
+        _sharedPreferenceRepository = sharedPreferenceRepository,
         super(GoogleAuthState(
             googleAuthStatus: GoogleAuthStatus.initial, isCoursesLoading: false,
         ));
@@ -67,6 +70,7 @@ class GoogleAuthCubit extends Cubit<GoogleAuthState> {
       print("GOOGLE AUTH: $isUserExists");
 
       if (!isUserExists) {
+        await _sharedPreferenceRepository.setIsShowIntroScreen(true);
         ApiResponse addResponse = await _firestoreRepository.addUser(user: userModel);
 
         if (addResponse.isError){
@@ -74,21 +78,9 @@ class GoogleAuthCubit extends Cubit<GoogleAuthState> {
         } else {
           print("USER ADDED TO DATABASE");
         }
+      } else {
+        _sharedPreferenceRepository.setIsShowIntroScreen(false);
       }
-      // } else {
-      //   UserModel userFromDatabase = await _firestoreRepository.getUserByUserId(userId: userModel.uid);
-      //   if (userFromDatabase.semester == null || userFromDatabase.course == null) {
-      //     // todo show course and semester
-      //   }
-      //
-      //   ApiResponse addResponse = await _firestoreRepository.addUser(user: userModel);
-      //
-      //   if (addResponse.isError){
-      //     print("ADD ERROR: ${addResponse.errorMessage}");
-      //   } else {
-      //     print("USER ADDED TO DATABASE");
-      //   }
-      // }
 
       emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.success, ));
     }

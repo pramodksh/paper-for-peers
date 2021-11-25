@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -13,6 +14,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_s
 import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/text_book/text_book.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
+import 'package:papers_for_peers/presentation/modules/login/welcome_screen.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +23,10 @@ import 'notes/notes.dart';
 import 'notifications/notifications.dart';
 
 class MainDashboard extends StatefulWidget {
+  final bool isDisplayWelcomeScreen;
+
+  MainDashboard({required this.isDisplayWelcomeScreen});
+
   @override
   _MainDashboardState createState() => _MainDashboardState();
 }
@@ -273,6 +279,22 @@ class _MainDashboardState extends State<MainDashboard> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      print("CHECK HERE: ${widget.isDisplayWelcomeScreen}");
+      if (widget.isDisplayWelcomeScreen) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => IntroScreen(),
+        ));
+      }
+
+    });
+
+    super.initState();
   }
 
   @override

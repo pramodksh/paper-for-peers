@@ -5,6 +5,7 @@ import 'package:intro_slider/slide_object.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
 
 import '../dashboard/main_dashboard.dart';
 import 'package:provider/provider.dart';
@@ -68,14 +69,16 @@ class IntroScreenState extends State<IntroScreen> {
   }
 
   void onDonePress() {
+    Navigator.of(context).pop();
+    context.read<SharedPreferenceRepository>().setIsShowIntroScreen(false);
     // context.read<AuthRepository>().reloadCurrentUser();
     // Back to the first tab
     // this.goToTab(0);
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (context) =>
-      // WelcomeMessage(),
-      MainDashboard(),
-    ));
+    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+    //   builder: (context) =>
+    //   // WelcomeMessage(),
+    //   MainDashboard(),
+    // ));
   }
 
   void onTabChangeCompleted(index) {
