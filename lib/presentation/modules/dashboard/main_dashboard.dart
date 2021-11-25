@@ -97,10 +97,6 @@ class _MainDashboardState extends State<MainDashboard> {
         color: isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
         child: Column(
           children: [
-
-            Utils.getCustomButton(buttonText: "REFRESH", onPressed: () {
-              context.read<AuthRepository>().reloadCurrentUser();
-            }),
             SizedBox(height: 50,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
