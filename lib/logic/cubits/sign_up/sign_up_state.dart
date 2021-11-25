@@ -1,61 +1,91 @@
 part of 'sign_up_cubit.dart';
 
-enum SignUpStatus {
+enum SignUpStateStatus {
   initial,
   loading,
-  success,
   error,
+  success,
 }
 
-extension SignUpStatusExtension on SignUpStatus{
-  bool get isLoading => this == SignUpStatus.loading;
-  bool get isError => this == SignUpStatus.error;
+extension SignUpStateStatusExtension on SignUpStateStatus {
+  bool get isInitial => this == SignUpStateStatus.initial;
+  bool get isLoading => this == SignUpStateStatus.loading;
+  bool get isError => this == SignUpStateStatus.error;
+  bool get isSuccess => this == SignUpStateStatus.success;
 }
 
-class SignUpState extends Equatable {
+class SignUpState {
 
-  final String email;
-  final String password;
-  final String confirmPassword;
+  final List<Course>? courses;
+  final bool isCoursesLoading;
+
+  final SignUpStateStatus signUpDemoStateStatus;
+
+  final Course? selectedCourse;
+  final Semester? selectedSemester;
+  final String? errorMessage;
+  final String? email;
+  final String? username;
+
+  final File? profilePhotoFile;
+  final bool isProfilePhotoLoading;
+
+  final String? password;
+  final String? confirmPassword;
   final bool isPasswordObscure;
   final bool isConfirmPasswordObscure;
-  final SignUpStatus signUpStatus;
-  final String errorMessage;
 
   const SignUpState({
-    required this.email,
-    required this.password,
-    required this.signUpStatus,
-    required this.errorMessage,
-    required this.confirmPassword,
+    required this.isCoursesLoading,
+    this.courses,
+    required this.signUpDemoStateStatus,
+    this.selectedCourse,
+    this.selectedSemester,
+    this.errorMessage,
+    this.email,
+    this.username,
+    this.profilePhotoFile,
+    required this.isProfilePhotoLoading,
+    this.password,
+    this.confirmPassword,
     required this.isPasswordObscure,
     required this.isConfirmPasswordObscure,
   });
 
-  factory SignUpState.initial() {
-    return SignUpState(
-      email: "", password: "", confirmPassword: "",
-      signUpStatus: SignUpStatus.initial, errorMessage: "",
-      isPasswordObscure: true, isConfirmPasswordObscure: true,
-    );
-  }
-
-  bool get isValid => this.email.isNotEmpty || this.password.isNotEmpty || this.confirmPassword.isNotEmpty;
+  // profilePhotoFile: profilePhotoFile,
+  // and not
+  // profilePhotoFile: profilePhotoFile ?? this.profilePhotoFile,
+  // because user can remove profile photo
 
   SignUpState copyWith({
+    List<Course>? courses,
+    bool? isCoursesLoading,
+    SignUpStateStatus? signUpDemoStateStatus,
+    Course? selectedCourse,
+    Semester? selectedSemester,
+    String? errorMessage,
     String? email,
+    String? username,
+    File? profilePhotoFile,
+    bool isProfilePhotoReset = false,
+    bool? isProfilePhotoLoading,
     String? password,
     String? confirmPassword,
-    SignUpStatus? signUpStatus,
-    String? errorMessage,
     bool? isPasswordObscure,
     bool? isConfirmPasswordObscure,
   }) {
     return SignUpState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      signUpStatus: signUpStatus ?? this.signUpStatus,
+      courses: courses ?? this.courses,
+      isCoursesLoading: isCoursesLoading ?? this.isCoursesLoading,
+      signUpDemoStateStatus: signUpDemoStateStatus ?? this.signUpDemoStateStatus,
+      selectedCourse: selectedCourse ?? this.selectedCourse,
+      selectedSemester: selectedSemester ?? this.selectedSemester,
       errorMessage: errorMessage ?? this.errorMessage,
+      email: email ?? this.email,
+      username: username ?? this.username,
+      profilePhotoFile: isProfilePhotoReset ? null : profilePhotoFile ?? this.profilePhotoFile,
+      isProfilePhotoLoading: isProfilePhotoLoading ?? this.isProfilePhotoLoading,
+      password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,
       isPasswordObscure: isPasswordObscure ?? this.isPasswordObscure,
       isConfirmPasswordObscure: isConfirmPasswordObscure ?? this.isConfirmPasswordObscure,
@@ -63,9 +93,7 @@ class SignUpState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-    email, password, confirmPassword, signUpStatus, errorMessage,
-    isPasswordObscure, isConfirmPasswordObscure,
-  ];
-
+  String toString() {
+    return 'SignUpDemoState{courses: $courses, isCoursesLoading: $isCoursesLoading, signUpDemoStateStatus: $signUpDemoStateStatus, selectedCourse: $selectedCourse, selectedSemester: $selectedSemester, errorMessage: $errorMessage, email: $email, username: $username, profilePhotoFile: $profilePhotoFile, isProfilePhotoLoading: $isProfilePhotoLoading, password: $password, confirmPassword: $confirmPassword, isPasswordObscure: $isPasswordObscure, isConfirmPasswordObscure: $isConfirmPasswordObscure}';
+  }
 }

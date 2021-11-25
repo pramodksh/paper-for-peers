@@ -12,7 +12,6 @@ import 'package:papers_for_peers/data/repositories/shared_preference/shared_pref
 import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_in/sign_in_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
-import 'package:papers_for_peers/logic/cubits/sign_up_demo/sign_up_demo_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/login/login_widgets/google_form.dart';
 import 'package:papers_for_peers/presentation/modules/login/login_widgets/sign_in_form.dart';
 import 'package:papers_for_peers/presentation/modules/login/login_widgets/sign_up_form.dart';
@@ -51,8 +50,8 @@ class _LoginDemoState extends State<LoginDemo> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SignUpDemoCubit>(
-          create: (context) => SignUpDemoCubit(
+        BlocProvider<SignUpCubit>(
+          create: (context) => SignUpCubit(
             authRepository: context.read<AuthRepository>(),
             firestoreRepository: context.read<FirestoreRepository>(),
             imagePickerRepository: context.read<ImagePickerRepository>(),

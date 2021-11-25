@@ -10,7 +10,7 @@ import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
-import 'package:papers_for_peers/logic/cubits/sign_up_demo/sign_up_demo_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -77,7 +77,7 @@ class SignUpForm extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () async {
                       Navigator.of(context).pop();
-                      context.read<SignUpDemoCubit>().pickImage(imageSource: ImageSource.camera);
+                      context.read<SignUpCubit>().pickImage(imageSource: ImageSource.camera);
                     },
                     style: ButtonStyle(
                         padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
@@ -88,7 +88,7 @@ class SignUpForm extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () async {
                       Navigator.of(context).pop();
-                      context.read<SignUpDemoCubit>().pickImage(imageSource: ImageSource.gallery);
+                      context.read<SignUpCubit>().pickImage(imageSource: ImageSource.gallery);
                     },
                     style: ButtonStyle(
                         padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
@@ -99,7 +99,7 @@ class SignUpForm extends StatelessWidget {
                   ElevatedButton(
                     onPressed: isDisplayRemoveButton ? () {
                       Navigator.of(context).pop();
-                      context.read<SignUpDemoCubit>().removeUserPhoto();
+                      context.read<SignUpCubit>().removeUserPhoto();
                     } : null,
                     style: ButtonStyle(
                         padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20)),
@@ -125,7 +125,7 @@ class SignUpForm extends StatelessWidget {
 
 
   Widget _getProfilePhotoWidget({
-    required SignUpDemoState signUpState,
+    required SignUpState signUpState,
     required bool isDarkTheme,
     required BuildContext context,
   }) {
@@ -221,14 +221,14 @@ class SignUpForm extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
-    final SignUpDemoState signUpState = context.watch<SignUpDemoCubit>().state;
+    final SignUpState signUpState = context.watch<SignUpCubit>().state;
 
 
-    return BlocListener<SignUpDemoCubit, SignUpDemoState>(
+    return BlocListener<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state.signUpDemoStateStatus.isError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-          context.read<SignUpDemoCubit>().resetErrorToSuccess();
+          context.read<SignUpCubit>().resetErrorToSuccess();
         }
       },
       child: Container(
@@ -256,29 +256,29 @@ class SignUpForm extends StatelessWidget {
                 Utils.getCustomTextField(
                   labelText: 'Email Address',
                   onChanged: (val) {
-                    context.read<SignUpDemoCubit>().emailChanged(val);
+                    context.read<SignUpCubit>().emailChanged(val);
                   },
-                  validator: (String? val) => context.read<SignUpDemoCubit>().isEmailValid(val!) ? null : "Please enter valid email",
+                  validator: (String? val) => context.read<SignUpCubit>().isEmailValid(val!) ? null : "Please enter valid email",
                 ),
                 SizedBox(height: 20,),
                 Utils.getCustomPasswordField(
                   inputBoxText: 'Password',
                   onChanged: (val) {
-                    context.read<SignUpDemoCubit>().passwordChanged(val);
+                    context.read<SignUpCubit>().passwordChanged(val);
                   },
                   obscureText: signUpState.isPasswordObscure,
-                  onTapObscure: () { context.read<SignUpDemoCubit>().passwordObscureToggle(); },
-                  validator: (String? val) => context.read<SignUpDemoCubit>().isPasswordValid(val!) ? null : "Enter Password",
+                  onTapObscure: () { context.read<SignUpCubit>().passwordObscureToggle(); },
+                  validator: (String? val) => context.read<SignUpCubit>().isPasswordValid(val!) ? null : "Enter Password",
                 ),
                 SizedBox(height: 20,),
                 Utils.getCustomPasswordField(
                   inputBoxText: 'Confirm Password',
                   onChanged: (val) {
-                    context.read<SignUpDemoCubit>().confirmPasswordChanged(val);
+                    context.read<SignUpCubit>().confirmPasswordChanged(val);
                   },
                   obscureText: signUpState.isConfirmPasswordObscure,
-                  onTapObscure: () { context.read<SignUpDemoCubit>().confirmPasswordObscureToggle(); },
-                  validator: (String? val) => context.read<SignUpDemoCubit>().isConfirmPasswordValid(val!) ? null : "Passwords do not match",
+                  onTapObscure: () { context.read<SignUpCubit>().confirmPasswordObscureToggle(); },
+                  validator: (String? val) => context.read<SignUpCubit>().isConfirmPasswordValid(val!) ? null : "Passwords do not match",
                 ),
                 SizedBox(height: 50,),
                 Text("User Details:", style: TextStyle(fontSize: 20),),
@@ -293,10 +293,10 @@ class SignUpForm extends StatelessWidget {
                 SizedBox(height: 30,),
                 Utils.getCustomTextField(
                   onChanged: (val) {
-                    context.read<SignUpDemoCubit>().usernameChanged(val);
+                    context.read<SignUpCubit>().usernameChanged(val);
                   },
                   hintText: "User Name",
-                  validator: (String? val) => context.read<SignUpDemoCubit>().isUsernameValid(val!) ? null : "Enter your name",
+                  validator: (String? val) => context.read<SignUpCubit>().isUsernameValid(val!) ? null : "Enter your name",
                 ),
 
                 SizedBox(height: 50,),
@@ -337,7 +337,7 @@ class SignUpForm extends StatelessWidget {
                                         );
                                       }).toList(),
                                       onDropDownChanged: (val) {
-                                        context.read<SignUpDemoCubit>().courseChanged(val!);
+                                        context.read<SignUpCubit>().courseChanged(val!);
                                       },
                                     ),
                                   ),
@@ -369,7 +369,7 @@ class SignUpForm extends StatelessWidget {
                                               dropDownItems: semesters,
                                               dropDownHint: 'Semester',
                                               onDropDownChanged: signUpState.selectedCourse == null ? null : (val) {
-                                                context.read<SignUpDemoCubit>().semesterChanged(val!);
+                                                context.read<SignUpCubit>().semesterChanged(val!);
                                               },
                                               items: semesters?.map((Semester value) {
                                                 return DropdownMenuItem<Semester>(
@@ -425,7 +425,7 @@ class SignUpForm extends StatelessWidget {
                           }
                         }
 
-                        context.read<SignUpDemoCubit>().buttonClicked();
+                        context.read<SignUpCubit>().buttonClicked();
                       }
                     },
                   ),

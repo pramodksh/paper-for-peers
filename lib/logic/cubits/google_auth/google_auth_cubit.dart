@@ -30,32 +30,6 @@ class GoogleAuthCubit extends Cubit<GoogleAuthState> {
 
   }
 
-  Future<void> signInWithGoogle() async {
-    emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.loading));
-    ApiResponse googleAuthResponse = await _authRepository.authenticateWithGoogle();
-
-    if (googleAuthResponse.isError) {
-      emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.error, errorMessage: googleAuthResponse.errorMessage));
-    } else {
-
-      UserModel userModel = googleAuthResponse.data['userModel'];
-      bool isNewUser = googleAuthResponse.data['isNewUser'];
-      print("GOOGLE AUTH: $isNewUser");
-
-      // if (isSignIn == false) {
-      //   // todo signup, show courses and semester and add to database
-      // } else {
-      //   // todo sign in
-      // }
-
-      emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.success));
-    }
-  }
-
-  Future<void>? signUpWithGoogle({required Course course, required Semester semester}) async {
-    print("SELECTED COURSE: ${course.courseName} || ${semester.nSemester}");
-  }
-
   void authenticateWithGoogle({required bool isSignIn}) async {
     emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.loading));
 
@@ -74,15 +48,13 @@ class GoogleAuthCubit extends Cubit<GoogleAuthState> {
         ApiResponse addResponse = await _firestoreRepository.addUser(user: userModel);
 
         if (addResponse.isError){
-          print("ADD ERROR: ${addResponse.errorMessage}");
-        } else {
-          print("USER ADDED TO DATABASE");
+          emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.error, errorMessage: addResponse.errorMessage));
         }
       } else {
         _sharedPreferenceRepository.setIsShowIntroScreen(false);
       }
 
-      emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.success, ));
+      emit(state.copyWith(googleAuthStatus: GoogleAuthStatus.success,));
     }
   }
 
