@@ -14,11 +14,11 @@ import 'package:papers_for_peers/logic/cubits/sign_up_demo/sign_up_demo_cubit.da
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class SignUpForm_Demo extends StatelessWidget {
+class SignUpForm extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  double borderThickness = 5;
-  double profileImageRadius = 90;
+  final double borderThickness = 5;
+  final double profileImageRadius = 90;
 
   Widget _getCircularProfileImage({required File? photoFile, required String? userName}) {
     Widget circleImage;
@@ -221,7 +221,7 @@ class SignUpForm_Demo extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
-    SignUpDemoState signUpState = context.watch<SignUpDemoCubit>().state;
+    final SignUpDemoState signUpState = context.watch<SignUpDemoCubit>().state;
 
 
     return BlocListener<SignUpDemoCubit, SignUpDemoState>(
@@ -388,40 +388,6 @@ class SignUpForm_Demo extends StatelessWidget {
                                   SizedBox(height: 20,),
                                 ],
                               ),
-                              // ElevatedButton(
-                              //   style: ElevatedButton.styleFrom(
-                              //       padding: EdgeInsets.symmetric(horizontal: 30),
-                              //       shape: RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.circular(20),
-                              //       )
-                              //   ),
-                              //   onPressed: () async {
-                              //     if (userState is UserLoaded) {
-                              //       if (!userState.isValidCourse) {
-                              //         Utils.showAlertDialog(context: context, text: "Please select course");
-                              //         return;
-                              //       }
-                              //
-                              //       if (!userState.isValidSemester) {
-                              //         Utils.showAlertDialog(context: context, text: "Please select semester");
-                              //         return;
-                              //       }
-                              //
-                              //       print("ADD USER: ${userState.userModel}");
-                              //
-                              //
-                              //       ApiResponse addUserResponse = await context.read<UserCubit>().addUser(userState.userModel);
-                              //       if (!addUserResponse.isError) {
-                              //         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              //           builder: (context) => IntroScreen(),
-                              //         ));
-                              //       }
-                              //
-                              //     }
-                              //
-                              //   },
-                              //   child: Text("Continue", style: TextStyle(fontSize: 18),),
-                              // ),
                             ],
                           );
                         }

@@ -5,7 +5,14 @@ import 'package:papers_for_peers/logic/cubits/google_auth/google_auth_cubit.dart
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class GoogleAuthWidget extends StatelessWidget {
+class GoogleAuthForm extends StatelessWidget {
+  
+  final bool isSignIn;
+
+  GoogleAuthForm({
+    required this.isSignIn,
+  });
+  
   @override
   Widget build(BuildContext context) {
     GoogleAuthState googleAuthState = context.watch<GoogleAuthCubit>().state;
@@ -18,7 +25,7 @@ class GoogleAuthWidget extends StatelessWidget {
       },
       child: TextButton(
         onPressed: googleAuthState.googleAuthStatus.isLoading ? null : () {
-          // context.read<GoogleAuthCubit>().authenticateWithGoogle(isSignIn: true);
+          context.read<GoogleAuthCubit>().authenticateWithGoogle(isSignIn: isSignIn);
         },
         child: googleAuthState.googleAuthStatus.isLoading ? Center(
           child: CircularProgressIndicator.adaptive(),

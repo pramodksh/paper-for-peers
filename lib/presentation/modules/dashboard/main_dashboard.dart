@@ -13,8 +13,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/q
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/syllabus_copy/syllabus_copy.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/text_book/text_book.dart';
-import 'package:papers_for_peers/presentation/modules/login/login.dart';
-import 'package:papers_for_peers/presentation/modules/login/welcome_screen.dart';
+import 'package:papers_for_peers/presentation/modules/login/intro_screen.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 

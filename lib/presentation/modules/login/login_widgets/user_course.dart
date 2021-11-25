@@ -12,7 +12,7 @@ import 'package:papers_for_peers/data/repositories/firestore/firestore_repositor
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/presentation/modules/login/welcome_screen.dart';
+import 'package:papers_for_peers/presentation/modules/login/intro_screen.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -162,10 +162,7 @@ class _UserCourseState extends State<UserCourse> {
                                       return;
                                     }
 
-                                    print("ADD USER:");
-
-
-                                    ApiResponse addUserResponse = await context.read<FirestoreRepository>().addUser(user: widget.userModel.copyWith(
+                                    await context.read<FirestoreRepository>().addUser(user: widget.userModel.copyWith(
                                       course: selectedCourse,
                                       semester: selectedSemester,
                                     ));

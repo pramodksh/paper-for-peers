@@ -8,10 +8,9 @@ import 'package:papers_for_peers/data/repositories/shared_preference/shared_pref
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
+import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
+import 'package:papers_for_peers/presentation/modules/login/login_widgets/user_course.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
-import 'package:papers_for_peers/presentation/modules/login_v2/send_verification_email.dart';
-import 'package:papers_for_peers/presentation/modules/login_v2/widgets_demo/user_course.dart';
-import 'package:papers_for_peers/presentation/modules/login_v2/login_demo.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 

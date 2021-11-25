@@ -6,7 +6,7 @@ import 'package:papers_for_peers/presentation/modules/login/forgot_password.dart
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-class SignInForm_Demo extends StatelessWidget {
+class SignInForm extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
