@@ -57,6 +57,7 @@ class MainDashboardWrapper extends StatelessWidget {
                           return LoadingScreen(loadingText: "LOADING SHARED PREFS",);
                         } else {
                           bool isShowIntroScreen = snapshot.data as bool;
+                          context.read<UserCubit>().setUser(userFromDatabase);
                           return MainDashboard(isDisplayWelcomeScreen: isShowIntroScreen,);
                         }
 
