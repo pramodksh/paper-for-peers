@@ -37,7 +37,7 @@ class SignInCubit extends Cubit<SignInState> {
     emit(state.copyWith(isPasswordObscure: !state.isPasswordObscure));
   }
 
-  void signInWithEmailAndPassword() async {
+  void buttonClicked() async {
     print("signInWithEmailAndPassword");
 
     if (!state.isValid) {

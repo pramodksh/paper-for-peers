@@ -41,6 +41,11 @@ class _LoginDemoState extends State<LoginDemo> {
             firebaseStorageRepository: context.read<FirebaseStorageRepository>(),
           ),
         ),
+        BlocProvider<SignInCubit>(
+          create: (context) => SignInCubit(
+            authRepository: context.read<AuthRepository>(),
+          ),
+        ),
       ],
       child: Builder(
           builder: (context) {
@@ -62,8 +67,7 @@ class _LoginDemoState extends State<LoginDemo> {
                   body: SingleChildScrollView(
                     child: Column(
                       children: [
-                        // _isSignIn ? SignInForm_Demo() : SignUpForm_Demo(),
-                        SignUpForm_Demo(),
+                        _isSignIn ? SignInForm_Demo() : SignUpForm_Demo(),
                         SizedBox(height: 35,),
                         LoginUtils.getOrDivider(),
                         SizedBox(height: 30,),

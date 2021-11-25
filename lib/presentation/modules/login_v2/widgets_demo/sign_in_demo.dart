@@ -72,7 +72,7 @@ class SignInForm_Demo extends StatelessWidget {
                   buttonText: 'Sign in',
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      context.read<SignInCubit>().signInWithEmailAndPassword();
+                      context.read<SignInCubit>().buttonClicked();
                     }
                   },
                 ),
