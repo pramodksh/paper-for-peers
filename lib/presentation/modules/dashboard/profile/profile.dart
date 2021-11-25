@@ -209,60 +209,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: Text("Your Profile"),
         centerTitle: true,
       ),
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-
-              Builder(
-                builder: (context) {
-                  if (userState is UserLoaded) {
-                    return Container(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 30,),
-                          _getCircularProfileImage(url: userState.userModel.photoUrl, username: userState.userModel.displayName!),
-                          SizedBox(height: 20,),
-                          Text(userState.userModel.displayName!, style: TextStyle(fontSize: 25),),
-                          SizedBox(height: 40,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _getCircularStat(title: 'Average\nRating', value: userState.userModel.avgRating!.toStringAsPrecision(3), isDarkTheme: appThemeType.isDarkTheme()),
-                              _getCircularStat(title: 'Total\nRating', value: userState.userModel.totalRating.toString(), isDarkTheme: appThemeType.isDarkTheme()),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return Container();
-                }
-              ),
-              SizedBox(height: 30,),
-              getProfileCustomButton(
-                isDarkTheme: appThemeType.isDarkTheme(),
-                title: 'Your Posts',
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => YourPosts(),
-                  ));
-                }
-              ),
-              SizedBox(height: 30,),
-              getProfileCustomButton(
-                isDarkTheme: appThemeType.isDarkTheme(),
-                title: 'Upload',
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => _buildUploadDialog(isDarkTheme: appThemeType.isDarkTheme()),
-                  );
-                }
-              ),
-            ],
-          ),
-        ),
+      body: Builder(
+          builder: (context) {
+            if (userState is UserLoaded) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _getCircularProfileImage(url: userState.userModel.photoUrl, username: userState.userModel.displayName!),
+                  SizedBox(height: 20,),
+                  Text(userState.userModel.displayName!, style: TextStyle(fontSize: 25),),
+                  SizedBox(height: 40,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _getCircularStat(title: 'Average\nRating', value: userState.userModel.avgRating!.toStringAsPrecision(3), isDarkTheme: appThemeType.isDarkTheme()),
+                      _getCircularStat(title: 'Total\nRating', value: userState.userModel.totalRating.toString(), isDarkTheme: appThemeType.isDarkTheme()),
+                    ],
+                  ),
+                ],
+              );
+            }
+            return Container();
+          }
       ),
     );
   }
