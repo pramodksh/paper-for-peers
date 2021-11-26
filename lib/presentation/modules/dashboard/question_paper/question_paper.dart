@@ -116,6 +116,7 @@ class QuestionPaper extends StatelessWidget {
                             // todo question paper report
                             if (userState is UserLoaded) {
                               context.read<QuestionPaperBloc>().add(QuestionPaperAddReport(
+                                questionPaperYears: questionPaperYears,
                                 nVersion: currentVersion,
                                 reportValues: values,
                                 year: questionPaperYears[questionPaperYearIndex].year,
@@ -180,12 +181,14 @@ class QuestionPaper extends StatelessWidget {
       listener: (context, state) {
         if (state is QuestionPaperFetchError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is QuestionPaperAddError) {
+        } else if (state is QuestionPaperAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is QuestionPaperAddSuccess) {
+        } else if (state is QuestionPaperAddSuccess) {
           Utils.showAlertDialog(context: context, text: "Question Paper Added Successfully");
+        } else if (state is QuestionPaperReportSuccess) {
+          Utils.showAlertDialog(context: context, text: "Question Paper Reported");
+        } else if (state is QuestionPaperReportError) {
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Container(

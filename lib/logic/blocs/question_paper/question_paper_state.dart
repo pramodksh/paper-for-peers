@@ -84,3 +84,29 @@ class QuestionPaperAddError extends QuestionPaperState {
     required String selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
+
+class QuestionPaperReportSuccess extends QuestionPaperState {
+  final List<QuestionPaperYearModel> questionPaperYears;
+
+  @override
+  List<Object?> get props => [questionPaperYears];
+
+  const QuestionPaperReportSuccess({
+    required this.questionPaperYears,
+    required String selectedSubject,
+  }) : super(selectedSubject: selectedSubject);
+}
+
+class QuestionPaperReportError extends QuestionPaperState {
+  final String errorMessage;
+  final List<QuestionPaperYearModel> questionPaperYears;
+
+  @override
+  List<Object?> get props => [questionPaperYears, errorMessage];
+
+  const QuestionPaperReportError({
+    required this.errorMessage,
+    required this.questionPaperYears,
+    required String selectedSubject,
+  }) : super(selectedSubject: selectedSubject);
+}

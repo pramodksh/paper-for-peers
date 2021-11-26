@@ -106,37 +106,42 @@ class QuestionPaperRepository {
     }
   }
 
-  Future<ApiResponse?>? reportQuestionPaper({
+  Future<ApiResponse> reportQuestionPaper({
     required String course, required int semester,
     required String subject, required int year,
     required int nVersion, required List<String> reportValues,
   }) async {
-    firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-    firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-    firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-    firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
-    firestore.DocumentSnapshot versionSnapshot = await yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(nVersion.toString()).get();
+    try {
+      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
+      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
+      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
+      firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
+      firestore.DocumentSnapshot versionSnapshot = await yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(nVersion.toString()).get();
 
-    Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 
-    Map<String, int> reportsMap;
-    if (versionData.containsKey(FirebaseCollectionConfig.reportsFieldLabel)) {
-      reportsMap = Map<String, int>.from(versionData[FirebaseCollectionConfig.reportsFieldLabel]);
-    } else {
-      reportsMap = {};
-    }
-
-    reportValues.forEach((reportValue) {
-      if (reportsMap.containsKey(reportValue)) {
-        reportsMap[reportValue] = reportsMap[reportValue]! + 1;
+      Map<String, int> reportsMap;
+      if (versionData.containsKey(FirebaseCollectionConfig.reportsFieldLabel)) {
+        reportsMap = Map<String, int>.from(versionData[FirebaseCollectionConfig.reportsFieldLabel]);
       } else {
-        reportsMap[reportValue] = 1;
+        reportsMap = {};
       }
-    });
 
-    versionSnapshot.reference.update({
-      FirebaseCollectionConfig.reportsFieldLabel : reportsMap,
-    });
+      reportValues.forEach((reportValue) {
+        if (reportsMap.containsKey(reportValue)) {
+          reportsMap[reportValue] = reportsMap[reportValue]! + 1;
+        } else {
+          reportsMap[reportValue] = 1;
+        }
+      });
+
+      versionSnapshot.reference.update({
+        FirebaseCollectionConfig.reportsFieldLabel : reportsMap,
+      });
+      return ApiResponse.success();
+    } on Exception catch (e) {
+      return ApiResponse.error(errorMessage: "There was some error while reporting the document");
+    }
 
 
   }

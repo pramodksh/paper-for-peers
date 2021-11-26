@@ -193,12 +193,9 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     SizedBox(width: 10,),
                     ElevatedButton(
                       onPressed: () {
-                        // todo report
                         List<CheckBoxModel> checkedReasons = reportReasons.where((element) => element.isChecked).toList();
-                        // print("REPORTS: ${checkedReasons.map((e) => e.label).toList()}");
-                        // print("REPORTS: ${checkedReasons.map((e) => e.value).toList()}");
                         widget.onReportPressed(checkedReasons.map((e) => e.value).toList());
-                        // Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                       },
                       style: ButtonStyle(
                           overlayColor: MaterialStateProperty.all(Colors.black26),

@@ -25,10 +25,30 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
 
     on<QuestionPaperAddReport>((event, emit) async {
       print("REPORT EVENT: $event");
-      await _questionPaperRepository.reportQuestionPaper(
+      ApiResponse reportResponse = await _questionPaperRepository.reportQuestionPaper(
           course: event.course, semester: event.semester, subject: event.subject, 
           year: event.year, nVersion: event.nVersion, reportValues: event.reportValues,
       );
+
+      if (reportResponse.isError) {
+        print("QUESTION PAPER REPORT ERROR");
+        emit(QuestionPaperReportError(
+          errorMessage: reportResponse.errorMessage!,
+          selectedSubject: event.subject,
+          questionPaperYears: event.questionPaperYears,
+        ));
+      } else {
+        print("QUESTION PAPER REPORT SUCCESS");
+        emit(QuestionPaperReportSuccess(
+          questionPaperYears: event.questionPaperYears,
+          selectedSubject: event.subject,
+        ));
+      }
+      emit(QuestionPaperFetchSuccess(
+          questionPaperYears: event.questionPaperYears,
+          selectedSubject: event.subject,
+      ));
+
     });
 
     on<QuestionPaperFetch>((event, emit) async {
