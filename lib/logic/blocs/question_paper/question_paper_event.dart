@@ -56,3 +56,30 @@ class QuestionPaperAdd extends QuestionPaperEvent {
     return 'QuestionPaperAdd{uploadedBy: $uploadedBy, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion}';
   }
 }
+
+class QuestionPaperAddReport extends QuestionPaperEvent {
+
+  final List<String> reportValues;
+  final int year;
+  final String course;
+  final String subject;
+  final int semester;
+  final int nVersion;
+
+  @override
+  List<Object?> get props => [reportValues, year, course, subject, semester, nVersion];
+
+  const QuestionPaperAddReport({
+    required this.reportValues,
+    required this.year,
+    required this.course,
+    required this.subject,
+    required this.semester,
+    required this.nVersion,
+  });
+
+  @override
+  String toString() {
+    return 'QuestionPaperAddReport{reportValues: $reportValues, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion}';
+  }
+}

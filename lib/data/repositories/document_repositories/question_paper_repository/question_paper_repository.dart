@@ -106,4 +106,19 @@ class QuestionPaperRepository {
     }
   }
 
+  Future<ApiResponse?>? reportQuestionPaper({
+    required String course, required int semester,
+    required String subject, required int year,
+    required int nVersion,
+  }) async {
+    firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
+    firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
+    firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
+    firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
+    firestore.DocumentSnapshot versionSnapshot = await yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(nVersion.toString()).get();
+
+    print("VERSION: DATA: ${versionSnapshot.data()}");
+
+  }
+
 }

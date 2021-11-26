@@ -39,6 +39,10 @@ class SyllabusCopy extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
+                      onReportPressed: (values) {
+                        print("VALUES: ${values}");
+                        // todo syllabus copy report
+                      },
                       documentUrl: syllabusCopies[index].documentUrl,
                       screenLabel: "Syllabus Copy",
                       isShowBottomSheet: false,

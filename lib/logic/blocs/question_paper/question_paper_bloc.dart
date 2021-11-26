@@ -23,6 +23,11 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
       _filePickerRepository = filePickerRepository,
       super(QuestionPaperInitial()) {
 
+    on<QuestionPaperAddReport>((event, emit) async {
+      print("REPORT EVENT: $event");
+      await _questionPaperRepository.reportQuestionPaper(course: event.course, semester: event.semester, subject: event.subject, year: event.year, nVersion: event.nVersion);
+    });
+
     on<QuestionPaperFetch>((event, emit) async {
       emit(QuestionPaperFetchLoading(selectedSubject: event.subject));
       ApiResponse response = await _questionPaperRepository.getQuestionPapers(

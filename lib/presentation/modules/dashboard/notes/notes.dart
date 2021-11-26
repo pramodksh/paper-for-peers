@@ -149,6 +149,10 @@ class Notes extends StatelessWidget {
             onTileTap: () async {
               Map<String, dynamic> ratingDetails = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => PDFViewerScreen<PDFScreenNotesBottomSheet>(
+                  onReportPressed: (values) {
+                    print("VALUES: ${values}");
+                    // todo notes report
+                  },
                   documentUrl: notes[index].documentUrl,
                   screenLabel: "Notes",
                   parameter: PDFScreenNotesBottomSheet(

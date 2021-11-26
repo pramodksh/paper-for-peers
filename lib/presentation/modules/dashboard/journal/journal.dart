@@ -74,6 +74,10 @@ class Journal extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+            onReportPressed: (values) {
+              print("VALUES: ${values}");
+              // todo journal report
+            },
             documentUrl: journals[index].documentUrl,
             screenLabel: "Journal",
             parameter: PDFScreenSimpleBottomSheet(

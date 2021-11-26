@@ -73,6 +73,10 @@ class TextBook extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+              onReportPressed: (values) {
+                print("VALUES: ${values}");
+                // todo text book report
+              },
               documentUrl: subjects[index].documentUrl,
               screenLabel: "Text Book",
               parameter: PDFScreenSimpleBottomSheet(

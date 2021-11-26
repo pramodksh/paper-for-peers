@@ -16,11 +16,13 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
   final ParameterType parameter;
   final bool isShowBottomSheet;
   final String documentUrl;
+  final Function(List<String> values) onReportPressed;
 
   PDFViewerScreen({
     required this.screenLabel, required this.parameter,
     this.isShowBottomSheet = true,
     required this.documentUrl,
+    required this.onReportPressed,
   });
 
 
@@ -191,11 +193,11 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     SizedBox(width: 10,),
                     ElevatedButton(
                       onPressed: () {
-
+                        // todo report
                         List<CheckBoxModel> checkedReasons = reportReasons.where((element) => element.isChecked).toList();
-
-                        print("REPORTS: ${checkedReasons.map((e) => e.label).toList()}");
-                        print("REPORTS: ${checkedReasons.map((e) => e.value).toList()}");
+                        // print("REPORTS: ${checkedReasons.map((e) => e.label).toList()}");
+                        // print("REPORTS: ${checkedReasons.map((e) => e.value).toList()}");
+                        widget.onReportPressed(checkedReasons.map((e) => e.value).toList());
                         // Navigator.of(context).pop();
                       },
                       style: ButtonStyle(
