@@ -66,9 +66,10 @@ class QuestionPaperAddReport extends QuestionPaperEvent {
   final String subject;
   final int semester;
   final int nVersion;
+  final String userId;
 
   @override
-  List<Object?> get props => [questionPaperYears, reportValues, year, course, subject, semester, nVersion];
+  List<Object?> get props => [questionPaperYears, reportValues, year, course, subject, semester, nVersion, userId];
 
   const QuestionPaperAddReport({
     required this.questionPaperYears,
@@ -78,6 +79,7 @@ class QuestionPaperAddReport extends QuestionPaperEvent {
     required this.subject,
     required this.semester,
     required this.nVersion,
+    required this.userId,
   });
 
   @override

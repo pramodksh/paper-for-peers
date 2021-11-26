@@ -123,6 +123,7 @@ class QuestionPaper extends StatelessWidget {
                                 course: userState.userModel.course!.courseName!,
                                 semester: userState.userModel.semester!.nSemester!,
                                 subject: questionPaperState.selectedSubject!,
+                                userId: userState.userModel.uid,
                               ));
                             }
                           },

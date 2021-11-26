@@ -28,6 +28,7 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
       ApiResponse reportResponse = await _questionPaperRepository.reportQuestionPaper(
           course: event.course, semester: event.semester, subject: event.subject, 
           year: event.year, nVersion: event.nVersion, reportValues: event.reportValues,
+          userId: event.userId,
       );
 
       if (reportResponse.isError) {
