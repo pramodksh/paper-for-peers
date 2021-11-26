@@ -87,6 +87,7 @@ class QuestionPaper extends StatelessWidget {
           child: Text("Compare Question Papers", style: TextStyle(fontSize: 18),),
         ),
         SizedBox(height: 20,),
+
         ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: 15),
           physics: NeverScrollableScrollPhysics(),
@@ -94,71 +95,74 @@ class QuestionPaper extends StatelessWidget {
           separatorBuilder: (context, index) => SizedBox(height: 20,),
           itemCount: questionPaperYears.length,
           itemBuilder: (context, questionPaperYearIndex) {
-
-            List<Widget> variants = List.generate(questionPaperYears[questionPaperYearIndex].questionPaperModels.length, (questionPaperIndex) {
-              return _getQuestionVariantContainer(
-                appThemeType: appThemeType,
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-                      onReportPressed: (values) {
-                        print("VALUES: ${values}");
-                        // todo question paper report
-                        if (userState is UserLoaded) {
-                          context.read<QuestionPaperBloc>().add(QuestionPaperAddReport(
-                            nVersion: questionPaperYears[questionPaperYearIndex].questionPaperModels.length + 1,
-                            reportValues: values,
-                            year: questionPaperYears[questionPaperYearIndex].year,
-                            course: userState.userModel.course!.courseName!,
-                            semester: userState.userModel.semester!.nSemester!,
-                            subject: questionPaperState.selectedSubject!,
-                          ));
-                        }
-                      },
-                      documentUrl: questionPaperYears[questionPaperIndex].questionPaperModels[questionPaperIndex].documentUrl,
-                      screenLabel: "Question Paper",
-                      parameter: PDFScreenSimpleBottomSheet(
-                        title: questionPaperYears[questionPaperYearIndex].year.toString(),
-                        nVariant: questionPaperYears[questionPaperYearIndex].questionPaperModels[questionPaperIndex].version,
-                        uploadedBy: questionPaperYears[questionPaperYearIndex].questionPaperModels[questionPaperIndex].uploadedBy,
-                      ),
-                    ),
-                  ));
-                },
-                nVariant: questionPaperYears[questionPaperYearIndex].questionPaperModels[questionPaperIndex].version,
-              );
-            });
-
-            if (_isDisplayAddQuestionPaperContainer(totalQuestionPapers: questionPaperYears[questionPaperYearIndex].questionPaperModels.length)) {
-              variants.add(SizedBox(
-                width: 180,
-                height: 80,
-                child: Utils.getAddPostContainer(
-                  isDarkTheme: isDarkTheme,
-                  label: questionPaperState is QuestionPaperAddLoading ? "Loading" : "Add Question Paper",
-                  onPressed: questionPaperState is QuestionPaperAddLoading || isWidgetLoading ? () {} : () {
-                    if (userState is UserLoaded) {
-                      context.read<QuestionPaperBloc>().add(QuestionPaperAdd(
-                        questionPaperYears: questionPaperYears,
-                        year: questionPaperYears[questionPaperYearIndex].year,
-                        uploadedBy: userState.userModel.displayName!,
-                        course: userState.userModel.course!.courseName!,
-                        semester: userState.userModel.semester!.nSemester!,
-                        subject: questionPaperState.selectedSubject!,
-                        nVersion: questionPaperYears[questionPaperYearIndex].questionPaperModels.length + 1,
-                        user: userState.userModel,
-                      ));
-                    }
-                  },
-                ),
-              ));
-            }
+            // return Text("$index");
 
             return _getQuestionYearTile(
               year: questionPaperYears[questionPaperYearIndex].year.toString(),
-              children: variants,
-            );
+              children: List.generate(AppConstants.maxQuestionPapers, (index) {
+                int currentVersion = index + 1;
+                bool isShow = questionPaperYears[questionPaperYearIndex].questionPaperModels.any((element) => element.version == currentVersion);
 
+                if (isShow) {
+                  QuestionPaperModel currentQuestionPaper = questionPaperYears[questionPaperYearIndex].questionPaperModels.firstWhere((element) => element.version == currentVersion);
+
+                  return _getQuestionVariantContainer(
+                    appThemeType: appThemeType,
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                          onReportPressed: (values) {
+                            print("VALUES: ${values}");
+                            // todo question paper report
+                            if (userState is UserLoaded) {
+                              context.read<QuestionPaperBloc>().add(QuestionPaperAddReport(
+                                nVersion: currentVersion,
+                                reportValues: values,
+                                year: questionPaperYears[questionPaperYearIndex].year,
+                                course: userState.userModel.course!.courseName!,
+                                semester: userState.userModel.semester!.nSemester!,
+                                subject: questionPaperState.selectedSubject!,
+                              ));
+                            }
+                          },
+                          documentUrl: currentQuestionPaper.documentUrl,
+                          screenLabel: "Question Paper",
+                          parameter: PDFScreenSimpleBottomSheet(
+                            title: questionPaperYears[questionPaperYearIndex].year.toString(),
+                            nVariant: currentQuestionPaper.version,
+                            uploadedBy: currentQuestionPaper.uploadedBy,
+                          ),
+                        ),
+                      ));
+                    },
+                    nVariant: currentVersion,
+                  );
+                } else {
+                  return SizedBox(
+                    width: 180,
+                    height: 80,
+                    child: Utils.getAddPostContainer(
+                      isDarkTheme: isDarkTheme,
+                      label: questionPaperState is QuestionPaperAddLoading ? "Loading" : "Add Question Paper",
+                      onPressed: questionPaperState is QuestionPaperAddLoading || isWidgetLoading ? () {} : () {
+                        if (userState is UserLoaded) {
+                          context.read<QuestionPaperBloc>().add(QuestionPaperAdd(
+                            questionPaperYears: questionPaperYears,
+                            year: questionPaperYears[questionPaperYearIndex].year,
+                            uploadedBy: userState.userModel.displayName!,
+                            course: userState.userModel.course!.courseName!,
+                            semester: userState.userModel.semester!.nSemester!,
+                            subject: questionPaperState.selectedSubject!,
+                            nVersion: currentVersion,
+                            user: userState.userModel,
+                          ));
+                        }
+                      },
+                    ),
+                  );
+                }
+              }),
+            );
           },
         ),
       ],
