@@ -6,11 +6,19 @@ class AppConstants {
   static const String KUDBaseURL = "https://www.kud.ac.in/";
   static const String KUDNotificationsURL = "https://www.kud.ac.in/cmsentities.aspx?type=notifications";
 
+  // todo remove if not used
   static const List<String> reportReasons = [
     "Already uploaded",
     "Not legitimate",
     "Not appropriate",
     "Misleading",
+  ];
+
+  static const List<Map> reportReasonsMap = [
+    {"label": "Already Uploaded", "value": "already_uploaded"},
+    {"label": "Not legitimate", "value": "not_legitimate"},
+    {"label": "Not appropriate", "value": "not_appropriate"},
+    {"label": "Misleading", "value": "misleading"},
   ];
 
   static const List<Map> bottomNavBarIcons = [
@@ -26,5 +34,5 @@ class AppConstants {
   static final int maxJournals = 2;
   static final int maxSyllabusCopy = 2;
   static final int maxTextBooks = 2;
-
+  // todo add notes limit and implement
 }
