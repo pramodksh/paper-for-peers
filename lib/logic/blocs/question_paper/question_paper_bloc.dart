@@ -25,7 +25,10 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
 
     on<QuestionPaperAddReport>((event, emit) async {
       print("REPORT EVENT: $event");
-      await _questionPaperRepository.reportQuestionPaper(course: event.course, semester: event.semester, subject: event.subject, year: event.year, nVersion: event.nVersion);
+      await _questionPaperRepository.reportQuestionPaper(
+          course: event.course, semester: event.semester, subject: event.subject, 
+          year: event.year, nVersion: event.nVersion, reportValues: event.reportValues,
+      );
     });
 
     on<QuestionPaperFetch>((event, emit) async {
