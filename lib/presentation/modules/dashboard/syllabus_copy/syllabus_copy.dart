@@ -135,6 +135,7 @@ class SyllabusCopy extends StatelessWidget {
                   return SkeletonLoader(
                     appThemeType: appThemeState.appThemeType,
                     child: _getSyllabusCopyListWidget(
+                      isWidgetLoading: true,
                       syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
                         version: index,
                         uploadedBy: "",

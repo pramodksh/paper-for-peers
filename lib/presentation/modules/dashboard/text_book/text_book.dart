@@ -77,7 +77,7 @@ class TextBook extends StatelessWidget {
             nVariant: currentVersion,
             uploadedOn: currentTextBookModel.uploadedOn,
             uploadedBy: currentTextBookModel.uploadedBy,
-            onTap: () {
+            onTap: isWidgetLoading ? () {} : () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
                   onReportPressed: (values) {
