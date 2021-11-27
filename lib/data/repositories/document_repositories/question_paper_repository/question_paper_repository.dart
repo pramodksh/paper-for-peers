@@ -112,6 +112,7 @@ class QuestionPaperRepository {
     required int nVersion, required List<String> reportValues,
     required String userId,
   }) async {
+
     try {
       firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
       firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
@@ -122,7 +123,7 @@ class QuestionPaperRepository {
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 
       List<String> reports = [];
-      if (versionData.containsKey(FirebaseCollectionConfig.reportsFieldLabel)) {
+      if (versionData.containsKey(FirebaseCollectionConfig.reportsFieldLabel) && versionData[FirebaseCollectionConfig.reportsFieldLabel][userId] != null) {
         reports = List<String>.from(versionData[FirebaseCollectionConfig.reportsFieldLabel][userId]);
         reports.addAll(reportValues);
         reports = reports.toSet().toList();
@@ -130,9 +131,7 @@ class QuestionPaperRepository {
         reports = reportValues;
       }
       versionSnapshot.reference.update({
-        FirebaseCollectionConfig.reportsFieldLabel: {
-          userId: reports,
-        }
+        "${FirebaseCollectionConfig.reportsFieldLabel}.$userId" : reports,
       });
       return ApiResponse.success();
     } on Exception catch (e) {
