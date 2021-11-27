@@ -62,8 +62,8 @@ class Journal extends StatelessWidget {
   Widget _getJournalTile({
     required String subject, required List<JournalModel> journals,
     required AppThemeType appThemeType, required UserState userState,
-    required Function() onJournalAdd, required bool isAddJournalLoading,
-    required BuildContext context,
+    required bool isAddJournalLoading,
+    required BuildContext context, required List<JournalSubjectModel> journalSubjects
   }) {
 
     List<Widget> gridChildren = List.generate(AppConstants.maxJournals, (index) {
@@ -98,11 +98,24 @@ class Journal extends StatelessWidget {
       } else {
        return Utils.getAddPostContainer(
          isDarkTheme: appThemeType.isDarkTheme(),
-         onPressed: isAddJournalLoading ? () {} : onJournalAdd,
+         onPressed: isAddJournalLoading ? () {} : () {
+           if (userState is UserLoaded) {
+             context.read<JournalBloc>().add(JournalAdd(
+               journalSubjects: journalSubjects,
+               uploadedBy: userState.userModel.displayName!,
+               course: userState.userModel.course!.courseName!,
+               semester: userState.userModel.semester!.nSemester!,
+               subject: subject,
+               nVersion: currentVersion,
+               user: userState.userModel,
+             ));
+           }
+         },
          label: isAddJournalLoading ? "Loading" : "Add Journal",
        );
       }
     });
+
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,25 +150,13 @@ class Journal extends StatelessWidget {
       itemCount: journalSubjects.length,
       itemBuilder: (context, journalSubjectIndex) {
         return _getJournalTile(
+            journalSubjects: journalSubjects,
             context: context,
             isAddJournalLoading: isAddJournalLoading,
             journals: journalSubjects[journalSubjectIndex].journalModels,
             subject: journalSubjects[journalSubjectIndex].subject,
             appThemeType: appThemeType,
             userState: userState,
-            onJournalAdd: isWidgetLoading ? () {} : () {
-              if (userState is UserLoaded) {
-                context.read<JournalBloc>().add(JournalAdd(
-                  journalSubjects: journalSubjects,
-                  uploadedBy: userState.userModel.displayName!,
-                  course: userState.userModel.course!.courseName!,
-                  semester: userState.userModel.semester!.nSemester!,
-                  subject: journalSubjects[journalSubjectIndex].subject,
-                  nVersion: journalSubjects[journalSubjectIndex].journalModels.length + 1,
-                  user: userState.userModel,
-                ));
-              }
-            }
         );
       },
     );
