@@ -121,28 +121,30 @@ class _MyAppState extends State<MyApp> {
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
           ),
-
-          BlocProvider<UserCubit>(
-            create: (context) =>
-                UserCubit(
-                  firestoreRepository: context.read<FirestoreRepository>(),
-                  firebaseStorageRepository: context.read<
-                      FirebaseStorageRepository>(),
-                  imagePickerRepository: context.read<ImagePickerRepository>(),
-                  authRepository: context.read<AuthRepository>(),
-                ),
-          ),
         ],
         child: Builder(
           builder: (context) {
             AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              theme: Styles.themeData(
-                context: context,
-                appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
-              ),
-              home: Wrapper(),
+            return BlocProvider<UserCubit>(
+                create: (context) => UserCubit(
+                  textBookBloc: context.read<TextBookBloc>(),
+                  syllabusCopyBloc: context.read<SyllabusCopyBloc>(),
+                  notesBloc: context.read<NotesBloc>(),
+                  journalBloc: context.read<JournalBloc>(),
+                  questionPaperBloc: context.read<QuestionPaperBloc>(),
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseStorageRepository: context.read<FirebaseStorageRepository>(),
+                  imagePickerRepository: context.read<ImagePickerRepository>(),
+                  authRepository: context.read<AuthRepository>(),
+                ),
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: Styles.themeData(
+                    context: context,
+                    appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
+                  ),
+                  home: Wrapper(),
+                ),
             );
           }
         ),
