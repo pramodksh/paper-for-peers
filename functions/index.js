@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 const bucket = admin.storage().bucket();
+const firestore = admin.firestore();
 
 // /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
 // /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
@@ -269,7 +270,7 @@ exports.reportNotes = functions.firestore
     // Delete document if limit exceeds
     if (totalReports >= maxReports) {
       functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
+      await firestore.recursiveDelete(change.after.ref);
 
       functions.logger.log("DELETING FILE FROM STORAGE");
 
