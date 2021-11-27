@@ -19,6 +19,7 @@ class SignInForm extends StatelessWidget {
       listener: (context, state) {
         if (state.signInStatus.isError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
+          context.read<SignInCubit>().resetErrorToSuccess();
         }
       },
       child: Container(

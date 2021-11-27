@@ -37,6 +37,10 @@ class SignInCubit extends Cubit<SignInState> {
     emit(state.copyWith(isPasswordObscure: !state.isPasswordObscure));
   }
 
+  void resetErrorToSuccess() {
+    emit(state.copyWith(signInStatus: SignInStatus.success));
+  }
+
   void buttonClicked() async {
     print("signInWithEmailAndPassword");
 
