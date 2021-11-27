@@ -21,71 +21,50 @@ exports.questionPaperReport = functions.firestore
     const newValue = change.after.data();
     const previousValue = change.before.data();
 
-    functions.logger.log("NEW VALUE: ", newValue);
-    functions.logger.log("REPORTS: ", newValue["reports"]);
-    functions.logger.log(
-      "TOTAL USERS: ",
-      Object.keys(newValue["reports"]).length
-    );
+    // functions.logger.log("NEW VALUE: ", newValue);
+    // functions.logger.log("REPORTS: ", newValue["reports"]);
+    const totalUsers = Object.keys(newValue["reports"]).length;
+    functions.logger.log("TOTAL USERS: ", totalUsers);
 
     const values = Object.values(newValue["reports"]);
 
-    functions.logger.log("VALUES: ", values);
+    // functions.logger.log("VALUES: ", values);
     const merged = [].concat.apply([], values);
 
     functions.logger.log("MERGED: ", merged);
 
-    const counts = {};
+    const reportCounts = {};
     for (const report of merged) {
-      counts[report] = counts[report] ? counts[report] + 1 : 1;
+      reportCounts[report] = reportCounts[report]
+        ? reportCounts[report] + 1
+        : 1;
     }
 
-    functions.logger.log("COUNTS: ", counts);
+    functions.logger.log("reportCounts: ", reportCounts);
 
-    // const totalReports = Object.values(newValue["reports"]).reduce(
-    //   (pv, cv) => pv + cv,
-    //   0
-    // );
-    // functions.logger.log("TOTAL: ", totalReports);
-    //    functions.logger.log("previousValue VALUE: ", previousValue);
-    // functions.logger.log(
-    //   "DETAILS:",
-    //   context.params.course,
-    //   context.params.semester,
-    //   context.params.subject,
-    //   context.params.year,
-    //   context.params.version
-    // );
+    // Defining weights for reports
+    const reportWeights = {
+      not_legitimate: 2,
+      not_appropriate: 1,
+      already_uploaded: 3,
+      misleading: 4,
+    };
 
-    // /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
+    // multiply : report counts * report values (if key is not present put 0)
+    for (var key in reportWeights) {
+      if (reportCounts[key] != undefined) {
+        reportCounts[key] = reportCounts[key] * reportWeights[key];
+      } else {
+        reportCounts[key] = 0;
+      }
+    }
 
-    // functions.logger.log("GETTING VERSION SNAPSHOT");
+    functions.logger.log("COUNTS AFTER MULTIPLYING: ", reportCounts);
 
-    // const versionSnapshot = await db
-    //   .collection("courses_new")
-    //   .doc(context.params.course)
-    //   .collection("semesters")
-    //   .doc(context.params.semester)
-    //   .collection("subjects")
-    //   .doc(context.params.subject)
-    //   .collection("question_paper")
-    //   .doc(context.params.year)
-    //   .collection("versions")
-    //   .doc(context.params.version)
-    //   .get();
+    const totalReports = Object.values(reportCounts).reduce((a, b) => a + b);
 
-    // const versionData = versionSnapshot.data();
-    // const reportsMap = versionData['reports'];
+    functions.logger.log("TOTAL REPORTS: ", totalReports);
 
-    // functions.logger.log("REPORTS MAP: ", reportsMap);
-    // const totalUsersReported = Object.keys(reportsMap).length;
-    // functions.logger.log("TOTAL USERS: ", totalUsersReported);
-
-    /*
-        const userSnapshot = await admin.firestore()
-          .collection('users')
-          .doc(context.params.userId)
-          .collection('tokens')
-          .get();
-    */
+    const avgReports = totalReports / totalUsers;
+    functions.logger.log("AVG REPORTS: ", avgReports);
   });
