@@ -4,7 +4,6 @@ import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
 import 'package:papers_for_peers/config/colors.dart';
 import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
 import 'package:provider/provider.dart';
 

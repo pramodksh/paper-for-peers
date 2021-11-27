@@ -8,7 +8,6 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_notes.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/upload/upload_question_paper.dart';
-import 'package:papers_for_peers/presentation/modules/dashboard/profile/your_posts/your_posts.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 

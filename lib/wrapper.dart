@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
@@ -8,10 +6,9 @@ import 'package:papers_for_peers/data/repositories/shared_preference/shared_pref
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/main_dashboard.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
-import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
-import 'package:papers_for_peers/presentation/modules/login/login_widgets/user_course.dart';
 import 'package:papers_for_peers/presentation/modules/login/login.dart';
-import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
+import 'package:papers_for_peers/presentation/modules/login/login_widgets/user_course.dart';
+import 'package:papers_for_peers/presentation/modules/login/send_verification_email.dart';
 import 'package:provider/provider.dart';
 
 class MainDashboardWrapper extends StatelessWidget {

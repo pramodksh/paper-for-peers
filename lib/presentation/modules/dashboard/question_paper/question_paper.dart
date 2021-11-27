@@ -57,8 +57,6 @@ class QuestionPaper extends StatelessWidget {
     );
   }
 
-  bool _isDisplayAddQuestionPaperContainer({required int totalQuestionPapers}) => totalQuestionPapers < AppConstants.maxQuestionPapers;
-
   Widget _getQuestionPaperListWidget({
     required List<QuestionPaperYearModel> questionPaperYears,
     required bool isDarkTheme,

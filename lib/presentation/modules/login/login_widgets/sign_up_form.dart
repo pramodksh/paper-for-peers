@@ -7,8 +7,6 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
-import 'package:papers_for_peers/data/models/user_model/user_model.dart';
-import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/sign_up/sign_up_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
