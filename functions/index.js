@@ -20,6 +20,7 @@ const reportWeights = {
   already_uploaded: 3,
   misleading: 4,
 };
+const maxQuestionPaperReports = 10;
 
 exports.questionPaperReport = functions.firestore
   .document(
@@ -64,4 +65,21 @@ exports.questionPaperReport = functions.firestore
 
     const avgReports = totalReports / totalUsers;
     functions.logger.log("AVG REPORTS: ", avgReports);
+
+    // Delete document if limit exceeds
+    if (totalReports >= maxQuestionPaperReports) {
+      functions.logger.log("DELETING DOCUMENT");
+      await change.after.ref.delete();
+      functions.logger.log(
+        "DOCUMENT DELETED: ",
+        totalReports,
+        maxQuestionPaperReports
+      );
+    } else {
+      functions.logger.log(
+        "DOCUMENT NOT DELETED: ",
+        totalReports,
+        maxQuestionPaperReports
+      );
+    }
   });
