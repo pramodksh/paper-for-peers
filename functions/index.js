@@ -237,7 +237,7 @@ exports.reportTextBook = functions.firestore
 
 exports.reportNotes = functions.firestore
   .document(
-    "/courses_new/{course}/semesters/{semester}/subjects/{subject}/text_book/{version}"
+    "/courses_new/{course}/semesters/{semester}/subjects/{subject}/notes/{noteId}"
   )
   .onUpdate(async (change, context) => {
     const newValue = change.after.data();
@@ -273,7 +273,7 @@ exports.reportNotes = functions.firestore
 
       functions.logger.log("DELETING FILE FROM STORAGE");
 
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/text_book/${context.params.version}.pdf`;
+      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/notes/${context.params.noteId}.pdf`;
       await bucket.file(path).delete();
 
       functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
