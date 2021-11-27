@@ -27,12 +27,14 @@ class NotesModel {
     required this.userUid,
   });
 
+  static final String documentUrlFieldKey = "document_url";
+
   static Map<String, dynamic> toFirestoreMap({
-    required String documentUrl, required UserModel user,
+    required String? documentUrl, required UserModel user,
     required String title, required String description,
   }) {
     return {
-      "document_url": documentUrl,
+      documentUrlFieldKey: documentUrl,
       "uploaded_by": user.displayName,
       "title": title,
       "description": description,
@@ -46,7 +48,7 @@ class NotesModel {
   factory NotesModel.fromFirestoreMap({required Map<String, dynamic> map, required String notesId, required double avgRating}) {
     return NotesModel(
       noteId: notesId,
-      documentUrl: map['document_url'] as String,
+      documentUrl: map[documentUrlFieldKey] as String,
       title: map['title'] as String,
       description: map['description'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),

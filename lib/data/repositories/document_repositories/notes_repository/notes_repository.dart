@@ -26,12 +26,12 @@ class NotesRepository {
   Future<ApiResponse> uploadNotes({
     required File document,
     required String course, required int semester,
-    required String subject,
+    required String subject, required String noteId,
   }) async {
     try {
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
           .child(semester.toString()).child(subject).child('notes')
-          .child(document.path.split("/").last);
+          .child("$noteId.pdf");
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
@@ -62,15 +62,25 @@ class NotesRepository {
         return ApiResponse.error(errorMessage: "The subject $subject has maximum notes. So you cannot upload.");
       }
 
-      ApiResponse uploadResponse = await uploadNotes(document: document, course: course, semester: semester, subject: subject);
+      firestore.DocumentReference noteRef = await notesCollection.add(NotesModel.toFirestoreMap(
+          documentUrl: null, user: user, title: title, description: description
+      ));
+
+      ApiResponse uploadResponse = await uploadNotes(
+        document: document, course: course, semester: semester, subject: subject,
+        noteId: noteRef.id,
+      );
 
       if (uploadResponse.isError) {
+        await noteRef.delete();
         return uploadResponse;
+      } else {
+        String documentUrl = uploadResponse.data;
+        await noteRef.update({
+          NotesModel.documentUrlFieldKey: documentUrl,
+        });
+        return ApiResponse.success();
       }
-
-      String documentUrl = uploadResponse.data;
-      await notesCollection.doc().set(NotesModel.toFirestoreMap(documentUrl: documentUrl, user: user, title: title, description: description));
-      return ApiResponse.success();
     } catch (err) {
       return ApiResponse.error(errorMessage: "There was an error while setting notes: $err");
     }
