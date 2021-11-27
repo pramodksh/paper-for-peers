@@ -62,7 +62,7 @@ class TextBook extends StatelessWidget {
     required String subject, required List<TextBookModel> textBooks,
     required List<TextBookSubjectModel> textBookSubjects,
     required AppThemeType appThemeType, required UserState userState,
-    required bool isAddTextBookLoading,
+    required bool isAddTextBookLoading, required bool isWidgetLoading,
     required BuildContext context
   }) {
 
@@ -98,7 +98,7 @@ class TextBook extends StatelessWidget {
       } else {
         return Utils.getAddPostContainer(
           isDarkTheme: appThemeType.isDarkTheme(),
-          onPressed: isAddTextBookLoading ? () {} : () {
+          onPressed: isAddTextBookLoading || isWidgetLoading ? () {} : () {
             if (userState is UserLoaded) {
               context.read<TextBookBloc>().add(TextBookAdd(
                 textBookSubjects: textBookSubjects,
@@ -151,6 +151,7 @@ class TextBook extends StatelessWidget {
         return _getTextBookTile(
             textBookSubjects: textBookSubjects,
             context: context,
+            isWidgetLoading: isWidgetLoading,
             isAddTextBookLoading: isAddTextBookLoading,
             textBooks: textBookSubjects[textbookSubjectIndex].textBookModels,
             subject: textBookSubjects[textbookSubjectIndex].subject,
@@ -225,6 +226,7 @@ class TextBook extends StatelessWidget {
                       return SkeletonLoader(
                         appThemeType: appThemeType,
                         child: _getTextBookListWidget(
+                          isWidgetLoading: true,
                           userState: userState,
                           textBookSubjects: List.generate(2, (index) => TextBookSubjectModel(
                             subject: "",
