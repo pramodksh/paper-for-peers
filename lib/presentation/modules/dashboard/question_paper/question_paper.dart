@@ -79,7 +79,7 @@ class QuestionPaper extends StatelessWidget {
             ),
             padding: EdgeInsets.symmetric(horizontal: 20),
           ),
-          onPressed: () {
+          onPressed: isWidgetLoading ? () {} : () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ShowSplitOptions(questionPaperYears: questionPaperYears,),
             ));
