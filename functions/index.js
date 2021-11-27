@@ -13,6 +13,14 @@ const db = admin.firestore();
 // /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
 // /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
 
+// Defining weights for reports
+const reportWeights = {
+  not_legitimate: 2,
+  not_appropriate: 1,
+  already_uploaded: 3,
+  misleading: 4,
+};
+
 exports.questionPaperReport = functions.firestore
   .document(
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}"
@@ -20,35 +28,25 @@ exports.questionPaperReport = functions.firestore
   .onUpdate(async (change, context) => {
     const newValue = change.after.data();
     const previousValue = change.before.data();
-
-    // functions.logger.log("NEW VALUE: ", newValue);
-    // functions.logger.log("REPORTS: ", newValue["reports"]);
     const totalUsers = Object.keys(newValue["reports"]).length;
     functions.logger.log("TOTAL USERS: ", totalUsers);
 
-    const values = Object.values(newValue["reports"]);
+    const mergedValues = [].concat.apply(
+      [],
+      Object.values(newValue["reports"])
+    );
 
-    // functions.logger.log("VALUES: ", values);
-    const merged = [].concat.apply([], values);
+    functions.logger.log("MERGEDValues: ", mergedValues);
 
-    functions.logger.log("MERGED: ", merged);
-
+    // Count the number of occurances of reports
     const reportCounts = {};
-    for (const report of merged) {
+    for (const report of mergedValues) {
       reportCounts[report] = reportCounts[report]
         ? reportCounts[report] + 1
         : 1;
     }
 
     functions.logger.log("reportCounts: ", reportCounts);
-
-    // Defining weights for reports
-    const reportWeights = {
-      not_legitimate: 2,
-      not_appropriate: 1,
-      already_uploaded: 3,
-      misleading: 4,
-    };
 
     // multiply : report counts * report values (if key is not present put 0)
     for (var key in reportWeights) {
@@ -62,7 +60,6 @@ exports.questionPaperReport = functions.firestore
     functions.logger.log("COUNTS AFTER MULTIPLYING: ", reportCounts);
 
     const totalReports = Object.values(reportCounts).reduce((a, b) => a + b);
-
     functions.logger.log("TOTAL REPORTS: ", totalReports);
 
     const avgReports = totalReports / totalUsers;
