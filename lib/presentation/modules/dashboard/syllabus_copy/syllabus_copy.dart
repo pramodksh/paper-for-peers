@@ -42,7 +42,7 @@ class SyllabusCopy extends StatelessWidget {
               if (isShow) {
                 SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies.firstWhere((element) => element.version == currentVersion);
                 return GestureDetector(
-                  onTap: () {
+                  onTap: isWidgetLoading ? () {} : () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
                         onReportPressed: (values) {
