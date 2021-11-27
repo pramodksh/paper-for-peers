@@ -80,3 +80,19 @@ class JournalAddError extends JournalState {
   }) : super();
 }
 
+class JournalReportSuccess extends JournalState {
+
+  @override
+  List<Object?> get props => [];
+}
+
+class JournalReportError extends JournalState {
+  final String errorMessage;
+
+  @override
+  List<Object?> get props => [errorMessage];
+
+  const JournalReportError({
+    required this.errorMessage,
+  });
+}

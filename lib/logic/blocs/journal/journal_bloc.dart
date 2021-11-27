@@ -23,6 +23,17 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
         _filePickerRepository = filePickerRepository ,
         super(JournalInitial()) {
 
+    on<JournalReportAdd>((event, emit) async {
+      print("REPORT EVENT: $event");
+      ApiResponse reportResponse = await _journalRepository.reportJournal(course: event.course, semester: event.semester, subject: event.subject, version: event.nVersion, reportValues: event.reportValues, userId: event.user.uid);
+      if (reportResponse.isError) {
+        emit(JournalReportError(errorMessage: reportResponse.errorMessage!));
+      } else {
+        emit(JournalReportSuccess());
+      }
+      emit(JournalFetchSuccess(journalSubjects: event.journalSubjects));
+    });
+
     on<JournalAdd>((event, emit) async {
 
       File? file = await _filePickerRepository.pickFile();

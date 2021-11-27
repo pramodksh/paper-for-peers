@@ -82,7 +82,18 @@ class Journal extends StatelessWidget {
               builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
                 onReportPressed: (values) {
                   print("VALUES: ${values}");
-                  // todo journal report
+                  if (userState is UserLoaded) {
+                    context.read<JournalBloc>().add(JournalReportAdd(
+                      reportValues: values,
+                      journalSubjects: journalSubjects,
+                      uploadedBy: userState.userModel.displayName!,
+                      course: userState.userModel.course!.courseName!,
+                      semester: userState.userModel.semester!.nSemester!,
+                      subject: subject,
+                      nVersion: currentVersion,
+                      user: userState.userModel,
+                    ));
+                  }
                 },
                 documentUrl: currentJournalModel.documentUrl,
                 screenLabel: "Journal",
@@ -184,12 +195,14 @@ class Journal extends StatelessWidget {
       listener: (context, state) {
         if (state is JournalFetchError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is JournalAddError) {
+        } else if (state is JournalAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is JournalAddSuccess) {
+        } else if (state is JournalAddSuccess) {
           Utils.showAlertDialog(context: context, text: "Journal Added Successfully");
+        } else if (state is JournalReportSuccess) {
+          Utils.showAlertDialog(context: context, text: "Journal Reported Successfully");
+        } else if (state is JournalReportError) {
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Container(
