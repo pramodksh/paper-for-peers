@@ -68,6 +68,29 @@ class NotesAdd extends NotesEvent {
   }
 }
 
+class NotesReportAdd extends NotesEvent {
+  final String subject;
+  final List<String> reportValues;
+  final List<NotesModel> notes;
+  final String noteId;
+  final String course;
+  final int semester;
+  final UserModel user;
+
+  @override
+  List<Object?> get props => [subject, notes, course, semester, noteId, reportValues, user];
+
+  const NotesReportAdd({
+    required this.user,
+    required this.reportValues,
+    required this.noteId,
+    required this.semester,
+    required this.course,
+    required this.notes,
+    required this.subject,
+  });
+}
+
 class NotesResetToNotesFetch extends NotesEvent {
   final List<NotesModel> notes;
   final String selectedSubject;

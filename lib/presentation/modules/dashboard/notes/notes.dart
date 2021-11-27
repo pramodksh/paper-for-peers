@@ -152,6 +152,17 @@ class Notes extends StatelessWidget {
                   onReportPressed: (values) {
                     print("VALUES: ${values}");
                     // todo notes report
+                    if (userState is UserLoaded) {
+                      context.read<NotesBloc>().add(NotesReportAdd(
+                        notes: notes,
+                        reportValues: values,
+                        user: userState.userModel,
+                        noteId: notes[index].noteId,
+                        subject: notesState.selectedSubject!,
+                        semester: userState.userModel.semester!.nSemester!,
+                        course: userState.userModel.course!.courseName!,
+                      ));
+                    }
                   },
                   documentUrl: notes[index].documentUrl,
                   screenLabel: "Notes",

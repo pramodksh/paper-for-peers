@@ -23,6 +23,17 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         _filePickerRepository = filePickerRepository,
         super(NotesInitial()) {
 
+    on<NotesReportAdd>((event, emit) async {
+      print("REPORT: $event");
+      ApiResponse reportResponse = await _notesRepository.reportNotes(course: event.course, semester: event.semester, subject: event.subject, userId: event.user.uid, noteId: event.noteId, reportValues: event.reportValues);
+      if (reportResponse.isError) {
+        emit(NotesReportAddError(selectedSubject: event.subject, errorMessage: reportResponse.errorMessage!));
+      } else {
+        emit(NotesReportAddSuccess(selectedSubject: event.subject));
+      }
+      emit(NotesFetchSuccess(notes: event.notes, selectedSubject: event.subject));
+    });
+
     on<NotesRatingChanged>((event, emit) async {
       await _notesRepository.addRatingToNotes(
         noteId: event.noteId, rating: event.rating, course: event.course,

@@ -107,3 +107,20 @@ class NotesAddError extends NotesState {
     required String selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
+
+class NotesReportAddSuccess extends NotesState {
+  NotesReportAddSuccess({required String selectedSubject}) : super(selectedSubject: selectedSubject);
+
+  @override
+  List<Object?> get props => [];
+}
+
+class NotesReportAddError extends NotesState {
+  final String errorMessage;
+
+  NotesReportAddError({required String selectedSubject, required this.errorMessage})
+      : super(selectedSubject: selectedSubject);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}

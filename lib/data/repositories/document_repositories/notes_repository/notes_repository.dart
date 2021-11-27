@@ -76,6 +76,37 @@ class NotesRepository {
     }
   }
 
+  Future<ApiResponse> reportNotes({
+    required String course, required int semester,
+    required String subject, required String userId,
+    required String noteId, required List<String> reportValues,
+  }) async {
+    try {
+      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
+      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
+      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
+      firestore.DocumentSnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
+
+      Map<String, dynamic> notesData = notesSnapshot.data() as Map<String, dynamic>;
+
+      List<String> reports = [];
+      if (notesData.containsKey(FirebaseCollectionConfig.reportsFieldLabel) && notesData[FirebaseCollectionConfig.reportsFieldLabel][userId] != null) {
+        reports = List<String>.from(notesData[FirebaseCollectionConfig.reportsFieldLabel][userId]);
+        reports.addAll(reportValues);
+        reports = reports.toSet().toList();
+      } else {
+        reports = reportValues;
+      }
+      notesSnapshot.reference.update({
+        "${FirebaseCollectionConfig.reportsFieldLabel}.$userId" : reports,
+      });
+      return ApiResponse.success();
+    } on Exception catch (e) {
+      return ApiResponse.error(errorMessage: "There was an error while reporting notes");
+    }
+
+
+  }
 
   Future<ApiResponse> addRatingToNotes({
     required String noteId, required double rating, required UserModel user,
