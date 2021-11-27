@@ -42,3 +42,25 @@ class SyllabusCopyAdd extends SyllabusCopyEvent {
     return 'SyllabusCopyAdd{syllabusCopies: $syllabusCopies, user: $user, version: $version}';
   }
 }
+
+class SyllabusCopyReportAdd extends SyllabusCopyEvent {
+  final List<String> reportValues;
+  final List<SyllabusCopyModel> syllabusCopies;
+  final UserModel user;
+  final int version;
+
+  @override
+  List<Object?> get props => [version, user, syllabusCopies, reportValues];
+
+  const SyllabusCopyReportAdd({
+    required this.reportValues,
+    required this.syllabusCopies,
+    required this.user,
+    required this.version,
+  });
+
+  @override
+  String toString() {
+    return 'SyllabusCopyReportAdd{reportValues: $reportValues, syllabusCopies: $syllabusCopies, user: $user, version: $version}';
+  }
+}

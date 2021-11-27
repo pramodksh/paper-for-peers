@@ -23,6 +23,18 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
         _filePickerRepository = filePickerRepository ,
         super(SyllabusCopyInitial()) {
 
+    on<SyllabusCopyReportAdd>((event, emit) async {
+      print("REPORT: $event");
+      ApiResponse reportResponse = await _syllabusCopyRepository.reportSyllabusCopies(userId: event.user.uid, course: event.user.course!.courseName!, semester: event.user.semester!.nSemester!, version: event.version, reportValues: event.reportValues);
+
+      if (reportResponse.isError) {
+        emit(SyllabusCopyReportError(errorMessage: reportResponse.errorMessage!));
+      } else {
+        emit(SyllabusCopyReportSuccess());
+      }
+      emit(SyllabusCopyFetchSuccess(syllabusCopies: event.syllabusCopies));
+    });
+
     on<SyllabusCopyAdd>((event, emit) async {
       print("ADD : ${event}");
 

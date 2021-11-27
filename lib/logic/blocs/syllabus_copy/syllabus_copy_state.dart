@@ -80,3 +80,18 @@ class SyllabusCopyAddError extends SyllabusCopyState {
   }) : super();
 }
 
+class SyllabusCopyReportSuccess extends SyllabusCopyState {
+  @override
+  List<Object?> get props => [];
+}
+
+class SyllabusCopyReportError extends SyllabusCopyState {
+  final String errorMessage;
+
+  @override
+  List<Object?> get props => [errorMessage];
+
+  const SyllabusCopyReportError({
+    required this.errorMessage,
+  });
+}

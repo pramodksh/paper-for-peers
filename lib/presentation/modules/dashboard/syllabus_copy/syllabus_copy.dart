@@ -48,6 +48,14 @@ class SyllabusCopy extends StatelessWidget {
                         onReportPressed: (values) {
                           print("VALUES: ${values}");
                           // todo syllabus copy report
+                          if (userState is UserLoaded) {
+                            context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
+                              reportValues: values,
+                              syllabusCopies: syllabusCopies,
+                              version: currentVersion,
+                              user: userState.userModel,
+                            ));
+                          }
                         },
                         documentUrl: currentSyllabusCopyModel.documentUrl,
                         screenLabel: "Syllabus Copy",
@@ -113,9 +121,12 @@ class SyllabusCopy extends StatelessWidget {
       listener: (context, state) {
         if (state is SyllabusCopyAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is SyllabusCopyAddSuccess) {
+        } else if (state is SyllabusCopyAddSuccess) {
           Utils.showAlertDialog(context: context, text: "Syllabus Copy successfully updated");
+        } else if (state is SyllabusCopyReportSuccess) {
+          Utils.showAlertDialog(context: context, text: "Syllabus Copy reported successfully");
+        } else if (state is SyllabusCopyReportError) {
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: RefreshIndicator(
