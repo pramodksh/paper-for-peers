@@ -87,3 +87,8 @@ class QuestionPaperAddReport extends QuestionPaperEvent {
     return 'QuestionPaperAddReport{reportValues: $reportValues, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion}';
   }
 }
+
+class QuestionPaperReset extends QuestionPaperEvent {
+  @override
+  List<Object?> get props => [];
+}
