@@ -66,38 +66,43 @@ class Journal extends StatelessWidget {
     required BuildContext context,
   }) {
 
-    List<Widget> gridChildren = List.generate(journals.length, (index) => _getJournalVariantDetailsTile(
-      appThemeType: appThemeType,
-      nVariant: index + 1,
-      uploadedOn: journals[index].uploadedOn,
-      uploadedBy: journals[index].uploadedBy,
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-            onReportPressed: (values) {
-              print("VALUES: ${values}");
-              // todo journal report
-            },
-            documentUrl: journals[index].documentUrl,
-            screenLabel: "Journal",
-            parameter: PDFScreenSimpleBottomSheet(
-              nVariant: journals[index].version,
-              uploadedBy: journals[index].uploadedBy,
-              title: subject
-            ),
-          ),
-        ));
+    List<Widget> gridChildren = List.generate(AppConstants.maxJournals, (index) {
+      int currentVersion = index + 1;
+      bool isShow = journals.any((element) => element.version == currentVersion);
+
+      if (isShow) {
+        JournalModel currentJournalModel = journals.firstWhere((element) => element.version == currentVersion);
+        return _getJournalVariantDetailsTile(
+          appThemeType: appThemeType,
+          uploadedBy: currentJournalModel.uploadedBy,
+          uploadedOn: currentJournalModel.uploadedOn,
+          nVariant: currentVersion,
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                onReportPressed: (values) {
+                  print("VALUES: ${values}");
+                  // todo journal report
+                },
+                documentUrl: currentJournalModel.documentUrl,
+                screenLabel: "Journal",
+                parameter: PDFScreenSimpleBottomSheet(
+                    nVariant: currentVersion,
+                    uploadedBy: currentJournalModel.uploadedBy,
+                    title: subject
+                ),
+              ),
+            ));
+          }
+        );
+      } else {
+       return Utils.getAddPostContainer(
+         isDarkTheme: appThemeType.isDarkTheme(),
+         onPressed: isAddJournalLoading ? () {} : onJournalAdd,
+         label: isAddJournalLoading ? "Loading" : "Add Journal",
+       );
       }
-    ));
-
-    if (journals.length < AppConstants.maxJournals) {
-      gridChildren.add(Utils.getAddPostContainer(
-        isDarkTheme: appThemeType.isDarkTheme(),
-        onPressed: isAddJournalLoading ? () {} : onJournalAdd,
-        label: isAddJournalLoading ? "Loading" : "Add Journal",
-      ));
-    }
-
+    });
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,6 +129,7 @@ class Journal extends StatelessWidget {
     required bool isAddJournalLoading,
     bool isWidgetLoading = false,
   }) {
+
     return ListView.separated(
       separatorBuilder: (context, index) => SizedBox(height: 20,),
       shrinkWrap: true,
