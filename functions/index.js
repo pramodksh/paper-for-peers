@@ -1,7 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
-const db = admin.firestore();
 const bucket = admin.storage().bucket();
 
 // /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
@@ -14,9 +13,41 @@ const reportWeights = {
   already_uploaded: 3,
   misleading: 4,
 };
-const maxQuestionPaperReports = 10;
+const maxQuestionPaperReports = 10; // todo change to 40
 
-exports.questionPaperReport = functions.firestore
+function getReportCounts(mergedValues) {
+  const reportCounts = {};
+  for (const report of mergedValues) {
+    reportCounts[report] = reportCounts[report] ? reportCounts[report] + 1 : 1;
+  }
+  return reportCounts;
+}
+
+function getMergedReportValues(reports) {
+  const mergedValues = [].concat.apply([], reports);
+  return mergedValues;
+}
+
+function getWeightedReportCounts(reportCounts, reportWeights) {
+  const weightedReportCounts = {};
+  for (var key in reportWeights) {
+    if (reportCounts[key] != undefined) {
+      weightedReportCounts[key] = reportCounts[key] * reportWeights[key];
+    } else {
+      weightedReportCounts[key] = 0;
+    }
+  }
+  return weightedReportCounts;
+}
+
+function getTotalReports(weightedReportCounts) {
+  const totalReports = Object.values(weightedReportCounts).reduce(
+    (a, b) => a + b
+  );
+  return totalReports;
+}
+
+exports.reportQuestionPaper = functions.firestore
   .document(
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}"
   )
@@ -26,39 +57,26 @@ exports.questionPaperReport = functions.firestore
     const totalUsers = Object.keys(newValue["reports"]).length;
     functions.logger.log("TOTAL USERS: ", totalUsers);
 
-    const mergedValues = [].concat.apply(
-      [],
+    // merge array of array into single array
+    const mergedValues = getMergedReportValues(
       Object.values(newValue["reports"])
     );
-
     functions.logger.log("MERGEDValues: ", mergedValues);
 
     // Count the number of occurances of reports
-    const reportCounts = {};
-    for (const report of mergedValues) {
-      reportCounts[report] = reportCounts[report]
-        ? reportCounts[report] + 1
-        : 1;
-    }
-
+    const reportCounts = getReportCounts(mergedValues);
     functions.logger.log("reportCounts: ", reportCounts);
 
     // multiply : report counts * report values (if key is not present put 0)
-    for (var key in reportWeights) {
-      if (reportCounts[key] != undefined) {
-        reportCounts[key] = reportCounts[key] * reportWeights[key];
-      } else {
-        reportCounts[key] = 0;
-      }
-    }
+    const weightedReportCounts = getWeightedReportCounts(
+      reportCounts,
+      reportWeights
+    );
+    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
 
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", reportCounts);
-
-    const totalReports = Object.values(reportCounts).reduce((a, b) => a + b);
+    // find total report count
+    const totalReports = getTotalReports(weightedReportCounts);
     functions.logger.log("TOTAL REPORTS: ", totalReports);
-
-    const avgReports = totalReports / totalUsers;
-    functions.logger.log("AVG REPORTS: ", avgReports);
 
     // Delete document if limit exceeds
     if (totalReports >= maxQuestionPaperReports) {
