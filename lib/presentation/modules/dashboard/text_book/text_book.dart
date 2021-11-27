@@ -116,38 +116,6 @@ class TextBook extends StatelessWidget {
       }
     });
 
-    // List<Widget> gridChildren = List.generate(subjects.length, (index) => _getTextBookVariantDetailsTile(
-    //     appThemeType: appThemeType,
-    //     nVariant: index + 1,
-    //     uploadedOn: subjects[index].uploadedOn,
-    //     uploadedBy: subjects[index].uploadedBy,
-    //     onTap: () {
-    //       Navigator.of(context).push(MaterialPageRoute(
-    //         builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-    //           onReportPressed: (values) {
-    //             print("VALUES: ${values}");
-    //             // todo text book report
-    //           },
-    //           documentUrl: subjects[index].documentUrl,
-    //           screenLabel: "Text Book",
-    //           parameter: PDFScreenSimpleBottomSheet(
-    //               nVariant: subjects[index].version,
-    //               uploadedBy: subjects[index].uploadedBy,
-    //               title: subject
-    //           ),
-    //         ),
-    //       ));
-    //     }
-    // ));
-
-    // if (subjects.length < AppConstants.maxTextBooks) {
-      // gridChildren.add(Utils.getAddPostContainer(
-      //   isDarkTheme: appThemeType.isDarkTheme(),
-      //   onPressed: isAddTextBookLoading ? () {} : onTextBookAdd,
-      //   label: isAddTextBookLoading ? "Loading" : "Add Text Book",
-      // ));
-    // }
-
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
