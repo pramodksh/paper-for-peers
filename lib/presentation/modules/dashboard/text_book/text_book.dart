@@ -59,43 +59,94 @@ class TextBook extends StatelessWidget {
   }
 
   Widget _getTextBookTile({
-    required String subject, required List<TextBookModel> subjects,
+    required String subject, required List<TextBookModel> textBooks,
+    required List<TextBookSubjectModel> textBookSubjects,
     required AppThemeType appThemeType, required UserState userState,
-    required Function() onTextBookAdd, required bool isAddTextBookLoading,
+    required bool isAddTextBookLoading,
     required BuildContext context
   }) {
 
-    List<Widget> gridChildren = List.generate(subjects.length, (index) => _getTextBookVariantDetailsTile(
-        appThemeType: appThemeType,
-        nVariant: index + 1,
-        uploadedOn: subjects[index].uploadedOn,
-        uploadedBy: subjects[index].uploadedBy,
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-              onReportPressed: (values) {
-                print("VALUES: ${values}");
-                // todo text book report
-              },
-              documentUrl: subjects[index].documentUrl,
-              screenLabel: "Text Book",
-              parameter: PDFScreenSimpleBottomSheet(
-                  nVariant: subjects[index].version,
-                  uploadedBy: subjects[index].uploadedBy,
-                  title: subject
-              ),
-            ),
-          ));
-        }
-    ));
+    List<Widget> gridChildren = List.generate(AppConstants.maxTextBooks, (index) {
+      int currentVersion = index + 1;
+      bool isShow = textBooks.any((element) => element.version == currentVersion);
 
-    if (subjects.length < AppConstants.maxTextBooks) {
-      gridChildren.add(Utils.getAddPostContainer(
-        isDarkTheme: appThemeType.isDarkTheme(),
-        onPressed: isAddTextBookLoading ? () {} : onTextBookAdd,
-        label: isAddTextBookLoading ? "Loading" : "Add Text Book",
-      ));
-    }
+      if (isShow) {
+        TextBookModel currentTextBookModel = textBooks.firstWhere((element) => element.version == currentVersion);
+        return _getTextBookVariantDetailsTile(
+            appThemeType: appThemeType,
+            nVariant: currentVersion,
+            uploadedOn: currentTextBookModel.uploadedOn,
+            uploadedBy: currentTextBookModel.uploadedBy,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                  onReportPressed: (values) {
+                    print("VALUES: ${values}");
+                    // todo text book report
+                  },
+                  documentUrl: currentTextBookModel.documentUrl,
+                  screenLabel: "Text Book",
+                  parameter: PDFScreenSimpleBottomSheet(
+                      nVariant: currentTextBookModel.version,
+                      uploadedBy: currentTextBookModel.uploadedBy,
+                      title: subject
+                  ),
+                ),
+              ));
+            }
+        );
+      } else {
+        return Utils.getAddPostContainer(
+          isDarkTheme: appThemeType.isDarkTheme(),
+          onPressed: isAddTextBookLoading ? () {} : () {
+            if (userState is UserLoaded) {
+              context.read<TextBookBloc>().add(TextBookAdd(
+                textBookSubjects: textBookSubjects,
+                uploadedBy: userState.userModel.displayName!,
+                course: userState.userModel.course!.courseName!,
+                semester: userState.userModel.semester!.nSemester!,
+                subject: subject,
+                nVersion: currentVersion,
+                user: userState.userModel,
+              ));
+            }
+          },
+          label: isAddTextBookLoading ? "Loading" : "Add Text Book",
+        );
+      }
+    });
+
+    // List<Widget> gridChildren = List.generate(subjects.length, (index) => _getTextBookVariantDetailsTile(
+    //     appThemeType: appThemeType,
+    //     nVariant: index + 1,
+    //     uploadedOn: subjects[index].uploadedOn,
+    //     uploadedBy: subjects[index].uploadedBy,
+    //     onTap: () {
+    //       Navigator.of(context).push(MaterialPageRoute(
+    //         builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+    //           onReportPressed: (values) {
+    //             print("VALUES: ${values}");
+    //             // todo text book report
+    //           },
+    //           documentUrl: subjects[index].documentUrl,
+    //           screenLabel: "Text Book",
+    //           parameter: PDFScreenSimpleBottomSheet(
+    //               nVariant: subjects[index].version,
+    //               uploadedBy: subjects[index].uploadedBy,
+    //               title: subject
+    //           ),
+    //         ),
+    //       ));
+    //     }
+    // ));
+
+    // if (subjects.length < AppConstants.maxTextBooks) {
+      // gridChildren.add(Utils.getAddPostContainer(
+      //   isDarkTheme: appThemeType.isDarkTheme(),
+      //   onPressed: isAddTextBookLoading ? () {} : onTextBookAdd,
+      //   label: isAddTextBookLoading ? "Loading" : "Add Text Book",
+      // ));
+    // }
 
     return Container(
       child: Column(
@@ -130,25 +181,13 @@ class TextBook extends StatelessWidget {
       itemCount: textBookSubjects.length,
       itemBuilder: (context, textbookSubjectIndex) {
         return _getTextBookTile(
+            textBookSubjects: textBookSubjects,
             context: context,
             isAddTextBookLoading: isAddTextBookLoading,
-            subjects: textBookSubjects[textbookSubjectIndex].textBookModels,
+            textBooks: textBookSubjects[textbookSubjectIndex].textBookModels,
             subject: textBookSubjects[textbookSubjectIndex].subject,
             appThemeType: appThemeType,
             userState: userState,
-            onTextBookAdd: isWidgetLoading ? () {} : () {
-              if (userState is UserLoaded) {
-                context.read<TextBookBloc>().add(TextBookAdd(
-                  textBookSubjects: textBookSubjects,
-                  uploadedBy: userState.userModel.displayName!,
-                  course: userState.userModel.course!.courseName!,
-                  semester: userState.userModel.semester!.nSemester!,
-                  subject: textBookSubjects[textbookSubjectIndex].subject,
-                  nVersion: textBookSubjects[textbookSubjectIndex].textBookModels.length + 1,
-                  user: userState.userModel,
-                ));
-              }
-            }
         );
       },
     );
