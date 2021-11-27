@@ -34,5 +34,5 @@ class AppConstants {
   static final int maxJournals = 2;
   static final int maxSyllabusCopy = 2;
   static final int maxTextBooks = 2;
-  // todo add notes limit and implement
+  static final int maxNotesPerSubject = 15;
 }

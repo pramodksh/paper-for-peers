@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:collection/collection.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
+import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
@@ -54,6 +55,13 @@ class NotesRepository {
       firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
 
       firestore.CollectionReference notesCollection = subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel);
+
+      firestore.QuerySnapshot notesSnapshot = await notesCollection.get();
+
+      if (notesSnapshot.docs.length >= AppConstants.maxNotesPerSubject) {
+        return ApiResponse.error(errorMessage: "The subject $subject has maximum notes. So you cannot upload.");
+      }
+
       ApiResponse uploadResponse = await uploadNotes(document: document, course: course, semester: semester, subject: subject);
 
       if (uploadResponse.isError) {
