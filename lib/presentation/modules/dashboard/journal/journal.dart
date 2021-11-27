@@ -62,7 +62,7 @@ class Journal extends StatelessWidget {
   Widget _getJournalTile({
     required String subject, required List<JournalModel> journals,
     required AppThemeType appThemeType, required UserState userState,
-    required bool isAddJournalLoading,
+    required bool isAddJournalLoading, required bool isWidgetLoading,
     required BuildContext context, required List<JournalSubjectModel> journalSubjects
   }) {
 
@@ -77,7 +77,7 @@ class Journal extends StatelessWidget {
           uploadedBy: currentJournalModel.uploadedBy,
           uploadedOn: currentJournalModel.uploadedOn,
           nVariant: currentVersion,
-          onTap: () {
+          onTap: isWidgetLoading ? () {} : () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
                 onReportPressed: (values) {
@@ -98,7 +98,7 @@ class Journal extends StatelessWidget {
       } else {
        return Utils.getAddPostContainer(
          isDarkTheme: appThemeType.isDarkTheme(),
-         onPressed: isAddJournalLoading ? () {} : () {
+         onPressed: isAddJournalLoading || isWidgetLoading ? () {} : () {
            if (userState is UserLoaded) {
              context.read<JournalBloc>().add(JournalAdd(
                journalSubjects: journalSubjects,
@@ -150,6 +150,7 @@ class Journal extends StatelessWidget {
       itemCount: journalSubjects.length,
       itemBuilder: (context, journalSubjectIndex) {
         return _getJournalTile(
+            isWidgetLoading: isWidgetLoading,
             journalSubjects: journalSubjects,
             context: context,
             isAddJournalLoading: isAddJournalLoading,
