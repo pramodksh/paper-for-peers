@@ -2,13 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+const bucket = admin.storage().bucket();
 
 // /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
 // /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
@@ -70,6 +64,12 @@ exports.questionPaperReport = functions.firestore
     if (totalReports >= maxQuestionPaperReports) {
       functions.logger.log("DELETING DOCUMENT");
       await change.after.ref.delete();
+
+      functions.logger.log("DELETING FILE FROM STORAGE");
+
+      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/question_paper/${context.params.year}/${context.params.version}.pdf`;
+      await bucket.file(path).delete();
+
       functions.logger.log(
         "DOCUMENT DELETED: ",
         totalReports,
