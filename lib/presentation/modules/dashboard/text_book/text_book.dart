@@ -81,8 +81,6 @@ class TextBook extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
                   onReportPressed: (values) {
-                    print("VALUES: ${values}");
-                    // todo text book report
                     if (userState is UserLoaded) {
                       context.read<TextBookBloc>().add(TextBookReportAdd(
                         reportValues: values,

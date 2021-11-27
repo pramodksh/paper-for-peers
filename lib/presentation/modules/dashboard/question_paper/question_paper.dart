@@ -112,8 +112,6 @@ class QuestionPaper extends StatelessWidget {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
                           onReportPressed: (values) {
-                            print("VALUES: ${values}");
-                            // todo question paper report
                             if (userState is UserLoaded) {
                               context.read<QuestionPaperBloc>().add(QuestionPaperAddReport(
                                 questionPaperYears: questionPaperYears,

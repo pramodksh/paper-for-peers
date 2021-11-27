@@ -150,8 +150,6 @@ class Notes extends StatelessWidget {
               Map<String, dynamic> ratingDetails = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => PDFViewerScreen<PDFScreenNotesBottomSheet>(
                   onReportPressed: (values) {
-                    print("VALUES: ${values}");
-                    // todo notes report
                     if (userState is UserLoaded) {
                       context.read<NotesBloc>().add(NotesReportAdd(
                         notes: notes,

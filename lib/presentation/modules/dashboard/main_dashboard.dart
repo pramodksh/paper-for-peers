@@ -39,7 +39,7 @@ class _MainDashboardState extends State<MainDashboard> {
   bool _isLoading = false;
   String _loadingText = "";
 
-  int selectedItemPosition = 1;
+  int selectedItemPosition = 0;
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
