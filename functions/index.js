@@ -140,3 +140,50 @@ exports.reportJournal = functions.firestore
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
   });
+
+exports.reportSyllabusCopy = functions.firestore
+  .document(
+    "/courses_new/{course}/semesters/{semester}/syllabus_copy/{version}"
+  )
+  .onUpdate(async (change, context) => {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+    const totalUsers = Object.keys(newValue["reports"]).length;
+    functions.logger.log("TOTAL USERS: ", totalUsers);
+
+    // merge array of array into single array
+    const mergedValues = getMergedReportValues(
+      Object.values(newValue["reports"])
+    );
+    functions.logger.log("MERGEDValues: ", mergedValues);
+
+    // Count the number of occurances of reports
+    const reportCounts = getReportCounts(mergedValues);
+    functions.logger.log("reportCounts: ", reportCounts);
+
+    // multiply : report counts * report values (if key is not present put 0)
+    const weightedReportCounts = getWeightedReportCounts(
+      reportCounts,
+      reportWeights
+    );
+    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
+
+    // find total report count
+    const totalReports = getTotalReports(weightedReportCounts);
+    functions.logger.log("TOTAL REPORTS: ", totalReports);
+
+    // Delete document if limit exceeds
+    if (totalReports >= maxReports) {
+      functions.logger.log("DELETING DOCUMENT");
+      await change.after.ref.delete();
+
+      functions.logger.log("DELETING FILE FROM STORAGE");
+
+      const path = `courses/${context.params.course}/${context.params.semester}/syllabus_copy/${context.params.version}.pdf`;
+      await bucket.file(path).delete();
+
+      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+    } else {
+      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
+    }
+  });
