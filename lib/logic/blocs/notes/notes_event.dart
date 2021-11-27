@@ -132,3 +132,8 @@ class NotesRatingChanged extends NotesEvent {
     return 'NotesRatingChanged{noteId: $noteId, rating: $rating}';
   }
 }
+
+class NotesResetToNotesInitial extends NotesEvent {
+  @override
+  List<Object?> get props => [];
+}

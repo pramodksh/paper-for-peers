@@ -8,6 +8,8 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
 import 'package:papers_for_peers/logic/blocs/question_paper/question_paper_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -40,7 +42,7 @@ class _MainDashboardState extends State<MainDashboard> {
   bool _isLoading = false;
   String _loadingText = "";
 
-  int selectedItemPosition = 0;
+  int selectedItemPosition = 1;
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
@@ -142,6 +144,7 @@ class _MainDashboardState extends State<MainDashboard> {
                       onDropDownChanged: (val) {
                         context.read<UserCubit>().changeSemester(val!);
                         context.read<QuestionPaperBloc>().add(QuestionPaperReset());
+                        context.read<NotesBloc>().add(NotesResetToNotesInitial());
                       },
                       dropDownValue: userState.userModel.semester,
                       items: userState.userModel.course!.semesters!.map((Semester value) {
