@@ -233,8 +233,11 @@ class Notes extends StatelessWidget {
       listener: (context, state) {
         if (state is NotesFetchError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is NotesAddError) {
+        } else if (state is NotesAddError) {
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
+        } else if (state is NotesReportAddSuccess) {
+          Utils.showAlertDialog(context: context, text: "Note was reported successfully");
+        } else if (state is NotesReportAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
