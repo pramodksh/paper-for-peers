@@ -77,3 +77,19 @@ class TextBookAddError extends TextBookState {
     required this.textBookSubjects,
   }) : super();
 }
+
+class TextBookReportSuccess extends TextBookState {
+  @override
+  List<Object?> get props => [];
+}
+
+class TextBookReportError extends TextBookState {
+  final String errorMessage;
+
+  @override
+  List<Object?> get props => [errorMessage];
+
+  const TextBookReportError({
+    required this.errorMessage,
+  });
+}

@@ -23,6 +23,17 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
         _filePickerRepository = filePickerRepository ,
         super(TextBookInitial()) {
 
+    on<TextBookReportAdd>((event, emit) async {
+      print("EVENT: $event");
+      ApiResponse reportResponse = await _textBookRepository.reportTextBook(course: event.course, semester: event.semester, subject: event.subject, userId: event.user.uid, version: event.nVersion, reportValues: event.reportValues);
+      if (reportResponse.isError) {
+        emit(TextBookReportError(errorMessage: reportResponse.errorMessage!));
+      } else {
+        emit(TextBookReportSuccess());
+      }
+      emit(TextBookFetchSuccess(textBookSubjects: event.textBookSubjects));
+    });
+
     on<TextBookAdd>((event, emit) async {
 
       File? file = await _filePickerRepository.pickFile();

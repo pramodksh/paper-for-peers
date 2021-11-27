@@ -83,6 +83,18 @@ class TextBook extends StatelessWidget {
                   onReportPressed: (values) {
                     print("VALUES: ${values}");
                     // todo text book report
+                    if (userState is UserLoaded) {
+                      context.read<TextBookBloc>().add(TextBookReportAdd(
+                        reportValues: values,
+                        textBookSubjects: textBookSubjects,
+                        uploadedBy: userState.userModel.displayName!,
+                        course: userState.userModel.course!.courseName!,
+                        semester: userState.userModel.semester!.nSemester!,
+                        subject: subject,
+                        nVersion: currentVersion,
+                        user: userState.userModel,
+                      ));
+                    }
                   },
                   documentUrl: currentTextBookModel.documentUrl,
                   screenLabel: "Text Book",
@@ -183,12 +195,14 @@ class TextBook extends StatelessWidget {
       listener: (context, state) {
         if (state is TextBookFetchError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is TextBookAddError) {
+        } else if (state is TextBookAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
-        }
-        if (state is TextBookAddSuccess) {
+        } else if (state is TextBookAddSuccess) {
           Utils.showAlertDialog(context: context, text: "Text Book Added Successfully");
+        } else if (state is TextBookReportSuccess) {
+          Utils.showAlertDialog(context: context, text: "Text Book Reported Successfully");
+        } else if (state is TextBookReportError) {
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Container(
