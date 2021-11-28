@@ -56,24 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-      child: url == null ? CircleAvatar(
-        radius: profileImageRadius,
-        child: Text(Utils.getUserNameForProfilePhoto(username), style: TextStyle(fontSize: 50),),
-      ) : CachedNetworkImage(
-        imageUrl: url,
-        progressIndicatorBuilder: (context, url, progress) {
-          return CircleAvatar(
-            radius: profileImageRadius,
-            child: Center(child: CircularProgressIndicator.adaptive(),),
-          );
-        },
-        imageBuilder: (context, imageProvider) {
-          return CircleAvatar(
-            radius: profileImageRadius,
-            backgroundImage: imageProvider,
-          );
-        },
-      ),
+      child: Utils.getProfilePhotoWidget(url: url, username: username, radius: profileImageRadius, fontSize: 50),
     );
   }
 
