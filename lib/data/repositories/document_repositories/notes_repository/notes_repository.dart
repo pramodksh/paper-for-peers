@@ -23,7 +23,22 @@ class NotesRepository {
     coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
   }
 
-  Future<ApiResponse> uploadNotes({
+  Future<ApiResponse> _deleteNotesFromStorage({
+    required String course, required int semester,
+    required String subject, required String noteId,
+  }) async {
+    try {
+      await _firebaseStorage.ref('courses').child(course)
+          .child(semester.toString()).child(subject).child('notes')
+          .child("$noteId.pdf").delete();
+
+      return ApiResponse.success();
+    } on storage.FirebaseException catch (_) {
+      return ApiResponse.error(errorMessage: "Couldn't delete notes from storage");
+    }
+  }
+
+  Future<ApiResponse> _uploadNotesToStorage({
     required File document,
     required String course, required int semester,
     required String subject, required String noteId,
@@ -41,6 +56,29 @@ class NotesRepository {
     }
   }
 
+  Future<ApiResponse> deleteNote({
+    required String course, required int semester,
+    required String subject, required String noteId,
+  }) async {
+    try {
+      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
+      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
+      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
+      firestore.DocumentSnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
+
+      await notesSnapshot.reference.delete();
+
+      ApiResponse deleteResponse = await _deleteNotesFromStorage(course: course, semester: semester, subject: subject, noteId: noteId);
+      if (deleteResponse.isError) {
+        return deleteResponse;
+      }
+
+      return ApiResponse.success();
+
+    } on Exception catch (e) {
+      return ApiResponse.error(errorMessage: "There was an error while deleting notes");
+    }
+  }
 
   Future<ApiResponse> uploadAndAddNotes({
     required String course, required int semester,
@@ -66,7 +104,7 @@ class NotesRepository {
           documentUrl: null, user: user, title: title, description: description
       ));
 
-      ApiResponse uploadResponse = await uploadNotes(
+      ApiResponse uploadResponse = await _uploadNotesToStorage(
         document: document, course: course, semester: semester, subject: subject,
         noteId: noteRef.id,
       );

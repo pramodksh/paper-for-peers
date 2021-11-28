@@ -26,9 +26,10 @@ class Notes extends StatelessWidget {
     String? uploadedBy,
     DateTime? uploadedOn,
     bool isYourPostTile = false,
-    Function()? yourPostTileOnEdit,
     Function()? yourPostTileOnDelete,
+    bool isDeleteButtonLoading = false,
   }) {
+
     DateFormat dateFormat = DateFormat("dd MMMM yyyy");
 
     double ratingHeight = 30;
@@ -88,25 +89,7 @@ class Notes extends StatelessWidget {
                         SizedBox(height: 10,),
                         Text(description, style: TextStyle(fontSize: 16,),),
                         SizedBox(height: 10,),
-                        isYourPostTile ? Row(
-                          children: [
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
-                              ),
-                              onPressed: yourPostTileOnEdit,
-                              child: Text("Edit", style: TextStyle(fontSize: 16),),
-                            ),
-                            SizedBox(width: 10,),
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
-                              ),
-                              onPressed: yourPostTileOnDelete,
-                              child: Text("Delete", style: TextStyle(fontSize: 16),),
-                            ),
-                          ],
-                        ) : Row(
+                        Row(
                           children: [
                             CircleAvatar(
                               child: FlutterLogo(),
@@ -114,8 +97,33 @@ class Notes extends StatelessWidget {
                             ),
                             SizedBox(width: 10,),
                             Text(uploadedBy!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                            Spacer(),
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             Text(dateFormat.format(uploadedOn!)),
+
+                            Builder(
+                              builder: (context) {
+                                if (isYourPostTile) {
+                                  if (isDeleteButtonLoading) {
+                                    return CircularProgressIndicator.adaptive();
+                                  } else {
+                                    return ElevatedButton(
+                                      style: ButtonStyle(
+                                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 20))
+                                      ),
+                                      onPressed: yourPostTileOnDelete,
+                                      child: Text("Delete", style: TextStyle(fontSize: 16),),
+                                    );
+                                  }
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            ),
                           ],
                         ),
                       ],
@@ -134,6 +142,7 @@ class Notes extends StatelessWidget {
     required List<NotesModel> notes, bool isWidgetLoading = false,
     required NotesState notesState, required UserState userState,
     required AppThemeType appThemeType, required BuildContext context,
+    bool isDeleteButtonLoading = false,
   }) {
     return ListView(
       shrinkWrap: true,
@@ -144,6 +153,17 @@ class Notes extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           itemCount: notes.length,
           itemBuilder: (context, index) => _getNotesDetailsTile(
+            isDeleteButtonLoading: isDeleteButtonLoading,
+            isYourPostTile: (userState as UserLoaded).userModel.uid == notes[index].userUid,
+            yourPostTileOnDelete: () {
+              context.read<NotesBloc>().add(NotesDelete(
+                notes: notes,
+                subject: notesState.selectedSubject!,
+                semester: userState.userModel.semester!.nSemester!,
+                course: userState.userModel.course!.courseName!,
+                noteId: notes[index].noteId,
+              ));
+            },
             context: context,
             appThemeType: appThemeType,
             onTileTap: () async {
@@ -239,6 +259,10 @@ class Notes extends StatelessWidget {
           Utils.showAlertDialog(context: context, text: "Note was reported successfully");
         } else if (state is NotesReportAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
+        } else if (state is NotesDeleteSuccess) {
+          Utils.showAlertDialog(context: context, text: "Note was deleted successfully");
+        } else if (state is NotesDeleteError) {
+          Utils.showAlertDialog(context: context, text: state.errorMessage);
         }
       },
       child: Container(
@@ -327,6 +351,12 @@ class Notes extends StatelessWidget {
                       );
                     } else if (notesState is NotesFetchSuccess) {
                       return _getNotesListWidget(
+                        notes: notesState.notes, notesState: notesState, userState: userState,
+                        appThemeType: appThemeType, context: context,
+                      );
+                    } else if (notesState is NotesDeleteLoading) {
+                      return _getNotesListWidget(
+                        isDeleteButtonLoading: true,
                         notes: notesState.notes, notesState: notesState, userState: userState,
                         appThemeType: appThemeType, context: context,
                       );

@@ -124,3 +124,28 @@ class NotesReportAddError extends NotesState {
   @override
   List<Object?> get props => [errorMessage];
 }
+
+class NotesDeleteLoading extends NotesState {
+  final List<NotesModel> notes;
+
+  @override
+  List<Object?> get props => [notes];
+
+  NotesDeleteLoading({required this.notes, required String selectedSubject}) : super(selectedSubject: selectedSubject);
+
+}
+
+class NotesDeleteSuccess extends NotesState {
+  NotesDeleteSuccess({required String selectedSubject}) : super(selectedSubject: selectedSubject);
+
+  @override
+  List<Object?> get props => [];
+}
+
+class NotesDeleteError extends NotesState {
+  final String errorMessage;
+  NotesDeleteError({required String selectedSubject, required this.errorMessage}) : super(selectedSubject: selectedSubject);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}

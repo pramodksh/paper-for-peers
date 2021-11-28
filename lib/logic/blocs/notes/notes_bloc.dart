@@ -23,6 +23,18 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         _filePickerRepository = filePickerRepository,
         super(NotesInitial()) {
 
+    on<NotesDelete>((event, emit) async {
+      print("DEL: $event");
+      emit(NotesDeleteLoading(notes: event.notes, selectedSubject: event.subject));
+      ApiResponse deleteResponse = await _notesRepository.deleteNote(course: event.course, semester: event.semester, subject: event.subject, noteId: event.noteId);
+      if (deleteResponse.isError) {
+        emit(NotesDeleteError(selectedSubject: event.subject, errorMessage: deleteResponse.errorMessage!));
+      } else {
+        emit(NotesDeleteSuccess(selectedSubject: event.subject));
+      }
+      add(NotesFetch(course: event.course, semester: event.semester, subject: event.subject));
+    });
+
     on<NotesResetToNotesInitial>((event, emit) => emit(NotesInitial()));
     
     on<NotesReportAdd>((event, emit) async {

@@ -172,6 +172,7 @@ class _UploadNotesState extends State<UploadNotes> {
                                   ),
                                   SizedBox(height: 30,),
                                   Utils.getCustomTextField(
+                                    maxLines: 4,
                                     labelText: 'Description',
                                     onChanged: (val) {
                                       if (notesState is NotesAddEditing) {

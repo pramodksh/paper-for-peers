@@ -205,8 +205,10 @@ class Utils {
     String? hintText,
     bool obscureText = false,
     Function(String)? onChanged,
+    int maxLines = 1,
   }) {
     return TextFormField(
+      maxLines: maxLines,
       onChanged: onChanged,
       controller: controller,
       validator: validator,

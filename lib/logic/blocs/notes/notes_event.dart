@@ -137,3 +137,28 @@ class NotesResetToNotesInitial extends NotesEvent {
   @override
   List<Object?> get props => [];
 }
+
+class NotesDelete extends NotesEvent {
+
+  final List<NotesModel> notes;
+  final String course;
+  final int semester;
+  final String subject;
+  final String noteId;
+
+  @override
+  List<Object?> get props => [course, semester, subject, noteId, notes];
+
+  const NotesDelete({
+    required this.notes,
+    required this.course,
+    required this.semester,
+    required this.subject,
+    required this.noteId,
+  });
+
+  @override
+  String toString() {
+    return 'NotesDelete{course: $course, semester: $semester, subject: $subject, noteId: $noteId}';
+  }
+}
