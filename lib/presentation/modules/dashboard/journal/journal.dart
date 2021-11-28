@@ -22,7 +22,7 @@ class Journal extends StatelessWidget {
   Widget _getJournalVariantDetailsTile({
     required int nVariant, required DateTime uploadedOn,
     required String uploadedBy, required Function() onTap,
-    required AppThemeType appThemeType,
+    required AppThemeType appThemeType, required String? profilePhotoUrl,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -45,10 +45,7 @@ class Journal extends StatelessWidget {
 
             Row(
               children: [
-                CircleAvatar(
-                  child: FlutterLogo(),
-                  radius: 15,
-                ),
+                Utils.getProfilePhotoWidget(url: profilePhotoUrl, username: uploadedBy, radius: 15, fontSize: 14),
                 SizedBox(width: 10,),
                 Text(uploadedBy, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               ],
@@ -74,6 +71,7 @@ class Journal extends StatelessWidget {
         JournalModel currentJournalModel = journals.firstWhere((element) => element.version == currentVersion);
         return _getJournalVariantDetailsTile(
           appThemeType: appThemeType,
+          profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
           uploadedBy: currentJournalModel.uploadedBy,
           uploadedOn: currentJournalModel.uploadedOn,
           nVariant: currentVersion,
@@ -98,9 +96,10 @@ class Journal extends StatelessWidget {
                 documentUrl: currentJournalModel.documentUrl,
                 screenLabel: "Journal",
                 parameter: PDFScreenSimpleBottomSheet(
-                    nVariant: currentVersion,
-                    uploadedBy: currentJournalModel.uploadedBy,
-                    title: subject
+                  profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
+                  nVariant: currentVersion,
+                  uploadedBy: currentJournalModel.uploadedBy,
+                  title: subject,
                 ),
               ),
             ));

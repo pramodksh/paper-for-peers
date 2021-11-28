@@ -59,6 +59,7 @@ class SyllabusCopy extends StatelessWidget {
                         screenLabel: "Syllabus Copy",
                         isShowBottomSheet: false,
                         parameter: PDFScreenSyllabusCopy(
+                          profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
                           uploadedBy: currentSyllabusCopyModel.uploadedBy,
                           nVariant: currentSyllabusCopyModel.version,
                         ),

@@ -191,10 +191,10 @@ class _YourPostsState extends State<YourPosts> with TickerProviderStateMixin {
                           ],
                         ) : Row(
                           children: [
-                            CircleAvatar(
-                              child: FlutterLogo(),
-                              radius: 20,
-                            ),
+                            // CircleAvatar(
+                            //   child: FlutterLogo(),
+                            //   radius: 20,
+                            // ),
                             SizedBox(width: 10,),
                             Text(uploadedBy!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                             Spacer(),

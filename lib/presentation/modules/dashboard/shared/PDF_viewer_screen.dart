@@ -117,7 +117,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   Future<PDFDocument> loadDocumentFromURL({required pdfURL}) async => await PDFDocument.fromURL(pdfURL);
 
-  Widget getUploadedByColumn({required String uploadedBy}) {
+  Widget getUploadedByColumn({required String uploadedBy, required String? profilePhotoUrl}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -125,10 +125,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
         SizedBox(height: 10,),
         Row(
           children: [
-            CircleAvatar(
-              child: FlutterLogo(),
-              radius: 20,
-            ),
+            Utils.getProfilePhotoWidget(url: profilePhotoUrl, username: uploadedBy,),
             SizedBox(width: 10,),
             Text(uploadedBy, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           ],
@@ -250,7 +247,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                           ],
                         ),
                         SizedBox(height: 15,),
-                        getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
+                        getUploadedByColumn(uploadedBy: parameter.uploadedBy!, profilePhotoUrl: parameter.profilePhotoUrl),
                       ],
                     ),
                   ),
@@ -298,7 +295,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                           ],
                         ),
                         SizedBox(height: 15,),
-                        getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
+                        getUploadedByColumn(uploadedBy: parameter.uploadedBy!, profilePhotoUrl: parameter.profilePhotoUrl),
                       ],
                     ),
                   ),
@@ -370,7 +367,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  getUploadedByColumn(uploadedBy: parameter.uploadedBy!),
+                                  getUploadedByColumn(uploadedBy: parameter.uploadedBy!, profilePhotoUrl: parameter.profilePhotoUrl),
                                   getDownloadPostButton(documentUrl: widget.documentUrl),
                                 ],
                               ),

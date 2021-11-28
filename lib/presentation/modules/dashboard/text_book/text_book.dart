@@ -21,7 +21,7 @@ class TextBook extends StatelessWidget {
 
   Widget _getTextBookVariantDetailsTile({
     required int nVariant, required DateTime uploadedOn, required String uploadedBy,
-    required Function() onTap, required AppThemeType appThemeType,
+    required Function() onTap, required AppThemeType appThemeType, required String? profilePhotoUrl,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -44,10 +44,7 @@ class TextBook extends StatelessWidget {
 
             Row(
               children: [
-                CircleAvatar(
-                  child: FlutterLogo(),
-                  radius: 15,
-                ),
+                Utils.getProfilePhotoWidget(url: profilePhotoUrl, username: uploadedBy, radius: 15, fontSize: 16),
                 SizedBox(width: 10,),
                 Text(uploadedBy, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               ],
@@ -75,6 +72,7 @@ class TextBook extends StatelessWidget {
         return _getTextBookVariantDetailsTile(
             appThemeType: appThemeType,
             nVariant: currentVersion,
+            profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
             uploadedOn: currentTextBookModel.uploadedOn,
             uploadedBy: currentTextBookModel.uploadedBy,
             onTap: isWidgetLoading ? () {} : () {
@@ -97,6 +95,7 @@ class TextBook extends StatelessWidget {
                   documentUrl: currentTextBookModel.documentUrl,
                   screenLabel: "Text Book",
                   parameter: PDFScreenSimpleBottomSheet(
+                      profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
                       nVariant: currentTextBookModel.version,
                       uploadedBy: currentTextBookModel.uploadedBy,
                       title: subject

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -30,6 +31,35 @@ class Utils {
     } else {
       return Container();
     }
+  }
+
+  static Widget getProfilePhotoWidget({
+    required String? url, required String username,
+    double radius = 20, double fontSize = 16,
+  }) {
+
+    if (url == null) {
+      return CircleAvatar(
+        radius: radius,
+        child: Text(Utils.getUserNameForProfilePhoto(username), style: TextStyle(fontSize: fontSize),),
+      );
+    }
+
+    return CachedNetworkImage(
+      imageUrl: url,
+      progressIndicatorBuilder: (context, url, progress) {
+        return CircleAvatar(
+          radius: radius,
+          child: Center(child: CircularProgressIndicator.adaptive(),),
+        );
+      },
+      imageBuilder: (context, imageProvider) {
+        return CircleAvatar(
+          radius: radius,
+          backgroundImage: imageProvider,
+        );
+      },
+    );
   }
 
   static Widget getCustomDropDown<DropdownItemType>({

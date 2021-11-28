@@ -126,6 +126,7 @@ class QuestionPaper extends StatelessWidget {
                           documentUrl: currentQuestionPaper.documentUrl,
                           screenLabel: "Question Paper",
                           parameter: PDFScreenSimpleBottomSheet(
+                            profilePhotoUrl: currentQuestionPaper.userProfilePhotoUrl,
                             title: questionPaperYears[questionPaperYearIndex].year.toString(),
                             nVariant: currentQuestionPaper.version,
                             uploadedBy: currentQuestionPaper.uploadedBy,

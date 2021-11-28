@@ -19,6 +19,7 @@ class Notes extends StatelessWidget {
   Widget _getNotesDetailsTile({
     required String title,
     required String description,
+    required String? profilePhotoUrl,
     required double rating,
     required onTileTap,
     required BuildContext context,
@@ -91,12 +92,9 @@ class Notes extends StatelessWidget {
                         SizedBox(height: 10,),
                         Row(
                           children: [
-                            CircleAvatar(
-                              child: FlutterLogo(),
-                              radius: 20,
-                            ),
+                            Utils.getProfilePhotoWidget(url: profilePhotoUrl, username: uploadedBy!),
                             SizedBox(width: 10,),
-                            Text(uploadedBy!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                            Text(uploadedBy, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                           ],
                         ),
                         SizedBox(height: 10,),
@@ -153,6 +151,7 @@ class Notes extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           itemCount: notes.length,
           itemBuilder: (context, index) => _getNotesDetailsTile(
+            profilePhotoUrl: notes[index].userProfilePhotoUrl,
             isDeleteButtonLoading: isDeleteButtonLoading,
             isYourPostTile: (userState as UserLoaded).userModel.uid == notes[index].userUid,
             yourPostTileOnDelete: () {
@@ -185,6 +184,7 @@ class Notes extends StatelessWidget {
                   documentUrl: notes[index].documentUrl,
                   screenLabel: "Notes",
                   parameter: PDFScreenNotesBottomSheet(
+                    profilePhotoUrl: notes[index].userProfilePhotoUrl,
                     rating: notes[index].rating,
                     uploadedBy: notes[index].uploadedBy,
                     description: notes[index].description,
