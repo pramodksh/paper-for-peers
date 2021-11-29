@@ -64,6 +64,10 @@ class Styles {
         ),
       ),
 
+      iconTheme: IconThemeData(
+        color: appThemeType.isDarkTheme() ? Colors.white : Colors.black,
+      ),
+
       appBarTheme: AppBarTheme(
         elevation: 0.0,
         iconTheme: IconThemeData(

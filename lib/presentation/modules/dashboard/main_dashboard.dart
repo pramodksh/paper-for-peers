@@ -10,6 +10,7 @@ import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
+import 'package:papers_for_peers/presentation/modules/dashboard/contact_us.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/profile/profile.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/question_paper/question_paper.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/loading_screen.dart';
@@ -171,7 +172,11 @@ class _MainDashboardState extends State<MainDashboard> {
                       borderRadius: BorderRadius.circular(20),
                     )
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ContactUs(),
+                  ));
+                },
                 child: Text("Contact Us", style: TextStyle(fontSize: 18),),
               ),
             ),
