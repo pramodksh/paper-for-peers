@@ -39,7 +39,7 @@ class MainDashboardWrapper extends StatelessWidget {
             return FutureBuilder(
               future: _firestoreRepository.getUserByUserId(userId: userModel.uid),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
                   return LoadingScreen(loadingText: "GETTING USER BY ID",);
                 } else {
                   UserModel userFromDatabase = snapshot.data as UserModel;

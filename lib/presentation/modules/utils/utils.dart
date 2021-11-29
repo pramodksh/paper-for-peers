@@ -47,6 +47,12 @@ class Utils {
 
     return CachedNetworkImage(
       imageUrl: url,
+      errorWidget: (context, url, error) {
+        return CircleAvatar(
+          radius: radius,
+          child: Center(child: Icon(Icons.error),),
+        );
+      },
       progressIndicatorBuilder: (context, url, progress) {
         return CircleAvatar(
           radius: radius,

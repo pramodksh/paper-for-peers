@@ -50,7 +50,7 @@ class NotesModel {
       noteId: notesId,
       documentUrl: map[documentUrlFieldKey] as String,
       title: map['title'] as String,
-      description: map['description'] as String,
+      description: (map['description'] as String).trim(),
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),
       uploadedBy: map['uploaded_by'] as String,
       rating: avgRating,
