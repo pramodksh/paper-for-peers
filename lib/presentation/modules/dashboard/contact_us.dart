@@ -7,6 +7,15 @@ import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+extension HexColor on Color {
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
 class ContactUs extends StatefulWidget {
 
   @override
@@ -33,7 +42,7 @@ class _ContactUsState extends State<ContactUs> {
     print("EXTERNAL WALLET: ${response}");
   }
 
-  void initiatePayment({required double amount, required BuildContext context}) {
+  void initiatePayment({required double amount, required BuildContext context, required bool isDarkTheme}) {
 
     try {
       var options = {
@@ -44,6 +53,9 @@ class _ContactUsState extends State<ContactUs> {
         'prefill': {
           'contact': '8888888888',
           'email': 'test@razorpay.com'
+        },
+        "theme": {
+          "color": isDarkTheme ? CustomColors.ratingBackgroundColor.toHex() : CustomColors.lightModeRatingBackgroundColor.toHex(),
         }
       };
       _razorPay.open(options);
@@ -134,6 +146,7 @@ class _ContactUsState extends State<ContactUs> {
                       initiatePayment(
                         amount: double.parse(_amountController.text),
                         context: context,
+                        isDarkTheme: appThemeType.isDarkTheme(),
                       );
                     }
                   },
