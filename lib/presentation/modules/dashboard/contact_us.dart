@@ -33,18 +33,25 @@ class _ContactUsState extends State<ContactUs> {
     print("EXTERNAL WALLET: ${response}");
   }
 
-  void initiatePayment({required double amount}) {
-    var options = {
-      'key': 'rzp_test_vP4RWtNGDpbee4', // todo store in remote config
-      'amount': amount * 100, // convert paise to rupees
-      'name': 'Acme Corp.',
-      'description': 'Fine T-Shirt',
-      'prefill': {
-        'contact': '8888888888',
-        'email': 'test@razorpay.com'
-      }
-    };
-    _razorPay.open(options);
+  void initiatePayment({required double amount, required BuildContext context}) {
+
+    try {
+      var options = {
+        'key': 'rzp_test_vP4RWtNGDpbee4', // todo store in remote config
+        'amount': amount * 100, // convert paise to rupees
+        'name': 'Acme Corp.',
+        'description': 'Fine T-Shirt',
+        'prefill': {
+          'contact': '8888888888',
+          'email': 'test@razorpay.com'
+        }
+      };
+      _razorPay.open(options);
+    } on Exception catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("There was an error while initiating payment."),
+      ));
+    }
   }
 
   @override
@@ -124,7 +131,10 @@ class _ContactUsState extends State<ContactUs> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       print("AMOUNT: ${_amountController.text}");
-                      initiatePayment(amount: double.parse(_amountController.text));
+                      initiatePayment(
+                        amount: double.parse(_amountController.text),
+                        context: context,
+                      );
                     }
                   },
                   child: Text("DONATE", style: TextStyle(fontSize: 18),),
