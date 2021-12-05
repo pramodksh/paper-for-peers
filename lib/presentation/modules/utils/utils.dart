@@ -27,7 +27,7 @@ class Utils {
     UserState state = context.select((UserCubit cubit) => cubit.state);
 
     if (state is UserLoaded) {
-      return Text("${state.userModel.course!.courseName} ${state.userModel.semester!.nSemester}", style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),);
+      return Text("${state.userModel.course!.courseName!.toUpperCase()} ${state.userModel.semester!.nSemester}", style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),);
     } else {
       return Container();
     }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,33 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewe
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
+
+extension ToSubjectExtension on String {
+
+  String toTitleCase() {
+
+    if (this.length <= 1) {
+      return this.toUpperCase();
+    }
+    final List<String> words = this.split(' ');
+
+    final capitalizedWords = words.map((word) {
+      if (word.trim().isNotEmpty) {
+        final String firstLetter = word.trim().substring(0, 1).toUpperCase();
+        final String remainingLetters = word.trim().substring(1);
+
+        return '$firstLetter$remainingLetters';
+      }
+      return '';
+    });
+
+    return capitalizedWords.join(' ');
+  }
+
+  Text toSubjectText() {
+    return Text(this.replaceAll("_", " ").toTitleCase(), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500));
+  }
+}
 
 
 class TextBook extends StatelessWidget {
@@ -46,7 +74,13 @@ class TextBook extends StatelessWidget {
               children: [
                 Utils.getProfilePhotoWidget(url: profilePhotoUrl, username: uploadedBy, radius: 15, fontSize: 16),
                 SizedBox(width: 10,),
-                Text(uploadedBy, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                Expanded(
+                  child: AutoSizeText(
+                    uploadedBy,
+                    style: TextStyle(fontSize: 14),
+                    maxLines: 2,
+                  ),
+                ),
               ],
             ),
           ],
@@ -129,7 +163,7 @@ class TextBook extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(subject, style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),),
+          subject.toSubjectText(),
           SizedBox(height: 20,),
           GridView.count(
             crossAxisSpacing: 10,

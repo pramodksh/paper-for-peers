@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/colors.dart';
+import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,6 @@ class ContactUs extends StatefulWidget {
 class _ContactUsState extends State<ContactUs> {
   final Razorpay _razorPay = Razorpay();
 
-
-
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     // Do something when payment succeeds
     print("PAYMENT SUCCESS: ${response}");
@@ -48,8 +47,8 @@ class _ContactUsState extends State<ContactUs> {
       var options = {
         'key': 'rzp_test_vP4RWtNGDpbee4', // todo store in remote config
         'amount': amount * 100, // convert paise to rupees
-        'name': 'Acme Corp.',
-        'description': 'Fine T-Shirt',
+        'name': "Paper For Peers",
+        'description': "DESC",
         'prefill': {
           'contact': '8888888888',
           'email': 'test@razorpay.com'
@@ -105,61 +104,6 @@ class _ContactUsState extends State<ContactUs> {
       );
     }
 
-    Widget _buildAmountDialog({required bool isDarkTheme}) {
-      TextEditingController _amountController = TextEditingController();
-      final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Utils.getCustomTextField(
-                  hintText: "Enter amount",
-                  controller: _amountController,
-                  validator: (val) {
-                    try {
-                      double.parse(val!);
-                      return null;
-                    } on Exception catch (e) {
-                      return "Please Enter only numbers";
-                    }
-                  }
-                ),
-                SizedBox(height: 20,),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      )
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      print("AMOUNT: ${_amountController.text}");
-                      initiatePayment(
-                        amount: double.parse(_amountController.text),
-                        context: context,
-                        isDarkTheme: appThemeType.isDarkTheme(),
-                      );
-                    }
-                  },
-                  child: Text("DONATE", style: TextStyle(fontSize: 18),),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-
     return Scaffold(
       appBar: AppBar(title: Text("Contact Us",),),
       body: Container(
@@ -172,20 +116,6 @@ class _ContactUsState extends State<ContactUs> {
             getEmailRow(email: akashEmail),
             SizedBox(height: 20,),
             getEmailRow(email: pramodEmail),
-            SizedBox(height: 20,),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  )
-              ),
-              onPressed: () async {
-                showDialog(context: context, builder: (context) {
-                  return _buildAmountDialog(isDarkTheme: appThemeType.isDarkTheme());
-                },);
-              },
-              child: Text("DONATE", style: TextStyle(fontSize: 18),),
-            ),
           ],
         ),
       ),

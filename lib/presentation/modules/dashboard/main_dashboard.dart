@@ -19,6 +19,7 @@ import 'package:papers_for_peers/presentation/modules/dashboard/text_book/text_b
 import 'package:papers_for_peers/presentation/modules/login/intro_screen.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import 'journal/journal.dart';
 import 'notes/notes.dart';
@@ -40,7 +41,7 @@ class _MainDashboardState extends State<MainDashboard> {
   bool _isLoading = false;
   String _loadingText = "";
 
-  int selectedItemPosition = 1;
+  int selectedItemPosition = 4;
   final double bottomNavBarRadius = 20;
   final double bottomNavBarHeight = 90;
 
@@ -89,6 +90,107 @@ class _MainDashboardState extends State<MainDashboard> {
         ),
         SizedBox(width: 5,),
       ],
+    );
+  }
+
+  final Razorpay _razorPay = Razorpay();
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    // Do something when payment succeeds
+    print("PAYMENT SUCCESS: ${response}");
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Do something when payment fails
+    print("PAYMENT FAILED: ${response}");
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // Do something when an external wallet was selected
+    print("EXTERNAL WALLET: ${response}");
+  }
+
+  void initiatePayment({required double amount, required BuildContext context, required bool isDarkTheme}) {
+
+    try {
+      var options = {
+        'key': 'rzp_test_vP4RWtNGDpbee4', // todo store in remote config
+        'amount': amount * 100, // convert paise to rupees
+        'name': "Paper For Peers",
+        'description': "DESC",
+        'prefill': {
+          'contact': '8888888888',
+          'email': 'test@razorpay.com'
+        },
+        "theme": {
+          "color": isDarkTheme ? CustomColors.ratingBackgroundColor.toHex() : CustomColors.lightModeRatingBackgroundColor.toHex(),
+        }
+      };
+      _razorPay.open(options);
+    } on Exception catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("There was an error while initiating payment."),
+      ));
+    }
+  }
+
+  Widget _buildAmountDialog({required bool isDarkTheme}) {
+    TextEditingController _amountController = TextEditingController();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: isDarkTheme ? CustomColors.reportDialogBackgroundColor : CustomColors.lightModeBottomNavBarColor,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Thank you for supporting us :)",
+                style: TextStyle(fontSize: 18, color: Color(0xff373F41),),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20,),
+              Utils.getCustomTextField(
+                  hintText: "Enter amount",
+                  controller: _amountController,
+                  validator: (val) {
+                    try {
+                      double.parse(val!);
+                      return null;
+                    } on Exception catch (e) {
+                      return "Please Enter valid number";
+                    }
+                  }
+              ),
+              SizedBox(height: 20,),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    print("AMOUNT: ${_amountController.text}");
+                    initiatePayment(
+                      amount: double.parse(_amountController.text),
+                      context: context,
+                      isDarkTheme: isDarkTheme,
+                    );
+                  }
+                },
+                child: Text("DONATE", style: TextStyle(fontSize: 18),),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -164,6 +266,23 @@ class _MainDashboardState extends State<MainDashboard> {
             ),
             Divider(height: 40,),
             Spacer(),
+            SizedBox(
+              width: 200,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
+                ),
+                onPressed: () async {
+                  showDialog(context: context, builder: (context) {
+                    return _buildAmountDialog(isDarkTheme: isDarkTheme);
+                  },);
+                },
+                child: Text("Donate", style: TextStyle(fontSize: 18),),
+              ),
+            ),
+            // SizedBox(height: 10,),
             SizedBox(
               width: 200,
               child: ElevatedButton(
@@ -282,6 +401,10 @@ class _MainDashboardState extends State<MainDashboard> {
   @override
   void initState() {
 
+    _razorPay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorPay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorPay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       print("CHECK HERE: ${widget.isDisplayWelcomeScreen}");
       if (widget.isDisplayWelcomeScreen) {
@@ -293,6 +416,12 @@ class _MainDashboardState extends State<MainDashboard> {
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _razorPay.clear();
+    super.dispose();
   }
 
   @override

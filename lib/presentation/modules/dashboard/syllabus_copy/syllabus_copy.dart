@@ -39,61 +39,67 @@ class SyllabusCopy extends StatelessWidget {
               int currentVersion = index + 1;
               bool isShow = syllabusCopies.any((element) => element.version == currentVersion);
 
-              if (isShow) {
-                SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies.firstWhere((element) => element.version == currentVersion);
-                return GestureDetector(
-                  onTap: isWidgetLoading ? () {} : () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
-                        onReportPressed: (values) {
-                          if (userState is UserLoaded) {
-                            context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
-                              reportValues: values,
-                              syllabusCopies: syllabusCopies,
-                              version: currentVersion,
-                              user: userState.userModel,
-                            ));
-                          }
+              return Container(
+                margin: EdgeInsets.only(bottom: 20),
+                child: Builder(
+                  builder: (context) {
+                    if (isShow) {
+                      SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies.firstWhere((element) => element.version == currentVersion);
+                      return GestureDetector(
+                        onTap: isWidgetLoading ? () {} : () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
+                              onReportPressed: (values) {
+                                if (userState is UserLoaded) {
+                                  context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
+                                    reportValues: values,
+                                    syllabusCopies: syllabusCopies,
+                                    version: currentVersion,
+                                    user: userState.userModel,
+                                  ));
+                                }
+                              },
+                              documentUrl: currentSyllabusCopyModel.documentUrl,
+                              screenLabel: "Syllabus Copy",
+                              isShowBottomSheet: false,
+                              parameter: PDFScreenSyllabusCopy(
+                                profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
+                                uploadedBy: currentSyllabusCopyModel.uploadedBy,
+                                nVariant: currentSyllabusCopyModel.version,
+                              ),
+                            ),
+                          ));
                         },
-                        documentUrl: currentSyllabusCopyModel.documentUrl,
-                        screenLabel: "Syllabus Copy",
-                        isShowBottomSheet: false,
-                        parameter: PDFScreenSyllabusCopy(
-                          profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
-                          uploadedBy: currentSyllabusCopyModel.uploadedBy,
-                          nVariant: currentSyllabusCopyModel.version,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                          decoration: BoxDecoration(
+                            color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Text("Variant: ${currentSyllabusCopyModel.version}", style: TextStyle(fontSize: 20),),
                         ),
-                      ),
-                    ));
+                      );
+                    } else {
+                      return SizedBox(
+                        height: 100,
+                        child: Utils.getAddPostContainer(
+                          isDarkTheme: isDarkTheme,
+                          label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
+                          onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
+                            if (userState is UserLoaded) {
+                              context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
+                                syllabusCopies: syllabusCopies,
+                                version: currentVersion,
+                                user: userState.userModel,
+                              ));
+                            }
+                          },
+                        ),
+                      );
+                    }
                   },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                    decoration: BoxDecoration(
-                      color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Text("Variant: ${currentSyllabusCopyModel.version}", style: TextStyle(fontSize: 20),),
-                  ),
-                );
-              } else {
-                return SizedBox(
-                  height: 100,
-                  child: Utils.getAddPostContainer(
-                    isDarkTheme: isDarkTheme,
-                    label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
-                    onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
-                      if (userState is UserLoaded) {
-                        context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
-                          syllabusCopies: syllabusCopies,
-                          version: currentVersion,
-                          user: userState.userModel,
-                        ));
-                      }
-                    },
-                  ),
-                );
-              }
+                ),
+              );
             },
           ),
         ],

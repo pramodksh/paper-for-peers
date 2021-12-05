@@ -28,19 +28,19 @@ class MainDashboardWrapper extends StatelessWidget {
       future:  _firestoreRepository.isUserExists(userId: userModel.uid),
       builder: (context, isUserExistSnapshot) {
         if (isUserExistSnapshot.connectionState == ConnectionState.waiting) {
-          return LoadingScreen(loadingText: "MAIN DASHBOARD: IS USER EXISTS",);
+          return LoadingScreen(loadingText: "Loading .",);
         } else {
           bool isUserExists = isUserExistSnapshot.data as bool;
 
           if (!isUserExists) {
             _authRepository.reloadCurrentUser();
-            return LoadingScreen(loadingText: "MAIN DASHBOARD RELOADING USER",);
+            return LoadingScreen(loadingText: "Loading ..",);
           } else {
             return FutureBuilder(
               future: _firestoreRepository.getUserByUserId(userId: userModel.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
-                  return LoadingScreen(loadingText: "GETTING USER BY ID",);
+                  return LoadingScreen(loadingText: "Loading ...",);
                 } else {
                   UserModel userFromDatabase = snapshot.data as UserModel;
                   if (userFromDatabase.course == null || userFromDatabase.semester == null) {
@@ -51,7 +51,7 @@ class MainDashboardWrapper extends StatelessWidget {
                       builder: (context, snapshot) {
 
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return LoadingScreen(loadingText: "LOADING SHARED PREFS",);
+                          return LoadingScreen(loadingText: "Loading ....",);
                         } else {
                           bool isShowIntroScreen = snapshot.data as bool;
                           context.read<UserCubit>().setUser(userFromDatabase);
