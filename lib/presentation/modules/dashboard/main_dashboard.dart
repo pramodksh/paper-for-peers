@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -354,14 +355,13 @@ class _MainDashboardState extends State<MainDashboard> {
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(
-                AppConstants.bottomNavBarIcons.length, (index) => SizedBox(
+            children: List.generate(AppConstants.bottomNavBarIcons.length, (index) => SizedBox(
               width: MediaQuery.of(context).size.width / AppConstants.bottomNavBarIcons.length,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Transform.scale(
-                    scale: 1.5,
+                    scale: 1.2,
                     child: IconButton(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
@@ -372,7 +372,7 @@ class _MainDashboardState extends State<MainDashboard> {
                           selectedItemPosition = index;
                         });
                       },
-                      icon: ImageIcon(
+                      icon: SvgPicture.asset(
                         AppConstants.bottomNavBarIcons[index]["icon"],
                         color: selectedItemPosition == index
                             ? selectedIconColor
@@ -380,6 +380,7 @@ class _MainDashboardState extends State<MainDashboard> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 5,),
                   selectedItemPosition == index ? Text(
                     AppConstants.bottomNavBarIcons[index]["label"],
                     textAlign: TextAlign.center,

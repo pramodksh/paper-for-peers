@@ -22,12 +22,11 @@ class AppConstants {
   ];
 
   static const List<Map> bottomNavBarIcons = [
-    {"icon": AssetImage(DefaultAssets.questionPaperNavIcon,), "label": "Question Paper"},
-    {"icon": AssetImage(DefaultAssets.notesNavIcon,), "label": "Notes"},
-    {"icon": AssetImage(DefaultAssets.journalNavIcon,), "label": "Journal"},
-    {"icon": AssetImage(DefaultAssets.syllabusCopyNavIcon,), "label": "Syllabus Copy"},
-    // todo change icon of text book
-    {"icon": AssetImage(DefaultAssets.syllabusCopyNavIcon,), "label": "Text Book"},
+    {"icon": DefaultAssets.questionPaperNavIcon, "label": "Question Paper"},
+    {"icon": DefaultAssets.notesNavIcon, "label": "Notes"},
+    {"icon": DefaultAssets.journalNavIcon, "label": "Journal"},
+    {"icon": DefaultAssets.syllabusCopyNavIcon, "label": "Syllabus Copy"},
+    {"icon": DefaultAssets.textBookNavIcon, "label": "Text Book"},
   ];
 
   static final int maxQuestionPapers = 3;
