@@ -44,16 +44,17 @@ class JournalRepository {
     required String course, required int semester,
     required String subject, required UserModel user,
     required int version, required File document,
+    required int maxJournals,
   }) async {
     try {
-      firestore.CollectionReference journalCollectionReference = await coursesCollection.doc(course)
+      firestore.CollectionReference journalCollectionReference = coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.journalCollectionLabel);
 
       firestore.QuerySnapshot journalSnapshot = await journalCollectionReference.get();
 
-      if (journalSnapshot.docs.length >= AppConstants.maxJournals) {
+      if (journalSnapshot.docs.length >= maxJournals) {
         return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
       }
 

@@ -19,6 +19,7 @@ class SyllabusCopy extends StatelessWidget {
     required bool isDarkTheme,
     required UserState userState,
     required SyllabusCopyState syllabusCopyState,
+    required int maxSyllabusCopy,
     bool isWidgetLoading = false,
   }) {
     return Padding(
@@ -34,7 +35,7 @@ class SyllabusCopy extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: AppConstants.maxSyllabusCopy,
+            itemCount: maxSyllabusCopy,
             itemBuilder: (context, index) {
               int currentVersion = index + 1;
               bool isShow = syllabusCopies.any((element) => element.version == currentVersion);
@@ -151,6 +152,7 @@ class SyllabusCopy extends StatelessWidget {
                   return SkeletonLoader(
                     appThemeType: appThemeState.appThemeType,
                     child: _getSyllabusCopyListWidget(
+                      maxSyllabusCopy: syllabusCopyState.maxSyllabusCopy,
                       isWidgetLoading: true,
                       syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
                         version: index,
@@ -169,6 +171,7 @@ class SyllabusCopy extends StatelessWidget {
                 } else if (syllabusCopyState is SyllabusCopyAddLoading) {
                   List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
                   return _getSyllabusCopyListWidget(
+                    maxSyllabusCopy: syllabusCopyState.maxSyllabusCopy,
                     syllabusCopies: syllabusCopies,
                     isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
                     userState: userState,
@@ -177,6 +180,7 @@ class SyllabusCopy extends StatelessWidget {
                 } else if (syllabusCopyState is SyllabusCopyFetchSuccess) {
                   List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
                   return _getSyllabusCopyListWidget(
+                    maxSyllabusCopy: syllabusCopyState.maxSyllabusCopy,
                     syllabusCopies: syllabusCopies,
                     isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
                     userState: userState,
@@ -185,6 +189,7 @@ class SyllabusCopy extends StatelessWidget {
                 } else if (syllabusCopyState is SyllabusCopyAddError) {
                   List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
                   return _getSyllabusCopyListWidget(
+                    maxSyllabusCopy: syllabusCopyState.maxSyllabusCopy,
                     syllabusCopies: syllabusCopies,
                     isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
                     userState: userState,
@@ -193,6 +198,7 @@ class SyllabusCopy extends StatelessWidget {
                 } else if (syllabusCopyState is SyllabusCopyAddSuccess) {
                   List<SyllabusCopyModel> syllabusCopies = syllabusCopyState.syllabusCopies;
                   return _getSyllabusCopyListWidget(
+                    maxSyllabusCopy: syllabusCopyState.maxSyllabusCopy,
                     syllabusCopies: syllabusCopies,
                     isDarkTheme: appThemeState.appThemeType.isDarkTheme(),
                     userState: userState,

@@ -1,18 +1,19 @@
 part of 'journal_bloc.dart';
 
 abstract class JournalState extends Equatable {
-  const JournalState();
+  final int maxJournals;
+  const JournalState({required this.maxJournals});
 }
 
 class JournalInitial extends JournalState {
-  JournalInitial() : super();
+  JournalInitial({required int maxJournals}) : super(maxJournals: maxJournals);
 
   @override
   List<Object> get props => [];
 }
 
 class JournalFetchLoading extends JournalState {
-  JournalFetchLoading() : super();
+  JournalFetchLoading({required int maxJournals}) : super(maxJournals: maxJournals);
 
   @override
   List<Object?> get props => [];
@@ -24,7 +25,8 @@ class JournalFetchSuccess extends JournalState {
   
   JournalFetchSuccess({
     required this.journalSubjects,
-  }) : super();
+    required int maxJournals
+  }) : super(maxJournals: maxJournals);
 
   @override
   List<Object?> get props => [journalSubjects];
@@ -36,7 +38,8 @@ class JournalFetchError extends JournalState {
   
   JournalFetchError({
     required this.errorMessage,
-  }) : super();
+    required int maxJournals
+  }) : super(maxJournals: maxJournals);
   
   @override
   List<Object?> get props => [errorMessage];
@@ -52,7 +55,8 @@ class JournalAddLoading extends JournalState {
 
   const JournalAddLoading({
     required this.journalSubjects,
-  }) : super();
+    required int maxJournals
+  }) : super(maxJournals: maxJournals);
 }
 
 class JournalAddSuccess extends JournalState {
@@ -63,7 +67,8 @@ class JournalAddSuccess extends JournalState {
 
   const JournalAddSuccess({
     required this.journalSubjects,
-  }) : super();
+    required int maxJournals
+  }) : super(maxJournals: maxJournals);
 }
 
 class JournalAddError extends JournalState {
@@ -77,10 +82,13 @@ class JournalAddError extends JournalState {
   const JournalAddError({
     required this.errorMessage,
     required this.journalSubjects,
-  }) : super();
+    required int maxJournals
+  }) : super(maxJournals: maxJournals);
 }
 
 class JournalReportSuccess extends JournalState {
+  JournalReportSuccess({required int maxJournals}) : super(maxJournals: maxJournals);
+
 
   @override
   List<Object?> get props => [];
@@ -94,5 +102,6 @@ class JournalReportError extends JournalState {
 
   const JournalReportError({
     required this.errorMessage,
-  });
+    required int maxJournals
+  }) : super(maxJournals: maxJournals);
 }

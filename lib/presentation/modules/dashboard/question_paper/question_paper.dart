@@ -62,6 +62,7 @@ class QuestionPaper extends StatelessWidget {
     required UserState userState,
     required BuildContext context,
     required AppThemeType appThemeType,
+    required int maxQuestionPapers,
     bool isWidgetLoading = false,
   }) {
     return ListView(
@@ -93,7 +94,7 @@ class QuestionPaper extends StatelessWidget {
           itemBuilder: (context, questionPaperYearIndex) {
             return _getQuestionYearTile(
               year: questionPaperYears[questionPaperYearIndex].year.toString(),
-              children: List.generate(AppConstants.maxQuestionPapers, (index) {
+              children: List.generate(maxQuestionPapers, (index) {
                 int currentVersion = index + 1;
                 bool isShow = questionPaperYears[questionPaperYearIndex].questionPaperModels.any((element) => element.version == currentVersion);
 
@@ -259,6 +260,7 @@ class QuestionPaper extends StatelessWidget {
                     return SkeletonLoader(
                       appThemeType: appThemeType,
                       child: _getQuestionPaperListWidget(
+                        maxQuestionPapers: questionPaperState.maxQuestionPapers,
                         isWidgetLoading: true,
                         questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
                             year: DateTime.now().year - index,
@@ -281,6 +283,7 @@ class QuestionPaper extends StatelessWidget {
                     );
                   } else if (questionPaperState is QuestionPaperFetchSuccess) {
                     return _getQuestionPaperListWidget(
+                      maxQuestionPapers: questionPaperState.maxQuestionPapers,
                       questionPaperYears: questionPaperState.questionPaperYears,
                       isDarkTheme: appThemeType.isDarkTheme(),
                       questionPaperState: questionPaperState,
@@ -290,6 +293,7 @@ class QuestionPaper extends StatelessWidget {
                     );
                   } else if (questionPaperState is QuestionPaperAddLoading) {
                     return _getQuestionPaperListWidget(
+                      maxQuestionPapers: questionPaperState.maxQuestionPapers,
                       appThemeType: appThemeType,
                       questionPaperYears:  questionPaperState.questionPaperYears,
                       isDarkTheme: appThemeType.isDarkTheme(),
@@ -299,6 +303,7 @@ class QuestionPaper extends StatelessWidget {
                     );
                   } else if (questionPaperState is QuestionPaperAddError) {
                     return _getQuestionPaperListWidget(
+                      maxQuestionPapers: questionPaperState.maxQuestionPapers,
                       appThemeType: appThemeType,
                       questionPaperYears:  questionPaperState.questionPaperYears,
                       isDarkTheme: appThemeType.isDarkTheme(),
@@ -308,6 +313,7 @@ class QuestionPaper extends StatelessWidget {
                     );
                   } else if (questionPaperState is QuestionPaperAddSuccess) {
                     return _getQuestionPaperListWidget(
+                      maxQuestionPapers: questionPaperState.maxQuestionPapers,
                       appThemeType: appThemeType,
                       questionPaperYears:  questionPaperState.questionPaperYears,
                       isDarkTheme: appThemeType.isDarkTheme(),

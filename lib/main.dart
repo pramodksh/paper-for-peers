@@ -9,6 +9,7 @@ import 'package:papers_for_peers/data/repositories/document_repositories/questio
 import 'package:papers_for_peers/data/repositories/document_repositories/syllabus_copy_repository/syllabus_copy_repository.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/text_book_repository/text_book_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
+import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
@@ -48,6 +49,9 @@ class _MyAppState extends State<MyApp> {
         ),
         RepositoryProvider<FirestoreRepository>(
           create: (context) => FirestoreRepository(),
+        ),
+        RepositoryProvider<FirebaseRemoteConfigRepository>(
+          create: (context) => FirebaseRemoteConfigRepository(),
         ),
         RepositoryProvider<FirebaseStorageRepository>(
           create: (context) => FirebaseStorageRepository(),
@@ -89,6 +93,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<QuestionPaperBloc>(
             create: (context) =>
                 QuestionPaperBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   questionPaperRepository: context.read<QuestionPaperRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
@@ -96,6 +101,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<JournalBloc>(
             create: (context) =>
                 JournalBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   journalRepository: context.read<JournalRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
@@ -110,6 +116,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<SyllabusCopyBloc>(
             create: (context) =>
                 SyllabusCopyBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   syllabusCopyRepository: context.read<SyllabusCopyRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),

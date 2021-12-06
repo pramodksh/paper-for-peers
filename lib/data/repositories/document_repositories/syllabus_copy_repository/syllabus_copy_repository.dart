@@ -44,6 +44,7 @@ class SyllabusCopyRepository {
     required String course, required int semester,
     required UserModel user,
     required int version, required File document,
+    required int maxSyllabusCopy
   }) async {
     try {
       firestore.CollectionReference syllabusCopyCollection = coursesCollection.doc(course)
@@ -52,7 +53,7 @@ class SyllabusCopyRepository {
 
       firestore.QuerySnapshot syllabusCopySnapshot = await syllabusCopyCollection.get();
 
-      if (syllabusCopySnapshot.docs.length >= AppConstants.maxSyllabusCopy) {
+      if (syllabusCopySnapshot.docs.length >= maxSyllabusCopy) {
         return ApiResponse.error(errorMessage: "The course $course $semester has the maximum syllabus copies. Please refresh to view them");
       }
 

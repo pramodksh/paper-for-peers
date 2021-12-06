@@ -7,6 +7,7 @@ import 'package:papers_for_peers/data/models/document_models/question_paper_mode
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
+import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 
 part 'question_paper_event.dart';
 part 'question_paper_state.dart';
@@ -15,91 +16,102 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
 
   final QuestionPaperRepository _questionPaperRepository;
   final FilePickerRepository _filePickerRepository;
+  final FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository;
 
   QuestionPaperBloc({
     required QuestionPaperRepository questionPaperRepository,
     required FilePickerRepository filePickerRepository,
+    required FirebaseRemoteConfigRepository firebaseRemoteConfigRepository
   }) : _questionPaperRepository = questionPaperRepository,
       _filePickerRepository = filePickerRepository,
-      super(QuestionPaperInitial()) {
+      _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
+      super(QuestionPaperInitial(maxQuestionPapers: 0)) {
 
-    on<QuestionPaperReset>((event, emit) {
-      emit(QuestionPaperInitial());
-    });
+    _firebaseRemoteConfigRepository.getMaxQuestionPapers().then((maxQuestionPapers) {
+      on<QuestionPaperReset>((event, emit) {
+        emit(QuestionPaperInitial(maxQuestionPapers: maxQuestionPapers));
+      });
 
-    on<QuestionPaperAddReport>((event, emit) async {
-      print("REPORT EVENT: $event");
-      ApiResponse reportResponse = await _questionPaperRepository.reportQuestionPaper(
-          course: event.course, semester: event.semester, subject: event.subject, 
+      on<QuestionPaperAddReport>((event, emit) async {
+        print("REPORT EVENT: $event");
+        ApiResponse reportResponse = await _questionPaperRepository.reportQuestionPaper(
+          course: event.course, semester: event.semester, subject: event.subject,
           year: event.year, nVersion: event.nVersion, reportValues: event.reportValues,
           userId: event.userId,
-      );
+        );
 
-      if (reportResponse.isError) {
-        print("QUESTION PAPER REPORT ERROR");
-        emit(QuestionPaperReportError(
-          errorMessage: reportResponse.errorMessage!,
-          selectedSubject: event.subject,
+        if (reportResponse.isError) {
+          print("QUESTION PAPER REPORT ERROR");
+          emit(QuestionPaperReportError(
+            errorMessage: reportResponse.errorMessage!,
+            selectedSubject: event.subject,
+            questionPaperYears: event.questionPaperYears,
+            maxQuestionPapers: maxQuestionPapers,
+          ));
+        } else {
+          print("QUESTION PAPER REPORT SUCCESS");
+          emit(QuestionPaperReportSuccess(
+            questionPaperYears: event.questionPaperYears,
+            selectedSubject: event.subject,
+            maxQuestionPapers: maxQuestionPapers,
+          ));
+        }
+        emit(QuestionPaperFetchSuccess(
           questionPaperYears: event.questionPaperYears,
+          selectedSubject: event.subject,
+          maxQuestionPapers: maxQuestionPapers,
         ));
-      } else {
-        print("QUESTION PAPER REPORT SUCCESS");
-        emit(QuestionPaperReportSuccess(
-          questionPaperYears: event.questionPaperYears,
-          selectedSubject: event.subject,
-        ));
-      }
-      emit(QuestionPaperFetchSuccess(
-          questionPaperYears: event.questionPaperYears,
-          selectedSubject: event.subject,
-      ));
 
-    });
+      });
 
-    on<QuestionPaperFetch>((event, emit) async {
-      emit(QuestionPaperFetchLoading(selectedSubject: event.subject));
-      ApiResponse response = await _questionPaperRepository.getQuestionPapers(
-        course: event.course,
-        semester: event.semester,
-        subject: event.subject,
-      );
-
-      if (response.isError) {
-        emit(QuestionPaperFetchError(errorMessage: response.errorMessage!, selectedSubject: event.subject));
-      } else {
-        emit(QuestionPaperFetchSuccess(questionPaperYears: response.data as List<QuestionPaperYearModel>, selectedSubject: event.subject));
-      }
-
-    });
-
-
-    on<QuestionPaperAdd>((event, emit) async {
-      File? file = await _filePickerRepository.pickFile();
-      if (file != null) {
-        emit(QuestionPaperAddLoading(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
-        
-        ApiResponse addResponse = await _questionPaperRepository.uploadAndAddQuestionPaper(
-          version: event.nVersion,
+      on<QuestionPaperFetch>((event, emit) async {
+        emit(QuestionPaperFetchLoading(selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
+        ApiResponse response = await _questionPaperRepository.getQuestionPapers(
           course: event.course,
           semester: event.semester,
           subject: event.subject,
-          year: event.year,
-          document: file,
-          user: event.user,
         );
 
-        if (addResponse.isError) {
-          emit(QuestionPaperAddError(errorMessage: addResponse.errorMessage!, questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
+        if (response.isError) {
+          emit(QuestionPaperFetchError(errorMessage: response.errorMessage!, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
         } else {
-          emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject));
-          add(QuestionPaperFetch(
+          emit(QuestionPaperFetchSuccess(questionPaperYears: response.data as List<QuestionPaperYearModel>, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
+        }
+
+      });
+
+
+      on<QuestionPaperAdd>((event, emit) async {
+        File? file = await _filePickerRepository.pickFile();
+        if (file != null) {
+          emit(QuestionPaperAddLoading(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
+
+          ApiResponse addResponse = await _questionPaperRepository.uploadAndAddQuestionPaper(
+            version: event.nVersion,
+            course: event.course,
+            semester: event.semester,
+            subject: event.subject,
+            year: event.year,
+            document: file,
+            user: event.user,
+            maxQuestionPapers: maxQuestionPapers
+          );
+
+          if (addResponse.isError) {
+            emit(QuestionPaperAddError(errorMessage: addResponse.errorMessage!, questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
+          } else {
+            emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
+            add(QuestionPaperFetch(
               course: event.course,
               semester: event.semester,
               subject: event.subject,
-          ));
+            ));
+          }
         }
-      }
+      });
     });
+
+
   }
 
 

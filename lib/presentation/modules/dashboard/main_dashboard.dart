@@ -9,6 +9,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/contact_us.dart';
@@ -111,16 +112,18 @@ class _MainDashboardState extends State<MainDashboard> {
     print("EXTERNAL WALLET: ${response}");
   }
 
-  void initiatePayment({required double amount, required BuildContext context, required bool isDarkTheme}) {
+  Future<void> initiatePayment({required double amount, required BuildContext context, required bool isDarkTheme}) async {
+
+    final String apiKey = await context.read<FirebaseRemoteConfigRepository>().getRazorPayApiKey();
 
     try {
       var options = {
-        'key': 'rzp_test_vP4RWtNGDpbee4', // todo store in remote config
+        'key': apiKey,
         'amount': amount * 100, // convert paise to rupees
         'name': "Paper For Peers",
-        'description': "DESC",
+        // 'description': "DESC",
         'prefill': {
-          'contact': '8888888888',
+          'contact': '8888888888', // todo user name and email
           'email': 'test@razorpay.com'
         },
         "theme": {
@@ -176,10 +179,10 @@ class _MainDashboardState extends State<MainDashboard> {
                       borderRadius: BorderRadius.circular(20),
                     )
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     print("AMOUNT: ${_amountController.text}");
-                    initiatePayment(
+                    await initiatePayment(
                       amount: double.parse(_amountController.text),
                       context: context,
                       isDarkTheme: isDarkTheme,

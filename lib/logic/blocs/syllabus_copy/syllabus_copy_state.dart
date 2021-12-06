@@ -1,18 +1,19 @@
 part of 'syllabus_copy_bloc.dart';
 
 abstract class SyllabusCopyState extends Equatable {
-  const SyllabusCopyState();
+  final int maxSyllabusCopy;
+  const SyllabusCopyState({required this.maxSyllabusCopy});
 }
 
 class SyllabusCopyInitial extends SyllabusCopyState {
-  SyllabusCopyInitial() : super();
+  SyllabusCopyInitial({required int maxSyllabusCopy}) : super(maxSyllabusCopy: maxSyllabusCopy);
 
   @override
   List<Object> get props => [];
 }
 
 class SyllabusCopyFetchLoading extends SyllabusCopyState {
-  SyllabusCopyFetchLoading() : super();
+  SyllabusCopyFetchLoading({required int maxSyllabusCopy}) : super(maxSyllabusCopy: maxSyllabusCopy);
 
   @override
   List<Object?> get props => [];
@@ -24,7 +25,8 @@ class SyllabusCopyFetchSuccess extends SyllabusCopyState {
 
   SyllabusCopyFetchSuccess({
     required this.syllabusCopies,
-  }) : super();
+    required int maxSyllabusCopy
+  }) : super(maxSyllabusCopy: maxSyllabusCopy);
 
   @override
   List<Object?> get props => [syllabusCopies];
@@ -36,7 +38,8 @@ class SyllabusCopyFetchError extends SyllabusCopyState {
 
   SyllabusCopyFetchError({
     required this.errorMessage,
-  }) : super();
+    required int maxSyllabusCopy
+  }) : super(maxSyllabusCopy: maxSyllabusCopy);
 
   @override
   List<Object?> get props => [errorMessage];
@@ -52,7 +55,8 @@ class SyllabusCopyAddLoading extends SyllabusCopyState {
 
   const SyllabusCopyAddLoading({
     required this.syllabusCopies,
-  }) : super();
+    required int maxSyllabusCopy
+  }) : super(maxSyllabusCopy: maxSyllabusCopy);
 }
 
 class SyllabusCopyAddSuccess extends SyllabusCopyState {
@@ -63,7 +67,8 @@ class SyllabusCopyAddSuccess extends SyllabusCopyState {
 
   const SyllabusCopyAddSuccess({
     required this.syllabusCopies,
-  }) : super();
+    required int maxSyllabusCopy
+  }) : super(maxSyllabusCopy: maxSyllabusCopy);
 }
 
 class SyllabusCopyAddError extends SyllabusCopyState {
@@ -77,10 +82,13 @@ class SyllabusCopyAddError extends SyllabusCopyState {
   const SyllabusCopyAddError({
     required this.errorMessage,
     required this.syllabusCopies,
-  }) : super();
+    required int maxSyllabusCopy
+  }) : super(maxSyllabusCopy: maxSyllabusCopy);
 }
 
 class SyllabusCopyReportSuccess extends SyllabusCopyState {
+  SyllabusCopyReportSuccess({required int maxSyllabusCopy}) : super(maxSyllabusCopy: maxSyllabusCopy);
+
   @override
   List<Object?> get props => [];
 }
@@ -93,5 +101,6 @@ class SyllabusCopyReportError extends SyllabusCopyState {
 
   const SyllabusCopyReportError({
     required this.errorMessage,
-  });
+    required int maxSyllabusCopy
+  }) : super(maxSyllabusCopy: maxSyllabusCopy);
 }

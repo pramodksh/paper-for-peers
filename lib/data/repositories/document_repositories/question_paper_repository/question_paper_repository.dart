@@ -44,6 +44,7 @@ class QuestionPaperRepository {
     required String course, required int semester,
     required String subject, required UserModel user,
     required int version, required int year, required File document,
+    required int maxQuestionPapers
   }) async {
     try {
       firestore.CollectionReference versionCollectionReference = coursesCollection.doc(course)
@@ -53,7 +54,7 @@ class QuestionPaperRepository {
           .collection(FirebaseCollectionConfig.versionsCollectionLabel);
       firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
       
-      if (versionSnapshot.docs.length >= AppConstants.maxQuestionPapers) {
+      if (versionSnapshot.docs.length >= maxQuestionPapers) {
         return ApiResponse.error(errorMessage: "The year $year has maximum versions. Please refresh to view them");
       }
       

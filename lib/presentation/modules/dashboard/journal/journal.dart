@@ -7,6 +7,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -93,10 +94,11 @@ class Journal extends StatelessWidget {
     required String subject, required List<JournalModel> journals,
     required AppThemeType appThemeType, required UserState userState,
     required bool isAddJournalLoading, required bool isWidgetLoading,
-    required BuildContext context, required List<JournalSubjectModel> journalSubjects
+    required BuildContext context, required List<JournalSubjectModel> journalSubjects,
+    required int maxJournals,
   }) {
 
-    List<Widget> gridChildren = List.generate(AppConstants.maxJournals, (index) {
+    List<Widget> gridChildren = List.generate(maxJournals, (index) {
       int currentVersion = index + 1;
       bool isShow = journals.any((element) => element.version == currentVersion);
 
@@ -183,6 +185,7 @@ class Journal extends StatelessWidget {
     required AppThemeType appThemeType,
     required bool isAddJournalLoading,
     bool isWidgetLoading = false,
+    required int maxJournals,
   }) {
 
     return ListView.separated(
@@ -192,14 +195,15 @@ class Journal extends StatelessWidget {
       itemCount: journalSubjects.length,
       itemBuilder: (context, journalSubjectIndex) {
         return _getJournalTile(
-            isWidgetLoading: isWidgetLoading,
-            journalSubjects: journalSubjects,
-            context: context,
-            isAddJournalLoading: isAddJournalLoading,
-            journals: journalSubjects[journalSubjectIndex].journalModels,
-            subject: journalSubjects[journalSubjectIndex].subject,
-            appThemeType: appThemeType,
-            userState: userState,
+          maxJournals: maxJournals,
+          isWidgetLoading: isWidgetLoading,
+          journalSubjects: journalSubjects,
+          context: context,
+          isAddJournalLoading: isAddJournalLoading,
+          journals: journalSubjects[journalSubjectIndex].journalModels,
+          subject: journalSubjects[journalSubjectIndex].subject,
+          appThemeType: appThemeType,
+          userState: userState,
         );
       },
     );
@@ -271,6 +275,7 @@ class Journal extends StatelessWidget {
                       return SkeletonLoader(
                         appThemeType: appThemeType,
                         child: _getJournalListWidget(
+                          maxJournals: journalState.maxJournals,
                           isWidgetLoading: true,
                           userState: userState,
                           journalSubjects: List.generate(3, (index) => JournalSubjectModel(
@@ -291,6 +296,7 @@ class Journal extends StatelessWidget {
                       );
                     } else if (journalState is JournalFetchSuccess) {
                       return _getJournalListWidget(
+                        maxJournals: journalState.maxJournals,
                         userState: userState,
                         journalSubjects: journalState.journalSubjects,
                         appThemeType: appThemeType,
@@ -298,6 +304,7 @@ class Journal extends StatelessWidget {
                       );
                     } else if (journalState is JournalAddError) {
                       return _getJournalListWidget(
+                        maxJournals: journalState.maxJournals,
                         userState: userState,
                         journalSubjects: journalState.journalSubjects,
                         appThemeType: appThemeType,
@@ -305,6 +312,7 @@ class Journal extends StatelessWidget {
                       );
                     } else if (journalState is JournalAddSuccess) {
                       return _getJournalListWidget(
+                        maxJournals: journalState.maxJournals,
                         userState: userState,
                         journalSubjects: journalState.journalSubjects,
                         appThemeType: appThemeType,
@@ -312,6 +320,7 @@ class Journal extends StatelessWidget {
                       );
                     } else if (journalState is JournalAddLoading) {
                       return _getJournalListWidget(
+                        maxJournals: journalState.maxJournals,
                         userState: userState,
                         journalSubjects: journalState.journalSubjects,
                         appThemeType: appThemeType,
