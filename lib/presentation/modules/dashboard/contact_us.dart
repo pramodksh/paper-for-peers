@@ -24,85 +24,29 @@ class ContactUs extends StatefulWidget {
 }
 
 class _ContactUsState extends State<ContactUs> {
-  final Razorpay _razorPay = Razorpay();
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    // Do something when payment succeeds
-    print("PAYMENT SUCCESS: ${response}");
-  }
+  final String akashEmail = "akash.punagin@gmail.com";
+  final String pramodEmail = "pramodkumarsh3@gmail.com";
 
-  void _handlePaymentError(PaymentFailureResponse response) {
-    // Do something when payment fails
-    print("PAYMENT FAILED: ${response}");
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    // Do something when an external wallet was selected
-    print("EXTERNAL WALLET: ${response}");
-  }
-
-  void initiatePayment({required double amount, required BuildContext context, required bool isDarkTheme}) {
-
-    try {
-      var options = {
-        'key': 'rzp_test_vP4RWtNGDpbee4', // todo store in remote config
-        'amount': amount * 100, // convert paise to rupees
-        'name': "Paper For Peers",
-        'description': "DESC",
-        'prefill': {
-          'contact': '8888888888',
-          'email': 'test@razorpay.com'
-        },
-        "theme": {
-          "color": isDarkTheme ? CustomColors.ratingBackgroundColor.toHex() : CustomColors.lightModeRatingBackgroundColor.toHex(),
-        }
-      };
-      _razorPay.open(options);
-    } on Exception catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("There was an error while initiating payment."),
-      ));
-    }
-  }
-
-  @override
-  void initState() {
-    _razorPay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorPay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorPay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _razorPay.clear();
-    super.dispose();
+  Widget getEmailRow({required String email}) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.email, size: 30,),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: email));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Email copied"), duration: Duration(milliseconds: 300),));
+          },
+        ),
+        SizedBox(width: 20,),
+        Text(email, style: TextStyle(fontSize: 18),),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
-
-
-    // todo move outside build
-    final String akashEmail = "akash.punagin@gmail.com";
-    final String pramodEmail = "pramodKumar@gmail.com";
-
-    Widget getEmailRow({required String email}) {
-      return Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.email, size: 30,),
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: email));
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Email copied"), duration: Duration(milliseconds: 300),));
-            },
-          ),
-          SizedBox(width: 20,),
-          Text(email, style: TextStyle(fontSize: 18),),
-        ],
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(title: Text("Contact Us",),),
