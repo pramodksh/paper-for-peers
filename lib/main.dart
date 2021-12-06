@@ -105,10 +105,12 @@ class _MyAppState extends State<MyApp> {
                   journalRepository: context.read<JournalRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
+            lazy: false,
           ),
           BlocProvider<NotesBloc>(
             create: (context) =>
                   NotesBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   notesRepository: context.read<NotesRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
@@ -120,13 +122,16 @@ class _MyAppState extends State<MyApp> {
                   syllabusCopyRepository: context.read<SyllabusCopyRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
+            lazy: false,
           ),
           BlocProvider<TextBookBloc>(
             create: (context) =>
                 TextBookBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   textBookRepository: context.read<TextBookRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
                 ),
+            lazy: false,
           ),
         ],
         child: Builder(

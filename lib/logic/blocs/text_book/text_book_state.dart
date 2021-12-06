@@ -1,18 +1,19 @@
 part of 'text_book_bloc.dart';
 
 abstract class TextBookState extends Equatable {
-  const TextBookState();
+  final int maxTextBooks;
+  const TextBookState({required this.maxTextBooks});
 }
 
 class TextBookInitial extends TextBookState {
-  TextBookInitial() : super();
+  TextBookInitial({required int maxTextBooks}) : super(maxTextBooks: maxTextBooks);
 
   @override
   List<Object> get props => [];
 }
 
 class TextBookFetchLoading extends TextBookState {
-  TextBookFetchLoading() : super();
+  TextBookFetchLoading({required int maxTextBooks}) : super(maxTextBooks: maxTextBooks);
 
   @override
   List<Object?> get props => [];
@@ -27,7 +28,8 @@ class TextBookFetchSuccess extends TextBookState {
 
   const TextBookFetchSuccess({
     required this.textBookSubjects,
-  }) : super();
+    required int maxTextBooks
+  }) : super(maxTextBooks: maxTextBooks);
 }
 
 class TextBookFetchError extends TextBookState {
@@ -38,7 +40,8 @@ class TextBookFetchError extends TextBookState {
 
   const TextBookFetchError({
     required this.errorMessage,
-  }) : super();
+    required int maxTextBooks
+  }) : super(maxTextBooks: maxTextBooks);
 }
 
 class TextBookAddLoading extends TextBookState {
@@ -50,7 +53,8 @@ class TextBookAddLoading extends TextBookState {
 
   const TextBookAddLoading({
     required this.textBookSubjects,
-  }) : super();
+    required int maxTextBooks
+  }) : super(maxTextBooks: maxTextBooks);
 }
 
 class TextBookAddSuccess extends TextBookState {
@@ -61,7 +65,8 @@ class TextBookAddSuccess extends TextBookState {
 
   const TextBookAddSuccess({
     required this.textBookSubjects,
-  }) : super();
+    required int maxTextBooks
+  }) : super(maxTextBooks: maxTextBooks);
 }
 
 class TextBookAddError extends TextBookState {
@@ -75,10 +80,13 @@ class TextBookAddError extends TextBookState {
   const TextBookAddError({
     required this.errorMessage,
     required this.textBookSubjects,
-  }) : super();
+    required int maxTextBooks
+  }) : super(maxTextBooks: maxTextBooks);
 }
 
 class TextBookReportSuccess extends TextBookState {
+  TextBookReportSuccess({required int maxTextBooks}) : super(maxTextBooks: maxTextBooks);
+
   @override
   List<Object?> get props => [];
 }
@@ -91,5 +99,6 @@ class TextBookReportError extends TextBookState {
 
   const TextBookReportError({
     required this.errorMessage,
-  });
+    required int maxTextBooks
+  }) : super(maxTextBooks: maxTextBooks);
 }

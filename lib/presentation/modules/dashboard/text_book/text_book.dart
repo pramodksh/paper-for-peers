@@ -94,10 +94,10 @@ class TextBook extends StatelessWidget {
     required List<TextBookSubjectModel> textBookSubjects,
     required AppThemeType appThemeType, required UserState userState,
     required bool isAddTextBookLoading, required bool isWidgetLoading,
-    required BuildContext context
+    required BuildContext context, required int maxTextBooks
   }) {
 
-    List<Widget> gridChildren = List.generate(AppConstants.maxTextBooks, (index) {
+    List<Widget> gridChildren = List.generate(maxTextBooks, (index) {
       int currentVersion = index + 1;
       bool isShow = textBooks.any((element) => element.version == currentVersion);
 
@@ -183,6 +183,7 @@ class TextBook extends StatelessWidget {
     required List<TextBookSubjectModel> textBookSubjects,
     required AppThemeType appThemeType,
     required bool isAddTextBookLoading,
+    required int maxTextBooks,
     bool isWidgetLoading = false,
   }) {
     return ListView.separated(
@@ -192,14 +193,15 @@ class TextBook extends StatelessWidget {
       itemCount: textBookSubjects.length,
       itemBuilder: (context, textbookSubjectIndex) {
         return _getTextBookTile(
-            textBookSubjects: textBookSubjects,
-            context: context,
-            isWidgetLoading: isWidgetLoading,
-            isAddTextBookLoading: isAddTextBookLoading,
-            textBooks: textBookSubjects[textbookSubjectIndex].textBookModels,
-            subject: textBookSubjects[textbookSubjectIndex].subject,
-            appThemeType: appThemeType,
-            userState: userState,
+          maxTextBooks: maxTextBooks,
+          textBookSubjects: textBookSubjects,
+          context: context,
+          isWidgetLoading: isWidgetLoading,
+          isAddTextBookLoading: isAddTextBookLoading,
+          textBooks: textBookSubjects[textbookSubjectIndex].textBookModels,
+          subject: textBookSubjects[textbookSubjectIndex].subject,
+          appThemeType: appThemeType,
+          userState: userState,
         );
       },
     );
@@ -271,6 +273,7 @@ class TextBook extends StatelessWidget {
                       return SkeletonLoader(
                         appThemeType: appThemeType,
                         child: _getTextBookListWidget(
+                          maxTextBooks: textBookState.maxTextBooks,
                           isWidgetLoading: true,
                           userState: userState,
                           textBookSubjects: List.generate(2, (index) => TextBookSubjectModel(
@@ -291,6 +294,7 @@ class TextBook extends StatelessWidget {
                       );
                     } else if (textBookState is TextBookFetchSuccess) {
                       return _getTextBookListWidget(
+                        maxTextBooks: textBookState.maxTextBooks,
                         userState: userState,
                         textBookSubjects: textBookState.textBookSubjects,
                         appThemeType: appThemeType,
@@ -298,6 +302,7 @@ class TextBook extends StatelessWidget {
                       );
                     } else if (textBookState is TextBookAddError) {
                       return _getTextBookListWidget(
+                        maxTextBooks: textBookState.maxTextBooks,
                         userState: userState,
                         textBookSubjects: textBookState.textBookSubjects,
                         appThemeType: appThemeType,
@@ -305,6 +310,7 @@ class TextBook extends StatelessWidget {
                       );
                     } else if (textBookState is TextBookAddSuccess) {
                       return _getTextBookListWidget(
+                        maxTextBooks: textBookState.maxTextBooks,
                         userState: userState,
                         textBookSubjects: textBookState.textBookSubjects,
                         appThemeType: appThemeType,
@@ -312,6 +318,7 @@ class TextBook extends StatelessWidget {
                       );
                     } else if (textBookState is TextBookAddLoading) {
                       return _getTextBookListWidget(
+                        maxTextBooks: textBookState.maxTextBooks,
                         userState: userState,
                         textBookSubjects: textBookState.textBookSubjects,
                         appThemeType: appThemeType,

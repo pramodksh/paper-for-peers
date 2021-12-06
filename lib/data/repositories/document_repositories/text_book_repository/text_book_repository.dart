@@ -44,6 +44,7 @@ class TextBookRepository {
     required String course, required int semester,
     required String subject, required UserModel user,
     required int version, required File document,
+    required int maxTextBooks
   }) async {
     try {
       firestore.CollectionReference textBookCollectionReference = coursesCollection.doc(course)
@@ -52,7 +53,7 @@ class TextBookRepository {
           .collection(FirebaseCollectionConfig.textBookCollectionLabel);
       firestore.QuerySnapshot journalSnapshot = await textBookCollectionReference.get();
 
-      if (journalSnapshot.docs.length >= AppConstants.maxTextBooks) {
+      if (journalSnapshot.docs.length >= maxTextBooks) {
         return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
       }
 

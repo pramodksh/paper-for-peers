@@ -85,6 +85,7 @@ class NotesRepository {
     required String subject, required UserModel user,
     required File document, required String title,
     required String description,
+    required maxNotesPerSubject,
   }) async {
 
     try {
@@ -95,7 +96,7 @@ class NotesRepository {
 
       firestore.QuerySnapshot notesSnapshot = await notesCollection.get();
 
-      if (notesSnapshot.docs.length >= AppConstants.maxNotesPerSubject) {
+      if (notesSnapshot.docs.length >= maxNotesPerSubject) {
         return ApiResponse.error(errorMessage: "The subject $subject has maximum notes. So you cannot upload.");
       }
 
