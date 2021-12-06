@@ -33,7 +33,6 @@ class FirestoreRepository {
 
   Future<UserModel> getUserByUserId({required String userId}) async {
     firestore.DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
-
     firestore.QuerySnapshot ratingSnapshot = await userDocumentSnapshot.reference.collection(FirebaseCollectionConfig.ratingCollectionLabel).get();
 
     List<double> totalRatings = [];

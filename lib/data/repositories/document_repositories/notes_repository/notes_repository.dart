@@ -61,10 +61,10 @@ class NotesRepository {
     required String subject, required String noteId,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.DocumentSnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
+      firestore.DocumentSnapshot notesSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
 
       await notesSnapshot.reference.delete();
 
@@ -88,11 +88,10 @@ class NotesRepository {
   }) async {
 
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-
-      firestore.CollectionReference notesCollection = subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel);
+      firestore.CollectionReference notesCollection = coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.notesCollectionLabel);
 
       firestore.QuerySnapshot notesSnapshot = await notesCollection.get();
 
@@ -130,10 +129,10 @@ class NotesRepository {
     required String noteId, required List<String> reportValues,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.DocumentSnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
+      firestore.DocumentSnapshot notesSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
 
       Map<String, dynamic> notesData = notesSnapshot.data() as Map<String, dynamic>;
 
@@ -163,11 +162,11 @@ class NotesRepository {
 
     try {
 
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.DocumentSnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
-      firestore.DocumentSnapshot starsSnapshot = await notesSnapshot.reference.collection(FirebaseCollectionConfig.starsCollectionLabel).doc(user.uid).get();
+      firestore.DocumentSnapshot starsSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId)
+          .collection(FirebaseCollectionConfig.starsCollectionLabel).doc(user.uid).get();
 
       if(starsSnapshot.exists) {
         await starsSnapshot.reference.update({
@@ -191,8 +190,9 @@ class NotesRepository {
     required String noteId, required String ratingGivenUserId,
   }) async {
     try {
-      firestore.DocumentSnapshot userDocumentSnapshot = await _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel).doc(ratingAcceptedUserId).get();
-      firestore.DocumentSnapshot ratingSnapshot = await userDocumentSnapshot.reference.collection(FirebaseCollectionConfig.ratingCollectionLabel).doc(noteId).get();
+      firestore.DocumentSnapshot ratingSnapshot = await _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel)
+          .doc(ratingAcceptedUserId)
+          .collection(FirebaseCollectionConfig.ratingCollectionLabel).doc(noteId).get();
 
       if(ratingSnapshot.exists) {
         await ratingSnapshot.reference.update({
@@ -217,10 +217,10 @@ class NotesRepository {
   }) async {
     try {
 
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.QuerySnapshot notesSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.notesCollectionLabel).get();
+      firestore.QuerySnapshot notesSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.notesCollectionLabel).get();
 
       List<NotesModel> notes = [];
       await Future.forEach<firestore.QueryDocumentSnapshot>(notesSnapshot.docs ,(note) async {

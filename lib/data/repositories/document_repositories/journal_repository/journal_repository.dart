@@ -46,18 +46,21 @@ class JournalRepository {
     required int version, required File document,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
+      firestore.CollectionReference journalCollectionReference = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.journalCollectionLabel);
 
-      firestore.CollectionReference journalCollectionReference = subjectSnapshot.reference.collection(FirebaseCollectionConfig.journalCollectionLabel);
       firestore.QuerySnapshot journalSnapshot = await journalCollectionReference.get();
 
       if (journalSnapshot.docs.length >= AppConstants.maxJournals) {
         return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
       }
 
-      ApiResponse uploadResponse = await uploadJournal(document: document, course: course, semester: semester, subject: subject, version: version);
+      ApiResponse uploadResponse = await uploadJournal(
+        document: document, course: course, semester: semester,
+        subject: subject, version: version,
+      );
 
       if (uploadResponse.isError) {
         return uploadResponse;
@@ -82,10 +85,9 @@ class JournalRepository {
   }) async {
     try {
 
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-
-      firestore.QuerySnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
+      firestore.QuerySnapshot subjectSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
 
       List<JournalSubjectModel> journalSubjects = [];
       await Future.forEach<firestore.QueryDocumentSnapshot>(subjectSnapshot.docs, (subject) async {
@@ -115,10 +117,10 @@ class JournalRepository {
     required List<String> reportValues, required String userId,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.DocumentSnapshot versionSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).doc(version.toString()).get();
+      firestore.DocumentSnapshot versionSnapshot = await coursesCollection.doc(course)
+        .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+        .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+        .collection(FirebaseCollectionConfig.journalCollectionLabel).doc(version.toString()).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 

@@ -46,11 +46,10 @@ class TextBookRepository {
     required int version, required File document,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-
-      firestore.CollectionReference textBookCollectionReference = subjectSnapshot.reference.collection(FirebaseCollectionConfig.textBookCollectionLabel);
+      firestore.CollectionReference textBookCollectionReference = coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.textBookCollectionLabel);
       firestore.QuerySnapshot journalSnapshot = await textBookCollectionReference.get();
 
       if (journalSnapshot.docs.length >= AppConstants.maxTextBooks) {
@@ -80,10 +79,9 @@ class TextBookRepository {
   }) async {
     try {
 
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-
-      firestore.QuerySnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
+      firestore.QuerySnapshot subjectSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
 
       List<TextBookSubjectModel> textBookSubjects = [];
       await Future.forEach<firestore.QueryDocumentSnapshot>(subjectSnapshot.docs, (subject) async {
@@ -112,10 +110,10 @@ class TextBookRepository {
     required int version, required List<String> reportValues,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.DocumentSnapshot versionSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.textBookCollectionLabel).doc(version.toString()).get();
+      firestore.DocumentSnapshot versionSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.textBookCollectionLabel).doc(version.toString()).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 

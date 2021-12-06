@@ -46,9 +46,9 @@ class SyllabusCopyRepository {
     required int version, required File document,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.CollectionReference syllabusCopyCollection = semesterSnapshot.reference.collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel);
+      firestore.CollectionReference syllabusCopyCollection = coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel);
 
       firestore.QuerySnapshot syllabusCopySnapshot = await syllabusCopyCollection.get();
 
@@ -79,9 +79,9 @@ class SyllabusCopyRepository {
   }) async {
     try {
 
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.QuerySnapshot syllabusCopySnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).get();
+      firestore.QuerySnapshot syllabusCopySnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).get();
 
       List<SyllabusCopyModel> syllabusCopies = [];
       syllabusCopySnapshot.docs.forEach((syllabusCopy) {
@@ -105,9 +105,9 @@ class SyllabusCopyRepository {
     required String userId,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot versionSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).doc(version.toString()).get();
+      firestore.DocumentSnapshot versionSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).doc(version.toString()).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 

@@ -46,11 +46,11 @@ class QuestionPaperRepository {
     required int version, required int year, required File document,
   }) async {
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
-      firestore.CollectionReference versionCollectionReference = yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel);
+      firestore.CollectionReference versionCollectionReference = coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString())
+          .collection(FirebaseCollectionConfig.versionsCollectionLabel);
       firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
       
       if (versionSnapshot.docs.length >= AppConstants.maxQuestionPapers) {
@@ -81,10 +81,11 @@ class QuestionPaperRepository {
   }) async {
     try {
 
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.QuerySnapshot questionPaperSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).get();
+      firestore.QuerySnapshot questionPaperSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).get();
+
       List<QuestionPaperYearModel> questionPaperYears = [];
 
       await Future.forEach<firestore.QueryDocumentSnapshot>(questionPaperSnapshot.docs, (questionPaper) async {
@@ -114,11 +115,11 @@ class QuestionPaperRepository {
   }) async {
 
     try {
-      firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(course).get();
-      firestore.DocumentSnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString()).get();
-      firestore.DocumentSnapshot subjectSnapshot = await semesterSnapshot.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject).get();
-      firestore.DocumentSnapshot yearSnapshot = await subjectSnapshot.reference.collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString()).get();
-      firestore.DocumentSnapshot versionSnapshot = await yearSnapshot.reference.collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(nVersion.toString()).get();
+      firestore.DocumentSnapshot versionSnapshot = await coursesCollection.doc(course)
+          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+          .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString())
+          .collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(nVersion.toString()).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 
