@@ -60,15 +60,6 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
           if (adminResponse.isError) {
             emit(JournalAddError(errorMessage: adminResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
           } else {
-            List<AdminModel> admins = adminResponse.data;
-            Future.forEach<AdminModel>(admins, (admin) async{
-              await _firebaseMessagingRepository.sendNotification(
-                token: admin.fcmToken,
-                userModel: event.user,
-              );
-              print("CHECK SENT NOTIFICATION");
-            });
-
             ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournalToAdmin(
               course: event.course, semester: event.semester, subject: event.subject,
               user: event.user, version: event.nVersion,
@@ -78,6 +69,15 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
               emit(JournalAddError(errorMessage: uploadResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
             } else {
               emit(JournalAddSuccess(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
+
+              List<AdminModel> admins = adminResponse.data;
+              Future.forEach<AdminModel>(admins, (admin) async{
+                await _firebaseMessagingRepository.sendNotification(
+                  token: admin.fcmToken,
+                  userModel: event.user,
+                );
+                print("CHECK SENT NOTIFICATION");
+              });
               // todo delete if not needed
               // add(
               //     JournalFetch(
