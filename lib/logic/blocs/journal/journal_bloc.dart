@@ -61,7 +61,6 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
             emit(JournalAddError(errorMessage: adminResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
           } else {
             List<AdminModel> admins = adminResponse.data;
-
             Future.forEach<AdminModel>(admins, (admin) async{
               await _firebaseMessagingRepository.sendNotification(
                 token: admin.fcmToken,
@@ -70,30 +69,26 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
               print("CHECK SENT NOTIFICATION");
             });
 
-          }
-
-
-          
-          // ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournal(
-          //   course: event.course, semester: event.semester, subject: event.subject,
-          //   user: event.user, version: event.nVersion,
-          //   document: file, maxJournals: await _firebaseRemoteConfigRepository.getMaxJournals(),
-          // );
-
-
-          ApiResponse uploadResponse = ApiResponse.success();// todo delete
-          if (uploadResponse.isError) {
-            emit(JournalAddError(errorMessage: uploadResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
-          } else {
-            emit(JournalAddSuccess(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
-            add(
-                JournalFetch(
-                  course: event.course,
-                  semester: event.semester,
-                )
+            // todo upload journal
+            ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournalToAdmin(
+              course: event.course, semester: event.semester, subject: event.subject,
+              user: event.user, version: event.nVersion,
+              document: file, maxJournals: await _firebaseRemoteConfigRepository.getMaxJournals(),
             );
-          }
+            if (uploadResponse.isError) {
+              emit(JournalAddError(errorMessage: uploadResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
+            } else {
+              emit(JournalAddSuccess(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
+              // todo delete if not needed
+              // add(
+              //     JournalFetch(
+              //       course: event.course,
+              //       semester: event.semester,
+              //     )
+              // );
+            }
 
+          }
         }
       });
 

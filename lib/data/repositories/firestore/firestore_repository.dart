@@ -16,17 +16,17 @@ class FirestoreRepository {
 
   FirestoreRepository({firestore.FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance {
-    usersCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel);
-    adminCollection = _firebaseFirestore.collection(FirebaseCollectionConfig.adminCollectionLabel);
-    coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _usersCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel);
+    _adminCollection = _firebaseFirestore.collection(FirebaseCollectionConfig.adminCollectionLabel);
+    _coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
   }
 
-  static late final firestore.CollectionReference usersCollection;
-  static late final firestore.CollectionReference adminCollection;
-  static late final firestore.CollectionReference coursesCollection;
+  static late final firestore.CollectionReference _usersCollection;
+  static late final firestore.CollectionReference _adminCollection;
+  static late final firestore.CollectionReference _coursesCollection;
 
   Future<bool> isUserExists({required String userId}) async {
-    firestore.DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
+    firestore.DocumentSnapshot userDocumentSnapshot = await _usersCollection.doc(userId).get();
     return userDocumentSnapshot.exists;
   }
 
@@ -38,7 +38,7 @@ class FirestoreRepository {
   // }
 
   Future<UserModel> getUserByUserId({required String userId}) async {
-    firestore.DocumentSnapshot userDocumentSnapshot = await usersCollection.doc(userId).get();
+    firestore.DocumentSnapshot userDocumentSnapshot = await _usersCollection.doc(userId).get();
     firestore.QuerySnapshot ratingSnapshot = await userDocumentSnapshot.reference.collection(FirebaseCollectionConfig.ratingCollectionLabel).get();
 
     List<double> totalRatings = [];
@@ -83,7 +83,7 @@ class FirestoreRepository {
   Future<ApiResponse> addUser({required UserModel user}) async {
 
     try {
-      await usersCollection.doc(user.uid).set({
+      await _usersCollection.doc(user.uid).set({
         'displayName': user.displayName,
         'email': user.email,
         'photoUrl': user.photoUrl,
@@ -99,7 +99,7 @@ class FirestoreRepository {
 
   Future<Course> getCourse(String name) async {
 
-    firestore.DocumentSnapshot coursesSnapshot = await coursesCollection.doc(name).get();
+    firestore.DocumentSnapshot coursesSnapshot = await _coursesCollection.doc(name).get();
     firestore.QuerySnapshot semesterSnapshot = await coursesSnapshot.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).get();
 
     List<Semester> semesters = [];
@@ -123,7 +123,7 @@ class FirestoreRepository {
   }
 
   Future<List<Course>> getCourses() async {
-    firestore.QuerySnapshot coursesSnapshot = await coursesCollection.get();
+    firestore.QuerySnapshot coursesSnapshot = await _coursesCollection.get();
 
     List<Course> courses = [];
 
@@ -157,7 +157,7 @@ class FirestoreRepository {
 
   Future<ApiResponse> getAdminList() async {
     try {
-      firestore.QuerySnapshot adminSnapshot = await adminCollection.get();
+      firestore.QuerySnapshot adminSnapshot = await _adminCollection.get();
 
       List<AdminModel> admins = [];
       adminSnapshot.docs.forEach((admin) {

@@ -20,6 +20,8 @@ class JournalModel {
   final String userEmail;
   final String userUid;
 
+  static final String documentUrlFieldKey = "document_url";
+
   const JournalModel({
     required this.version,
     required this.documentUrl,
@@ -42,7 +44,7 @@ class JournalModel {
     );
   }
 
-  static Map<String, dynamic> toFirestoreMap({required UserModel user, required String documentUrl}) {
+  static Map<String, dynamic> toFirestoreMap({required UserModel user, String? documentUrl}) {
     return {
       "uploaded_by": user.displayName,
       "user_uid": user.uid,

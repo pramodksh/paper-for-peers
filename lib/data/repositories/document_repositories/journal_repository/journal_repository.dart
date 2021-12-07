@@ -11,17 +11,20 @@ import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 class JournalRepository {
   final firestore.FirebaseFirestore _firebaseFirestore;
   final storage.FirebaseStorage _firebaseStorage;
-  static late final firestore.CollectionReference coursesCollection;
 
   JournalRepository({
     firestore.FirebaseFirestore? firebaseFirestore,
     storage.FirebaseStorage? firebaseStorage,
   }) : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance,
         _firebaseStorage = firebaseStorage ?? storage.FirebaseStorage.instance {
-    coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _journalUploadsAdminCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.adminJournalUploadsCollectionLabel);
   }
 
-  Future<ApiResponse> uploadJournal({
+  static late final firestore.CollectionReference _coursesCollection;
+  static late final firestore.CollectionReference _journalUploadsAdminCollection;
+
+  Future<ApiResponse> _uploadJournal({
     required File document,
     required String course, required int semester,
     required String subject, required int version,
@@ -40,25 +43,60 @@ class JournalRepository {
   }
 
 
-  Future<ApiResponse> uploadAndAddJournal({
+  // Future<ApiResponse> uploadAndAddJournal({
+  //   required String course, required int semester,
+  //   required String subject, required UserModel user,
+  //   required int version, required File document,
+  //   required int maxJournals,
+  // }) async {
+  //   try {
+  //     firestore.CollectionReference journalCollectionReference = _coursesCollection.doc(course)
+  //         .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+  //         .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+  //         .collection(FirebaseCollectionConfig.journalCollectionLabel);
+  //
+  //     firestore.QuerySnapshot journalSnapshot = await journalCollectionReference.get();
+  //
+  //     if (journalSnapshot.docs.length >= maxJournals) {
+  //       return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
+  //     }
+  //
+  //     ApiResponse uploadResponse = await _uploadJournal(
+  //       document: document, course: course, semester: semester,
+  //       subject: subject, version: version,
+  //     );
+  //
+  //     if (uploadResponse.isError) {
+  //       return uploadResponse;
+  //     }
+  //
+  //     String documentUrl = uploadResponse.data;
+  //     await journalCollectionReference.doc(version.toString()).set(JournalModel.toFirestoreMap(
+  //         user: user, documentUrl: documentUrl
+  //     ));
+  //
+  //     return ApiResponse.success();
+  //
+  //   } catch (err) {
+  //     return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
+  //   }
+  //
+  // }
+
+
+
+
+
+
+
+  Future<ApiResponse> uploadAndAddJournalToAdmin({
     required String course, required int semester,
     required String subject, required UserModel user,
     required int version, required File document,
     required int maxJournals,
   }) async {
     try {
-      firestore.CollectionReference journalCollectionReference = coursesCollection.doc(course)
-          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
-          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
-          .collection(FirebaseCollectionConfig.journalCollectionLabel);
-
-      firestore.QuerySnapshot journalSnapshot = await journalCollectionReference.get();
-
-      if (journalSnapshot.docs.length >= maxJournals) {
-        return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
-      }
-
-      ApiResponse uploadResponse = await uploadJournal(
+      ApiResponse uploadResponse = await _uploadJournal(
         document: document, course: course, semester: semester,
         subject: subject, version: version,
       );
@@ -68,9 +106,15 @@ class JournalRepository {
       }
 
       String documentUrl = uploadResponse.data;
-      await journalCollectionReference.doc(version.toString()).set(JournalModel.toFirestoreMap(
-          user: user, documentUrl: documentUrl
-      ));
+
+      Map<String, dynamic> journalDetails = JournalModel.toFirestoreMap(user: user, documentUrl: documentUrl);
+      journalDetails.addAll({
+        "course": course,
+        "semester": semester,
+        "subject": subject,
+        "version": version,
+      });
+      await _journalUploadsAdminCollection.add(journalDetails);
 
       return ApiResponse.success();
 
@@ -81,12 +125,14 @@ class JournalRepository {
   }
 
 
+
+
   Future<ApiResponse> getJournals({
     required String course, required int semester,
   }) async {
     try {
 
-      firestore.QuerySnapshot subjectSnapshot = await coursesCollection.doc(course)
+      firestore.QuerySnapshot subjectSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
 
@@ -118,7 +164,7 @@ class JournalRepository {
     required List<String> reportValues, required String userId,
   }) async {
     try {
-      firestore.DocumentSnapshot versionSnapshot = await coursesCollection.doc(course)
+      firestore.DocumentSnapshot versionSnapshot = await _coursesCollection.doc(course)
         .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
         .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
         .collection(FirebaseCollectionConfig.journalCollectionLabel).doc(version.toString()).get();
