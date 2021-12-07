@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:collection/collection.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/course.dart';
@@ -43,12 +46,34 @@ class FirestoreRepository {
       print("CHECK HERE: ${ratings}");
     });
 
-    return await UserModel.getUserModelByMap(
-      userMap: userDocumentSnapshot.data() as Map<dynamic, dynamic>,
-      userId: userId, getCourse: getCourse,
-      avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
-      totalRatings: totalRatings.length,
-    );
+    Map<String, dynamic> userData = userDocumentSnapshot.data() as Map<String, dynamic>;
+
+    if (!userData.containsKey(UserModel.fcmTokenLabel)) {
+      String? token = await FirebaseMessaging.instance.getToken();
+      log("TOKEN: $token");
+
+      UserModel userModel = await UserModel.getUserModelByMap(
+        fcmToken: token,
+        userMap: userData,
+        userId: userId, getCourse: getCourse,
+        avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
+        totalRatings: totalRatings.length,
+      );
+
+      addUser(user: userModel);
+
+      return userModel;
+    } else {
+      return await UserModel.getUserModelByMap(
+        fcmToken: userData[UserModel.fcmTokenLabel],
+        userMap: userData,
+        userId: userId, getCourse: getCourse,
+        avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
+        totalRatings: totalRatings.length,
+      );
+    }
+
+
   }
 
   Future<ApiResponse> addUser({required UserModel user}) async {
@@ -60,6 +85,7 @@ class FirestoreRepository {
         'photoUrl': user.photoUrl,
         UserModel.courseLabel: user.course?.courseName,
         UserModel.semesterLabel: user.semester?.nSemester,
+        UserModel.fcmTokenLabel: user.fcmToken,
       });
       return ApiResponse.success();
     } catch (err) {

@@ -55,10 +55,6 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initializeFcm() async{
 
-    String? token = await FirebaseMessaging.instance.getToken();
-
-    log("TOKEN: $token");
-
     NotificationSettings settings = await _fcm.requestPermission(
       alert: true,
       announcement: false,
