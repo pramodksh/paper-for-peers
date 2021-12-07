@@ -48,7 +48,16 @@ class FirestoreRepository {
 
     Map<String, dynamic> userData = userDocumentSnapshot.data() as Map<String, dynamic>;
 
-    if (!userData.containsKey(UserModel.fcmTokenLabel)) {
+    if (userData.containsKey(UserModel.fcmTokenLabel) && userData[UserModel.fcmTokenLabel] != null) {
+
+      return await UserModel.getUserModelByMap(
+        fcmToken: userData[UserModel.fcmTokenLabel],
+        userMap: userData,
+        userId: userId, getCourse: getCourse,
+        avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
+        totalRatings: totalRatings.length,
+      );
+    } else {
       String? token = await FirebaseMessaging.instance.getToken();
       log("TOKEN: $token");
 
@@ -63,14 +72,6 @@ class FirestoreRepository {
       addUser(user: userModel);
 
       return userModel;
-    } else {
-      return await UserModel.getUserModelByMap(
-        fcmToken: userData[UserModel.fcmTokenLabel],
-        userMap: userData,
-        userId: userId, getCourse: getCourse,
-        avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
-        totalRatings: totalRatings.length,
-      );
     }
 
 
