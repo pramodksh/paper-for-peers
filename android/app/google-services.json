@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "72106366853",
+    "project_id": "papers-fc891",
+    "storage_bucket": "papers-fc891.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72106366853:android:40fd9435dfbf8a1822d6ec",
+        "android_client_info": {
+          "package_name": "com.example.papers_for_peers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72106366853-ge14jhrnpkn5sol134ivjocm6ojm6ij0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.papers_for_peers",
+            "certificate_hash": "08d1d1e52ee9b1023a58de4ccb3995f9ffd2a2b0"
+          }
+        },
+        {
+          "client_id": "72106366853-osb6fjgn1qapierq5c0la30irq6pb8i5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVaM9QhUIxJnKMEkNtc9QBCHE_oszKqh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72106366853-osb6fjgn1qapierq5c0la30irq6pb8i5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

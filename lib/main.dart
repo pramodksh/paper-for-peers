@@ -1,112 +1,165 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
-import 'package:papers_for_peers/config/export_config.dart';
-import 'package:papers_for_peers/modules/dashboard/compare_question_paper/compare_question_paper.dart';
-import 'package:papers_for_peers/modules/dashboard/main_dashboard.dart';
-import 'package:papers_for_peers/modules/dashboard/profile/profile.dart';
-import 'package:papers_for_peers/modules/dashboard/question_paper/question_paper.dart';
-import 'package:papers_for_peers/modules/login/forgot_password.dart';
-import 'package:papers_for_peers/modules/login/login.dart';
-import 'package:papers_for_peers/modules/login/carausel.dart';
-import 'package:papers_for_peers/modules/testing_screens/clip_background.dart';
-import 'package:papers_for_peers/modules/dashboard/notifications/notifications.dart';
-import 'package:papers_for_peers/services/theme_provider/theme_provider.dart';
+import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/journal_repository/journal_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/notes_repository/notes_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/syllabus_copy_repository/syllabus_copy_repository.dart';
+import 'package:papers_for_peers/data/repositories/document_repositories/text_book_repository/text_book_repository.dart';
+import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
+import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
+import 'package:papers_for_peers/data/repositories/firebase_storage/firebase_storage_repository.dart';
+import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/data/repositories/image_picker/image_picker_repository.dart';
+import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
+import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/kud_notifications/kud_notifications_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/question_paper/question_paper_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/syllabus_copy/syllabus_copy_bloc.dart';
+import 'package:papers_for_peers/logic/blocs/text_book/text_book_bloc.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
+import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
+import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
-import 'modules/dashboard/compare_question_paper/splitPDF.dart';
-void main(){
+void main() async {
+  print("RUN MAIN");
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
-  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
-
-  void getCurrentAppTheme() async {
-    themeChangeProvider.isDarkTheme =
-    await themeChangeProvider.darkThemePreference.getAppTheme();
-  }
-
-  @override
-  void initState() {
-    getCurrentAppTheme();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) {
-        return themeChangeProvider;
-      },
-      child: Consumer<DarkThemeProvider>(
-        builder: (context, value, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: Styles.themeData(themeChangeProvider.isDarkTheme, context),
+    print("BUILD MAIN()");
 
-            // theme: ThemeData(
-            //   // buttonTheme: ButtonThemeData(
-            //   //   splashColor:
-            //   // ),
-            //
-            //   inputDecorationTheme: InputDecorationTheme(
-            //     labelStyle: CustomTextStyle.bodyTextStyle,
-            //   ),
-            //
-            //   textButtonTheme: TextButtonThemeData(
-            //       style: ButtonStyle(
-            //         textStyle: MaterialStateProperty.all(TextStyle(fontFamily: "Montserrat")),
-            //       )
-            //   ),
-            //
-            //   elevatedButtonTheme: ElevatedButtonThemeData(
-            //     style: ButtonStyle(
-            //       textStyle: MaterialStateProperty.all(CustomTextStyle.bodyTextStyle),
-            //     ),
-            //   ),
-            //
-            //   appBarTheme: AppBarTheme(
-            //     backgroundColor: Colors.black,
-            //     textTheme: TextTheme(
-            //       headline6: CustomTextStyle.appBarTextStyle,
-            //     ),
-            //   ),
-            //
-            //   textTheme: TextTheme(
-            //     bodyText1: CustomTextStyle.bodyTextStyle,
-            //     bodyText2: CustomTextStyle.bodyTextStyle,
-            //   ).apply(
-            //     bodyColor: Colors.white,
-            //     displayColor: Colors.white,
-            //   ),
-            //
-            //   visualDensity: VisualDensity.adaptivePlatformDensity,
-            //   scaffoldBackgroundColor: Colors.black,
-            //
-            // ),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthRepository>(
+          create: (context) => AuthRepository(),
+        ),
+        RepositoryProvider<FirestoreRepository>(
+          create: (context) => FirestoreRepository(),
+        ),
+        RepositoryProvider<FirebaseRemoteConfigRepository>(
+          create: (context) => FirebaseRemoteConfigRepository(),
+        ),
+        RepositoryProvider<FirebaseStorageRepository>(
+          create: (context) => FirebaseStorageRepository(),
+        ),
+        RepositoryProvider<ImagePickerRepository>(
+          create: (context) => ImagePickerRepository(),
+        ),
+        RepositoryProvider<FilePickerRepository>(
+          create: (context) => FilePickerRepository(),
+        ),
+        RepositoryProvider<SharedPreferenceRepository>(
+          create: (context) => SharedPreferenceRepository(),
+        ),
 
-            // home: Login(),
-            // home: Carousel(),
-
-            // home: QuestionPaper(),
-            home: MainDashboard(),
-            // home: ProfileScreen(),
-            // home: PdfTesting(),
-            //   home: CompareQuestionPaper(),
-            // home: PDFScreen(),
-
-
-            // home: ClipTesting(),
-            // home: WebScrapingDemo(),
-          );
-        },
+        RepositoryProvider<QuestionPaperRepository>(
+          create: (context) => QuestionPaperRepository(),
+        ),
+        RepositoryProvider<JournalRepository>(
+          create: (context) => JournalRepository(),
+        ),
+        RepositoryProvider<NotesRepository>(
+          create: (context) => NotesRepository(),
+        ),
+        RepositoryProvider<SyllabusCopyRepository>(
+          create: (context) => SyllabusCopyRepository(),
+        ),
+        RepositoryProvider<TextBookRepository>(
+          create: (context) => TextBookRepository(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AppThemeCubit>(
+            create: (context) => AppThemeCubit(),
+          ),
+          BlocProvider<KudNotificationsBloc>(
+            create: (context) => KudNotificationsBloc(),
+          ),
+          BlocProvider<QuestionPaperBloc>(
+            create: (context) =>
+                QuestionPaperBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
+                  questionPaperRepository: context.read<QuestionPaperRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                ),
+          ),
+          BlocProvider<JournalBloc>(
+            create: (context) =>
+                JournalBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
+                  journalRepository: context.read<JournalRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                ),
+            lazy: false,
+          ),
+          BlocProvider<NotesBloc>(
+            create: (context) =>
+                  NotesBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
+                  notesRepository: context.read<NotesRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                ),
+          ),
+          BlocProvider<SyllabusCopyBloc>(
+            create: (context) =>
+                SyllabusCopyBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
+                  syllabusCopyRepository: context.read<SyllabusCopyRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                ),
+            lazy: false,
+          ),
+          BlocProvider<TextBookBloc>(
+            create: (context) =>
+                TextBookBloc(
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
+                  textBookRepository: context.read<TextBookRepository>(),
+                  filePickerRepository: context.read<FilePickerRepository>(),
+                ),
+            lazy: false,
+          ),
+        ],
+        child: Builder(
+          builder: (context) {
+            AppThemeState appThemeState = context.watch<AppThemeCubit>().state;
+            return BlocProvider<UserCubit>(
+                create: (context) => UserCubit(
+                  textBookBloc: context.read<TextBookBloc>(),
+                  syllabusCopyBloc: context.read<SyllabusCopyBloc>(),
+                  notesBloc: context.read<NotesBloc>(),
+                  journalBloc: context.read<JournalBloc>(),
+                  questionPaperBloc: context.read<QuestionPaperBloc>(),
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseStorageRepository: context.read<FirebaseStorageRepository>(),
+                  imagePickerRepository: context.read<ImagePickerRepository>(),
+                  authRepository: context.read<AuthRepository>(),
+                ),
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: Styles.themeData(
+                    context: context,
+                    appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
+                  ),
+                  home: Wrapper(),
+                ),
+            );
+          }
+        ),
       ),
     );
   }
