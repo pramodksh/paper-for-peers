@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+}
+
+enum DocumentType {
+  JOURNAL,
+  SYLLABUS_COPY,
+  QUESTION_PAPER,
+  NOTES,
+  TEXT_BOOK,
+}
+
+extension DocumentTypeExtension on DocumentType {
+  String get toUpper => this.toString().split(".").last.toUpperCase();
+  String get capitalized => this.toString().split(".").last.toLowerCase().capitalize();
+}
+
 class AppConstants {
 
   static const String KUDBaseURL = "https://www.kud.ac.in/";
@@ -20,10 +39,4 @@ class AppConstants {
     {"icon": DefaultAssets.syllabusCopyNavIcon, "label": "Syllabus Copy"},
     {"icon": DefaultAssets.textBookNavIcon, "label": "Text Book"},
   ];
-
-  // static final int maxQuestionPapers = 3;
-  // static final int maxJournals = 2;
-  // static final int maxSyllabusCopy = 2;
-  // static final int maxTextBooks = 2;
-  // static final int maxNotesPerSubject = 15;
 }

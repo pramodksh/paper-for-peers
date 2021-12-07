@@ -38,6 +38,11 @@ class FirebaseRemoteConfigRepository {
     return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.MAX_QUESTION_PAPERS).asInt();
   }
 
+  Future<String> getFirebaseKey() async {
+    await _remoteConfig.fetchAndActivate();
+    return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.FIREBASE_KEY).asString();
+  }
+
   Future<String> getRazorPayApiKey() async {
 
     bool updated = await _remoteConfig.fetchAndActivate();

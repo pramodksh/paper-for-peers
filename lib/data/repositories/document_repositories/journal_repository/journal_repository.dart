@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
-import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
@@ -30,6 +29,7 @@ class JournalRepository {
     required String subject, required int version,
   }) async {
     try {
+      // todo avoid over writing - create new path = /admin/uploads/journal/id.pdf
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
           .child(semester.toString()).child(subject).child('journals')
           .child("$version.pdf");
@@ -41,53 +41,6 @@ class JournalRepository {
       return ApiResponse.error(errorMessage: "Couldn't upload journal to storage");
     }
   }
-
-
-  // Future<ApiResponse> uploadAndAddJournal({
-  //   required String course, required int semester,
-  //   required String subject, required UserModel user,
-  //   required int version, required File document,
-  //   required int maxJournals,
-  // }) async {
-  //   try {
-  //     firestore.CollectionReference journalCollectionReference = _coursesCollection.doc(course)
-  //         .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
-  //         .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
-  //         .collection(FirebaseCollectionConfig.journalCollectionLabel);
-  //
-  //     firestore.QuerySnapshot journalSnapshot = await journalCollectionReference.get();
-  //
-  //     if (journalSnapshot.docs.length >= maxJournals) {
-  //       return ApiResponse.error(errorMessage: "The subject : ${subject} has maximum versions. Please refresh to view them");
-  //     }
-  //
-  //     ApiResponse uploadResponse = await _uploadJournal(
-  //       document: document, course: course, semester: semester,
-  //       subject: subject, version: version,
-  //     );
-  //
-  //     if (uploadResponse.isError) {
-  //       return uploadResponse;
-  //     }
-  //
-  //     String documentUrl = uploadResponse.data;
-  //     await journalCollectionReference.doc(version.toString()).set(JournalModel.toFirestoreMap(
-  //         user: user, documentUrl: documentUrl
-  //     ));
-  //
-  //     return ApiResponse.success();
-  //
-  //   } catch (err) {
-  //     return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
-  //   }
-  //
-  // }
-
-
-
-
-
-
 
   Future<ApiResponse> uploadAndAddJournalToAdmin({
     required String course, required int semester,
@@ -119,12 +72,10 @@ class JournalRepository {
       return ApiResponse.success();
 
     } catch (err) {
-      return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
+      return ApiResponse.error(errorMessage: "There was an error while uploading journal: $err");
     }
 
   }
-
-
 
 
   Future<ApiResponse> getJournals({

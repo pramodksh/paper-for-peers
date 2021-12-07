@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart' as firebaseMessaging;
+import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,33 +12,31 @@ class FirebaseMessagingRepository {
       : _fcm = fcm ?? firebaseMessaging.FirebaseMessaging.instance;
 
   Future<bool> sendNotification({
-    // required Map<String, dynamic> messageMap,
+    required DocumentType documentType,
     required UserModel userModel,
-    required String token
+    required String token,
+    required Function getFireBaseKey,
+    required String course,
+    required int semester,
   }) async {
     String url = "https://fcm.googleapis.com/fcm/send";
-
-    // todo move to remote config
-    String _firebaseKey ="AAAAEMnf14U:APA91bEPULQ8nChBfZ2jdtpO1rlB2NKyTusWFQUv_Q_4ysrgUcqW1BVmNC0jalx7kxLUbyIvjb5YOYmpRH2CUfnBfuTF8UeDuT3vxgie8oc2FuMp5wPqmbzozeZk7HvJaKZ5j20o3O6y";
+    String _firebaseKey = await getFireBaseKey();
 
     Map<String, String> headers = {
       "Content-type": "application/json",
       "Authorization": "key=$_firebaseKey"
     };
 
-
     Map body = {
       "to": token,
       "notification": {
-          "body": "YOUR_MESSAGE",
-          // "OrganizationId": "2",
-          // "content_available": true,
+          "body": "${userModel.displayName} has uploaded a new ${DocumentType.JOURNAL.capitalized}",
           "priority": "high",
-          // "subtitle": "Elementary School",
-          "title": "YOUR_TITLE"
+          "title": "New ${DocumentType.JOURNAL.capitalized} of $course $semester",
       },
       "data": {
-          "click_action": "FLUTTER_NOTIFICATION_CLICK"
+          "click_action": "FLUTTER_NOTIFICATION_CLICK",
+          "document_type": DocumentType.JOURNAL.toUpper,
       }
     };
 

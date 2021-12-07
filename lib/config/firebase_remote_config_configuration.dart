@@ -5,5 +5,6 @@ class FirebaseRemoteConfigConfiguration {
   static String MAX_SYLLABUS_COPY = "MAX_SYLLABUS_COPY";
   static String MAX_JOURNALS = "MAX_JOURNALS";
   static String MAX_QUESTION_PAPERS = "MAX_QUESTION_PAPERS";
+  static String FIREBASE_KEY = "FIREBASE_KEY";
 
 }

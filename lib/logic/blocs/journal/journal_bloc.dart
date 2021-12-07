@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
 import 'package:papers_for_peers/data/models/user_model/admin_model.dart';
@@ -73,18 +74,15 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
               List<AdminModel> admins = adminResponse.data;
               Future.forEach<AdminModel>(admins, (admin) async{
                 await _firebaseMessagingRepository.sendNotification(
+                  documentType: DocumentType.JOURNAL,
                   token: admin.fcmToken,
                   userModel: event.user,
+                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                  semester: event.semester,
+                  course: event.course,
                 );
                 print("CHECK SENT NOTIFICATION");
               });
-              // todo delete if not needed
-              // add(
-              //     JournalFetch(
-              //       course: event.course,
-              //       semester: event.semester,
-              //     )
-              // );
             }
 
           }
