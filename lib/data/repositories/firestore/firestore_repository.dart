@@ -7,6 +7,7 @@ import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
+import 'package:papers_for_peers/data/models/user_model/admin_model.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class FirestoreRepository {
@@ -16,10 +17,12 @@ class FirestoreRepository {
   FirestoreRepository({firestore.FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance {
     usersCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel);
+    adminCollection = _firebaseFirestore.collection(FirebaseCollectionConfig.adminCollectionLabel);
     coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
   }
 
   static late final firestore.CollectionReference usersCollection;
+  static late final firestore.CollectionReference adminCollection;
   static late final firestore.CollectionReference coursesCollection;
 
   Future<bool> isUserExists({required String userId}) async {
@@ -151,4 +154,22 @@ class FirestoreRepository {
     return courses;
 
   }
+
+  Future<ApiResponse> getAdminList() async {
+    try {
+      firestore.QuerySnapshot adminSnapshot = await adminCollection.get();
+
+      List<AdminModel> admins = [];
+      adminSnapshot.docs.forEach((admin) {
+        admins.add(AdminModel.getAdminByFirestoreMap(
+          map: admin.data() as Map<String, dynamic>,
+          adminId: admin.id,
+        ));
+      });
+      return ApiResponse.success(data: admins);
+    } catch (e) {
+      return ApiResponse.error(errorMessage: "There was an error while getting admins");
+    }
+  }
+
 }

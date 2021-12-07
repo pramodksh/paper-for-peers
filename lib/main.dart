@@ -28,6 +28,8 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
+import 'data/repositories/firebase_messaging/firebase_messaging_repository.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
@@ -101,6 +103,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider<FirebaseStorageRepository>(
           create: (context) => FirebaseStorageRepository(),
         ),
+        RepositoryProvider<FirebaseMessagingRepository>(
+          create: (context) => FirebaseMessagingRepository(),
+        ),
         RepositoryProvider<ImagePickerRepository>(
           create: (context) => ImagePickerRepository(),
         ),
@@ -146,6 +151,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<JournalBloc>(
             create: (context) =>
                 JournalBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   journalRepository: context.read<JournalRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),

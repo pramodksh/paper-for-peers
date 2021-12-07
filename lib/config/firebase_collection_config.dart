@@ -1,4 +1,9 @@
 class FirebaseCollectionConfig {
+
+  static final String adminCollectionLabel = "admin";
+  static final String adminReportsCollectionLabel = "reports";
+  static final String adminUploadsCollectionLabel = "uploads";
+
   static final String usersCollectionLabel = "users";
 
   // static final String coursesCollectionLabel = "courses"; // todo change to this
