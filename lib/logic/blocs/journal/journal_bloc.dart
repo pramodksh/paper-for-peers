@@ -69,7 +69,6 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
               print("CHECK SENT NOTIFICATION");
             });
 
-            // todo upload journal
             ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournalToAdmin(
               course: event.course, semester: event.semester, subject: event.subject,
               user: event.user, version: event.nVersion,
