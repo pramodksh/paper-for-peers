@@ -163,7 +163,9 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<NotesBloc>(
             create: (context) =>
-                  NotesBloc(
+                NotesBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   notesRepository: context.read<NotesRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
