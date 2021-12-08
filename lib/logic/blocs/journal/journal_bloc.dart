@@ -59,7 +59,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
           ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournalToAdmin(
             course: event.course, semester: event.semester, subject: event.subject,
-            user: event.user, version: event.nVersion,
+            user: event.user,
             document: file, maxJournals: await _firebaseRemoteConfigRepository.getMaxJournals(),
           );
           if (uploadResponse.isError) {

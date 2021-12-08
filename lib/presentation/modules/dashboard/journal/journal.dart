@@ -98,18 +98,14 @@ class Journal extends StatelessWidget {
     required int maxJournals,
   }) {
 
-    List<Widget> gridChildren = List.generate(maxJournals, (index) {
-      int currentVersion = index + 1;
-      bool isShow = journals.any((element) => element.version == currentVersion);
-
-      if (isShow) {
-        JournalModel currentJournalModel = journals.firstWhere((element) => element.version == currentVersion);
-        return _getJournalVariantDetailsTile(
+    List<Widget> children = List.generate(journals.length, (index) {
+      JournalModel currentJournalModel = journals[index];
+      return _getJournalVariantDetailsTile(
           appThemeType: appThemeType,
           profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
           uploadedBy: currentJournalModel.uploadedBy,
           uploadedOn: currentJournalModel.uploadedOn,
-          nVariant: currentVersion,
+          nVariant: index, // todo remove
           onTap: isWidgetLoading ? () {} : () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
@@ -122,7 +118,7 @@ class Journal extends StatelessWidget {
                       course: userState.userModel.course!.courseName!,
                       semester: userState.userModel.semester!.nSemester!,
                       subject: subject,
-                      nVersion: currentVersion,
+                      nVersion: index, // todo remove
                       user: userState.userModel,
                     ));
                   }
@@ -131,34 +127,97 @@ class Journal extends StatelessWidget {
                 screenLabel: "Journal",
                 parameter: PDFScreenSimpleBottomSheet(
                   profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
-                  nVariant: currentVersion,
+                  nVariant: index, // todo remove
                   uploadedBy: currentJournalModel.uploadedBy,
                   title: subject,
                 ),
               ),
             ));
           }
-        );
-      } else {
-       return Utils.getAddPostContainer(
-         isDarkTheme: appThemeType.isDarkTheme(),
-         onPressed: isAddJournalLoading || isWidgetLoading ? () {} : () {
-           if (userState is UserLoaded) {
-             context.read<JournalBloc>().add(JournalAdd(
-               journalSubjects: journalSubjects,
-               uploadedBy: userState.userModel.displayName!,
-               course: userState.userModel.course!.courseName!,
-               semester: userState.userModel.semester!.nSemester!,
-               subject: subject,
-               nVersion: currentVersion,
-               user: userState.userModel,
-             ));
-           }
-         },
-         label: isAddJournalLoading ? "Loading" : "Add Journal",
-       );
-      }
+      );
     });
+
+    if (journals.length < maxJournals) {
+      children.add(Utils.getAddPostContainer(
+        isDarkTheme: appThemeType.isDarkTheme(),
+        onPressed: isAddJournalLoading || isWidgetLoading ? () {} : () {
+          if (userState is UserLoaded) {
+            context.read<JournalBloc>().add(JournalAdd(
+              journalSubjects: journalSubjects,
+              uploadedBy: userState.userModel.displayName!,
+              course: userState.userModel.course!.courseName!,
+              semester: userState.userModel.semester!.nSemester!,
+              subject: subject,
+              user: userState.userModel,
+            ));
+          }
+        },
+        label: isAddJournalLoading ? "Loading" : "Add Journal",
+      ));
+    }
+
+
+    // List<Widget> gridChildren = List.generate(maxJournals, (index) {
+    //   int currentVersion = index + 1;
+    //   bool isShow = journals.any((element) => element.version == currentVersion);
+    //
+    //   if (isShow) {
+    //     JournalModel currentJournalModel = journals.firstWhere((element) => element.version == currentVersion);
+    //     return _getJournalVariantDetailsTile(
+    //       appThemeType: appThemeType,
+    //       profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
+    //       uploadedBy: currentJournalModel.uploadedBy,
+    //       uploadedOn: currentJournalModel.uploadedOn,
+    //       nVariant: currentVersion,
+    //       onTap: isWidgetLoading ? () {} : () {
+    //         Navigator.of(context).push(MaterialPageRoute(
+    //           builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+    //             onReportPressed: (values) {
+    //               if (userState is UserLoaded) {
+    //                 context.read<JournalBloc>().add(JournalReportAdd(
+    //                   reportValues: values,
+    //                   journalSubjects: journalSubjects,
+    //                   uploadedBy: userState.userModel.displayName!,
+    //                   course: userState.userModel.course!.courseName!,
+    //                   semester: userState.userModel.semester!.nSemester!,
+    //                   subject: subject,
+    //                   nVersion: currentVersion,
+    //                   user: userState.userModel,
+    //                 ));
+    //               }
+    //             },
+    //             documentUrl: currentJournalModel.documentUrl,
+    //             screenLabel: "Journal",
+    //             parameter: PDFScreenSimpleBottomSheet(
+    //               profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
+    //               nVariant: currentVersion,
+    //               uploadedBy: currentJournalModel.uploadedBy,
+    //               title: subject,
+    //             ),
+    //           ),
+    //         ));
+    //       }
+    //     );
+    //   } else {
+    //    return Utils.getAddPostContainer(
+    //      isDarkTheme: appThemeType.isDarkTheme(),
+    //      onPressed: isAddJournalLoading || isWidgetLoading ? () {} : () {
+    //        if (userState is UserLoaded) {
+    //          context.read<JournalBloc>().add(JournalAdd(
+    //            journalSubjects: journalSubjects,
+    //            uploadedBy: userState.userModel.displayName!,
+    //            course: userState.userModel.course!.courseName!,
+    //            semester: userState.userModel.semester!.nSemester!,
+    //            subject: subject,
+    //            nVersion: currentVersion,
+    //            user: userState.userModel,
+    //          ));
+    //        }
+    //      },
+    //      label: isAddJournalLoading ? "Loading" : "Add Journal",
+    //    );
+    //   }
+    // });
 
     return Container(
       child: Column(
@@ -172,7 +231,7 @@ class Journal extends StatelessWidget {
             crossAxisCount: 2,
             physics: NeverScrollableScrollPhysics(),
             childAspectRatio: 16/10,
-            children: gridChildren,
+            children: children,
           ),
         ],
       ),
@@ -287,7 +346,6 @@ class Journal extends StatelessWidget {
                               userProfilePhotoUrl: "",
                               userUid: "",
                               uploadedBy: "",
-                              version: index,
                               id: '',
                             )),
                           )),

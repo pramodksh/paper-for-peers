@@ -44,11 +44,11 @@ class JournalRepository {
   Future<ApiResponse> uploadAndAddJournalToAdmin({
     required String course, required int semester,
     required String subject, required UserModel user,
-    required int version, required File document,
+    required File document,
     required int maxJournals,
   }) async {
     try {
-      Map<String, dynamic> journalDetails = JournalModel.toFirestoreMap(user: user, version: version);
+      Map<String, dynamic> journalDetails = JournalModel.toFirestoreMap(user: user,);
       journalDetails.addAll({
         "course": course,
         "semester": semester,
