@@ -141,7 +141,6 @@ class QuestionPaperRepository {
 
         await Future.forEach<firestore.QueryDocumentSnapshot>(versionsSnapshot.docs, (version) async {
           Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
-          print("CHECK: ${versionData}");
           questionPapers.add(QuestionPaperModel.fromFirestoreMap(map: versionData, id: version.id));
         });
         questionPaperYears.add(QuestionPaperYearModel(
@@ -158,7 +157,7 @@ class QuestionPaperRepository {
   Future<ApiResponse> reportQuestionPaper({
     required String course, required int semester,
     required String subject, required int year,
-    required int nVersion, required List<String> reportValues,
+    required String questionPaperId, required List<String> reportValues,
     required String userId,
   }) async {
 
@@ -167,7 +166,7 @@ class QuestionPaperRepository {
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString())
-          .collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(nVersion.toString()).get();
+          .collection(FirebaseCollectionConfig.versionsCollectionLabel).doc(questionPaperId).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 

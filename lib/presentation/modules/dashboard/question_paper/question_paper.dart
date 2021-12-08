@@ -108,7 +108,7 @@ class QuestionPaper extends StatelessWidget {
                         if (userState is UserLoaded) {
                           context.read<QuestionPaperBloc>().add(QuestionPaperAddReport(
                             questionPaperYears: questionPaperYears,
-                            nVersion: index, // todo remove if possible
+                            questionPaperId: currentQuestionPaper.id,
                             reportValues: values,
                             year: questionPaperYears[questionPaperYearIndex].year,
                             course: userState.userModel.course!.courseName!,
