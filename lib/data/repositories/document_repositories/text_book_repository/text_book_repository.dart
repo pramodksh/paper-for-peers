@@ -151,13 +151,13 @@ class TextBookRepository {
   Future<ApiResponse> reportTextBook({
     required String course, required int semester,
     required String subject, required String userId,
-    required int version, required List<String> reportValues,
+    required String textBookId, required List<String> reportValues,
   }) async {
     try {
       firestore.DocumentSnapshot versionSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
-          .collection(FirebaseCollectionConfig.textBookCollectionLabel).doc(version.toString()).get();
+          .collection(FirebaseCollectionConfig.textBookCollectionLabel).doc(textBookId).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 

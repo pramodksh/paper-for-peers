@@ -58,11 +58,11 @@ class TextBookReportAdd extends TextBookEvent {
   final String course;
   final String subject;
   final int semester;
-  final int nVersion;
+  final String textBookId;
   final UserModel user;
 
   @override
-  List<Object?> get props => [uploadedBy, course, subject, semester, nVersion, user, textBookSubjects];
+  List<Object?> get props => [uploadedBy, course, subject, semester, textBookId, user, textBookSubjects];
 
   const TextBookReportAdd({
     required this.reportValues,
@@ -71,12 +71,12 @@ class TextBookReportAdd extends TextBookEvent {
     required this.course,
     required this.subject,
     required this.semester,
-    required this.nVersion,
+    required this.textBookId,
     required this.user,
   });
 
   @override
   String toString() {
-    return 'TextBookReportAdd{reportValues: $reportValues, textBookSubjects: $textBookSubjects, uploadedBy: $uploadedBy, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion, user: $user}';
+    return 'TextBookReportAdd{reportValues: $reportValues, textBookSubjects: $textBookSubjects, uploadedBy: $uploadedBy, course: $course, subject: $subject, semester: $semester, nVersion: $textBookId, user: $user}';
   }
 }

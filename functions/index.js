@@ -7,6 +7,13 @@ const firestore = admin.firestore();
 // /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
 // /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
 
+// Admin - reports collection label
+const reportsQuestionPaperCollectionLabel = "reports_question_papers";
+const reportsNotesCollectionLabel = "reports_notes";
+const reportsJournalsCollectionLabel = "reports_journals";
+const reportsTextBookCollectionLabel = "reports_text_books";
+const reportsSyllabusCopyCollectionLabel = "reports_syllabus_copy";
+
 // Defining weights for reports
 const reportWeights = {
   not_legitimate: 2,
@@ -53,6 +60,8 @@ exports.reportQuestionPaper = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}"
   )
   .onUpdate(async (change, context) => {
+    functions.logger.log("REPORT QUESTION PAPER");
+    const questionPaperId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
@@ -81,15 +90,20 @@ exports.reportQuestionPaper = functions.firestore
 
     // Delete document if limit exceeds
     if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
+      await admin
+        .firestore()
+        .collection(reportsQuestionPaperCollectionLabel)
+        .doc(questionPaperId)
+        .set(newValue);
 
-      functions.logger.log("DELETING FILE FROM STORAGE");
+      functions.logger.log("ADDED Question paper IN ADMIN COLLECTION");
 
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/question_paper/${context.params.year}/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
-
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      // functions.logger.log("DELETING DOCUMENT");
+      // await change.after.ref.delete();
+      // functions.logger.log("DELETING FILE FROM STORAGE");
+      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/question_paper/${context.params.year}/${context.params.version}.pdf`;
+      // await bucket.file(path).delete();
+      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -100,6 +114,7 @@ exports.reportJournal = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/journal/{version}"
   )
   .onUpdate(async (change, context) => {
+    const journalId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
@@ -128,15 +143,22 @@ exports.reportJournal = functions.firestore
 
     // Delete document if limit exceeds
     if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
+      await admin
+        .firestore()
+        .collection(reportsJournalsCollectionLabel)
+        .doc(journalId)
+        .set(newValue);
 
-      functions.logger.log("DELETING FILE FROM STORAGE");
+      functions.logger.log("ADDED Journal IN ADMIN COLLECTION");
+      // functions.logger.log("DELETING DOCUMENT");
+      // await change.after.ref.delete();
 
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/journals/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
+      // functions.logger.log("DELETING FILE FROM STORAGE");
 
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/journals/${context.params.version}.pdf`;
+      // await bucket.file(path).delete();
+
+      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -147,6 +169,7 @@ exports.reportSyllabusCopy = functions.firestore
     "/courses_new/{course}/semesters/{semester}/syllabus_copy/{version}"
   )
   .onUpdate(async (change, context) => {
+    const syllabusCopyId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
@@ -175,15 +198,22 @@ exports.reportSyllabusCopy = functions.firestore
 
     // Delete document if limit exceeds
     if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
+      await admin
+        .firestore()
+        .collection(reportsSyllabusCopyCollectionLabel)
+        .doc(syllabusCopyId)
+        .set(newValue);
 
-      functions.logger.log("DELETING FILE FROM STORAGE");
+      functions.logger.log("ADDED Syllabus copy IN ADMIN COLLECTION");
+      // functions.logger.log("DELETING DOCUMENT");
+      // await change.after.ref.delete();
 
-      const path = `courses/${context.params.course}/${context.params.semester}/syllabus_copy/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
+      // functions.logger.log("DELETING FILE FROM STORAGE");
 
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      // const path = `courses/${context.params.course}/${context.params.semester}/syllabus_copy/${context.params.version}.pdf`;
+      // await bucket.file(path).delete();
+
+      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -194,6 +224,7 @@ exports.reportTextBook = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/text_book/{version}"
   )
   .onUpdate(async (change, context) => {
+    const textBookId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
@@ -222,15 +253,22 @@ exports.reportTextBook = functions.firestore
 
     // Delete document if limit exceeds
     if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
+      await admin
+        .firestore()
+        .collection(reportsTextBookCollectionLabel)
+        .doc(textBookId)
+        .set(newValue);
 
-      functions.logger.log("DELETING FILE FROM STORAGE");
+      functions.logger.log("ADDED Text book IN ADMIN COLLECTION");
+      // functions.logger.log("DELETING DOCUMENT");
+      // await change.after.ref.delete();
 
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/text_book/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
+      // functions.logger.log("DELETING FILE FROM STORAGE");
 
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/text_book/${context.params.version}.pdf`;
+      // await bucket.file(path).delete();
+
+      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -241,6 +279,7 @@ exports.reportNotes = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/notes/{noteId}"
   )
   .onUpdate(async (change, context) => {
+    const noteId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
@@ -269,15 +308,22 @@ exports.reportNotes = functions.firestore
 
     // Delete document if limit exceeds
     if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await firestore.recursiveDelete(change.after.ref);
+      await admin
+        .firestore()
+        .collection(reportsNotesCollectionLabel)
+        .doc(noteId)
+        .set(newValue);
 
-      functions.logger.log("DELETING FILE FROM STORAGE");
+      functions.logger.log("ADDED Notes IN ADMIN COLLECTION");
+      // functions.logger.log("DELETING DOCUMENT");
+      // await firestore.recursiveDelete(change.after.ref);
 
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/notes/${context.params.noteId}.pdf`;
-      await bucket.file(path).delete();
+      // functions.logger.log("DELETING FILE FROM STORAGE");
 
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/notes/${context.params.noteId}.pdf`;
+      // await bucket.file(path).delete();
+
+      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }

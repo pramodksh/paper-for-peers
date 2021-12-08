@@ -40,7 +40,10 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
     _firebaseRemoteConfigRepository.getMaxTextBooks().then((maxTextBooks) {
       on<TextBookReportAdd>((event, emit) async {
         print("EVENT: $event");
-        ApiResponse reportResponse = await _textBookRepository.reportTextBook(course: event.course, semester: event.semester, subject: event.subject, userId: event.user.uid, version: event.nVersion, reportValues: event.reportValues);
+        ApiResponse reportResponse = await _textBookRepository.reportTextBook(
+          course: event.course, semester: event.semester, subject: event.subject,
+          userId: event.user.uid, textBookId: event.textBookId, reportValues: event.reportValues
+        );
         if (reportResponse.isError) {
           emit(TextBookReportError(errorMessage: reportResponse.errorMessage!, maxTextBooks: maxTextBooks));
         } else {

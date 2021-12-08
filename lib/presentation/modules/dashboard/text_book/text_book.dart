@@ -117,7 +117,7 @@ class TextBook extends StatelessWidget {
                       course: userState.userModel.course!.courseName!,
                       semester: userState.userModel.semester!.nSemester!,
                       subject: subject,
-                      nVersion: index, // todo remove
+                      textBookId: currentTextBookModel.id,
                       user: userState.userModel,
                     ));
                   }
