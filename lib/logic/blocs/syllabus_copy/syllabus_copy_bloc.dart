@@ -56,7 +56,7 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
           emit(SyllabusCopyAddLoading(syllabusCopies: event.syllabusCopies, maxSyllabusCopy: maxSyllabusCopy));
 
           ApiResponse uploadAndAddResponse = await  _syllabusCopyRepository.uploadAndAddSyllabusCopyToAdmin(
-            course: event.user.course!.courseName!, semester: event.user.semester!.nSemester!, version: event.version,
+            course: event.user.course!.courseName!, semester: event.user.semester!.nSemester!,
             document: file, user: event.user, maxSyllabusCopy: maxSyllabusCopy,
           );
 

@@ -32,77 +32,145 @@ class SyllabusCopy extends StatelessWidget {
           Text("Syllabus Copy", style: TextStyle(fontSize: 25),),
           SizedBox(height: 20,),
 
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: maxSyllabusCopy,
-            itemBuilder: (context, index) {
-              int currentVersion = index + 1;
-              bool isShow = syllabusCopies.any((element) => element.version == currentVersion);
-
-              return Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: Builder(
-                  builder: (context) {
-                    if (isShow) {
-                      SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies.firstWhere((element) => element.version == currentVersion);
-                      return GestureDetector(
-                        onTap: isWidgetLoading ? () {} : () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
-                              onReportPressed: (values) {
-                                if (userState is UserLoaded) {
-                                  context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
-                                    reportValues: values,
-                                    syllabusCopies: syllabusCopies,
-                                    version: currentVersion,
-                                    user: userState.userModel,
-                                  ));
-                                }
-                              },
-                              documentUrl: currentSyllabusCopyModel.documentUrl,
-                              screenLabel: "Syllabus Copy",
-                              isShowBottomSheet: false,
-                              parameter: PDFScreenSyllabusCopy(
-                                profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
-                                uploadedBy: currentSyllabusCopyModel.uploadedBy,
-                                nVariant: currentSyllabusCopyModel.version,
-                              ),
-                            ),
-                          ));
+          Builder(
+            builder: (context) {
+              List<Widget> children = List.generate(syllabusCopies.length, (index) {
+                SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies[index];
+                return GestureDetector(
+                  onTap: isWidgetLoading ? () {} : () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
+                        onReportPressed: (values) {
+                          if (userState is UserLoaded) {
+                            context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
+                              reportValues: values,
+                              syllabusCopies: syllabusCopies,
+                              version: index, // todo remove
+                              user: userState.userModel,
+                            ));
+                          }
                         },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: Text("Variant: ${currentSyllabusCopyModel.version}", style: TextStyle(fontSize: 20),),
+                        documentUrl: currentSyllabusCopyModel.documentUrl,
+                        screenLabel: "Syllabus Copy",
+                        isShowBottomSheet: false,
+                        parameter: PDFScreenSyllabusCopy(
+                          profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
+                          uploadedBy: currentSyllabusCopyModel.uploadedBy,
+                          nVariant: index, // todo remove
                         ),
-                      );
-                    } else {
-                      return SizedBox(
-                        height: 100,
-                        child: Utils.getAddPostContainer(
-                          isDarkTheme: isDarkTheme,
-                          label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
-                          onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
-                            if (userState is UserLoaded) {
-                              context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
-                                syllabusCopies: syllabusCopies,
-                                version: currentVersion,
-                                user: userState.userModel,
-                              ));
-                            }
-                          },
-                        ),
-                      );
-                    }
+                      ),
+                    ));
                   },
-                ),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                    decoration: BoxDecoration(
+                      color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Text("Variant: ${index}", style: TextStyle(fontSize: 20),),
+                  ),
+                );
+              });
+
+              if (syllabusCopies.length < maxSyllabusCopy) {
+                children.add(SizedBox(
+                  height: 100,
+                  child: Utils.getAddPostContainer(
+                    isDarkTheme: isDarkTheme,
+                    label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
+                    onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
+                      if (userState is UserLoaded) {
+                        context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
+                          syllabusCopies: syllabusCopies,
+                          user: userState.userModel,
+                        ));
+                      }
+                    },
+                  ),
+                ));
+              }
+
+              return ListView.separated(
+                separatorBuilder: (context, index) => SizedBox(height: 20,),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: children.length,
+                itemBuilder: (context, index) => children[index],
               );
             },
           ),
+
+          // ListView.builder(
+          //   shrinkWrap: true,
+          //   physics: NeverScrollableScrollPhysics(),
+          //   itemCount: maxSyllabusCopy,
+          //   itemBuilder: (context, index) {
+          //     int currentVersion = index + 1;
+          //     bool isShow = syllabusCopies.any((element) => element.version == currentVersion);
+          //
+          //     return Container(
+          //       margin: EdgeInsets.only(bottom: 20),
+          //       child: Builder(
+          //         builder: (context) {
+          //           if (isShow) {
+          //             SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies.firstWhere((element) => element.version == currentVersion);
+          //             return GestureDetector(
+          //               onTap: isWidgetLoading ? () {} : () {
+          //                 Navigator.of(context).push(MaterialPageRoute(
+          //                   builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
+          //                     onReportPressed: (values) {
+          //                       if (userState is UserLoaded) {
+          //                         context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
+          //                           reportValues: values,
+          //                           syllabusCopies: syllabusCopies,
+          //                           version: currentVersion,
+          //                           user: userState.userModel,
+          //                         ));
+          //                       }
+          //                     },
+          //                     documentUrl: currentSyllabusCopyModel.documentUrl,
+          //                     screenLabel: "Syllabus Copy",
+          //                     isShowBottomSheet: false,
+          //                     parameter: PDFScreenSyllabusCopy(
+          //                       profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
+          //                       uploadedBy: currentSyllabusCopyModel.uploadedBy,
+          //                       nVariant: currentSyllabusCopyModel.version,
+          //                     ),
+          //                   ),
+          //                 ));
+          //               },
+          //               child: Container(
+          //                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+          //                 decoration: BoxDecoration(
+          //                   color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+          //                   borderRadius: BorderRadius.all(Radius.circular(20)),
+          //                 ),
+          //                 child: Text("Variant: ${currentSyllabusCopyModel.version}", style: TextStyle(fontSize: 20),),
+          //               ),
+          //             );
+          //           } else {
+          //             return SizedBox(
+          //               height: 100,
+          //               child: Utils.getAddPostContainer(
+          //                 isDarkTheme: isDarkTheme,
+          //                 label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
+          //                 onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
+          //                   if (userState is UserLoaded) {
+          //                     context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
+          //                       syllabusCopies: syllabusCopies,
+          //                       version: currentVersion,
+          //                       user: userState.userModel,
+          //                     ));
+          //                   }
+          //                 },
+          //               ),
+          //             );
+          //           }
+          //         },
+          //       ),
+          //     );
+          //   },
+          // ),
         ],
       ),
     );
@@ -156,7 +224,6 @@ class SyllabusCopy extends StatelessWidget {
                       isWidgetLoading: true,
                       syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
                         id: '',
-                        version: index,
                         uploadedBy: "",
                         userUid: "",
                         userProfilePhotoUrl: "",

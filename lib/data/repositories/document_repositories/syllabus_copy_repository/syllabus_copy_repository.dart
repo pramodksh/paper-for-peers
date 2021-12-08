@@ -48,11 +48,11 @@ class SyllabusCopyRepository {
   Future<ApiResponse> uploadAndAddSyllabusCopyToAdmin({
     required String course, required int semester,
     required UserModel user,
-    required int version, required File document,
+    required File document,
     required int maxSyllabusCopy
   }) async {
     try {
-      Map<String, dynamic> syllabusCopyDetails = SyllabusCopyModel.toFirestoreMap(user: user, version: version);
+      Map<String, dynamic> syllabusCopyDetails = SyllabusCopyModel.toFirestoreMap(user: user,);
       syllabusCopyDetails.addAll({
         "course": course,
         "semester": semester,
