@@ -15,7 +15,6 @@ class TextBookSubjectModel {
 class TextBookModel {
 
   final String id;
-  final int version;
   final String documentUrl;
   final String uploadedBy;
   final DateTime uploadedOn;
@@ -27,7 +26,6 @@ class TextBookModel {
 
   const TextBookModel({
     required this.id,
-    required this.version,
     required this.documentUrl,
     required this.uploadedBy,
     required this.uploadedOn,
@@ -39,7 +37,6 @@ class TextBookModel {
   factory TextBookModel.fromFirestoreMap({required Map<String, dynamic> map, required String id}) {
     return TextBookModel(
       id: id,
-      version: map['version'] as int,
       documentUrl: map['document_url'] as String,
       uploadedBy: map['uploaded_by'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),

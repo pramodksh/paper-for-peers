@@ -97,67 +97,127 @@ class TextBook extends StatelessWidget {
     required BuildContext context, required int maxTextBooks
   }) {
 
-    List<Widget> gridChildren = List.generate(maxTextBooks, (index) {
-      int currentVersion = index + 1;
-      bool isShow = textBooks.any((element) => element.version == currentVersion);
-
-      if (isShow) {
-        TextBookModel currentTextBookModel = textBooks.firstWhere((element) => element.version == currentVersion);
-        return _getTextBookVariantDetailsTile(
-            appThemeType: appThemeType,
-            nVariant: currentVersion,
-            profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
-            uploadedOn: currentTextBookModel.uploadedOn,
-            uploadedBy: currentTextBookModel.uploadedBy,
-            onTap: isWidgetLoading ? () {} : () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-                  onReportPressed: (values) {
-                    if (userState is UserLoaded) {
-                      context.read<TextBookBloc>().add(TextBookReportAdd(
-                        reportValues: values,
-                        textBookSubjects: textBookSubjects,
-                        uploadedBy: userState.userModel.displayName!,
-                        course: userState.userModel.course!.courseName!,
-                        semester: userState.userModel.semester!.nSemester!,
-                        subject: subject,
-                        nVersion: currentVersion,
-                        user: userState.userModel,
-                      ));
-                    }
-                  },
-                  documentUrl: currentTextBookModel.documentUrl,
-                  screenLabel: "Text Book",
-                  parameter: PDFScreenSimpleBottomSheet(
-                      profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
-                      nVariant: currentTextBookModel.version,
-                      uploadedBy: currentTextBookModel.uploadedBy,
-                      title: subject
-                  ),
+    List<Widget> children = List.generate(textBooks.length, (index) {
+      TextBookModel currentTextBookModel = textBooks[index];
+      return _getTextBookVariantDetailsTile(
+          appThemeType: appThemeType,
+          nVariant: index, // todo remove
+          profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
+          uploadedOn: currentTextBookModel.uploadedOn,
+          uploadedBy: currentTextBookModel.uploadedBy,
+          onTap: isWidgetLoading ? () {} : () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                onReportPressed: (values) {
+                  if (userState is UserLoaded) {
+                    context.read<TextBookBloc>().add(TextBookReportAdd(
+                      reportValues: values,
+                      textBookSubjects: textBookSubjects,
+                      uploadedBy: userState.userModel.displayName!,
+                      course: userState.userModel.course!.courseName!,
+                      semester: userState.userModel.semester!.nSemester!,
+                      subject: subject,
+                      nVersion: index, // todo remove
+                      user: userState.userModel,
+                    ));
+                  }
+                },
+                documentUrl: currentTextBookModel.documentUrl,
+                screenLabel: "Text Book",
+                parameter: PDFScreenSimpleBottomSheet(
+                    profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
+                    nVariant: index, // todo remove
+                    uploadedBy: currentTextBookModel.uploadedBy,
+                    title: subject
                 ),
-              ));
-            }
-        );
-      } else {
-        return Utils.getAddPostContainer(
-          isDarkTheme: appThemeType.isDarkTheme(),
-          onPressed: isAddTextBookLoading || isWidgetLoading ? () {} : () {
-            if (userState is UserLoaded) {
-              context.read<TextBookBloc>().add(TextBookAdd(
-                textBookSubjects: textBookSubjects,
-                uploadedBy: userState.userModel.displayName!,
-                course: userState.userModel.course!.courseName!,
-                semester: userState.userModel.semester!.nSemester!,
-                subject: subject,
-                nVersion: currentVersion,
-                user: userState.userModel,
-              ));
-            }
-          },
-          label: isAddTextBookLoading ? "Loading" : "Add Text Book",
-        );
-      }
+              ),
+            ));
+          }
+      );
     });
+
+    if (textBooks.length < maxTextBooks) {
+      children.add(Utils.getAddPostContainer(
+        isDarkTheme: appThemeType.isDarkTheme(),
+        onPressed: isAddTextBookLoading || isWidgetLoading ? () {} : () {
+          if (userState is UserLoaded) {
+            context.read<TextBookBloc>().add(TextBookAdd(
+              textBookSubjects: textBookSubjects,
+              uploadedBy: userState.userModel.displayName!,
+              course: userState.userModel.course!.courseName!,
+              semester: userState.userModel.semester!.nSemester!,
+              subject: subject,
+              nVersion: textBooks.length + 1, // todo remove
+              user: userState.userModel,
+            ));
+          }
+        },
+        label: isAddTextBookLoading ? "Loading" : "Add Text Book",
+      ));
+    }
+
+
+    // List<Widget> gridChildren = List.generate(maxTextBooks, (index) {
+    //   int currentVersion = index + 1;
+    //   bool isShow = textBooks.any((element) => element.version == currentVersion);
+    //
+    //   if (isShow) {
+    //     TextBookModel currentTextBookModel = textBooks.firstWhere((element) => element.version == currentVersion);
+    //     return _getTextBookVariantDetailsTile(
+    //         appThemeType: appThemeType,
+    //         nVariant: currentVersion,
+    //         profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
+    //         uploadedOn: currentTextBookModel.uploadedOn,
+    //         uploadedBy: currentTextBookModel.uploadedBy,
+    //         onTap: isWidgetLoading ? () {} : () {
+    //           Navigator.of(context).push(MaterialPageRoute(
+    //             builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+    //               onReportPressed: (values) {
+    //                 if (userState is UserLoaded) {
+    //                   context.read<TextBookBloc>().add(TextBookReportAdd(
+    //                     reportValues: values,
+    //                     textBookSubjects: textBookSubjects,
+    //                     uploadedBy: userState.userModel.displayName!,
+    //                     course: userState.userModel.course!.courseName!,
+    //                     semester: userState.userModel.semester!.nSemester!,
+    //                     subject: subject,
+    //                     nVersion: currentVersion,
+    //                     user: userState.userModel,
+    //                   ));
+    //                 }
+    //               },
+    //               documentUrl: currentTextBookModel.documentUrl,
+    //               screenLabel: "Text Book",
+    //               parameter: PDFScreenSimpleBottomSheet(
+    //                   profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
+    //                   nVariant: currentTextBookModel.version,
+    //                   uploadedBy: currentTextBookModel.uploadedBy,
+    //                   title: subject
+    //               ),
+    //             ),
+    //           ));
+    //         }
+    //     );
+    //   } else {
+    //     return Utils.getAddPostContainer(
+    //       isDarkTheme: appThemeType.isDarkTheme(),
+    //       onPressed: isAddTextBookLoading || isWidgetLoading ? () {} : () {
+    //         if (userState is UserLoaded) {
+    //           context.read<TextBookBloc>().add(TextBookAdd(
+    //             textBookSubjects: textBookSubjects,
+    //             uploadedBy: userState.userModel.displayName!,
+    //             course: userState.userModel.course!.courseName!,
+    //             semester: userState.userModel.semester!.nSemester!,
+    //             subject: subject,
+    //             nVersion: currentVersion,
+    //             user: userState.userModel,
+    //           ));
+    //         }
+    //       },
+    //       label: isAddTextBookLoading ? "Loading" : "Add Text Book",
+    //     );
+    //   }
+    // });
 
     return Container(
       child: Column(
@@ -171,7 +231,7 @@ class TextBook extends StatelessWidget {
             crossAxisCount: 2,
             physics: NeverScrollableScrollPhysics(),
             childAspectRatio: 16/10,
-            children: gridChildren,
+            children: children,
           ),
         ],
       ),
@@ -285,7 +345,6 @@ class TextBook extends StatelessWidget {
                               userProfilePhotoUrl: "",
                               userUid: "",
                               uploadedBy: "",
-                              version: index,
                               documentUrl: "",
                             ))
                           )),
