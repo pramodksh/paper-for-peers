@@ -80,8 +80,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
                   getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
                   semester: event.semester,
                   course: event.course,
+                  subject: event.subject,
                 );
-                print("CHECK SENT NOTIFICATION");
               });
             }
 
