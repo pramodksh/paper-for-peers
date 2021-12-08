@@ -83,8 +83,7 @@ class JournalRepository {
   Future<ApiResponse> getJournals({
     required String course, required int semester,
   }) async {
-    // try {
-
+    try {
       firestore.QuerySnapshot subjectSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
@@ -105,10 +104,10 @@ class JournalRepository {
         ));
       });
       return ApiResponse<List<JournalSubjectModel>>.success(data: journalSubjects);
-    // } catch (e) {
-    //   print("ERR: $e");
-    //   return ApiResponse.error(errorMessage: "Error while fetching journals");
-    // }
+    } catch (e) {
+      print("ERR: $e");
+      return ApiResponse.error(errorMessage: "Error while fetching journals");
+    }
   }
 
   Future<ApiResponse> reportJournal({
