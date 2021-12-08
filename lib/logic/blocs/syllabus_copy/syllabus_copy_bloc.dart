@@ -40,7 +40,10 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
     _firebaseRemoteConfigRepository.getMaxSyllabusCopy().then((maxSyllabusCopy) {
       on<SyllabusCopyReportAdd>((event, emit) async {
         print("REPORT: $event");
-        ApiResponse reportResponse = await _syllabusCopyRepository.reportSyllabusCopies(userId: event.user.uid, course: event.user.course!.courseName!, semester: event.user.semester!.nSemester!, version: event.version, reportValues: event.reportValues);
+        ApiResponse reportResponse = await _syllabusCopyRepository.reportSyllabusCopies(
+            userId: event.user.uid, course: event.user.course!.courseName!, 
+            semester: event.user.semester!.nSemester!, syllabusCopyId: event.syllabusCopyId, 
+            reportValues: event.reportValues);
 
         if (reportResponse.isError) {
           emit(SyllabusCopyReportError(errorMessage: reportResponse.errorMessage!, maxSyllabusCopy: maxSyllabusCopy));

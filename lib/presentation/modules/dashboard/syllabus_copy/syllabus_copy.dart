@@ -45,7 +45,7 @@ class SyllabusCopy extends StatelessWidget {
                             context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
                               reportValues: values,
                               syllabusCopies: syllabusCopies,
-                              version: index, // todo remove
+                              syllabusCopyId: currentSyllabusCopyModel.id,
                               user: userState.userModel,
                             ));
                           }

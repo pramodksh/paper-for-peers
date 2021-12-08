@@ -141,13 +141,13 @@ class SyllabusCopyRepository {
 
   Future<ApiResponse> reportSyllabusCopies({
     required String course, required int semester,
-    required int version, required List<String> reportValues,
+    required String syllabusCopyId, required List<String> reportValues,
     required String userId,
   }) async {
     try {
       firestore.DocumentSnapshot versionSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
-          .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).doc(version.toString()).get();
+          .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).doc(syllabusCopyId).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 
