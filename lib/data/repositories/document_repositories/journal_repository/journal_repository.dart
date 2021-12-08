@@ -112,14 +112,14 @@ class JournalRepository {
 
   Future<ApiResponse> reportJournal({
     required String course, required int semester,
-    required String subject, required int version,
+    required String subject, required String journalId,
     required List<String> reportValues, required String userId,
   }) async {
     try {
       firestore.DocumentSnapshot versionSnapshot = await _coursesCollection.doc(course)
         .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
         .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
-        .collection(FirebaseCollectionConfig.journalCollectionLabel).doc(version.toString()).get();
+        .collection(FirebaseCollectionConfig.journalCollectionLabel).doc(journalId).get();
 
       Map<String, dynamic> versionData = versionSnapshot.data() as Map<String, dynamic>;
 

@@ -42,7 +42,10 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       on<JournalReportAdd>((event, emit) async {
 
         print("REPORT EVENT: $event");
-        ApiResponse reportResponse = await _journalRepository.reportJournal(course: event.course, semester: event.semester, subject: event.subject, version: event.nVersion, reportValues: event.reportValues, userId: event.user.uid);
+        ApiResponse reportResponse = await _journalRepository.reportJournal(
+            course: event.course, semester: event.semester, subject: event.subject,
+            reportValues: event.reportValues, userId: event.user.uid, journalId: event.journalId,
+        );
         if (reportResponse.isError) {
           emit(JournalReportError(errorMessage: reportResponse.errorMessage!, maxJournals: maxJournals));
         } else {

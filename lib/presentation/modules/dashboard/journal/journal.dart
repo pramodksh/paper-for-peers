@@ -118,7 +118,7 @@ class Journal extends StatelessWidget {
                       course: userState.userModel.course!.courseName!,
                       semester: userState.userModel.semester!.nSemester!,
                       subject: subject,
-                      nVersion: index, // todo remove
+                      journalId: currentJournalModel.id,
                       user: userState.userModel,
                     ));
                   }
