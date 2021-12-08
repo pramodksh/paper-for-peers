@@ -214,6 +214,11 @@ class SyllabusCopy extends StatelessWidget {
         },
         child: ListView(
           children: [
+            SizedBox(height: 20,),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Utils.getCourseAndSemesterText(context: context),
+            ),
             Builder(
               builder: (context) {
                 if (syllabusCopyState is SyllabusCopyFetchLoading) {
