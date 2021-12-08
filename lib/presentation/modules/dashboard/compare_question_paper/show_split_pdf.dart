@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
+import 'package:papers_for_peers/config/text_styles.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class VariantGenerator {
 
   final List<QuestionPaperYearModel> questionPaperYears;
-  int? selectedVariant;
+  String? selectedVariantId;
   int? selectedYear;
   int? currentPageNumber = 0;
   int? totalPages = 0;
@@ -17,24 +21,24 @@ class VariantGenerator {
   }
 
   void resetVariant() {
-    this.selectedVariant = null;
+    this.selectedVariantId = null;
     this.selectedYear = null;
   }
 
   bool isShowPdf() {
-    return selectedYear != null && selectedVariant != null;
+    return selectedYear != null && selectedVariantId != null;
   }
 
   String getSelectedDocumentUrl() {
     return this.questionPaperYears.firstWhere((element) => element.year == this.selectedYear)
-        .questionPaperModels.firstWhere((element) => element.version == this.selectedVariant).documentUrl;
+        .questionPaperModels.firstWhere((element) => element.id == this.selectedVariantId).documentUrl;
   }
 
   VariantGenerator({required this.questionPaperYears,});
 
   @override
   String toString() {
-    return 'VariantGenerator{questionPaperYears: $questionPaperYears, selectedVariant: $selectedVariant, selectedYear: $selectedYear}';
+    return 'VariantGenerator{questionPaperYears: $questionPaperYears, selectedVariant: $selectedVariantId, selectedYear: $selectedYear}';
   }
 }
 
@@ -61,7 +65,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
     super.initState();
   }
 
-  Widget getExpandedPDFView({required int index, required List<VariantGenerator> variants}) {
+  Widget getExpandedPDFView({required int index, required List<VariantGenerator> variants, required bool isDarkTheme}) {
 
     return StatefulBuilder(
       builder: (context, setState) {
@@ -86,18 +90,25 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
                 variants[index].selectedYear == null ? Container() : Builder(
                     builder: (context) {
                       QuestionPaperYearModel selectedYearModel = variants[index].questionPaperYears.firstWhere((element) => element.year == variants[index].selectedYear!);
-                      print("SEE: ${selectedYearModel.questionPaperModels.map((e) => e.version).toList()}");
-
-                      return Utils.getCustomDropDown<int>(
+                      return Utils.getCustomDropDown<String>(
                         context: context,
                         dropDownHint: "Variant",
-                        dropDownItems: selectedYearModel.questionPaperModels.map((e) => e.version).toList(),
-                        dropDownValue: variants[index].selectedVariant,
+                        dropDownItems: selectedYearModel.questionPaperModels.map((e) => e.id).toList(),
+                        dropDownValue: variants[index].selectedVariantId,
                         onDropDownChanged: (val) {
                           setState(() {
-                            variants[index].selectedVariant = val;
+                            variants[index].selectedVariantId = val;
                           });
                         },
+                        items: List.generate(selectedYearModel.questionPaperModels.length, (index) {
+                          return DropdownMenuItem<String>(
+                            value: selectedYearModel.questionPaperModels[index].id,
+                            child: Text(index.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                              fontSize: 18,
+                              color: isDarkTheme ? Colors.white60 : Colors.black,
+                            ),),
+                          );
+                        }),
                       );
                     }
                 ),
@@ -155,12 +166,16 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
 
   @override
   Widget build(BuildContext context) {
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
     return Scaffold(
       body:  SafeArea(
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: List.generate(widget.numberOfSplits, (index) => getExpandedPDFView(
+              isDarkTheme: appThemeType.isDarkTheme(),
               index: index, variants: variants,
             )),
             // children: List.generate( (index) => getExpandedPDFView(index: index)),

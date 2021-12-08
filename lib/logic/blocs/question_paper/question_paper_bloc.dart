@@ -97,7 +97,6 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
           emit(QuestionPaperAddLoading(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
 
           ApiResponse uploadResponse = await _questionPaperRepository.uploadAndAddQuestionPaperToAdmin(
-            version: event.nVersion,
             course: event.course,
             semester: event.semester,
             subject: event.subject,

@@ -44,11 +44,15 @@ class QuestionPaper extends StatelessWidget {
         children: [
           Text(year, style: TextStyle(fontSize: 44, color: Colors.white38),),
           SizedBox(height: 10,),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: children,
-            ),
+          SizedBox(
+            height: 100,
+            child: ListView.separated(
+              separatorBuilder: (context, index) => SizedBox(width: 10,),
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: children.length,
+              itemBuilder: (context, index) => children[index],
+            )
           ),
         ],
       ),
@@ -92,84 +96,75 @@ class QuestionPaper extends StatelessWidget {
           separatorBuilder: (context, index) => SizedBox(height: 20,),
           itemCount: questionPaperYears.length,
           itemBuilder: (context, questionPaperYearIndex) {
-            return _getQuestionYearTile(
-              year: questionPaperYears[questionPaperYearIndex].year.toString(),
-              children: List.generate(maxQuestionPapers, (index) {
-                int currentVersion = index + 1;
-                bool isShow = questionPaperYears[questionPaperYearIndex].questionPaperModels.any((element) => element.version == currentVersion);
 
-                return Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: Builder(
-                    builder: (context) {
-                      if (isShow) {
-                        QuestionPaperModel currentQuestionPaper = questionPaperYears[questionPaperYearIndex].questionPaperModels.firstWhere((element) => element.version == currentVersion);
+            List<Widget> children = List.generate(questionPaperYears[questionPaperYearIndex].questionPaperModels.length, (index) {
+              QuestionPaperModel currentQuestionPaper = questionPaperYears[questionPaperYearIndex].questionPaperModels[index];
+              return _getQuestionVariantContainer(
+                appThemeType: appThemeType,
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                      onReportPressed: (values) {
+                        if (userState is UserLoaded) {
+                          context.read<QuestionPaperBloc>().add(QuestionPaperAddReport(
+                            questionPaperYears: questionPaperYears,
+                            nVersion: index, // todo remove if possible
+                            reportValues: values,
+                            year: questionPaperYears[questionPaperYearIndex].year,
+                            course: userState.userModel.course!.courseName!,
+                            semester: userState.userModel.semester!.nSemester!,
+                            subject: questionPaperState.selectedSubject!,
+                            userId: userState.userModel.uid,
+                          ));
+                        }
+                      },
+                      documentUrl: currentQuestionPaper.documentUrl,
+                      screenLabel: "Question Paper",
+                      parameter: PDFScreenSimpleBottomSheet(
+                        profilePhotoUrl: currentQuestionPaper.userProfilePhotoUrl,
+                        title: questionPaperYears[questionPaperYearIndex].year.toString(),
+                        nVariant: index,
+                        uploadedBy: currentQuestionPaper.uploadedBy,
+                      ),
+                    ),
+                  ));
+                },
+                nVariant: index,
+              );
+            });
 
-                        return _getQuestionVariantContainer(
-                          appThemeType: appThemeType,
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-                                onReportPressed: (values) {
-                                  if (userState is UserLoaded) {
-                                    context.read<QuestionPaperBloc>().add(QuestionPaperAddReport(
-                                      questionPaperYears: questionPaperYears,
-                                      nVersion: currentVersion,
-                                      reportValues: values,
-                                      year: questionPaperYears[questionPaperYearIndex].year,
-                                      course: userState.userModel.course!.courseName!,
-                                      semester: userState.userModel.semester!.nSemester!,
-                                      subject: questionPaperState.selectedSubject!,
-                                      userId: userState.userModel.uid,
-                                    ));
-                                  }
-                                },
-                                documentUrl: currentQuestionPaper.documentUrl,
-                                screenLabel: "Question Paper",
-                                parameter: PDFScreenSimpleBottomSheet(
-                                  profilePhotoUrl: currentQuestionPaper.userProfilePhotoUrl,
-                                  title: questionPaperYears[questionPaperYearIndex].year.toString(),
-                                  nVariant: currentQuestionPaper.version,
-                                  uploadedBy: currentQuestionPaper.uploadedBy,
-                                ),
-                              ),
-                            ));
-                          },
-                          nVariant: currentVersion,
-                        );
-                      } else {
-                        return Container(
-                          child: SizedBox(
-                            width: 180,
-                            height: 80,
-                            child: Utils.getAddPostContainer(
-                              isDarkTheme: isDarkTheme,
-                              label: questionPaperState is QuestionPaperAddLoading ? "Loading" : "Add Question Paper",
-                              onPressed: questionPaperState is QuestionPaperAddLoading || isWidgetLoading ? () {} : () {
-                                if (userState is UserLoaded) {
-                                  context.read<QuestionPaperBloc>().add(QuestionPaperAdd(
-                                    questionPaperYears: questionPaperYears,
-                                    year: questionPaperYears[questionPaperYearIndex].year,
-                                    uploadedBy: userState.userModel.displayName!,
-                                    course: userState.userModel.course!.courseName!,
-                                    semester: userState.userModel.semester!.nSemester!,
-                                    subject: questionPaperState.selectedSubject!,
-                                    nVersion: currentVersion,
-                                    user: userState.userModel,
-                                  ));
-                                }
-                              },
-                            ),
-                          ),
-                        );
+            if (questionPaperYears[questionPaperYearIndex].questionPaperModels.length < maxQuestionPapers) {
+              children.add(Container(
+                child: SizedBox(
+                  width: 180,
+                  height: 80,
+                  child: Utils.getAddPostContainer(
+                    isDarkTheme: isDarkTheme,
+                    label: questionPaperState is QuestionPaperAddLoading ? "Loading" : "Add Question Paper",
+                    onPressed: questionPaperState is QuestionPaperAddLoading || isWidgetLoading ? () {} : () {
+                      if (userState is UserLoaded) {
+                        context.read<QuestionPaperBloc>().add(QuestionPaperAdd(
+                          questionPaperYears: questionPaperYears,
+                          year: questionPaperYears[questionPaperYearIndex].year,
+                          uploadedBy: userState.userModel.displayName!,
+                          course: userState.userModel.course!.courseName!,
+                          semester: userState.userModel.semester!.nSemester!,
+                          subject: questionPaperState.selectedSubject!,
+                          user: userState.userModel,
+                        ));
                       }
                     },
                   ),
-                );
+                ),
+              ));
+            }
 
 
-              }),
+            return _getQuestionYearTile(
+              year: questionPaperYears[questionPaperYearIndex].year.toString(),
+              children: children,
             );
+
           },
         ),
       ],
@@ -271,7 +266,6 @@ class QuestionPaper extends StatelessWidget {
                                 userEmail: "",
                                 userProfilePhotoUrl: "",
                                 userUid: "",
-                                version: 0,
                                 uploadedBy: ""
                             ))
                         )),

@@ -46,12 +46,12 @@ class QuestionPaperRepository {
   Future<ApiResponse> uploadAndAddQuestionPaperToAdmin({
     required String course, required int semester,
     required String subject, required UserModel user,
-    required int version, required int year, required File document,
+    required int year, required File document,
     required int maxQuestionPapers
   }) async {
 
     try {
-      Map<String, dynamic> journalDetails = QuestionPaperModel.toFirestoreMap(user: user, version: version);
+      Map<String, dynamic> journalDetails = QuestionPaperModel.toFirestoreMap(user: user,);
       journalDetails.addAll({
         "course": course,
         "semester": semester,

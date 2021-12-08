@@ -33,11 +33,10 @@ class QuestionPaperAdd extends QuestionPaperEvent {
   final String course;
   final String subject;
   final int semester;
-  final int nVersion;
   final UserModel user;
 
   @override
-  List<Object?> get props => [uploadedBy, year, course, subject, semester, nVersion, user, questionPaperYears];
+  List<Object?> get props => [uploadedBy, year, course, subject, semester, user, questionPaperYears];
 
 
   const QuestionPaperAdd({
@@ -46,14 +45,13 @@ class QuestionPaperAdd extends QuestionPaperEvent {
     required this.course,
     required this.subject,
     required this.semester,
-    required this.nVersion,
     required this.user,
     required this.questionPaperYears,
   });
 
   @override
   String toString() {
-    return 'QuestionPaperAdd{uploadedBy: $uploadedBy, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion}';
+    return 'QuestionPaperAdd{uploadedBy: $uploadedBy, year: $year, course: $course, subject: $subject, semester: $semester,}';
   }
 }
 
