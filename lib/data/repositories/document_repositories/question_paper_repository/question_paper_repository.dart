@@ -56,6 +56,7 @@ class QuestionPaperRepository {
         "course": course,
         "semester": semester,
         "subject": subject,
+        "year": year,
       });
       firestore.DocumentReference questionPaperRef = await _questionPaperUploadsCollection.add(journalDetails);
 
