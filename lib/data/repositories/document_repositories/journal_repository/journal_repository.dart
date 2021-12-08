@@ -26,13 +26,12 @@ class JournalRepository {
   Future<ApiResponse> _uploadJournal({
     required File document,
     required String course, required int semester,
-    required String subject, required int version,
+    required String subject, required String journalId,
   }) async {
     try {
-      // todo avoid over writing - create new path = /admin/uploads/journal/id.pdf
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
           .child(semester.toString()).child(subject).child('journals')
-          .child("$version.pdf");
+          .child("$journalId.pdf");
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
@@ -49,25 +48,28 @@ class JournalRepository {
     required int maxJournals,
   }) async {
     try {
-      ApiResponse uploadResponse = await _uploadJournal(
-        document: document, course: course, semester: semester,
-        subject: subject, version: version,
-      );
-
-      if (uploadResponse.isError) {
-        return uploadResponse;
-      }
-
-      String documentUrl = uploadResponse.data;
-
-      Map<String, dynamic> journalDetails = JournalModel.toFirestoreMap(user: user, documentUrl: documentUrl);
+      Map<String, dynamic> journalDetails = JournalModel.toFirestoreMap(user: user, version: version);
       journalDetails.addAll({
         "course": course,
         "semester": semester,
         "subject": subject,
-        "version": version,
       });
-      await _journalUploadsAdminCollection.add(journalDetails);
+      firestore.DocumentReference journalRef = await _journalUploadsAdminCollection.add(journalDetails);
+
+      ApiResponse uploadResponse = await _uploadJournal(
+        document: document, course: course, semester: semester,
+        subject: subject, journalId: journalRef.id,
+      );
+
+      if (uploadResponse.isError) {
+        await journalRef.delete();
+        return uploadResponse;
+      }
+
+      String documentUrl = uploadResponse.data;
+      journalRef.update({
+        JournalModel.documentUrlFieldKey: documentUrl,
+      });
 
       return ApiResponse.success();
 
@@ -81,7 +83,7 @@ class JournalRepository {
   Future<ApiResponse> getJournals({
     required String course, required int semester,
   }) async {
-    try {
+    // try {
 
       firestore.QuerySnapshot subjectSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
@@ -94,7 +96,7 @@ class JournalRepository {
         firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
         await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
           Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
-          journals.add(JournalModel.fromFirestoreMap(map: journalData, version: int.parse(journal.id)));
+          journals.add(JournalModel.fromFirestoreMap(map: journalData, id: journal.id));
         });
 
         journalSubjects.add(JournalSubjectModel(
@@ -103,10 +105,10 @@ class JournalRepository {
         ));
       });
       return ApiResponse<List<JournalSubjectModel>>.success(data: journalSubjects);
-    } catch (e) {
-      print("ERR: $e");
-      return ApiResponse.error(errorMessage: "Error while fetching journals");
-    }
+    // } catch (e) {
+    //   print("ERR: $e");
+    //   return ApiResponse.error(errorMessage: "Error while fetching journals");
+    // }
   }
 
   Future<ApiResponse> reportJournal({

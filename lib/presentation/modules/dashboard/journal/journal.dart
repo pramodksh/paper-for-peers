@@ -288,6 +288,7 @@ class Journal extends StatelessWidget {
                               userUid: "",
                               uploadedBy: "",
                               version: index,
+                              id: '',
                             )),
                           )),
                           appThemeType: appThemeType,
