@@ -279,6 +279,7 @@ class TextBook extends StatelessWidget {
                           textBookSubjects: List.generate(2, (index) => TextBookSubjectModel(
                             subject: "",
                             textBookModels: List.generate(2, (index) => TextBookModel(
+                              id: "",
                               uploadedOn: DateTime.now(),
                               userEmail: "",
                               userProfilePhotoUrl: "",

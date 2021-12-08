@@ -181,6 +181,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<TextBookBloc>(
             create: (context) =>
                 TextBookBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   textBookRepository: context.read<TextBookRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),

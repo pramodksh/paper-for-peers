@@ -13,6 +13,8 @@ class TextBookSubjectModel {
 }
 
 class TextBookModel {
+
+  final String id;
   final int version;
   final String documentUrl;
   final String uploadedBy;
@@ -21,7 +23,10 @@ class TextBookModel {
   final String userEmail;
   final String userUid;
 
+  static final String documentUrlFieldKey = "document_url";
+
   const TextBookModel({
+    required this.id,
     required this.version,
     required this.documentUrl,
     required this.uploadedBy,
@@ -31,9 +36,10 @@ class TextBookModel {
     required this.userUid,
   });
 
-  factory TextBookModel.fromFirestoreMap({required Map<String, dynamic> map, required int version}) {
+  factory TextBookModel.fromFirestoreMap({required Map<String, dynamic> map, required String id}) {
     return TextBookModel(
-      version: version,
+      id: id,
+      version: map['version'] as int,
       documentUrl: map['document_url'] as String,
       uploadedBy: map['uploaded_by'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),
@@ -43,8 +49,9 @@ class TextBookModel {
     );
   }
 
-  static Map<String, dynamic> toFirestoreMap({required String documentUrl, required UserModel user}) {
+  static Map<String, dynamic> toFirestoreMap({required UserModel user, required int version ,String? documentUrl}) {
     return {
+      "version": version,
       "uploaded_by": user.displayName,
       "document_url": documentUrl,
       "uploaded_on": DateTime.now(),
