@@ -11,25 +11,30 @@ import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 class SyllabusCopyRepository {
   final firestore.FirebaseFirestore _firebaseFirestore;
   final storage.FirebaseStorage _firebaseStorage;
-  static late final firestore.CollectionReference coursesCollection;
 
   SyllabusCopyRepository({
     firestore.FirebaseFirestore? firebaseFirestore,
     storage.FirebaseStorage? firebaseStorage,
   }) : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance,
         _firebaseStorage = firebaseStorage ?? storage.FirebaseStorage.instance {
-    coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _syllabusCopyUploadsAdminCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.adminSyllabusCopyUploadsCollectionLabel);
+
   }
 
-  Future<ApiResponse> uploadSyllabusCopy({
+  static late final firestore.CollectionReference _coursesCollection;
+  static late final firestore.CollectionReference _syllabusCopyUploadsAdminCollection;
+
+
+  Future<ApiResponse> _uploadSyllabusCopy({
     required File document, required String course,
-    required int semester, required int version,
+    required int semester, required String syllabusCopyId,
   }) async {
 
     try {
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
           .child(semester.toString()).child('syllabus_copy')
-          .child("$version.pdf");
+          .child("$syllabusCopyId.pdf");
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
@@ -40,39 +45,74 @@ class SyllabusCopyRepository {
   }
 
 
-  Future<ApiResponse> uploadAndAddSyllabusCopy({
+  Future<ApiResponse> uploadAndAddSyllabusCopyToAdmin({
     required String course, required int semester,
     required UserModel user,
     required int version, required File document,
     required int maxSyllabusCopy
   }) async {
     try {
-      firestore.CollectionReference syllabusCopyCollection = coursesCollection.doc(course)
-          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
-          .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel);
+      Map<String, dynamic> syllabusCopyDetails = SyllabusCopyModel.toFirestoreMap(user: user, version: version);
+      syllabusCopyDetails.addAll({
+        "course": course,
+        "semester": semester,
+      });
+      firestore.DocumentReference syllabusCopyRef = await _syllabusCopyUploadsAdminCollection.add(syllabusCopyDetails);
 
-      firestore.QuerySnapshot syllabusCopySnapshot = await syllabusCopyCollection.get();
-
-      if (syllabusCopySnapshot.docs.length >= maxSyllabusCopy) {
-        return ApiResponse.error(errorMessage: "The course $course $semester has the maximum syllabus copies. Please refresh to view them");
-      }
-
-      ApiResponse uploadResponse = await uploadSyllabusCopy(document: document, course: course, semester: semester, version: version);
+      ApiResponse uploadResponse = await _uploadSyllabusCopy(
+          document: document, course: course,
+         semester: semester, syllabusCopyId: syllabusCopyRef.id,
+      );
 
       if (uploadResponse.isError) {
+        await syllabusCopyRef.delete();
         return uploadResponse;
       }
 
       String documentUrl = uploadResponse.data;
-      await syllabusCopyCollection.doc(version.toString()).set(SyllabusCopyModel.toFirestoreMap(documentUrl: documentUrl, user: user));
-
+      syllabusCopyRef.update({
+        SyllabusCopyModel.documentUrlFieldKey: documentUrl,
+      });
       return ApiResponse.success();
-
-    } catch (err) {
-      return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
+    } catch (e) {
+      return ApiResponse.error(errorMessage: "There was an error while uploading syllabus copy:");
     }
-
   }
+
+
+  // Future<ApiResponse> uploadAndAddSyllabusCopy({
+  //   required String course, required int semester,
+  //   required UserModel user,
+  //   required int version, required File document,
+  //   required int maxSyllabusCopy
+  // }) async {
+  //   try {
+  //     firestore.CollectionReference syllabusCopyCollection = _coursesCollection.doc(course)
+  //         .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+  //         .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel);
+  //
+  //     firestore.QuerySnapshot syllabusCopySnapshot = await syllabusCopyCollection.get();
+  //
+  //     if (syllabusCopySnapshot.docs.length >= maxSyllabusCopy) {
+  //       return ApiResponse.error(errorMessage: "The course $course $semester has the maximum syllabus copies. Please refresh to view them");
+  //     }
+  //
+  //     ApiResponse uploadResponse = await _uploadSyllabusCopy(document: document, course: course, semester: semester, version: version);
+  //
+  //     if (uploadResponse.isError) {
+  //       return uploadResponse;
+  //     }
+  //
+  //     String documentUrl = uploadResponse.data;
+  //     await syllabusCopyCollection.doc(version.toString()).set(SyllabusCopyModel.toFirestoreMap(documentUrl: documentUrl, user: user));
+  //
+  //     return ApiResponse.success();
+  //
+  //   } catch (err) {
+  //     return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
+  //   }
+  //
+  // }
 
 
   Future<ApiResponse> getSyllabusCopies({
@@ -80,7 +120,7 @@ class SyllabusCopyRepository {
   }) async {
     try {
 
-      firestore.QuerySnapshot syllabusCopySnapshot = await coursesCollection.doc(course)
+      firestore.QuerySnapshot syllabusCopySnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).get();
 
@@ -88,8 +128,7 @@ class SyllabusCopyRepository {
       syllabusCopySnapshot.docs.forEach((syllabusCopy) {
         print("SEE: ${syllabusCopy.data()}");
         syllabusCopies.add(SyllabusCopyModel.fromFirestoreMap(
-          map: syllabusCopy.data() as Map<String, dynamic>,
-          version: int.parse(syllabusCopy.id),
+          map: syllabusCopy.data() as Map<String, dynamic>, id: syllabusCopy.id,
         ));
       });
 
@@ -106,7 +145,7 @@ class SyllabusCopyRepository {
     required String userId,
   }) async {
     try {
-      firestore.DocumentSnapshot versionSnapshot = await coursesCollection.doc(course)
+      firestore.DocumentSnapshot versionSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.syllabusCopyCollectionLabel).doc(version.toString()).get();
 

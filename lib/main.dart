@@ -170,6 +170,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<SyllabusCopyBloc>(
             create: (context) =>
                 SyllabusCopyBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   syllabusCopyRepository: context.read<SyllabusCopyRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),

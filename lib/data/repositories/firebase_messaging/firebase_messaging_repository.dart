@@ -58,13 +58,13 @@ class FirebaseMessagingRepository {
     Map body = {
       "to": token,
       "notification": {
-          "body": "${userModel.displayName} has uploaded a new ${DocumentType.JOURNAL.capitalized}",
+          "body": "${userModel.displayName} has uploaded a new ${documentType.capitalized}",
           "priority": "high",
-          "title": "New ${DocumentType.JOURNAL.capitalized} of ${course.toUpperCase()} $semester ${subject?.toSubject() ?? ""}",
+          "title": "New ${documentType.capitalized} of ${course.toUpperCase()} $semester ${subject?.toSubject() ?? ""}",
       },
       "data": {
           "click_action": "FLUTTER_NOTIFICATION_CLICK",
-          "document_type": DocumentType.JOURNAL.toUpper,
+          "document_type": documentType.toUpper,
       }
     };
 

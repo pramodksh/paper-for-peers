@@ -57,20 +57,21 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
         if (file != null) {
           emit(JournalAddLoading(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
 
-          ApiResponse adminResponse = await _firestoreRepository.getAdminList();
-          if (adminResponse.isError) {
-            emit(JournalAddError(errorMessage: adminResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
+          ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournalToAdmin(
+            course: event.course, semester: event.semester, subject: event.subject,
+            user: event.user, version: event.nVersion,
+            document: file, maxJournals: await _firebaseRemoteConfigRepository.getMaxJournals(),
+          );
+          if (uploadResponse.isError) {
+            emit(JournalAddError(errorMessage: uploadResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
           } else {
-            ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournalToAdmin(
-              course: event.course, semester: event.semester, subject: event.subject,
-              user: event.user, version: event.nVersion,
-              document: file, maxJournals: await _firebaseRemoteConfigRepository.getMaxJournals(),
-            );
-            if (uploadResponse.isError) {
-              emit(JournalAddError(errorMessage: uploadResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
-            } else {
-              emit(JournalAddSuccess(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
+            emit(JournalAddSuccess(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
 
+            // todo store admin list in repo if possible
+            ApiResponse adminResponse = await _firestoreRepository.getAdminList();
+            if (adminResponse.isError) {
+              emit(JournalAddError(errorMessage: adminResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
+            } else {
               List<AdminModel> admins = adminResponse.data;
               Future.forEach<AdminModel>(admins, (admin) async{
                 await _firebaseMessagingRepository.sendNotification(
@@ -84,10 +85,11 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
                 );
               });
             }
-
           }
         }
       });
+
+
 
       on<JournalFetch>((event, emit) async {
         emit(JournalFetchLoading(maxJournals: maxJournals));

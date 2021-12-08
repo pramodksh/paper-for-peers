@@ -155,6 +155,7 @@ class SyllabusCopy extends StatelessWidget {
                       maxSyllabusCopy: syllabusCopyState.maxSyllabusCopy,
                       isWidgetLoading: true,
                       syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
+                        id: '',
                         version: index,
                         uploadedBy: "",
                         userUid: "",

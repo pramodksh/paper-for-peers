@@ -17,7 +17,7 @@ enum DocumentType {
 
 extension DocumentTypeExtension on DocumentType {
   String get toUpper => this.toString().split(".").last.toUpperCase();
-  String get capitalized => this.toString().split(".").last.toLowerCase().capitalize();
+  String get capitalized => this.toString().split(".").last.toLowerCase().replaceAll("_", " ").capitalize();
 }
 
 class AppConstants {
