@@ -12,25 +12,28 @@ class QuestionPaperRepository {
 
   final firestore.FirebaseFirestore _firebaseFirestore;
   final storage.FirebaseStorage _firebaseStorage;
-  static late final firestore.CollectionReference coursesCollection;
 
   QuestionPaperRepository({
     firestore.FirebaseFirestore? firebaseFirestore,
     storage.FirebaseStorage? firebaseStorage,
   }) : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance,
         _firebaseStorage = firebaseStorage ?? storage.FirebaseStorage.instance {
-    coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _questionPaperUploadsCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.adminQuestionPaperUploadsCollectionLabel);
   }
 
-  Future<ApiResponse> uploadQuestionPaper({
+  static late final firestore.CollectionReference _coursesCollection;
+  static late final firestore.CollectionReference _questionPaperUploadsCollection;
+
+  Future<ApiResponse> _uploadQuestionPaper({
     required File document, required int year,
     required String course, required int semester,
-    required String subject, required int version,
+    required String subject, required String questionPaperId,
   }) async {
     try {
       storage.Reference ref = _firebaseStorage.ref('courses').child(course)
           .child(semester.toString()).child(subject).child('question_paper')
-          .child(year.toString()).child("$version.pdf");
+          .child(year.toString()).child("$questionPaperId.pdf");
 
       await ref.putFile(document);
       String url = await ref.getDownloadURL();
@@ -40,41 +43,83 @@ class QuestionPaperRepository {
     }
   }
 
-  Future<ApiResponse> uploadAndAddQuestionPaper({
+  Future<ApiResponse> uploadAndAddQuestionPaperToAdmin({
     required String course, required int semester,
     required String subject, required UserModel user,
     required int version, required int year, required File document,
     required int maxQuestionPapers
   }) async {
-    try {
-      firestore.CollectionReference versionCollectionReference = coursesCollection.doc(course)
-          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
-          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
-          .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString())
-          .collection(FirebaseCollectionConfig.versionsCollectionLabel);
-      firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
-      
-      if (versionSnapshot.docs.length >= maxQuestionPapers) {
-        return ApiResponse.error(errorMessage: "The year $year has maximum versions. Please refresh to view them");
-      }
-      
-      ApiResponse uploadResponse = await uploadQuestionPaper(document: document, year: year, course: course, semester: semester, subject: subject, version: version);
-      
-      if (uploadResponse.isError) {
-        return uploadResponse;
-      } 
-      
-      String documentUrl = uploadResponse.data;
-      await versionCollectionReference.doc(version.toString()).set(QuestionPaperModel.toFirestoreMap(
-        user: user, documentUrl: documentUrl,
-      ));
-      return ApiResponse.success();
 
-    } catch (err) {
-      return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
+    try {
+      Map<String, dynamic> journalDetails = QuestionPaperModel.toFirestoreMap(user: user, version: version);
+      journalDetails.addAll({
+        "course": course,
+        "semester": semester,
+        "subject": subject,
+      });
+      firestore.DocumentReference questionPaperRef = await _questionPaperUploadsCollection.add(journalDetails);
+
+      ApiResponse uploadResponse = await _uploadQuestionPaper(
+        document: document, year: year, course: course,
+        semester: semester, subject: subject, questionPaperId: questionPaperRef.id,
+      );
+
+      if (uploadResponse.isError) {
+        await questionPaperRef.delete();
+        return uploadResponse;
+      }
+
+      String documentUrl = uploadResponse.data;
+      questionPaperRef.update({
+        QuestionPaperModel.documentUrlFieldKey: documentUrl,
+      });
+
+      return ApiResponse.success();
+    } on Exception catch (e) {
+      return ApiResponse.error(errorMessage: "There was an error while uploading question paper");
+
     }
 
   }
+
+
+
+
+  // Future<ApiResponse> uploadAndAddQuestionPaper({
+  //   required String course, required int semester,
+  //   required String subject, required UserModel user,
+  //   required int version, required int year, required File document,
+  //   required int maxQuestionPapers
+  // }) async {
+  //   try {
+  //     firestore.CollectionReference versionCollectionReference = _coursesCollection.doc(course)
+  //         .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+  //         .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+  //         .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString())
+  //         .collection(FirebaseCollectionConfig.versionsCollectionLabel);
+  //     firestore.QuerySnapshot versionSnapshot = await versionCollectionReference.get();
+  //
+  //     if (versionSnapshot.docs.length >= maxQuestionPapers) {
+  //       return ApiResponse.error(errorMessage: "The year $year has maximum versions. Please refresh to view them");
+  //     }
+  //
+  //     ApiResponse uploadResponse = await _uploadQuestionPaper(document: document, year: year, course: course, semester: semester, subject: subject, version: version);
+  //
+  //     if (uploadResponse.isError) {
+  //       return uploadResponse;
+  //     }
+  //
+  //     String documentUrl = uploadResponse.data;
+  //     await versionCollectionReference.doc(version.toString()).set(QuestionPaperModel.toFirestoreMap(
+  //       user: user, documentUrl: documentUrl,
+  //     ));
+  //     return ApiResponse.success();
+  //
+  //   } catch (err) {
+  //     return ApiResponse.error(errorMessage: "There was an error while setting question paper: $err");
+  //   }
+  //
+  // }
 
   Future<ApiResponse> getQuestionPapers({
     required String course, required int semester,
@@ -82,7 +127,7 @@ class QuestionPaperRepository {
   }) async {
     try {
 
-      firestore.QuerySnapshot questionPaperSnapshot = await coursesCollection.doc(course)
+      firestore.QuerySnapshot questionPaperSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).get();
@@ -95,7 +140,8 @@ class QuestionPaperRepository {
 
         await Future.forEach<firestore.QueryDocumentSnapshot>(versionsSnapshot.docs, (version) async {
           Map<String, dynamic> versionData = version.data() as Map<String, dynamic>;
-          questionPapers.add(QuestionPaperModel.fromFirestoreMap(map: versionData, version: int.parse(version.id)));
+          print("CHECK: ${versionData}");
+          questionPapers.add(QuestionPaperModel.fromFirestoreMap(map: versionData, id: version.id));
         });
         questionPaperYears.add(QuestionPaperYearModel(
           year: int.parse(questionPaper.id),
@@ -116,7 +162,7 @@ class QuestionPaperRepository {
   }) async {
 
     try {
-      firestore.DocumentSnapshot versionSnapshot = await coursesCollection.doc(course)
+      firestore.DocumentSnapshot versionSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.questionPaperCollectionLabel).doc(year.toString())

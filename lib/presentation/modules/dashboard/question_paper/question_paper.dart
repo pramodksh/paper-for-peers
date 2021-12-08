@@ -265,6 +265,7 @@ class QuestionPaper extends StatelessWidget {
                         questionPaperYears: List.generate(3, (index) => QuestionPaperYearModel(
                             year: DateTime.now().year - index,
                             questionPaperModels: List.generate(2, (index) => QuestionPaperModel(
+                                id: "",
                                 documentUrl: "",
                                 uploadedOn: DateTime.now(),
                                 userEmail: "",
