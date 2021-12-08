@@ -1,5 +1,5 @@
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
@@ -32,6 +32,8 @@ class PDFViewerScreen<ParameterType> extends StatefulWidget {
 
 class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
+  int? _currentPageNumber = 0;
+  int? _totalPages = 0;
   late List<CheckBoxModel> reportReasons;
   bool isRatingChanged = false;
   double rating = 0.0;
@@ -114,8 +116,6 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
       ],
     );
   }
-
-  Future<PDFDocument> loadDocumentFromURL({required pdfURL}) async => await PDFDocument.fromURL(pdfURL);
 
   Widget getUploadedByColumn({required String uploadedBy, required String? profilePhotoUrl}) {
     return Column(
@@ -480,41 +480,36 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
             ),
           ],
         ),
-        body: FutureBuilder(
-          future: loadDocumentFromURL(pdfURL: widget.documentUrl),
-          builder: (context, snapshot) {
 
-            if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              return Center(
-                child: PDFViewer(
-                  document: snapshot.data as PDFDocument,
-                  zoomSteps: 1,
-                  showNavigation: false,
-                  // navigationBuilder: customPDFBottomNavBuilder,
+        body: Stack(
+          children: [
+            PDF(
+              onPageChanged: (page, total) {
+                setState(() {
+                  _currentPageNumber = page;
+                  _totalPages = total;
+                });
+              },
+            ).cachedFromUrl(
+              widget.documentUrl,
+              placeholder: (progress) => Center(child: Text("Loading", style: TextStyle(fontSize: 20),)),
+              errorWidget: (error) => Center(child: Text("There was an error while loading pdf", style: TextStyle(fontSize: 20),)),
+            ),
+            Builder(
+              builder: (context) {
 
-                  showPicker: false,
-                  pickerButtonColor: Colors.black,
-                  pickerIconColor: Colors.red,
-
-                  enableSwipeNavigation: true,
-
-                  progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
-
-
-                  indicatorPosition: IndicatorPosition.topLeft,
-                  indicatorBackground: Colors.black,
-                  indicatorText: Colors.white,
-                  // showIndicator: false,
-
-                  lazyLoad: true,
-
-                  scrollDirection: Axis.vertical,
-                ),
-              );
-            }
-          }
+                if (_currentPageNumber != null && _totalPages != null) {
+                  return Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Text("${_currentPageNumber! + 1} / $_totalPages", style: TextStyle(fontSize: 16, color: Colors.black),),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
