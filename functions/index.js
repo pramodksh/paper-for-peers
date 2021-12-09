@@ -94,7 +94,15 @@ exports.reportQuestionPaper = functions.firestore
         .firestore()
         .collection(reportsQuestionPaperCollectionLabel)
         .doc(questionPaperId)
-        .set(newValue);
+        .set({
+          ref: change.after.ref,
+        });
+
+      // await admin
+      //   .firestore()
+      //   .collection(reportsQuestionPaperCollectionLabel)
+      //   .doc(questionPaperId)
+      //   .set(newValue);
 
       functions.logger.log("ADDED Question paper IN ADMIN COLLECTION");
 
@@ -147,7 +155,15 @@ exports.reportJournal = functions.firestore
         .firestore()
         .collection(reportsJournalsCollectionLabel)
         .doc(journalId)
-        .set(newValue);
+        .set({
+          ref: change.after.ref,
+        });
+
+      // await admin
+      //   .firestore()
+      //   .collection(reportsJournalsCollectionLabel)
+      //   .doc(journalId)
+      //   .set(newValue);
 
       functions.logger.log("ADDED Journal IN ADMIN COLLECTION");
       // functions.logger.log("DELETING DOCUMENT");
@@ -202,7 +218,15 @@ exports.reportSyllabusCopy = functions.firestore
         .firestore()
         .collection(reportsSyllabusCopyCollectionLabel)
         .doc(syllabusCopyId)
-        .set(newValue);
+        .set({
+          ref: change.after.ref,
+        });
+
+      // await admin
+      //   .firestore()
+      //   .collection(reportsSyllabusCopyCollectionLabel)
+      //   .doc(syllabusCopyId)
+      // .set(newValue);
 
       functions.logger.log("ADDED Syllabus copy IN ADMIN COLLECTION");
       // functions.logger.log("DELETING DOCUMENT");
@@ -257,7 +281,15 @@ exports.reportTextBook = functions.firestore
         .firestore()
         .collection(reportsTextBookCollectionLabel)
         .doc(textBookId)
-        .set(newValue);
+        .set({
+          ref: change.after.ref,
+        });
+
+      // await admin
+      //   .firestore()
+      //   .collection(reportsTextBookCollectionLabel)
+      //   .doc(textBookId)
+      //   .set(newValue);
 
       functions.logger.log("ADDED Text book IN ADMIN COLLECTION");
       // functions.logger.log("DELETING DOCUMENT");
@@ -312,7 +344,15 @@ exports.reportNotes = functions.firestore
         .firestore()
         .collection(reportsNotesCollectionLabel)
         .doc(noteId)
-        .set(newValue);
+        .set({
+          ref: change.after.ref,
+        });
+
+      // await admin
+      //   .firestore()
+      //   .collection(reportsNotesCollectionLabel)
+      //   .doc(noteId)
+      //   .set(newValue);
 
       functions.logger.log("ADDED Notes IN ADMIN COLLECTION");
       // functions.logger.log("DELETING DOCUMENT");
