@@ -5,11 +5,8 @@ const bucket = admin.storage().bucket();
 const firestore = admin.firestore();
 const fcm = admin.messaging();
 
-// /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
-// /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
-
-// Admin - reports collection label
 const adminCollectionLabel = "admin";
+// Admin - reports collection label
 const reportsQuestionPaperCollectionLabel = "reports_question_papers";
 const reportsNotesCollectionLabel = "reports_notes";
 const reportsJournalsCollectionLabel = "reports_journals";
@@ -116,28 +113,23 @@ exports.reportQuestionPaper = functions.firestore
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
     // merge array of array into single array
     const mergedValues = getMergedReportValues(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
     // Count the number of occurances of reports
     const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
 
     // multiply : report counts * report values (if key is not present put 0)
     const weightedReportCounts = getWeightedReportCounts(
       reportCounts,
       reportWeights
     );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
 
     // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
@@ -149,8 +141,6 @@ exports.reportQuestionPaper = functions.firestore
           ref: change.after.ref,
         });
 
-      functions.logger.log("ADDED Question paper IN ADMIN COLLECTION");
-
       await sendReportNotificationToAdmins(
         "QUESTION_PAPER",
         newValue["uploaded_by"],
@@ -158,8 +148,6 @@ exports.reportQuestionPaper = functions.firestore
         context.params.semester,
         context.params.subject
       );
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
   });
 
@@ -172,28 +160,23 @@ exports.reportJournal = functions.firestore
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
     // merge array of array into single array
     const mergedValues = getMergedReportValues(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
     // Count the number of occurances of reports
     const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
 
     // multiply : report counts * report values (if key is not present put 0)
     const weightedReportCounts = getWeightedReportCounts(
       reportCounts,
       reportWeights
     );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
 
     // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
@@ -205,8 +188,6 @@ exports.reportJournal = functions.firestore
           ref: change.after.ref,
         });
 
-      functions.logger.log("ADDED Journal IN ADMIN COLLECTION");
-
       await sendReportNotificationToAdmins(
         "JOURNAL",
         newValue["uploaded_by"],
@@ -214,8 +195,6 @@ exports.reportJournal = functions.firestore
         context.params.semester,
         context.params.subject
       );
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
   });
 
@@ -228,28 +207,23 @@ exports.reportSyllabusCopy = functions.firestore
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
     // merge array of array into single array
     const mergedValues = getMergedReportValues(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
     // Count the number of occurances of reports
     const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
 
     // multiply : report counts * report values (if key is not present put 0)
     const weightedReportCounts = getWeightedReportCounts(
       reportCounts,
       reportWeights
     );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
 
     // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
@@ -261,7 +235,6 @@ exports.reportSyllabusCopy = functions.firestore
           ref: change.after.ref,
         });
 
-      functions.logger.log("ADDED Syllabus copy IN ADMIN COLLECTION");
       await sendReportNotificationToAdmins(
         "SYLLABUS_COPY",
         newValue["uploaded_by"],
@@ -269,8 +242,6 @@ exports.reportSyllabusCopy = functions.firestore
         context.params.semester,
         null
       );
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
   });
 
@@ -283,28 +254,23 @@ exports.reportTextBook = functions.firestore
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
     // merge array of array into single array
     const mergedValues = getMergedReportValues(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
     // Count the number of occurances of reports
     const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
 
     // multiply : report counts * report values (if key is not present put 0)
     const weightedReportCounts = getWeightedReportCounts(
       reportCounts,
       reportWeights
     );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
 
     // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
@@ -316,7 +282,6 @@ exports.reportTextBook = functions.firestore
           ref: change.after.ref,
         });
 
-      functions.logger.log("ADDED Text book IN ADMIN COLLECTION");
       await sendReportNotificationToAdmins(
         "TEXT_BOOK",
         newValue["uploaded_by"],
@@ -324,8 +289,6 @@ exports.reportTextBook = functions.firestore
         context.params.semester,
         context.params.subject
       );
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
   });
 
@@ -338,28 +301,23 @@ exports.reportNotes = functions.firestore
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
     // merge array of array into single array
     const mergedValues = getMergedReportValues(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
     // Count the number of occurances of reports
     const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
 
     // multiply : report counts * report values (if key is not present put 0)
     const weightedReportCounts = getWeightedReportCounts(
       reportCounts,
       reportWeights
     );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
 
     // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
@@ -371,7 +329,6 @@ exports.reportNotes = functions.firestore
           ref: change.after.ref,
         });
 
-      functions.logger.log("ADDED Notes IN ADMIN COLLECTION");
       await sendReportNotificationToAdmins(
         "NOTES",
         newValue["uploaded_by"],
@@ -379,7 +336,5 @@ exports.reportNotes = functions.firestore
         context.params.semester,
         context.params.subject
       );
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
   });
