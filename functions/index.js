@@ -3,11 +3,13 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const bucket = admin.storage().bucket();
 const firestore = admin.firestore();
+const fcm = admin.messaging();
 
 // /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
 // /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
 
 // Admin - reports collection label
+const adminCollectionLabel = "admin";
 const reportsQuestionPaperCollectionLabel = "reports_question_papers";
 const reportsNotesCollectionLabel = "reports_notes";
 const reportsJournalsCollectionLabel = "reports_journals";
@@ -55,12 +57,61 @@ function getTotalReports(weightedReportCounts) {
   return totalReports;
 }
 
+function toSubject(subject) {
+  return subject
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+async function sendReportNotificationToAdmins(
+  documentType,
+  username,
+  course,
+  semester,
+  subject
+) {
+  const adminSnapshot = await firestore.collection(adminCollectionLabel).get();
+
+  const tokens = adminSnapshot.docs.map((snap) => snap.data()["fcm_token"]);
+  functions.logger.log("tokens: ", tokens);
+  functions.logger.log("LEN tokens: ", tokens.length);
+
+  if (subject == null) {
+    subject = "";
+  } else {
+    subject = subject.replace(/_/g, " ");
+    subject = toSubject(subject);
+  }
+
+  const payload = {
+    notification: {
+      title: `New ${capitalize(
+        documentType.replace(/_/g, " ").toLowerCase()
+      )} report of ${course.toUpperCase()} ${semester} ${subject}`,
+      body: `${username} has reported a ${capitalize(
+        documentType.replace(/_/g, " ").toLowerCase()
+      )}`,
+    },
+    data: {
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
+      document_type: documentType.toUpperCase(),
+      type: "REPORT",
+    },
+  };
+  return await fcm.sendToDevice(tokens, payload);
+}
+
 exports.reportQuestionPaper = functions.firestore
   .document(
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}"
   )
   .onUpdate(async (change, context) => {
-    functions.logger.log("REPORT QUESTION PAPER");
     const questionPaperId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
@@ -88,7 +139,7 @@ exports.reportQuestionPaper = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
     functions.logger.log("TOTAL REPORTS: ", totalReports);
 
-    // Delete document if limit exceeds
+    // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
       await admin
         .firestore()
@@ -98,20 +149,15 @@ exports.reportQuestionPaper = functions.firestore
           ref: change.after.ref,
         });
 
-      // await admin
-      //   .firestore()
-      //   .collection(reportsQuestionPaperCollectionLabel)
-      //   .doc(questionPaperId)
-      //   .set(newValue);
-
       functions.logger.log("ADDED Question paper IN ADMIN COLLECTION");
 
-      // functions.logger.log("DELETING DOCUMENT");
-      // await change.after.ref.delete();
-      // functions.logger.log("DELETING FILE FROM STORAGE");
-      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/question_paper/${context.params.year}/${context.params.version}.pdf`;
-      // await bucket.file(path).delete();
-      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "QUESTION_PAPER",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -149,7 +195,7 @@ exports.reportJournal = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
     functions.logger.log("TOTAL REPORTS: ", totalReports);
 
-    // Delete document if limit exceeds
+    // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
       await admin
         .firestore()
@@ -159,22 +205,15 @@ exports.reportJournal = functions.firestore
           ref: change.after.ref,
         });
 
-      // await admin
-      //   .firestore()
-      //   .collection(reportsJournalsCollectionLabel)
-      //   .doc(journalId)
-      //   .set(newValue);
-
       functions.logger.log("ADDED Journal IN ADMIN COLLECTION");
-      // functions.logger.log("DELETING DOCUMENT");
-      // await change.after.ref.delete();
 
-      // functions.logger.log("DELETING FILE FROM STORAGE");
-
-      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/journals/${context.params.version}.pdf`;
-      // await bucket.file(path).delete();
-
-      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "JOURNAL",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -212,7 +251,7 @@ exports.reportSyllabusCopy = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
     functions.logger.log("TOTAL REPORTS: ", totalReports);
 
-    // Delete document if limit exceeds
+    // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
       await admin
         .firestore()
@@ -222,22 +261,14 @@ exports.reportSyllabusCopy = functions.firestore
           ref: change.after.ref,
         });
 
-      // await admin
-      //   .firestore()
-      //   .collection(reportsSyllabusCopyCollectionLabel)
-      //   .doc(syllabusCopyId)
-      // .set(newValue);
-
       functions.logger.log("ADDED Syllabus copy IN ADMIN COLLECTION");
-      // functions.logger.log("DELETING DOCUMENT");
-      // await change.after.ref.delete();
-
-      // functions.logger.log("DELETING FILE FROM STORAGE");
-
-      // const path = `courses/${context.params.course}/${context.params.semester}/syllabus_copy/${context.params.version}.pdf`;
-      // await bucket.file(path).delete();
-
-      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "SYLLABUS_COPY",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        null
+      );
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -275,7 +306,7 @@ exports.reportTextBook = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
     functions.logger.log("TOTAL REPORTS: ", totalReports);
 
-    // Delete document if limit exceeds
+    // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
       await admin
         .firestore()
@@ -285,22 +316,14 @@ exports.reportTextBook = functions.firestore
           ref: change.after.ref,
         });
 
-      // await admin
-      //   .firestore()
-      //   .collection(reportsTextBookCollectionLabel)
-      //   .doc(textBookId)
-      //   .set(newValue);
-
       functions.logger.log("ADDED Text book IN ADMIN COLLECTION");
-      // functions.logger.log("DELETING DOCUMENT");
-      // await change.after.ref.delete();
-
-      // functions.logger.log("DELETING FILE FROM STORAGE");
-
-      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/text_book/${context.params.version}.pdf`;
-      // await bucket.file(path).delete();
-
-      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "TEXT_BOOK",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }
@@ -338,7 +361,7 @@ exports.reportNotes = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
     functions.logger.log("TOTAL REPORTS: ", totalReports);
 
-    // Delete document if limit exceeds
+    // Add document to admin if limit exceeds
     if (totalReports >= maxReports) {
       await admin
         .firestore()
@@ -348,22 +371,14 @@ exports.reportNotes = functions.firestore
           ref: change.after.ref,
         });
 
-      // await admin
-      //   .firestore()
-      //   .collection(reportsNotesCollectionLabel)
-      //   .doc(noteId)
-      //   .set(newValue);
-
       functions.logger.log("ADDED Notes IN ADMIN COLLECTION");
-      // functions.logger.log("DELETING DOCUMENT");
-      // await firestore.recursiveDelete(change.after.ref);
-
-      // functions.logger.log("DELETING FILE FROM STORAGE");
-
-      // const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/notes/${context.params.noteId}.pdf`;
-      // await bucket.file(path).delete();
-
-      // functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "NOTES",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     } else {
       functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
     }

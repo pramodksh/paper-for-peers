@@ -65,6 +65,7 @@ class FirebaseMessagingRepository {
       "data": {
           "click_action": "FLUTTER_NOTIFICATION_CLICK",
           "document_type": documentType.toUpper,
+          "type": "UPLOAD",
       }
     };
 
