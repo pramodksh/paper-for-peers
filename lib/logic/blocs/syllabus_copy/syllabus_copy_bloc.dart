@@ -68,23 +68,18 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
           } else {
             emit(SyllabusCopyAddSuccess(syllabusCopies: event.syllabusCopies, maxSyllabusCopy: maxSyllabusCopy));
 
-            // todo store admin list in repo if possible
-            ApiResponse adminResponse = await _firestoreRepository.getAdminList();
-            if (adminResponse.isError) {
-              emit(SyllabusCopyAddError(errorMessage: adminResponse.errorMessage!, syllabusCopies: event.syllabusCopies, maxSyllabusCopy: maxSyllabusCopy));
-            } else {
-              List<AdminModel> admins = adminResponse.data;
-              Future.forEach<AdminModel>(admins, (admin) async {
-                await _firebaseMessagingRepository.sendNotification(
-                  documentType: DocumentType.SYLLABUS_COPY,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  semester: event.user.semester!.nSemester!,
-                  course: event.user.course!.courseName!,
-                );
-              });
-            }
+            List<AdminModel> admins = _firestoreRepository.admins;
+            Future.forEach<AdminModel>(admins, (admin) async {
+              await _firebaseMessagingRepository.sendNotification(
+                documentType: DocumentType.SYLLABUS_COPY,
+                token: admin.fcmToken,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.user.semester!.nSemester!,
+                course: event.user.course!.courseName!,
+              );
+            });
+
           }
 
         }

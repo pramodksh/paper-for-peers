@@ -122,28 +122,18 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
               description: event.description, file: event.file,
             ));
 
-            // todo store admin list in repo if possible
-            ApiResponse adminResponse = await _firestoreRepository.getAdminList();
-            if (adminResponse.isError) {
-              emit(NotesAddError(
-                errorMessage: adminResponse.errorMessage!, selectedSubject: event.subject,
-                file: null, title: event.title, description: event.description,
-              ));
-            } else {
-              List<AdminModel> admins = adminResponse.data;
-              Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotification(
-                  documentType: DocumentType.NOTES,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  course: event.user.course!.courseName!,
-                  semester: event.user.semester!.nSemester!,
-                  subject: event.subject,
-                );
-              });
-            }
-
+            List<AdminModel> admins = _firestoreRepository.admins;
+            Future.forEach<AdminModel>(admins, (admin) async{
+              await _firebaseMessagingRepository.sendNotification(
+                documentType: DocumentType.NOTES,
+                token: admin.fcmToken,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                course: event.user.course!.courseName!,
+                semester: event.user.semester!.nSemester!,
+                subject: event.subject,
+              );
+            });
           }
         }
       });

@@ -70,24 +70,18 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
           } else {
             emit(JournalAddSuccess(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
 
-            // todo store admin list in repo if possible
-            ApiResponse adminResponse = await _firestoreRepository.getAdminList();
-            if (adminResponse.isError) {
-              emit(JournalAddError(errorMessage: adminResponse.errorMessage!, journalSubjects: event.journalSubjects, maxJournals: maxJournals));
-            } else {
-              List<AdminModel> admins = adminResponse.data;
-              Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotification(
-                  documentType: DocumentType.JOURNAL,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  semester: event.semester,
-                  course: event.course,
-                  subject: event.subject,
-                );
-              });
-            }
+            List<AdminModel> admins = _firestoreRepository.admins;
+            Future.forEach<AdminModel>(admins, (admin) async{
+              await _firebaseMessagingRepository.sendNotification(
+                documentType: DocumentType.JOURNAL,
+                token: admin.fcmToken,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.semester,
+                course: event.course,
+                subject: event.subject,
+              );
+            });
           }
         }
       });

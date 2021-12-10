@@ -19,8 +19,17 @@ class FirestoreRepository {
     _usersCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.usersCollectionLabel);
     _adminCollection = _firebaseFirestore.collection(FirebaseCollectionConfig.adminCollectionLabel);
     _coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+
+    getAdminList().then((adminResponse) {
+      if (adminResponse.isError) {
+        admins = [];
+      } else {
+        admins = adminResponse.data;
+      }
+    });
   }
 
+  late final List<AdminModel> admins;
   static late final firestore.CollectionReference _usersCollection;
   static late final firestore.CollectionReference _adminCollection;
   static late final firestore.CollectionReference _coursesCollection;

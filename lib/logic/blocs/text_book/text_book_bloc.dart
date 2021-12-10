@@ -69,24 +69,19 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
           } else {
             emit(TextBookAddSuccess(textBookSubjects: event.textBookSubjects, maxTextBooks: maxTextBooks));
 
-            // todo store admin list in repo if possible
-            ApiResponse adminResponse = await _firestoreRepository.getAdminList();
-            if (adminResponse.isError) {
-              emit(TextBookAddError(errorMessage: adminResponse.errorMessage!, textBookSubjects: event.textBookSubjects, maxTextBooks: maxTextBooks));
-            } else {
-              List<AdminModel> admins = adminResponse.data;
-              Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotification(
-                  documentType: DocumentType.TEXT_BOOK,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  semester: event.semester,
-                  course: event.course,
-                  subject: event.subject,
-                );
-              });
-            }
+            List<AdminModel> admins = _firestoreRepository.admins;
+            Future.forEach<AdminModel>(admins, (admin) async{
+              await _firebaseMessagingRepository.sendNotification(
+                documentType: DocumentType.TEXT_BOOK,
+                token: admin.fcmToken,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.semester,
+                course: event.course,
+                subject: event.subject,
+              );
+            });
+
 
           }
 

@@ -111,25 +111,18 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
           } else {
             emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
 
-            // todo store admin list in repo if possible
-            ApiResponse adminResponse = await _firestoreRepository.getAdminList();
-            if (adminResponse.isError) {
-              emit(QuestionPaperAddError(errorMessage: adminResponse.errorMessage!, questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
-            } else {
-              List<AdminModel> admins = adminResponse.data;
-              Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotification(
-                  documentType: DocumentType.QUESTION_PAPER,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  semester: event.semester,
-                  course: event.course,
-                  subject: event.subject,
-                );
-              });
-            }
-
+            List<AdminModel> admins = _firestoreRepository.admins;
+            Future.forEach<AdminModel>(admins, (admin) async{
+              await _firebaseMessagingRepository.sendNotification(
+                documentType: DocumentType.QUESTION_PAPER,
+                token: admin.fcmToken,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.semester,
+                course: event.course,
+                subject: event.subject,
+              );
+            });
           }
         }
       });
