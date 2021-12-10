@@ -46,9 +46,8 @@ class TextBookModel {
     );
   }
 
-  static Map<String, dynamic> toFirestoreMap({required UserModel user, required int version ,String? documentUrl}) {
+  static Map<String, dynamic> toFirestoreMap({required UserModel user ,String? documentUrl}) {
     return {
-      "version": version,
       "uploaded_by": user.displayName,
       "document_url": documentUrl,
       "uploaded_on": DateTime.now(),

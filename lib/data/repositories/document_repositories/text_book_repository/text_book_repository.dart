@@ -46,13 +46,13 @@ class TextBookRepository {
   Future<ApiResponse> uploadAndAddTextBookToAdmin({
     required String course, required int semester,
     required String subject, required UserModel user,
-    required int version, required File document,
+    required File document,
     required int maxTextBooks
   }) async {
     try {
 
 
-      Map<String, dynamic> textBookDetails = TextBookModel.toFirestoreMap(user: user, version: version);
+      Map<String, dynamic> textBookDetails = TextBookModel.toFirestoreMap(user: user,);
       textBookDetails.addAll({
         "course": course,
         "semester": semester,

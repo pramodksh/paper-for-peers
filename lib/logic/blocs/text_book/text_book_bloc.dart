@@ -60,7 +60,7 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
 
           ApiResponse uploadResponse = await _textBookRepository.uploadAndAddTextBookToAdmin(
             course: event.course, semester: event.semester, subject: event.subject,
-            user: event.user, version: event.nVersion,
+            user: event.user,
             document: file, maxTextBooks: maxTextBooks
           );
 
