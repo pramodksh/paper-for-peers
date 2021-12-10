@@ -216,8 +216,7 @@ class _MyAppState extends State<MyApp> {
                     context: context,
                     appThemeType: appThemeState is AppThemeLight ? AppThemeType.light : AppThemeType.dark,
                   ),
-                  // home: Wrapper(),
-                  home: IntroScreen(),
+                  home: Wrapper(),
                 ),
             );
           }
