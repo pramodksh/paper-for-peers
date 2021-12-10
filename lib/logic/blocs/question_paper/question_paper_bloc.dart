@@ -12,6 +12,7 @@ import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repos
 import 'package:papers_for_peers/data/repositories/firebase_messaging/firebase_messaging_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 part 'question_paper_event.dart';
 part 'question_paper_state.dart';
@@ -96,33 +97,53 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
         if (file != null) {
           emit(QuestionPaperAddLoading(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
 
-          ApiResponse uploadResponse = await _questionPaperRepository.uploadAndAddQuestionPaperToAdmin(
-            course: event.course,
-            semester: event.semester,
-            subject: event.subject,
-            year: event.year,
-            document: file,
-            user: event.user,
-            maxQuestionPapers: maxQuestionPapers
-          );
+          int maxSize = await _firebaseRemoteConfigRepository.getMaxSizeOfQuestionPaper();
+          double size = Utils.getFileSizeInMb(file);
 
-          if (uploadResponse.isError) {
-            emit(QuestionPaperAddError(errorMessage: uploadResponse.errorMessage!, questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
+          if (size > maxSize) {
+            emit(QuestionPaperAddError(
+                errorMessage: "The selected file has exceeded the limit of $maxSize MB.\nThe size of the selected file is ${size.toStringAsFixed(2)} MB",
+                questionPaperYears: event.questionPaperYears,
+                selectedSubject: event.subject,
+                maxQuestionPapers: maxQuestionPapers));
           } else {
-            emit(QuestionPaperAddSuccess(questionPaperYears: event.questionPaperYears, selectedSubject: event.subject, maxQuestionPapers: maxQuestionPapers));
-
-            List<AdminModel> admins = _firestoreRepository.admins;
-            Future.forEach<AdminModel>(admins, (admin) async{
-              await _firebaseMessagingRepository.sendNotification(
-                documentType: DocumentType.QUESTION_PAPER,
-                token: admin.fcmToken,
-                userModel: event.user,
-                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                semester: event.semester,
+            ApiResponse uploadResponse = await _questionPaperRepository
+                .uploadAndAddQuestionPaperToAdmin(
                 course: event.course,
+                semester: event.semester,
                 subject: event.subject,
-              );
-            });
+                year: event.year,
+                document: file,
+                user: event.user,
+                maxQuestionPapers: maxQuestionPapers
+            );
+
+            if (uploadResponse.isError) {
+              emit(QuestionPaperAddError(
+                  errorMessage: uploadResponse.errorMessage!,
+                  questionPaperYears: event.questionPaperYears,
+                  selectedSubject: event.subject,
+                  maxQuestionPapers: maxQuestionPapers));
+            } else {
+              emit(QuestionPaperAddSuccess(
+                  questionPaperYears: event.questionPaperYears,
+                  selectedSubject: event.subject,
+                  maxQuestionPapers: maxQuestionPapers));
+
+              List<AdminModel> admins = _firestoreRepository.admins;
+              Future.forEach<AdminModel>(admins, (admin) async {
+                await _firebaseMessagingRepository.sendNotification(
+                  documentType: DocumentType.QUESTION_PAPER,
+                  token: admin.fcmToken,
+                  userModel: event.user,
+                  getFireBaseKey: _firebaseRemoteConfigRepository
+                      .getFirebaseKey,
+                  semester: event.semester,
+                  course: event.course,
+                  subject: event.subject,
+                );
+              });
+            }
           }
         }
       });

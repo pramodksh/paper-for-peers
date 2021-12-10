@@ -12,6 +12,7 @@ import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repos
 import 'package:papers_for_peers/data/repositories/firebase_messaging/firebase_messaging_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 part 'text_book_event.dart';
 part 'text_book_state.dart';
@@ -58,33 +59,47 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
         if (file != null) {
           emit(TextBookAddLoading(textBookSubjects: event.textBookSubjects, maxTextBooks: maxTextBooks));
 
-          ApiResponse uploadResponse = await _textBookRepository.uploadAndAddTextBookToAdmin(
-            course: event.course, semester: event.semester, subject: event.subject,
-            user: event.user,
-            document: file, maxTextBooks: maxTextBooks
-          );
+          int maxSize = await _firebaseRemoteConfigRepository.getMaxSizeOfTextBook();
+          double size = Utils.getFileSizeInMb(file);
 
-          if (uploadResponse.isError) {
-            emit(TextBookAddError(errorMessage: uploadResponse.errorMessage!, textBookSubjects: event.textBookSubjects, maxTextBooks: maxTextBooks));
+          if (size > maxSize) {
+            emit(TextBookAddError(errorMessage: "The selected file has exceeded the limit of $maxSize MB.\nThe size of the selected file is ${size.toStringAsFixed(2)} MB",
+                textBookSubjects: event.textBookSubjects,
+                maxTextBooks: maxTextBooks));
           } else {
-            emit(TextBookAddSuccess(textBookSubjects: event.textBookSubjects, maxTextBooks: maxTextBooks));
-
-            List<AdminModel> admins = _firestoreRepository.admins;
-            Future.forEach<AdminModel>(admins, (admin) async{
-              await _firebaseMessagingRepository.sendNotification(
-                documentType: DocumentType.TEXT_BOOK,
-                token: admin.fcmToken,
-                userModel: event.user,
-                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                semester: event.semester,
+            ApiResponse uploadResponse = await _textBookRepository
+                .uploadAndAddTextBookToAdmin(
                 course: event.course,
+                semester: event.semester,
                 subject: event.subject,
-              );
-            });
+                user: event.user,
+                document: file,
+                maxTextBooks: maxTextBooks
+            );
 
+            if (uploadResponse.isError) {
+              emit(TextBookAddError(errorMessage: uploadResponse.errorMessage!,
+                  textBookSubjects: event.textBookSubjects,
+                  maxTextBooks: maxTextBooks));
+            } else {
+              emit(TextBookAddSuccess(textBookSubjects: event.textBookSubjects,
+                  maxTextBooks: maxTextBooks));
 
+              List<AdminModel> admins = _firestoreRepository.admins;
+              Future.forEach<AdminModel>(admins, (admin) async {
+                await _firebaseMessagingRepository.sendNotification(
+                  documentType: DocumentType.TEXT_BOOK,
+                  token: admin.fcmToken,
+                  userModel: event.user,
+                  getFireBaseKey: _firebaseRemoteConfigRepository
+                      .getFirebaseKey,
+                  semester: event.semester,
+                  course: event.course,
+                  subject: event.subject,
+                );
+              });
+            }
           }
-
         }
       });
 

@@ -55,4 +55,29 @@ class FirebaseRemoteConfigRepository {
     }
   }
 
+  Future<int> getMaxSizeOfJournal() async {
+    await _remoteConfig.fetchAndActivate();
+    return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.SIZE_JOURNAL).asInt();
+  }
+
+  Future<int> getMaxSizeOfQuestionPaper() async {
+    await _remoteConfig.fetchAndActivate();
+    return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.SIZE_QUESTION_PAPER).asInt();
+  }
+
+  Future<int> getMaxSizeOfNotes() async {
+    await _remoteConfig.fetchAndActivate();
+    return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.SIZE_NOTES).asInt();
+  }
+
+  Future<int> getMaxSizeOfSyllabusCopy() async {
+    await _remoteConfig.fetchAndActivate();
+    return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.SIZE_SYLLABUS_COPY).asInt();
+  }
+
+  Future<int> getMaxSizeOfTextBook() async {
+    await _remoteConfig.fetchAndActivate();
+    return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.SIZE_TEXT_BOOK).asInt();
+  }
+
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,12 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:provider/provider.dart';
 
 class Utils {
+
+  static double getFileSizeInMb(File file) {
+    int sizeInBytes = file.lengthSync();
+    double sizeInMb = sizeInBytes / (1024 * 1024);
+    return sizeInMb;
+  }
 
   static Future showAlertDialog({required BuildContext context, required String text}) => showDialog(
     context: context,

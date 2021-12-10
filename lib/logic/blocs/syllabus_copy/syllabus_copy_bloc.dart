@@ -12,6 +12,7 @@ import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repos
 import 'package:papers_for_peers/data/repositories/firebase_messaging/firebase_messaging_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 part 'syllabus_copy_event.dart';
 part 'syllabus_copy_state.dart';
@@ -58,30 +59,47 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
         if (file != null) {
           emit(SyllabusCopyAddLoading(syllabusCopies: event.syllabusCopies, maxSyllabusCopy: maxSyllabusCopy));
 
-          ApiResponse uploadAndAddResponse = await  _syllabusCopyRepository.uploadAndAddSyllabusCopyToAdmin(
-            course: event.user.course!.courseName!, semester: event.user.semester!.nSemester!,
-            document: file, user: event.user, maxSyllabusCopy: maxSyllabusCopy,
-          );
+          int maxSize = await _firebaseRemoteConfigRepository.getMaxSizeOfSyllabusCopy();
+          double size = Utils.getFileSizeInMb(file);
 
-          if (uploadAndAddResponse.isError) {
-            emit(SyllabusCopyAddError(errorMessage: uploadAndAddResponse.errorMessage!, syllabusCopies: event.syllabusCopies, maxSyllabusCopy: maxSyllabusCopy));
+          if (size > maxSize) {
+            emit(SyllabusCopyAddError(
+                errorMessage: "The selected file has exceeded the limit of $maxSize MB.\nThe size of the selected file is ${size.toStringAsFixed(2)} MB",
+                syllabusCopies: event.syllabusCopies,
+                maxSyllabusCopy: maxSyllabusCopy));
           } else {
-            emit(SyllabusCopyAddSuccess(syllabusCopies: event.syllabusCopies, maxSyllabusCopy: maxSyllabusCopy));
+            ApiResponse uploadAndAddResponse = await _syllabusCopyRepository
+                .uploadAndAddSyllabusCopyToAdmin(
+              course: event.user.course!.courseName!,
+              semester: event.user.semester!.nSemester!,
+              document: file,
+              user: event.user,
+              maxSyllabusCopy: maxSyllabusCopy,
+            );
 
-            List<AdminModel> admins = _firestoreRepository.admins;
-            Future.forEach<AdminModel>(admins, (admin) async {
-              await _firebaseMessagingRepository.sendNotification(
-                documentType: DocumentType.SYLLABUS_COPY,
-                token: admin.fcmToken,
-                userModel: event.user,
-                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                semester: event.user.semester!.nSemester!,
-                course: event.user.course!.courseName!,
-              );
-            });
+            if (uploadAndAddResponse.isError) {
+              emit(SyllabusCopyAddError(
+                  errorMessage: uploadAndAddResponse.errorMessage!,
+                  syllabusCopies: event.syllabusCopies,
+                  maxSyllabusCopy: maxSyllabusCopy));
+            } else {
+              emit(SyllabusCopyAddSuccess(syllabusCopies: event.syllabusCopies,
+                  maxSyllabusCopy: maxSyllabusCopy));
 
+              List<AdminModel> admins = _firestoreRepository.admins;
+              Future.forEach<AdminModel>(admins, (admin) async {
+                await _firebaseMessagingRepository.sendNotification(
+                  documentType: DocumentType.SYLLABUS_COPY,
+                  token: admin.fcmToken,
+                  userModel: event.user,
+                  getFireBaseKey: _firebaseRemoteConfigRepository
+                      .getFirebaseKey,
+                  semester: event.user.semester!.nSemester!,
+                  course: event.user.course!.courseName!,
+                );
+              });
+            }
           }
-
         }
 
       });

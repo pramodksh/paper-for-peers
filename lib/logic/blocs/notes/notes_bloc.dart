@@ -12,6 +12,7 @@ import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repos
 import 'package:papers_for_peers/data/repositories/firebase_messaging/firebase_messaging_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 part 'notes_event.dart';
 part 'notes_state.dart';
@@ -100,40 +101,51 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
           ));
         } else {
           emit(NotesAddLoading(selectedSubject: event.subject));
-          ApiResponse uploadResponse = await _notesRepository.uploadAndAddNotesToAdmin(
-            maxNotesPerSubject: maxNotes,
-            description: event.description,
-            title: event.title,
-            user: event.user,
-            subject: event.subject,
-            course: event.user.course!.courseName!,
-            semester: event.user.semester!.nSemester!,
-            document: event.file!,
-          );
 
-          if (uploadResponse.isError) {
+          int maxSize = await _firebaseRemoteConfigRepository.getMaxSizeOfNotes();
+          double size = Utils.getFileSizeInMb(event.file!);
+
+          if (size > maxSize) {
             emit(NotesAddError(
-              errorMessage: uploadResponse.errorMessage!, selectedSubject: event.subject,
+              errorMessage: "The selected file has exceeded the limit of $maxSize MB.\nThe size of the selected file is ${size.toStringAsFixed(2)} MB", selectedSubject: event.subject,
               file: null, title: event.title, description: event.description,
             ));
           } else {
-            emit(NotesAddSuccess(
-              selectedSubject: event.subject, title: event.title,
-              description: event.description, file: event.file,
-            ));
+            ApiResponse uploadResponse = await _notesRepository.uploadAndAddNotesToAdmin(
+              maxNotesPerSubject: maxNotes,
+              description: event.description,
+              title: event.title,
+              user: event.user,
+              subject: event.subject,
+              course: event.user.course!.courseName!,
+              semester: event.user.semester!.nSemester!,
+              document: event.file!,
+            );
 
-            List<AdminModel> admins = _firestoreRepository.admins;
-            Future.forEach<AdminModel>(admins, (admin) async{
-              await _firebaseMessagingRepository.sendNotification(
-                documentType: DocumentType.NOTES,
-                token: admin.fcmToken,
-                userModel: event.user,
-                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                course: event.user.course!.courseName!,
-                semester: event.user.semester!.nSemester!,
-                subject: event.subject,
-              );
-            });
+            if (uploadResponse.isError) {
+              emit(NotesAddError(
+                errorMessage: uploadResponse.errorMessage!, selectedSubject: event.subject,
+                file: null, title: event.title, description: event.description,
+              ));
+            } else {
+              emit(NotesAddSuccess(
+                selectedSubject: event.subject, title: event.title,
+                description: event.description, file: event.file,
+              ));
+
+              List<AdminModel> admins = _firestoreRepository.admins;
+              Future.forEach<AdminModel>(admins, (admin) async{
+                await _firebaseMessagingRepository.sendNotification(
+                  documentType: DocumentType.NOTES,
+                  token: admin.fcmToken,
+                  userModel: event.user,
+                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                  course: event.user.course!.courseName!,
+                  semester: event.user.semester!.nSemester!,
+                  subject: event.subject,
+                );
+              });
+            }
           }
         }
       });
