@@ -26,8 +26,7 @@ class IntroScreenState extends State<IntroScreen> {
   String welcomeText3 =
       "3.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
 
-  Slide getSlide(
-      {required String descriptionText, required String imagePath}) {
+  Slide getSlide({required String descriptionText, required String imagePath}) {
     return Slide(
       description: descriptionText,
       backgroundColor: Color(0xfff5a623),
@@ -61,7 +60,7 @@ class IntroScreenState extends State<IntroScreen> {
     slides.add(
       getSlide(
           descriptionText: welcomeText3,
-          imagePath: DefaultAssets.welcomeScreen1Path),
+          imagePath: DefaultAssets.welcomeScreen2Path),
     );
   }
 

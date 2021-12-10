@@ -20,7 +20,12 @@ const reportWeights = {
   already_uploaded: 3,
   misleading: 4,
 };
-const maxReports = 10; // todo change to 40
+
+const maxReports = async () => {
+  const template = await admin.remoteConfig().getTemplate();
+  const maxReports = template.parameters["REPORTS_MAX"].defaultValue.value;
+  return maxReports;
+};
 
 function getReportCounts(mergedValues) {
   const reportCounts = {};
@@ -76,8 +81,6 @@ async function sendReportNotificationToAdmins(
   const adminSnapshot = await firestore.collection(adminCollectionLabel).get();
 
   const tokens = adminSnapshot.docs.map((snap) => snap.data()["fcm_token"]);
-  functions.logger.log("tokens: ", tokens);
-  functions.logger.log("LEN tokens: ", tokens.length);
 
   if (subject == null) {
     subject = "";
@@ -132,7 +135,7 @@ exports.reportQuestionPaper = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
-    if (totalReports >= maxReports) {
+    if (totalReports >= (await maxReports())) {
       await admin
         .firestore()
         .collection(reportsQuestionPaperCollectionLabel)
@@ -179,7 +182,7 @@ exports.reportJournal = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
-    if (totalReports >= maxReports) {
+    if (totalReports >= (await maxReports())) {
       await admin
         .firestore()
         .collection(reportsJournalsCollectionLabel)
@@ -226,7 +229,7 @@ exports.reportSyllabusCopy = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
-    if (totalReports >= maxReports) {
+    if (totalReports >= (await maxReports())) {
       await admin
         .firestore()
         .collection(reportsSyllabusCopyCollectionLabel)
@@ -273,7 +276,7 @@ exports.reportTextBook = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
-    if (totalReports >= maxReports) {
+    if (totalReports >= (await maxReports())) {
       await admin
         .firestore()
         .collection(reportsTextBookCollectionLabel)
@@ -320,7 +323,7 @@ exports.reportNotes = functions.firestore
     const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
-    if (totalReports >= maxReports) {
+    if (totalReports >= (await maxReports())) {
       await admin
         .firestore()
         .collection(reportsNotesCollectionLabel)
