@@ -185,7 +185,7 @@ class QuestionPaper extends StatelessWidget {
         } else if (state is QuestionPaperAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
         } else if (state is QuestionPaperAddSuccess) {
-          Utils.showAlertDialog(context: context, text: "Question Paper Added Successfully");
+          Utils.showAlertDialog(context: context, text: "Question Paper Successfully Submitted");
         } else if (state is QuestionPaperReportSuccess) {
           Utils.showAlertDialog(context: context, text: "Question Paper Reported");
         } else if (state is QuestionPaperReportError) {
