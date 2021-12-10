@@ -723,6 +723,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  pdf_compressor:
+    dependency: "direct main"
+    description:
+      name: pdf_compressor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   pedantic:
     dependency: transitive
     description:
