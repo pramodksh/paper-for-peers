@@ -103,7 +103,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
                         items: List.generate(selectedYearModel.questionPaperModels.length, (index) {
                           return DropdownMenuItem<String>(
                             value: selectedYearModel.questionPaperModels[index].id,
-                            child: Text(index.toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                            child: Text((index+1).toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
                               fontSize: 18,
                               color: isDarkTheme ? Colors.white60 : Colors.black,
                             ),),

@@ -56,7 +56,7 @@ class SyllabusCopy extends StatelessWidget {
                         parameter: PDFScreenSyllabusCopy(
                           profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
                           uploadedBy: currentSyllabusCopyModel.uploadedBy,
-                          nVariant: index, // todo remove
+                          nVariant: index+1,
                         ),
                       ),
                     ));
@@ -67,7 +67,7 @@ class SyllabusCopy extends StatelessWidget {
                       color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    child: Text("Variant: ${index}", style: TextStyle(fontSize: 20),),
+                    child: Text("Variant: ${index+1}", style: TextStyle(fontSize: 20),),
                   ),
                 );
               });

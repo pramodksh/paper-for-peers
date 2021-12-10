@@ -101,7 +101,7 @@ class TextBook extends StatelessWidget {
       TextBookModel currentTextBookModel = textBooks[index];
       return _getTextBookVariantDetailsTile(
           appThemeType: appThemeType,
-          nVariant: index, // todo remove
+          nVariant: index+1,
           profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
           uploadedOn: currentTextBookModel.uploadedOn,
           uploadedBy: currentTextBookModel.uploadedBy,
@@ -126,7 +126,7 @@ class TextBook extends StatelessWidget {
                 screenLabel: "Text Book",
                 parameter: PDFScreenSimpleBottomSheet(
                     profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
-                    nVariant: index, // todo remove
+                    nVariant: index+1,
                     uploadedBy: currentTextBookModel.uploadedBy,
                     title: subject
                 ),

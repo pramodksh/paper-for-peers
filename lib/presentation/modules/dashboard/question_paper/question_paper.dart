@@ -123,13 +123,13 @@ class QuestionPaper extends StatelessWidget {
                       parameter: PDFScreenSimpleBottomSheet(
                         profilePhotoUrl: currentQuestionPaper.userProfilePhotoUrl,
                         title: questionPaperYears[questionPaperYearIndex].year.toString(),
-                        nVariant: index,
+                        nVariant: index+1,
                         uploadedBy: currentQuestionPaper.uploadedBy,
                       ),
                     ),
                   ));
                 },
-                nVariant: index,
+                nVariant: index+1,
               );
             });
 

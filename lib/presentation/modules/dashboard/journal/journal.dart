@@ -105,7 +105,7 @@ class Journal extends StatelessWidget {
           profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
           uploadedBy: currentJournalModel.uploadedBy,
           uploadedOn: currentJournalModel.uploadedOn,
-          nVariant: index, // todo remove
+          nVariant: index+1,
           onTap: isWidgetLoading ? () {} : () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
@@ -127,7 +127,7 @@ class Journal extends StatelessWidget {
                 screenLabel: "Journal",
                 parameter: PDFScreenSimpleBottomSheet(
                   profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
-                  nVariant: index, // todo remove
+                  nVariant: index+1,
                   uploadedBy: currentJournalModel.uploadedBy,
                   title: subject,
                 ),
