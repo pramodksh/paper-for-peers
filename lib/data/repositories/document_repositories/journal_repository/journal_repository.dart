@@ -91,17 +91,26 @@ class JournalRepository {
       List<JournalSubjectModel> journalSubjects = [];
       await Future.forEach<firestore.QueryDocumentSnapshot>(subjectSnapshot.docs, (subject) async {
 
-        List<JournalModel> journals = [];
-        firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
-        await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
-          Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
-          journals.add(JournalModel.fromFirestoreMap(map: journalData, id: journal.id));
-        });
+        bool isShowJournal = false;
 
-        journalSubjects.add(JournalSubjectModel(
-          subject: subject.id,
-          journalModels: journals,
-        ));
+        Map<String, dynamic> subjectData = subject.data() as Map<String, dynamic>;
+        if (subjectData.containsKey("isShowJournal") && subjectData["isShowJournal"] == true) {
+          isShowJournal = true;
+        }
+
+        if (isShowJournal) {
+          List<JournalModel> journals = [];
+          firestore.QuerySnapshot journalSnapshot = await subject.reference.collection(FirebaseCollectionConfig.journalCollectionLabel).get();
+          await Future.forEach<firestore.QueryDocumentSnapshot>(journalSnapshot.docs, (journal) {
+            Map<String, dynamic> journalData = journal.data() as Map<String, dynamic>;
+            journals.add(JournalModel.fromFirestoreMap(map: journalData, id: journal.id));
+          });
+
+          journalSubjects.add(JournalSubjectModel(
+            subject: subject.id,
+            journalModels: journals,
+          ));
+        }
       });
       return ApiResponse<List<JournalSubjectModel>>.success(data: journalSubjects);
     } catch (e) {
