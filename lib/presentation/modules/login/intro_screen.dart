@@ -34,7 +34,6 @@ class IntroScreenState extends State<IntroScreen> {
         color: Color(0xfffe9c8f),
         fontSize: 20.0,
         fontStyle: FontStyle.italic,
-        // fontFamily: 'Raleway'
       ),
       pathImage: imagePath,
       colorBegin: Color(0xffFFFACD),
@@ -60,7 +59,7 @@ class IntroScreenState extends State<IntroScreen> {
     slides.add(
       getSlide(
           descriptionText: welcomeText3,
-          imagePath: DefaultAssets.welcomeScreen2Path),
+          imagePath: DefaultAssets.welcomeScreen1Path),
     );
   }
 
