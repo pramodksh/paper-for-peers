@@ -39,12 +39,15 @@ class FirestoreRepository {
     return userDocumentSnapshot.exists;
   }
 
-  // List<double> getRatingsOfUser(firestore.QuerySnapshot ratingSnapshot) {
-  //   // ratingSnapshot.docs.forEach((element) {
-  //   //   List<double> ratings = (element.data() as Map).values.toList().map((e) => e['rating'] as double).toList();
-  //   //   print("CHECK HERE: ${ratings}");
-  //   // });
-  // }
+  Future<bool> deleteFcmTokenOfUser(UserModel user) async {
+    try {
+      await _usersCollection.doc(user.uid)
+        .update({"fcm_token": firestore.FieldValue.delete()});
+      return true;
+    } on Exception catch (e) {
+      return false;
+    }
+  }
 
   Future<UserModel> getUserByUserId({required String userId}) async {
     firestore.DocumentSnapshot userDocumentSnapshot = await _usersCollection.doc(userId).get();
@@ -55,7 +58,6 @@ class FirestoreRepository {
 
       List<double> ratings = (element.data() as Map).values.toList().map((e) => e['rating'] as double).toList();
       totalRatings.addAll(ratings);
-      print("CHECK HERE: ${ratings}");
     });
 
     Map<String, dynamic> userData = userDocumentSnapshot.data() as Map<String, dynamic>;
@@ -72,8 +74,6 @@ class FirestoreRepository {
         totalRatings: totalRatings.length,
       );
     } else {
-      log("TOKEN: $token");
-
       UserModel userModel = await UserModel.getUserModelByMap(
         fcmToken: token,
         userMap: userData,
@@ -115,11 +115,9 @@ class FirestoreRepository {
     List<Semester> semesters = [];
 
     await Future.forEach<firestore.QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
-      print("\t ${semester.id}");
       firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
       List<String> subjects = [];
       subjectsSnapshot.docs.forEach((subject) {
-        print("\t\t ${subject.id}");
         subjects.add(subject.id);
       });
 
@@ -143,11 +141,9 @@ class FirestoreRepository {
 
       firestore.QuerySnapshot semesterSnapshot = await course.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).get();
       await Future.forEach<firestore.QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
-        print("\t ${semester.id}");
         firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
         List<String> subjects = [];
         subjectsSnapshot.docs.forEach((subject) {
-          print("\t\t ${subject.id}");
           subjects.add(subject.id);
         });
 

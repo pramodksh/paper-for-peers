@@ -52,6 +52,11 @@ class UserCubit extends Cubit<UserState> {
         _textBookBloc = textBookBloc,
         super(UserInitial());
 
+  Future<void> logoutUser(UserModel user) async {
+    await _firestoreRepository.deleteFcmTokenOfUser(user);
+    await _authRepository.logoutUser();
+  }
+
   Future<bool> sendPasswordResetEmail(String email) async => await _authRepository.sendForgotEmail(email);
 
   Future<void> reloadUser() async {

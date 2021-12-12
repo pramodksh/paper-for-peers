@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,6 +12,7 @@ import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
+import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/dashboard/contact_us.dart';
@@ -320,12 +322,14 @@ class _MainDashboardState extends State<MainDashboard> {
                     )
                 ),
                 onPressed: () async {
-                  if (mounted) {
-                    setState(() { _isLoading = true; _loadingText = "Logging out.."; });
-                  }
-                  await context.read<AuthRepository>().logoutUser();
-                  if (mounted) {
-                    setState(() { _isLoading = false; });
+                  if (userState is UserLoaded) {
+                    if (mounted) {
+                      setState(() { _isLoading = true; _loadingText = "Logging out.."; });
+                    }
+                    await context.read<UserCubit>().logoutUser(userState.userModel);
+                    if (mounted) {
+                      setState(() { _isLoading = false; });
+                    }
                   }
                 },
                 child: Text("Log Out", style: TextStyle(fontSize: 18),),
