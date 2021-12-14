@@ -4,33 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart' as firebaseMessaging
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:http/http.dart' as http;
-
-extension ToSubjectExtension on String {
-
-  String toTitleCase() {
-
-    if (this.length <= 1) {
-      return this.toUpperCase();
-    }
-    final List<String> words = this.split(' ');
-
-    final capitalizedWords = words.map((word) {
-      if (word.trim().isNotEmpty) {
-        final String firstLetter = word.trim().substring(0, 1).toUpperCase();
-        final String remainingLetters = word.trim().substring(1);
-
-        return '$firstLetter$remainingLetters';
-      }
-      return '';
-    });
-
-    return capitalizedWords.join(' ');
-  }
-
-  String toSubject() {
-    return this.replaceAll("_", " ").toTitleCase();
-  }
-}
+import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 class FirebaseMessagingRepository {
   final firebaseMessaging.FirebaseMessaging _fcm;
@@ -60,7 +34,7 @@ class FirebaseMessagingRepository {
       "notification": {
           "body": "${userModel.displayName} has uploaded a new ${documentType.capitalized}",
           "priority": "high",
-          "title": "New ${documentType.capitalized} of ${course.toUpperCase()} $semester ${subject?.toSubject() ?? ""}",
+          "title": "New ${documentType.capitalized} of ${course.toUpperCase()} $semester ${subject != null ? Utils.toSubject(subject) : ""}",
           "click_action": "FLUTTER_NOTIFICATION_CLICK",
       },
       "data": {

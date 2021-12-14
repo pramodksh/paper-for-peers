@@ -16,33 +16,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-extension ToSubjectExtension on String {
-
-  String toTitleCase() {
-
-    if (this.length <= 1) {
-      return this.toUpperCase();
-    }
-    final List<String> words = this.split(' ');
-
-    final capitalizedWords = words.map((word) {
-      if (word.trim().isNotEmpty) {
-        final String firstLetter = word.trim().substring(0, 1).toUpperCase();
-        final String remainingLetters = word.trim().substring(1);
-
-        return '$firstLetter$remainingLetters';
-      }
-      return '';
-    });
-
-    return capitalizedWords.join(' ');
-  }
-
-  Text toSubjectText() {
-    return Text(this.replaceAll("_", " ").toTitleCase(), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500));
-  }
-}
-
 class Journal extends StatelessWidget {
 
   final DateFormat dateFormat = DateFormat("dd MMMM yyyy");
@@ -129,7 +102,7 @@ class Journal extends StatelessWidget {
                   profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
                   nVariant: index+1,
                   uploadedBy: currentJournalModel.uploadedBy,
-                  title: subject,
+                  title: Utils.toSubject(subject),
                 ),
               ),
             ));
@@ -160,7 +133,7 @@ class Journal extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          subject.toSubjectText(),
+          Text(Utils.toSubject(subject), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
           SizedBox(height: 20,),
           GridView.count(
             crossAxisSpacing: 10,
