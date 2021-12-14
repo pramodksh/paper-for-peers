@@ -80,7 +80,13 @@ async function sendReportNotificationToAdmins(
 ) {
   const adminSnapshot = await firestore.collection(adminCollectionLabel).get();
 
-  const tokens = adminSnapshot.docs.map((snap) => snap.data()["fcm_token"]);
+  // Get tokens list from admin
+  let tokens = adminSnapshot.docs.map((snap) => snap.data()["fcm_token"]);
+
+  // Remove all undefined values from token
+  tokens = tokens.filter(function (element) {
+    return element !== undefined;
+  });
 
   if (subject == null) {
     subject = "";
@@ -97,13 +103,17 @@ async function sendReportNotificationToAdmins(
       body: `${username} has reported a ${capitalize(
         documentType.replace(/_/g, " ").toLowerCase()
       )}`,
+      priority: "high",
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
     },
     data: {
-      click_action: "FLUTTER_NOTIFICATION_CLICK",
       document_type: documentType.toUpperCase(),
       type: "REPORT",
+      priority: "high",
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
     },
   };
+
   return await fcm.sendToDevice(tokens, payload);
 }
 
