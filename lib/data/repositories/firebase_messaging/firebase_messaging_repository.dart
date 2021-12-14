@@ -61,6 +61,7 @@ class FirebaseMessagingRepository {
           "body": "${userModel.displayName} has uploaded a new ${documentType.capitalized}",
           "priority": "high",
           "title": "New ${documentType.capitalized} of ${course.toUpperCase()} $semester ${subject?.toSubject() ?? ""}",
+          "click_action": "FLUTTER_NOTIFICATION_CLICK",
       },
       "data": {
           "click_action": "FLUTTER_NOTIFICATION_CLICK",
