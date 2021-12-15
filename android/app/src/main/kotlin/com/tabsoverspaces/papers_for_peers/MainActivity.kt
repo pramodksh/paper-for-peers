@@ -1,4 +1,4 @@
-package com.example.papers_for_peers
+package com.tabsoverspaces.papers_for_peers
 
 import io.flutter.embedding.android.FlutterActivity
 
