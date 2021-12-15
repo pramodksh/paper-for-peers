@@ -12,8 +12,7 @@ class FirebaseCollectionConfig {
 
   static final String usersCollectionLabel = "users";
 
-  // static final String coursesCollectionLabel = "courses"; // todo change to this
-  static final String coursesCollectionLabel = "courses_new";
+  static final String coursesCollectionLabel = "courses";
   static final String semestersCollectionLabel = "semesters";
   static final String syllabusCopyCollectionLabel = "syllabus_copy";
   static final String subjectsCollectionLabel = "subjects";

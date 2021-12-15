@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
@@ -215,33 +216,43 @@ class QuestionPaper extends StatelessWidget {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(flex: 2,child: Utils.getCourseAndSemesterText(context: context,)),
+                          Expanded(flex: 1,child: Utils.getCourseAndSemesterText(context: context,)),
                           Expanded(
-                            flex: 3,
-                            child: Utils.getCustomDropDown<String>(
-                              context: context,
-                              dropDownHint: "Subject",
-                              dropDownItems: userState.userModel.semester!.subjects,
-                              dropDownValue: questionPaperState.selectedSubject,
-                              onDropDownChanged: (val) {
-                                context.read<QuestionPaperBloc>().add(
-                                    QuestionPaperFetch(
-                                        course: userState.userModel.course!.courseName!,
-                                        semester: userState.userModel.semester!.nSemester!,
-                                        subject: val!
-                                    )
-                                );
-                              },
-                              items: List.generate(userState.userModel.semester!.subjects.length, (index) {
-                                String subjectValue = userState.userModel.semester!.subjects[index];
-                                return DropdownMenuItem<String>(
-                                  value: subjectValue,
-                                  child: Text(Utils.toSubject(subjectValue), style: CustomTextStyle.bodyTextStyle.copyWith(
-                                    fontSize: 18,
-                                    color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
-                                  ),),
-                                );
-                              }),
+                            flex: 2,
+                            child: SizedBox(
+                              height: 50,
+                              child: Utils.getCustomDropDown<String>(
+                                context: context,
+                                dropDownHint: "Subject",
+                                dropDownItems: userState.userModel.semester!.subjects,
+                                dropDownValue: questionPaperState.selectedSubject,
+                                onDropDownChanged: (val) {
+                                  context.read<QuestionPaperBloc>().add(
+                                      QuestionPaperFetch(
+                                          course: userState.userModel.course!.courseName!,
+                                          semester: userState.userModel.semester!.nSemester!,
+                                          subject: val!
+                                      )
+                                  );
+                                },
+                                items: List.generate(userState.userModel.semester!.subjects.length, (index) {
+                                  String subjectValue = userState.userModel.semester!.subjects[index];
+                                  return DropdownMenuItem<String>(
+                                    value: subjectValue,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: AutoSizeText(
+                                        Utils.toSubject(subjectValue),
+                                        style: CustomTextStyle.bodyTextStyle.copyWith(
+                                          fontSize: 18,
+                                          color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                        ),
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
                             ),
                           ),
                         ],

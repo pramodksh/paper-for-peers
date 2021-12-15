@@ -128,20 +128,27 @@ class TextBook extends StatelessWidget {
     }
 
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(Utils.toSubject(subject), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
-          SizedBox(height: 20,),
-          GridView.count(
-            crossAxisSpacing: 10,
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            physics: NeverScrollableScrollPhysics(),
-            childAspectRatio: 16/10,
-            children: children,
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AutoSizeText(
+              Utils.toSubject(subject),
+              maxLines: 2,
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(height: 20,),
+            GridView.count(
+              crossAxisSpacing: 10,
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              physics: NeverScrollableScrollPhysics(),
+              childAspectRatio: 16/10,
+              children: children,
+            ),
+          ],
+        ),
       ),
     );
   }
