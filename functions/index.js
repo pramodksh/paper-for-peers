@@ -13,20 +13,36 @@ const reportsJournalsCollectionLabel = "reports_journals";
 const reportsTextBookCollectionLabel = "reports_text_books";
 const reportsSyllabusCopyCollectionLabel = "reports_syllabus_copy";
 
-// Defining weights for reports
-const reportWeights = {
-  not_legitimate: 2,
-  not_appropriate: 1,
-  already_uploaded: 3,
-  misleading: 4,
+// String helper functions
+function toSubject(subject) {
+  return subject
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// >> REPORTS HELPER FUNCTIONS
+// Get Report Weights from remote config
+const getReportWeights = async () => {
+  const template = await admin.remoteConfig().getTemplate();
+  const reportWeights =
+    template.parameters["REPORT_WEIGHTS"].defaultValue.value;
+  return JSON.parse(reportWeights);
 };
 
+// Get max reports from remote config
 const maxReports = async () => {
   const template = await admin.remoteConfig().getTemplate();
   const maxReports = template.parameters["REPORTS_MAX"].defaultValue.value;
   return maxReports;
 };
 
+// Get the count of reports
 function getReportCounts(mergedValues) {
   const reportCounts = {};
   for (const report of mergedValues) {
@@ -40,7 +56,9 @@ function getMergedReportValues(reports) {
   return mergedValues;
 }
 
-function getWeightedReportCounts(reportCounts, reportWeights) {
+async function getWeightedReportCounts(reportCounts) {
+  const reportWeights = await getReportWeights();
+
   const weightedReportCounts = {};
   for (var key in reportWeights) {
     if (reportCounts[key] != undefined) {
@@ -49,6 +67,7 @@ function getWeightedReportCounts(reportCounts, reportWeights) {
       weightedReportCounts[key] = 0;
     }
   }
+
   return weightedReportCounts;
 }
 
@@ -57,18 +76,6 @@ function getTotalReports(weightedReportCounts) {
     (a, b) => a + b
   );
   return totalReports;
-}
-
-function toSubject(subject) {
-  return subject
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 async function sendReportNotificationToAdmins(
@@ -136,10 +143,7 @@ exports.reportQuestionPaper = functions.firestore
     const reportCounts = getReportCounts(mergedValues);
 
     // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
+    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
@@ -183,10 +187,7 @@ exports.reportJournal = functions.firestore
     const reportCounts = getReportCounts(mergedValues);
 
     // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
+    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
@@ -230,10 +231,7 @@ exports.reportSyllabusCopy = functions.firestore
     const reportCounts = getReportCounts(mergedValues);
 
     // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
+    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
@@ -277,10 +275,7 @@ exports.reportTextBook = functions.firestore
     const reportCounts = getReportCounts(mergedValues);
 
     // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
+    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
@@ -324,10 +319,7 @@ exports.reportNotes = functions.firestore
     const reportCounts = getReportCounts(mergedValues);
 
     // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
+    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
 
     // find total report count
     const totalReports = getTotalReports(weightedReportCounts);
