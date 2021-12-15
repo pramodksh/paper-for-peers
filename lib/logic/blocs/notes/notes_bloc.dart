@@ -6,6 +6,7 @@ import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
 import 'package:papers_for_peers/data/models/user_model/admin_model.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/notes_repository/notes_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
@@ -42,7 +43,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       on<NotesDelete>((event, emit) async {
         print("DEL: $event");
         emit(NotesDeleteLoading(notes: event.notes, selectedSubject: event.subject));
-        ApiResponse deleteResponse = await _notesRepository.deleteNote(course: event.course, semester: event.semester, subject: event.subject, noteId: event.noteId);
+        ApiResponse deleteResponse = await _notesRepository.deleteNote(course: event.course, semester: event.semester, subject: event.subject.value, noteId: event.noteId);
         if (deleteResponse.isError) {
           emit(NotesDeleteError(selectedSubject: event.subject, errorMessage: deleteResponse.errorMessage!));
         } else {
@@ -55,7 +56,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
       on<NotesReportAdd>((event, emit) async {
         print("REPORT: $event");
-        ApiResponse reportResponse = await _notesRepository.reportNotes(course: event.course, semester: event.semester, subject: event.subject, userId: event.user.uid, noteId: event.noteId, reportValues: event.reportValues);
+        ApiResponse reportResponse = await _notesRepository.reportNotes(course: event.course, semester: event.semester, subject: event.subject.value, userId: event.user.uid, noteId: event.noteId, reportValues: event.reportValues);
         if (reportResponse.isError) {
           emit(NotesReportAddError(selectedSubject: event.subject, errorMessage: reportResponse.errorMessage!));
         } else {
@@ -67,7 +68,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       on<NotesRatingChanged>((event, emit) async {
         await _notesRepository.addRatingToNotes(
           noteId: event.noteId, rating: event.rating, course: event.course,
-          semester: event.semester, subject: event.subject, user: event.ratingGivenUser,
+          semester: event.semester, subject: event.subject.value, user: event.ratingGivenUser,
         );
         await _notesRepository.addRatingToUser(
           ratingAcceptedUserId: event.ratingAcceptedUserId, rating: event.rating,
@@ -116,7 +117,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
               description: event.description,
               title: event.title,
               user: event.user,
-              subject: event.subject,
+              subject: event.subject.value,
               course: event.user.course!.courseName!,
               semester: event.user.semester!.nSemester!,
               document: event.file!,
@@ -135,7 +136,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
               List<AdminModel> admins = _firestoreRepository.admins;
               Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotification(
+                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
                   documentType: DocumentType.NOTES,
                   token: admin.fcmToken,
                   userModel: event.user,
@@ -152,7 +153,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
       on<NotesFetch>((event, emit) async {
         emit(NotesFetchLoading(selectedSubject: event.subject));
-        ApiResponse fetchResponse = await _notesRepository.getNotes(course: event.course, semester: event.semester, subject: event.subject);
+        ApiResponse fetchResponse = await _notesRepository.getNotes(course: event.course, semester: event.semester, subject: event.subject.value);
 
         if (fetchResponse.isError) {
           emit(NotesFetchError(errorMessage: fetchResponse.errorMessage!, selectedSubject: event.subject));

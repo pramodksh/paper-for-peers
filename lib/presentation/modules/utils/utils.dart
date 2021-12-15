@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -32,14 +33,27 @@ extension ToSubjectExtension on String {
     return capitalizedWords.join(' ');
   }
 
-  String toSubject() {
+  String capitalizeEachWord() {
     return this.replaceAll("_", " ").toTitleCase();
   }
 }
 
 class Utils {
 
-  static String toSubject(String str) => str.toSubject();
+  static Widget getLogoWithAppNameWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(flex: 3, child: Image.asset(DefaultAssets.mainLogoPath, alignment: Alignment.center, scale: 12,)),
+        Expanded(flex: 2, child: Container(
+          margin: EdgeInsets.only(top: 35),
+          child: Text("Papers\nFor\nPeers", style: TextStyle(color: Colors.white70, fontSize: 28, fontWeight: FontWeight.bold),))
+        ),
+      ],
+    );
+  }
+
+  static String capitalizeEachWord(String str) => str.capitalizeEachWord();
 
   static double getFileSizeInMb(File file) {
     int sizeInBytes = file.lengthSync();
@@ -279,8 +293,10 @@ class Utils {
     bool obscureText = false,
     Function(String)? onChanged,
     int maxLines = 1,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return TextFormField(
+      inputFormatters: inputFormatters,
       maxLines: maxLines,
       onChanged: onChanged,
       controller: controller,

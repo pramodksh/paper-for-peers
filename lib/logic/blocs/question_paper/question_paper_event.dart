@@ -8,7 +8,7 @@ class QuestionPaperFetch extends QuestionPaperEvent {
 
   final String course;
   final int semester;
-  final String subject;
+  final Subject subject;
 
   @override
   List<Object?> get props => [course, semester, subject,];
@@ -31,7 +31,7 @@ class QuestionPaperAdd extends QuestionPaperEvent {
   final String uploadedBy;
   final int year;
   final String course;
-  final String subject;
+  final Subject subject;
   final int semester;
   final UserModel user;
 
@@ -61,7 +61,7 @@ class QuestionPaperAddReport extends QuestionPaperEvent {
   final List<String> reportValues;
   final int year;
   final String course;
-  final String subject;
+  final Subject subject;
   final int semester;
   final String questionPaperId;
   final String userId;

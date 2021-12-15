@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.papers_for_peers">
+    package="com.tabsoverspaces.papers_for_peers">
    <application
-        android:label="papers_for_peers"
+        android:label="Papers For Peers (KUD)"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

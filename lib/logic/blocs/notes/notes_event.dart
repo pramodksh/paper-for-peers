@@ -7,7 +7,7 @@ abstract class NotesEvent extends Equatable {
 class NotesFetch extends NotesEvent {
   final String course;
   final int semester;
-  final String subject;
+  final Subject subject;
 
   @override
   List<Object?> get props => [course, semester, subject,];
@@ -21,7 +21,7 @@ class NotesFetch extends NotesEvent {
 
 class NotesAddEdit extends NotesEvent {
 
-  final String subject;
+  final Subject subject;
   final String? title;
   final String? description;
   final bool isFileEdit;
@@ -49,7 +49,7 @@ class NotesAdd extends NotesEvent {
   final String title;
   final String description;
   final UserModel user;
-  final String subject;
+  final Subject subject;
 
   @override
   List<Object?> get props => [title, description, user, subject,];
@@ -69,7 +69,7 @@ class NotesAdd extends NotesEvent {
 }
 
 class NotesReportAdd extends NotesEvent {
-  final String subject;
+  final Subject subject;
   final List<String> reportValues;
   final List<NotesModel> notes;
   final String noteId;
@@ -93,7 +93,7 @@ class NotesReportAdd extends NotesEvent {
 
 class NotesResetToNotesFetch extends NotesEvent {
   final List<NotesModel> notes;
-  final String selectedSubject;
+  final Subject selectedSubject;
 
   @override
   List<Object?> get props => [notes];
@@ -112,7 +112,7 @@ class NotesRatingChanged extends NotesEvent {
   final double rating;
   final String course;
   final int semester;
-  final String subject;
+  final Subject subject;
 
   @override
   List<Object?> get props => [rating, noteId, ratingGivenUser, rating, course, semester, subject, ratingAcceptedUserId];
@@ -143,7 +143,7 @@ class NotesDelete extends NotesEvent {
   final List<NotesModel> notes;
   final String course;
   final int semester;
-  final String subject;
+  final Subject subject;
   final String noteId;
 
   @override

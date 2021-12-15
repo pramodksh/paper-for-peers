@@ -7,6 +7,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -63,7 +64,7 @@ class Journal extends StatelessWidget {
   }
 
   Widget _getJournalTile({
-    required String subject, required List<JournalModel> journals,
+    required Subject subject, required List<JournalModel> journals,
     required AppThemeType appThemeType, required UserState userState,
     required bool isAddJournalLoading, required bool isWidgetLoading,
     required BuildContext context, required List<JournalSubjectModel> journalSubjects,
@@ -101,7 +102,7 @@ class Journal extends StatelessWidget {
                   profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
                   nVariant: index+1,
                   uploadedBy: currentJournalModel.uploadedBy,
-                  title: Utils.toSubject(subject),
+                  title: subject.label,
                 ),
               ),
             ));
@@ -132,7 +133,7 @@ class Journal extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(Utils.toSubject(subject), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
+          Text(subject.label, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
           SizedBox(height: 20,),
           GridView.count(
             crossAxisSpacing: 10,
@@ -247,7 +248,7 @@ class Journal extends StatelessWidget {
                           isWidgetLoading: true,
                           userState: userState,
                           journalSubjects: List.generate(3, (index) => JournalSubjectModel(
-                            subject: "",
+                            subject: Subject(label: "", isShowJournal: true, value: ""),
                             journalModels: List.generate(2, (index) => JournalModel(
                               documentUrl: "",
                               uploadedOn: DateTime.now(),

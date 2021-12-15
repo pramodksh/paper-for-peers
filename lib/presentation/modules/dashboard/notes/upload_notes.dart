@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
@@ -13,7 +15,7 @@ import 'package:provider/provider.dart';
 
 class UploadNotes extends StatefulWidget {
 
-  final String selectedSubject;
+  final Subject selectedSubject;
   final UserModel user;
   final List<NotesModel> notes;
 
@@ -53,7 +55,7 @@ class _UploadNotesState extends State<UploadNotes> {
     );
   }
 
-  void resetNotesState({required BuildContext context, required String selectedSubject, required List<NotesModel> notes}) {
+  void resetNotesState({required BuildContext context, required Subject selectedSubject, required List<NotesModel> notes}) {
     context.read<NotesBloc>().add(NotesResetToNotesFetch(
       selectedSubject: selectedSubject,
       notes: notes,
@@ -169,6 +171,9 @@ class _UploadNotesState extends State<UploadNotes> {
                                       }
                                     },
                                     validator: (String? val) => val!.isNotEmpty ? null : "Please enter title",
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(80),
+                                    ],
                                   ),
                                   SizedBox(height: 30,),
                                   Utils.getCustomTextField(
@@ -182,6 +187,9 @@ class _UploadNotesState extends State<UploadNotes> {
                                       }
                                     },
                                     validator: (String? val) => val!.isNotEmpty ? null : "Please enter Description",
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(250),
+                                    ],
                                   ),
                                 ],
                               ),

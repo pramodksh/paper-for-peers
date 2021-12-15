@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/text_book.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class TextBookRepository {
@@ -136,8 +137,10 @@ class TextBookRepository {
           textBooks.add(TextBookModel.fromFirestoreMap(map: journalData, id: journal.id));
         });
 
+        Map<String, dynamic> subjectData = subject.data() as Map<String, dynamic>;
+
         textBookSubjects.add(TextBookSubjectModel(
-          subject: subject.id,
+          subject: Subject.fromFirestoreMap(subjectData: subjectData, id: subject.id),
           textBookModels: textBooks,
         ));
       });

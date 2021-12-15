@@ -88,7 +88,7 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
 
               List<AdminModel> admins = _firestoreRepository.admins;
               Future.forEach<AdminModel>(admins, (admin) async {
-                await _firebaseMessagingRepository.sendNotification(
+                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
                   documentType: DocumentType.SYLLABUS_COPY,
                   token: admin.fcmToken,
                   userModel: event.user,

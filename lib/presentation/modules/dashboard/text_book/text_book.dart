@@ -7,6 +7,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/document_models/text_book.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/logic/blocs/text_book/text_book_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -62,7 +63,7 @@ class TextBook extends StatelessWidget {
   }
 
   Widget _getTextBookTile({
-    required String subject, required List<TextBookModel> textBooks,
+    required Subject subject, required List<TextBookModel> textBooks,
     required List<TextBookSubjectModel> textBookSubjects,
     required AppThemeType appThemeType, required UserState userState,
     required bool isAddTextBookLoading, required bool isWidgetLoading,
@@ -100,7 +101,7 @@ class TextBook extends StatelessWidget {
                     profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
                     nVariant: index+1,
                     uploadedBy: currentTextBookModel.uploadedBy,
-                    title: Utils.toSubject(subject)
+                    title: subject.label,
                 ),
               ),
             ));
@@ -134,7 +135,7 @@ class TextBook extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AutoSizeText(
-              Utils.toSubject(subject),
+              subject.label,
               maxLines: 2,
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
             ),
@@ -252,7 +253,7 @@ class TextBook extends StatelessWidget {
                           isWidgetLoading: true,
                           userState: userState,
                           textBookSubjects: List.generate(2, (index) => TextBookSubjectModel(
-                            subject: "",
+                            subject: Subject(value: "", isShowJournal: true, label: ""),
                             textBookModels: List.generate(2, (index) => TextBookModel(
                               id: "",
                               uploadedOn: DateTime.now(),

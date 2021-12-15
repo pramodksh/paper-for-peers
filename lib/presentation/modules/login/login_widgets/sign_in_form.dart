@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/export_config.dart';
+import 'package:papers_for_peers/logic/blocs/text_book/text_book_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/sign_in/sign_in_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/login/forgot_password.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
@@ -30,7 +31,7 @@ class SignInForm extends StatelessWidget {
           key: _formKey,
           child: Column(
             children: [
-              Image.asset(DefaultAssets.mainLogoPath, height: 110, alignment: Alignment.center,),
+              Utils.getLogoWithAppNameWidget(),
               SizedBox(height: 70,),
               Utils.getCustomTextField(
                 labelText: 'Email Address',

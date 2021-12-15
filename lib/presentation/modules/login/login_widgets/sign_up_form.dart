@@ -240,17 +240,8 @@ class SignUpForm extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Image.asset(
-                    DefaultAssets.mainLogoPath,
-                    height: 110,
-                    alignment: Alignment.center,
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                SizedBox(height: 20,),
+                Utils.getLogoWithAppNameWidget(),
+                SizedBox(height: 70,),
                 Utils.getCustomTextField(
                   labelText: 'Email Address',
                   onChanged: (val) {

@@ -3,7 +3,7 @@ class AdminModel {
   final String displayName;
   final String email;
   final String photoUrl;
-  final String fcmToken;
+  final String? fcmToken;
 
   const AdminModel({
     required this.adminId,
@@ -32,7 +32,7 @@ class AdminModel {
       displayName: map['displayName'] as String,
       email: map['email'] as String,
       photoUrl: map['photoUrl'] as String,
-      fcmToken: map['fcm_token'] as String,
+      fcmToken: map['fcm_token'] == null ? null : map['fcm_token'] as String,
     );
   }
 }

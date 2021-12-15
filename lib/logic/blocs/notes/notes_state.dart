@@ -1,7 +1,7 @@
 part of 'notes_bloc.dart';
 
 abstract class NotesState extends Equatable {
-  final String? selectedSubject;
+  final Subject? selectedSubject;
   const NotesState({required this.selectedSubject});
 }
 
@@ -13,7 +13,7 @@ class NotesInitial extends NotesState {
 }
 
 class NotesFetchLoading extends NotesState {
-  NotesFetchLoading({required String selectedSubject}) : super(selectedSubject: selectedSubject);
+  NotesFetchLoading({required Subject selectedSubject}) : super(selectedSubject: selectedSubject);
 
   @override
   List<Object?> get props => [];
@@ -28,7 +28,7 @@ class NotesFetchSuccess extends NotesState {
 
   const NotesFetchSuccess({
     required this.notes,
-    required String selectedSubject,
+    required Subject selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
 
@@ -40,7 +40,7 @@ class NotesFetchError extends NotesState {
 
   const NotesFetchError({
     required this.errorMessage,
-    required String selectedSubject,
+    required Subject selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
 
@@ -57,7 +57,7 @@ class NotesAddEditing extends NotesState {
     required this.title,
     required this.description,
     required this.file,
-    required String selectedSubject,
+    required Subject selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
 
@@ -68,7 +68,7 @@ class NotesAddLoading extends NotesState {
   List<Object?> get props => [];
 
   const NotesAddLoading({
-    required String selectedSubject,
+    required Subject selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
 
@@ -85,7 +85,7 @@ class NotesAddSuccess extends NotesState {
     required this.title,
     required this.description,
     required this.file,
-    required String selectedSubject,
+    required Subject selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
 
@@ -104,12 +104,12 @@ class NotesAddError extends NotesState {
     required this.description,
     required this.file,
     required this.errorMessage,
-    required String selectedSubject,
+    required Subject selectedSubject,
   }) : super(selectedSubject: selectedSubject);
 }
 
 class NotesReportAddSuccess extends NotesState {
-  NotesReportAddSuccess({required String selectedSubject}) : super(selectedSubject: selectedSubject);
+  NotesReportAddSuccess({required Subject selectedSubject}) : super(selectedSubject: selectedSubject);
 
   @override
   List<Object?> get props => [];
@@ -118,7 +118,7 @@ class NotesReportAddSuccess extends NotesState {
 class NotesReportAddError extends NotesState {
   final String errorMessage;
 
-  NotesReportAddError({required String selectedSubject, required this.errorMessage})
+  NotesReportAddError({required Subject selectedSubject, required this.errorMessage})
       : super(selectedSubject: selectedSubject);
 
   @override
@@ -131,12 +131,12 @@ class NotesDeleteLoading extends NotesState {
   @override
   List<Object?> get props => [notes];
 
-  NotesDeleteLoading({required this.notes, required String selectedSubject}) : super(selectedSubject: selectedSubject);
+  NotesDeleteLoading({required this.notes, required Subject selectedSubject}) : super(selectedSubject: selectedSubject);
 
 }
 
 class NotesDeleteSuccess extends NotesState {
-  NotesDeleteSuccess({required String selectedSubject}) : super(selectedSubject: selectedSubject);
+  NotesDeleteSuccess({required Subject selectedSubject}) : super(selectedSubject: selectedSubject);
 
   @override
   List<Object?> get props => [];
@@ -144,7 +144,7 @@ class NotesDeleteSuccess extends NotesState {
 
 class NotesDeleteError extends NotesState {
   final String errorMessage;
-  NotesDeleteError({required String selectedSubject, required this.errorMessage}) : super(selectedSubject: selectedSubject);
+  NotesDeleteError({required Subject selectedSubject, required this.errorMessage}) : super(selectedSubject: selectedSubject);
 
   @override
   List<Object?> get props => [errorMessage];

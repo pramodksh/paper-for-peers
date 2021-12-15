@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class JournalRepository {
@@ -107,7 +108,7 @@ class JournalRepository {
           });
 
           journalSubjects.add(JournalSubjectModel(
-            subject: subject.id,
+            subject: Subject.fromFirestoreMap(subjectData: subjectData, id: subject.id),
             journalModels: journals,
           ));
         }

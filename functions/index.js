@@ -138,7 +138,7 @@ async function sendReportNotificationToAdmins(
 
 exports.reportQuestionPaper = functions.firestore
   .document(
-    "/courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}"
+    "/courses/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}"
   )
   .onUpdate(async (change, context) => {
     const questionPaperId = change.after.id;
@@ -172,7 +172,7 @@ exports.reportQuestionPaper = functions.firestore
 
 exports.reportJournal = functions.firestore
   .document(
-    "/courses_new/{course}/semesters/{semester}/subjects/{subject}/journal/{version}"
+    "/courses/{course}/semesters/{semester}/subjects/{subject}/journal/{version}"
   )
   .onUpdate(async (change, context) => {
     const journalId = change.after.id;
@@ -206,7 +206,7 @@ exports.reportJournal = functions.firestore
 
 exports.reportSyllabusCopy = functions.firestore
   .document(
-    "/courses_new/{course}/semesters/{semester}/syllabus_copy/{version}"
+    "/courses/{course}/semesters/{semester}/syllabus_copy/{version}"
   )
   .onUpdate(async (change, context) => {
     const syllabusCopyId = change.after.id;
@@ -240,7 +240,7 @@ exports.reportSyllabusCopy = functions.firestore
 
 exports.reportTextBook = functions.firestore
   .document(
-    "/courses_new/{course}/semesters/{semester}/subjects/{subject}/text_book/{version}"
+    "/courses/{course}/semesters/{semester}/subjects/{subject}/text_book/{version}"
   )
   .onUpdate(async (change, context) => {
     const textBookId = change.after.id;
@@ -274,7 +274,7 @@ exports.reportTextBook = functions.firestore
 
 exports.reportNotes = functions.firestore
   .document(
-    "/courses_new/{course}/semesters/{semester}/subjects/{subject}/notes/{noteId}"
+    "/courses/{course}/semesters/{semester}/subjects/{subject}/notes/{noteId}"
   )
   .onUpdate(async (change, context) => {
     const noteId = change.after.id;
