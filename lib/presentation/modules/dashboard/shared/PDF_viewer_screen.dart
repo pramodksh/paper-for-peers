@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -218,7 +219,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
     double ratingRightPosition = 10;
 
     if (widget.parameter.runtimeType == PDFScreenSimpleBottomSheet) {
-      double modelHeight = 300;
+      double modelHeight = 350;
       PDFScreenSimpleBottomSheet parameter = widget.parameter;
       return Stack(
         children: [
@@ -237,7 +238,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(parameter.title!, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600)),
+                        AutoSizeText(parameter.title!, style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600), maxLines: 2,),
                         SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -493,7 +494,7 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
             ).cachedFromUrl(
               widget.documentUrl,
               placeholder: (progress) => Center(child: Text("Loading", style: TextStyle(fontSize: 20),)),
-              errorWidget: (error) => Center(child: Text("There was an error while loading pdf", style: TextStyle(fontSize: 20),)),
+              errorWidget: (error) => Center(child: Text("This Document might be deleted. Please refresh the list.", style: TextStyle(fontSize: 20),)),
             ),
             Builder(
               builder: (context) {

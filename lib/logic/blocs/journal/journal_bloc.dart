@@ -80,7 +80,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
               List<AdminModel> admins = _firestoreRepository.admins;
               Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotification(
+                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
                   documentType: DocumentType.JOURNAL,
                   token: admin.fcmToken,
                   userModel: event.user,

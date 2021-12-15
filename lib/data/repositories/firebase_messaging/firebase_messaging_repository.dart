@@ -13,15 +13,17 @@ class FirebaseMessagingRepository {
   FirebaseMessagingRepository({firebaseMessaging.FirebaseMessaging? fcm})
       : _fcm = fcm ?? firebaseMessaging.FirebaseMessaging.instance;
 
-  Future<bool> sendNotification({
+  Future<bool> sendNotificationIfTokenExists({
     required DocumentType documentType,
     required UserModel userModel,
-    required String token,
+    required String? token,
     required Function getFireBaseKey,
     required String course,
     required int semester,
     Subject? subject,
   }) async {
+    if (token == null) return true;
+
     String url = "https://fcm.googleapis.com/fcm/send";
     String _firebaseKey = await getFireBaseKey();
 

@@ -136,7 +136,7 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
               List<AdminModel> admins = _firestoreRepository.admins;
               Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotification(
+                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
                   documentType: DocumentType.NOTES,
                   token: admin.fcmToken,
                   userModel: event.user,

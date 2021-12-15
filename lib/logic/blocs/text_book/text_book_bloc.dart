@@ -88,7 +88,7 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
 
               List<AdminModel> admins = _firestoreRepository.admins;
               Future.forEach<AdminModel>(admins, (admin) async {
-                await _firebaseMessagingRepository.sendNotification(
+                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
                   documentType: DocumentType.TEXT_BOOK,
                   token: admin.fcmToken,
                   userModel: event.user,
