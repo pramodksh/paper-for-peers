@@ -131,7 +131,7 @@ class TextBook extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(subject, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
+          Text(Utils.toSubject(subject), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
           SizedBox(height: 20,),
           GridView.count(
             crossAxisSpacing: 10,

@@ -32,6 +32,8 @@ class AppConstants {
     {"label": "Misleading", "value": "misleading"},
   ];
 
+  static late List<String> reportReasons;
+
   static const List<Map> bottomNavBarIcons = [
     {"icon": DefaultAssets.questionPaperNavIcon, "label": "Question Paper"},
     {"icon": DefaultAssets.notesNavIcon, "label": "Notes"},

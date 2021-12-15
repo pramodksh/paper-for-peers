@@ -307,6 +307,16 @@ class Notes extends StatelessWidget {
                                       )
                                   );
                                 },
+                                items: List.generate(userState.userModel.semester!.subjects.length, (index) {
+                                  String subjectValue = userState.userModel.semester!.subjects[index];
+                                  return DropdownMenuItem<String>(
+                                    value: subjectValue,
+                                    child: Text(Utils.toSubject(subjectValue), style: CustomTextStyle.bodyTextStyle.copyWith(
+                                      fontSize: 18,
+                                      color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                    ),),
+                                  );
+                                }),
                               ),
                             ),
                           ],

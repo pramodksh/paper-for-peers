@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/default_assets.dart';
@@ -38,7 +39,10 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Compare Question Paper"),
+        title: AutoSizeText(
+          "Compare Question Paper",
+          maxLines: 1,
+        )
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -47,7 +51,7 @@ class _ShowSplitOptionsState extends State<ShowSplitOptions> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              "How many Question Papers you want to Compare?",
+              "How many Question Papers do you want to Compare?",
               style: TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),

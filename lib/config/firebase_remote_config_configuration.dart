@@ -14,4 +14,7 @@ class FirebaseRemoteConfigConfiguration {
   static const String SIZE_QUESTION_PAPER = "SIZE_QUESTION_PAPER";
   static const String SIZE_JOURNAL = "SIZE_JOURNAL";
 
+  // REPORTS AND WEIGHTS
+  static const String REPORT_WEIGHTS = "REPORT_WEIGHTS";
+
 }

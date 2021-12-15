@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart' as firebaseRemoteConfig;
 import 'package:papers_for_peers/config/firebase_remote_config_configuration.dart';
 
@@ -78,6 +80,12 @@ class FirebaseRemoteConfigRepository {
   Future<int> getMaxSizeOfTextBook() async {
     await _remoteConfig.fetchAndActivate();
     return _remoteConfig.getValue(FirebaseRemoteConfigConfiguration.SIZE_TEXT_BOOK).asInt();
+  }
+
+  Future<List<String>> getReportsAndWeights() async {
+    await _remoteConfig.fetchAndActivate();
+    Map<String, dynamic> reportWeights = json.decode(_remoteConfig.getValue(FirebaseRemoteConfigConfiguration.REPORT_WEIGHTS).asString());
+    return reportWeights.keys.toList();
   }
 
 }

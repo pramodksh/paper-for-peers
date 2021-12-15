@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/data/repositories/firestore/firestore_repository.dart';
 import 'package:papers_for_peers/data/repositories/shared_preference/shared_preference_repository.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -72,11 +75,25 @@ class MainDashboardWrapper extends StatelessWidget {
 }
 
 
-class Wrapper extends StatelessWidget {
+class Wrapper extends StatefulWidget {
+  @override
+  State<Wrapper> createState() => _WrapperState();
+}
+
+class _WrapperState extends State<Wrapper> {
+
+  @override
+  void initState() {
+    SchedulerBinding.instance!.addPostFrameCallback((_) async {
+      FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository = context.read<FirebaseRemoteConfigRepository>();
+      AppConstants.reportReasons = await _firebaseRemoteConfigRepository.getReportsAndWeights();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthRepository _authRepository = context.select((AuthRepository repo) => repo);
-
     return StreamBuilder(
       stream: _authRepository.user,
       builder: (context, snapshot) {
