@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
@@ -170,6 +171,9 @@ class _UploadNotesState extends State<UploadNotes> {
                                       }
                                     },
                                     validator: (String? val) => val!.isNotEmpty ? null : "Please enter title",
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(80),
+                                    ],
                                   ),
                                   SizedBox(height: 30,),
                                   Utils.getCustomTextField(
@@ -183,6 +187,9 @@ class _UploadNotesState extends State<UploadNotes> {
                                       }
                                     },
                                     validator: (String? val) => val!.isNotEmpty ? null : "Please enter Description",
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(250),
+                                    ],
                                   ),
                                 ],
                               ),

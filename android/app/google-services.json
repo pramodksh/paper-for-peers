@@ -1,10 +1,56 @@
 {
   "project_info": {
     "project_number": "72106366853",
+    "firebase_url": "https://papers-fc891-default-rtdb.firebaseio.com",
     "project_id": "papers-fc891",
     "storage_bucket": "papers-fc891.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72106366853:android:22b9441c9347f64322d6ec",
+        "android_client_info": {
+          "package_name": "com.example.paper_for_peers_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72106366853-97rcb1ca25qavop5lp42slf4tsjrsdhe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.paper_for_peers_admin",
+            "certificate_hash": "08d1d1e52ee9b1023a58de4ccb3995f9ffd2a2b0"
+          }
+        },
+        {
+          "client_id": "72106366853-ksdip3bs1ec4nv6qf7hkj5c7mfadjklu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.paper_for_peers_admin",
+            "certificate_hash": "7d1707454d6aa3766cee6e673fb79278536472e9"
+          }
+        },
+        {
+          "client_id": "72106366853-osb6fjgn1qapierq5c0la30irq6pb8i5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVaM9QhUIxJnKMEkNtc9QBCHE_oszKqh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72106366853-osb6fjgn1qapierq5c0la30irq6pb8i5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:72106366853:android:40fd9435dfbf8a1822d6ec",
@@ -18,6 +64,43 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.papers_for_peers",
+            "certificate_hash": "08d1d1e52ee9b1023a58de4ccb3995f9ffd2a2b0"
+          }
+        },
+        {
+          "client_id": "72106366853-osb6fjgn1qapierq5c0la30irq6pb8i5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVaM9QhUIxJnKMEkNtc9QBCHE_oszKqh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72106366853-osb6fjgn1qapierq5c0la30irq6pb8i5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72106366853:android:d4524fc42256e43d22d6ec",
+        "android_client_info": {
+          "package_name": "com.tabsoverspaces.papers_for_peers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72106366853-qll4hbsqjcm0oll7hv3i01vbvrpe6jam.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tabsoverspaces.papers_for_peers",
             "certificate_hash": "08d1d1e52ee9b1023a58de4ccb3995f9ffd2a2b0"
           }
         },

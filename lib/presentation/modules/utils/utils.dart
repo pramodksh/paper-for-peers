@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
@@ -292,8 +293,10 @@ class Utils {
     bool obscureText = false,
     Function(String)? onChanged,
     int maxLines = 1,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return TextFormField(
+      inputFormatters: inputFormatters,
       maxLines: maxLines,
       onChanged: onChanged,
       controller: controller,
