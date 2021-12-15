@@ -7,7 +7,6 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
-import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';

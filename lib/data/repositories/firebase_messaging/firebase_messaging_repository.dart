@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart' as firebaseMessaging;
+import 'package:http/http.dart' as http;
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 class FirebaseMessagingRepository {

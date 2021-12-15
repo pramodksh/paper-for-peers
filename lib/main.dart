@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -26,7 +25,6 @@ import 'package:papers_for_peers/logic/blocs/syllabus_copy/syllabus_copy_bloc.da
 import 'package:papers_for_peers/logic/blocs/text_book/text_book_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
-import 'package:papers_for_peers/presentation/modules/login/intro_screen.dart';
 import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
