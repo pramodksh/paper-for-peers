@@ -39,6 +39,19 @@ extension ToSubjectExtension on String {
 
 class Utils {
 
+  static Widget getLogoWithAppNameWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(flex: 3, child: Image.asset(DefaultAssets.mainLogoPath, alignment: Alignment.center, scale: 12,)),
+        Expanded(flex: 2, child: Container(
+          margin: EdgeInsets.only(top: 35),
+          child: Text("Papers\nFor\nPeers", style: TextStyle(color: Colors.white70, fontSize: 28, fontWeight: FontWeight.bold),))
+        ),
+      ],
+    );
+  }
+
   static String capitalizeEachWord(String str) => str.capitalizeEachWord();
 
   static double getFileSizeInMb(File file) {

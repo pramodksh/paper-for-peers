@@ -31,9 +31,7 @@ class SignInForm extends StatelessWidget {
           key: _formKey,
           child: Column(
             children: [
-              Image.asset(DefaultAssets.mainLogoPath, alignment: Alignment.center, scale: 12,),
-              SizedBox(height: 10,),
-              Text("Papers For Peers", style: TextStyle(fontSize: 20),),
+              Utils.getLogoWithAppNameWidget(),
               SizedBox(height: 70,),
               Utils.getCustomTextField(
                 labelText: 'Email Address',
