@@ -444,12 +444,9 @@ class _PDFViewerScreenState extends State<PDFViewerScreen> {
 
   @override
   void initState() {
-
-    print("SEE: ${AppConstants.reportReasons}");
-
-    reportReasons = AppConstants.reportReasonsMap.map((e) => CheckBoxModel(
-      value: e['value'],
-      label: e['label'],
+    reportReasons = AppConstants.reportReasons.map((report) => CheckBoxModel(
+      value: report,
+      label: Utils.toSubject(report),
       isChecked: false,
     )).toList();
 

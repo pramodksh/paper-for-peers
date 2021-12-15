@@ -25,13 +25,6 @@ class AppConstants {
   static const String KUDBaseURL = "https://www.kud.ac.in/";
   static const String KUDNotificationsURL = "https://www.kud.ac.in/cmsentities.aspx?type=notifications";
 
-  static const List<Map> reportReasonsMap = [
-    {"label": "Already Uploaded", "value": "already_uploaded"},
-    {"label": "Not legitimate", "value": "not_legitimate"},
-    {"label": "Not appropriate", "value": "not_appropriate"},
-    {"label": "Misleading", "value": "misleading"},
-  ];
-
   static late List<String> reportReasons;
 
   static const List<Map> bottomNavBarIcons = [
