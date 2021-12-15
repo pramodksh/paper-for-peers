@@ -32,14 +32,14 @@ extension ToSubjectExtension on String {
     return capitalizedWords.join(' ');
   }
 
-  String toSubject() {
+  String capitalizeEachWord() {
     return this.replaceAll("_", " ").toTitleCase();
   }
 }
 
 class Utils {
 
-  static String toSubject(String str) => str.toSubject();
+  static String capitalizeEachWord(String str) => str.capitalizeEachWord();
 
   static double getFileSizeInMb(File file) {
     int sizeInBytes = file.lengthSync();

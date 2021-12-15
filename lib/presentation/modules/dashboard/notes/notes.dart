@@ -6,6 +6,7 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/logic/blocs/notes/notes_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -291,12 +292,12 @@ class Notes extends StatelessWidget {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(flex: 2,child: Utils.getCourseAndSemesterText(context: context,)),
+                            Expanded(flex: 1,child: Utils.getCourseAndSemesterText(context: context,)),
                             Expanded(
-                              flex: 3,
+                              flex: 2,
                               child: SizedBox(
                                 height: 50,
-                                child: Utils.getCustomDropDown<String>(
+                                child: Utils.getCustomDropDown<Subject>(
                                   context: context,
                                   dropDownHint: "Subject",
                                   dropDownItems: userState.userModel.semester!.subjects,
@@ -311,13 +312,13 @@ class Notes extends StatelessWidget {
                                     );
                                   },
                                   items: List.generate(userState.userModel.semester!.subjects.length, (index) {
-                                    String subjectValue = userState.userModel.semester!.subjects[index];
-                                    return DropdownMenuItem<String>(
-                                      value: subjectValue,
+                                    // String subjectValue = userState.userModel.semester!.subjects[index];
+                                    return DropdownMenuItem<Subject>(
+                                      value: userState.userModel.semester!.subjects[index],
                                       child: Padding(
                                         padding: EdgeInsets.symmetric(vertical: 10),
                                         child: AutoSizeText(
-                                          Utils.toSubject(subjectValue),
+                                          userState.userModel.semester!.subjects[index].label,
                                           style: CustomTextStyle.bodyTextStyle.copyWith(
                                             fontSize: 18,
                                             color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,

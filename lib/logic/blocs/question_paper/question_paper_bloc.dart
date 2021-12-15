@@ -6,6 +6,7 @@ import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
 import 'package:papers_for_peers/data/models/user_model/admin_model.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/question_paper_repository/question_paper_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
@@ -46,7 +47,7 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
       on<QuestionPaperAddReport>((event, emit) async {
         print("REPORT EVENT: $event");
         ApiResponse reportResponse = await _questionPaperRepository.reportQuestionPaper(
-          course: event.course, semester: event.semester, subject: event.subject,
+          course: event.course, semester: event.semester, subject: event.subject.value,
           year: event.year, reportValues: event.reportValues,
           userId: event.userId, questionPaperId: event.questionPaperId
         );
@@ -80,7 +81,7 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
         ApiResponse response = await _questionPaperRepository.getQuestionPapers(
           course: event.course,
           semester: event.semester,
-          subject: event.subject,
+          subject: event.subject.value,
         );
 
         if (response.isError) {
@@ -107,11 +108,10 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
                 selectedSubject: event.subject,
                 maxQuestionPapers: maxQuestionPapers));
           } else {
-            ApiResponse uploadResponse = await _questionPaperRepository
-                .uploadAndAddQuestionPaperToAdmin(
+            ApiResponse uploadResponse = await _questionPaperRepository.uploadAndAddQuestionPaperToAdmin(
                 course: event.course,
                 semester: event.semester,
-                subject: event.subject,
+                subject: event.subject.value,
                 year: event.year,
                 document: file,
                 user: event.user,

@@ -27,7 +27,7 @@ class TextBookAdd extends TextBookEvent {
   final List<TextBookSubjectModel> textBookSubjects;
   final String uploadedBy;
   final String course;
-  final String subject;
+  final Subject subject;
   final int semester;
   final UserModel user;
 
@@ -49,7 +49,7 @@ class TextBookReportAdd extends TextBookEvent {
   final List<TextBookSubjectModel> textBookSubjects;
   final String uploadedBy;
   final String course;
-  final String subject;
+  final Subject subject;
   final int semester;
   final String textBookId;
   final UserModel user;

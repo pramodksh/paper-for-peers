@@ -6,6 +6,7 @@ import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
 import 'package:papers_for_peers/data/models/user_model/admin_model.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/journal_repository/journal_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
@@ -44,7 +45,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
         print("REPORT EVENT: $event");
         ApiResponse reportResponse = await _journalRepository.reportJournal(
-            course: event.course, semester: event.semester, subject: event.subject,
+            course: event.course, semester: event.semester, subject: event.subject.value,
             reportValues: event.reportValues, userId: event.user.uid, journalId: event.journalId,
         );
         if (reportResponse.isError) {
@@ -68,7 +69,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
             emit(JournalAddError(errorMessage: "The selected file has exceeded the limit of $maxSize MB.\nThe size of the selected file is ${size.toStringAsFixed(2)} MB", journalSubjects: event.journalSubjects, maxJournals: maxJournals));
           } else {
             ApiResponse uploadResponse = await _journalRepository.uploadAndAddJournalToAdmin(
-              course: event.course, semester: event.semester, subject: event.subject,
+              course: event.course, semester: event.semester, subject: event.subject.value,
               user: event.user,
               document: file, maxJournals: await _firebaseRemoteConfigRepository.getMaxJournals(),
             );

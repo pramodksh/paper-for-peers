@@ -9,7 +9,7 @@ class JournalAdd extends JournalEvent {
   final List<JournalSubjectModel> journalSubjects;
   final String uploadedBy;
   final String course;
-  final String subject;
+  final Subject subject;
   final int semester;
   final UserModel user;
 
@@ -52,7 +52,7 @@ class JournalReportAdd extends JournalEvent {
   final List<JournalSubjectModel> journalSubjects;
   final String uploadedBy;
   final String course;
-  final String subject;
+  final Subject subject;
   final int semester;
   final UserModel user;
 

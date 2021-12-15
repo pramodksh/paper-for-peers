@@ -2,7 +2,7 @@ part of 'question_paper_bloc.dart';
 
 abstract class QuestionPaperState extends Equatable {
   final int maxQuestionPapers;
-  final String? selectedSubject;
+  final Subject? selectedSubject;
 
   const QuestionPaperState({required this.selectedSubject, required this.maxQuestionPapers});
 }
@@ -16,7 +16,7 @@ class QuestionPaperInitial extends QuestionPaperState {
 
 class QuestionPaperFetchLoading extends QuestionPaperState {
   QuestionPaperFetchLoading({
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 
@@ -33,7 +33,7 @@ class QuestionPaperFetchSuccess extends QuestionPaperState {
 
   const QuestionPaperFetchSuccess({
     required this.questionPaperYears,
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 }
@@ -46,7 +46,7 @@ class QuestionPaperFetchError extends QuestionPaperState {
 
   const QuestionPaperFetchError({
     required this.errorMessage,
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 }
@@ -60,7 +60,7 @@ class QuestionPaperAddLoading extends QuestionPaperState {
 
   const QuestionPaperAddLoading({
     required this.questionPaperYears,
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 }
@@ -73,7 +73,7 @@ class QuestionPaperAddSuccess extends QuestionPaperState {
 
   const QuestionPaperAddSuccess({
     required this.questionPaperYears,
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 }
@@ -89,7 +89,7 @@ class QuestionPaperAddError extends QuestionPaperState {
   const QuestionPaperAddError({
     required this.errorMessage,
     required this.questionPaperYears,
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 }
@@ -102,7 +102,7 @@ class QuestionPaperReportSuccess extends QuestionPaperState {
 
   const QuestionPaperReportSuccess({
     required this.questionPaperYears,
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 }
@@ -117,7 +117,7 @@ class QuestionPaperReportError extends QuestionPaperState {
   const QuestionPaperReportError({
     required this.errorMessage,
     required this.questionPaperYears,
-    required String selectedSubject,
+    required Subject selectedSubject,
     required int maxQuestionPapers
   }) : super(selectedSubject: selectedSubject, maxQuestionPapers: maxQuestionPapers);
 }

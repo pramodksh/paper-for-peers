@@ -6,6 +6,7 @@ import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/text_book.dart';
 import 'package:papers_for_peers/data/models/user_model/admin_model.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/text_book_repository/text_book_repository.dart';
 import 'package:papers_for_peers/data/repositories/file_picker/file_picker_repository.dart';
@@ -42,7 +43,7 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
       on<TextBookReportAdd>((event, emit) async {
         print("EVENT: $event");
         ApiResponse reportResponse = await _textBookRepository.reportTextBook(
-          course: event.course, semester: event.semester, subject: event.subject,
+          course: event.course, semester: event.semester, subject: event.subject.value,
           userId: event.user.uid, textBookId: event.textBookId, reportValues: event.reportValues
         );
         if (reportResponse.isError) {
@@ -71,7 +72,7 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
                 .uploadAndAddTextBookToAdmin(
                 course: event.course,
                 semester: event.semester,
-                subject: event.subject,
+                subject: event.subject.value,
                 user: event.user,
                 document: file,
                 maxTextBooks: maxTextBooks

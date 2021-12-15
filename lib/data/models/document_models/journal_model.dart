@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class JournalSubjectModel {
-  String subject;
+  Subject subject;
   List<JournalModel> journalModels;
 
   JournalSubjectModel({

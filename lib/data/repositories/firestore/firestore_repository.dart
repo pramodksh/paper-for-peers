@@ -7,6 +7,7 @@ import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/course.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
 import 'package:papers_for_peers/data/models/user_model/admin_model.dart';
+import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 
 class FirestoreRepository {
@@ -115,12 +116,14 @@ class FirestoreRepository {
 
     await Future.forEach<firestore.QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
       firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
-      List<String> subjects = [];
+
+      List<Subject> subjectModels = [];
       subjectsSnapshot.docs.forEach((subject) {
-        subjects.add(subject.id);
+        Map<String, dynamic> subjectData = subject.data() as Map<String, dynamic>;
+        subjectModels.add(Subject.fromFirestoreMap(subjectData: subjectData, id: subject.id));
       });
 
-      Semester semesterModel = Semester(subjects: subjects, nSemester: int.parse(semester.id));
+      Semester semesterModel = Semester(subjects: subjectModels, nSemester: int.parse(semester.id));
       semesters.add(semesterModel);
 
     });
@@ -141,12 +144,13 @@ class FirestoreRepository {
       firestore.QuerySnapshot semesterSnapshot = await course.reference.collection(FirebaseCollectionConfig.semestersCollectionLabel).get();
       await Future.forEach<firestore.QueryDocumentSnapshot>(semesterSnapshot.docs, (semester) async {
         firestore.QuerySnapshot subjectsSnapshot = await semester.reference.collection(FirebaseCollectionConfig.subjectsCollectionLabel).get();
-        List<String> subjects = [];
+        List<Subject> subjectModels = [];
         subjectsSnapshot.docs.forEach((subject) {
-          subjects.add(subject.id);
+          Map<String, dynamic> subjectData = subject.data() as Map<String, dynamic>;
+          subjectModels.add(Subject.fromFirestoreMap(subjectData: subjectData, id: subject.id));
         });
 
-        Semester semesterModel = Semester(subjects: subjects, nSemester: int.parse(semester.id));
+        Semester semesterModel = Semester(subjects: subjectModels, nSemester: int.parse(semester.id));
         semesters.add(semesterModel);
 
       });
