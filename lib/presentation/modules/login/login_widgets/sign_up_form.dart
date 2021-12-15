@@ -241,16 +241,15 @@ class SignUpForm extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
-                  child: Image.asset(
-                    DefaultAssets.mainLogoPath,
-                    height: 110,
-                    alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      Image.asset(DefaultAssets.mainLogoPath, alignment: Alignment.center, scale: 12,),
+                      SizedBox(height: 10,),
+                      Text("Papers For Peers", style: TextStyle(fontSize: 20),),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 50,
-                ),
-                SizedBox(height: 20,),
+                SizedBox(height: 70,),
                 Utils.getCustomTextField(
                   labelText: 'Email Address',
                   onChanged: (val) {
