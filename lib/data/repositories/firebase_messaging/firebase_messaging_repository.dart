@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/data/models/user_model/subject.dart';
 import 'package:papers_for_peers/data/models/user_model/user_model.dart';
-import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 
 class FirebaseMessagingRepository {
   final firebaseMessaging.FirebaseMessaging _fcm;
