@@ -6,6 +6,7 @@ const firestore = admin.firestore();
 const fcm = admin.messaging();
 
 const adminCollectionLabel = "admin";
+
 // Admin - reports collection label
 const reportsQuestionPaperCollectionLabel = "reports_question_papers";
 const reportsNotesCollectionLabel = "reports_notes";
@@ -71,10 +72,21 @@ async function getWeightedReportCounts(reportCounts) {
   return weightedReportCounts;
 }
 
-function getTotalReports(weightedReportCounts) {
+async function getTotalReports(reports) {
+  // merge array of array into single array
+  const mergedValues = getMergedReportValues(reports);
+
+  // Count the number of occurances of reports
+  const reportCounts = getReportCounts(mergedValues);
+
+  // multiply : report counts * report values (if key is not present put 0)
+  const weightedReportCounts = await getWeightedReportCounts(reportCounts);
+
+  // find total report count
   const totalReports = Object.values(weightedReportCounts).reduce(
     (a, b) => a + b
   );
+
   return totalReports;
 }
 
@@ -134,19 +146,9 @@ exports.reportQuestionPaper = functions.firestore
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
     if (totalReports >= (await maxReports())) {
@@ -178,19 +180,9 @@ exports.reportJournal = functions.firestore
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
     if (totalReports >= (await maxReports())) {
@@ -222,19 +214,9 @@ exports.reportSyllabusCopy = functions.firestore
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
     if (totalReports >= (await maxReports())) {
@@ -266,19 +248,9 @@ exports.reportTextBook = functions.firestore
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
     if (totalReports >= (await maxReports())) {
@@ -310,19 +282,9 @@ exports.reportNotes = functions.firestore
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = await getWeightedReportCounts(reportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
 
     // Add document to admin if limit exceeds
     if (totalReports >= (await maxReports())) {
