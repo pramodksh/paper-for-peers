@@ -12,7 +12,7 @@ class JournalSubjectModel {
 }
 
 class JournalModel {
-  final int version;
+  final String id;
   final String documentUrl;
   final String uploadedBy;
   final DateTime uploadedOn;
@@ -20,8 +20,10 @@ class JournalModel {
   final String userEmail;
   final String userUid;
 
+  static final String documentUrlFieldKey = "document_url";
+
   const JournalModel({
-    required this.version,
+    required this.id,
     required this.documentUrl,
     required this.uploadedBy,
     required this.uploadedOn,
@@ -30,9 +32,9 @@ class JournalModel {
     required this.userUid,
   });
 
-  factory JournalModel.fromFirestoreMap({required Map<String, dynamic> map, required int version}) {
+  factory JournalModel.fromFirestoreMap({required Map<String, dynamic> map, required String id}) {
     return JournalModel(
-      version: version,
+      id: id,
       documentUrl: map['document_url'] as String,
       uploadedBy: map['uploaded_by'] as String,
       uploadedOn: (map['uploaded_on'] as Timestamp).toDate(),
@@ -42,7 +44,7 @@ class JournalModel {
     );
   }
 
-  static Map<String, dynamic> toFirestoreMap({required UserModel user, required String documentUrl}) {
+  static Map<String, dynamic> toFirestoreMap({required UserModel user ,String? documentUrl}) {
     return {
       "uploaded_by": user.displayName,
       "user_uid": user.uid,

@@ -78,7 +78,7 @@ class _UploadNotesState extends State<UploadNotes> {
         }
 
         if (state is NotesAddSuccess) {
-          Utils.showAlertDialog(context: context, text: "Successfully uploaded").then((value) {
+          Utils.showAlertDialog(context: context, text: "Notes Successfully Submitted").then((value) {
             resetNotesState(context: context, selectedSubject: state.selectedSubject!, notes: widget.notes);
             Navigator.of(context).pop();
           });

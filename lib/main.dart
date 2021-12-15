@@ -1,6 +1,9 @@
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
 import 'package:papers_for_peers/data/repositories/document_repositories/journal_repository/journal_repository.dart';
@@ -25,10 +28,21 @@ import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:papers_for_peers/wrapper.dart';
 import 'package:provider/provider.dart';
 
+import 'data/repositories/firebase_messaging/firebase_messaging_repository.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
   print("RUN MAIN");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
 
@@ -38,6 +52,75 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+
+  Future<void> initializeFcm() async {
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      description: 'This channel is used for important notifications.', // description
+      importance: Importance.max,
+    );
+
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,);
+
+
+    NotificationSettings settings = await _fcm.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription: channel.description,
+                icon: android.smallIcon,
+              ),
+            ));
+      }
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+
+    print('User granted permission: ${settings.authorizationStatus}');
+  }
+
+  @override
+  void initState() {
+    initializeFcm();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     print("BUILD MAIN()");
@@ -55,6 +138,9 @@ class _MyAppState extends State<MyApp> {
         ),
         RepositoryProvider<FirebaseStorageRepository>(
           create: (context) => FirebaseStorageRepository(),
+        ),
+        RepositoryProvider<FirebaseMessagingRepository>(
+          create: (context) => FirebaseMessagingRepository(),
         ),
         RepositoryProvider<ImagePickerRepository>(
           create: (context) => ImagePickerRepository(),
@@ -93,6 +179,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<QuestionPaperBloc>(
             create: (context) =>
                 QuestionPaperBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   questionPaperRepository: context.read<QuestionPaperRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
@@ -101,6 +189,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<JournalBloc>(
             create: (context) =>
                 JournalBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   journalRepository: context.read<JournalRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
@@ -109,7 +199,9 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<NotesBloc>(
             create: (context) =>
-                  NotesBloc(
+                NotesBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   notesRepository: context.read<NotesRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
@@ -118,6 +210,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<SyllabusCopyBloc>(
             create: (context) =>
                 SyllabusCopyBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   syllabusCopyRepository: context.read<SyllabusCopyRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),
@@ -127,6 +221,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<TextBookBloc>(
             create: (context) =>
                 TextBookBloc(
+                  firestoreRepository: context.read<FirestoreRepository>(),
+                  firebaseMessagingRepository: context.read<FirebaseMessagingRepository>(),
                   firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                   textBookRepository: context.read<TextBookRepository>(),
                   filePickerRepository: context.read<FilePickerRepository>(),

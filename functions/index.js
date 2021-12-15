@@ -3,19 +3,47 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const bucket = admin.storage().bucket();
 const firestore = admin.firestore();
+const fcm = admin.messaging();
 
-// /courses_new/bca/semesters/1/subjects/java/question_paper/2017/versions/1
-// /courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}
+const adminCollectionLabel = "admin";
 
-// Defining weights for reports
-const reportWeights = {
-  not_legitimate: 2,
-  not_appropriate: 1,
-  already_uploaded: 3,
-  misleading: 4,
+// Admin - reports collection label
+const reportsQuestionPaperCollectionLabel = "reports_question_papers";
+const reportsNotesCollectionLabel = "reports_notes";
+const reportsJournalsCollectionLabel = "reports_journals";
+const reportsTextBookCollectionLabel = "reports_text_books";
+const reportsSyllabusCopyCollectionLabel = "reports_syllabus_copy";
+
+// String helper functions
+function toSubject(subject) {
+  return subject
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// >> REPORTS HELPER FUNCTIONS
+// Get Report Weights from remote config
+const getReportWeights = async () => {
+  const template = await admin.remoteConfig().getTemplate();
+  const reportWeights =
+    template.parameters["REPORT_WEIGHTS"].defaultValue.value;
+  return JSON.parse(reportWeights);
 };
-const maxReports = 10; // todo change to 40
 
+// Get max reports from remote config
+const maxReports = async () => {
+  const template = await admin.remoteConfig().getTemplate();
+  const maxReports = template.parameters["REPORTS_MAX"].defaultValue.value;
+  return maxReports;
+};
+
+// Get the count of reports
 function getReportCounts(mergedValues) {
   const reportCounts = {};
   for (const report of mergedValues) {
@@ -29,7 +57,9 @@ function getMergedReportValues(reports) {
   return mergedValues;
 }
 
-function getWeightedReportCounts(reportCounts, reportWeights) {
+async function getWeightedReportCounts(reportCounts) {
+  const reportWeights = await getReportWeights();
+
   const weightedReportCounts = {};
   for (var key in reportWeights) {
     if (reportCounts[key] != undefined) {
@@ -38,14 +68,72 @@ function getWeightedReportCounts(reportCounts, reportWeights) {
       weightedReportCounts[key] = 0;
     }
   }
+
   return weightedReportCounts;
 }
 
-function getTotalReports(weightedReportCounts) {
+async function getTotalReports(reports) {
+  // merge array of array into single array
+  const mergedValues = getMergedReportValues(reports);
+
+  // Count the number of occurances of reports
+  const reportCounts = getReportCounts(mergedValues);
+
+  // multiply : report counts * report values (if key is not present put 0)
+  const weightedReportCounts = await getWeightedReportCounts(reportCounts);
+
+  // find total report count
   const totalReports = Object.values(weightedReportCounts).reduce(
     (a, b) => a + b
   );
+
   return totalReports;
+}
+
+async function sendReportNotificationToAdmins(
+  documentType,
+  username,
+  course,
+  semester,
+  subject
+) {
+  const adminSnapshot = await firestore.collection(adminCollectionLabel).get();
+
+  // Get tokens list from admin
+  let tokens = adminSnapshot.docs.map((snap) => snap.data()["fcm_token"]);
+
+  // Remove all undefined values from token
+  tokens = tokens.filter(function (element) {
+    return element !== undefined;
+  });
+
+  if (subject == null) {
+    subject = "";
+  } else {
+    subject = subject.replace(/_/g, " ");
+    subject = toSubject(subject);
+  }
+
+  const payload = {
+    notification: {
+      title: `New ${capitalize(
+        documentType.replace(/_/g, " ").toLowerCase()
+      )} report of ${course.toUpperCase()} ${semester} ${subject}`,
+      body: `${username} has reported a ${capitalize(
+        documentType.replace(/_/g, " ").toLowerCase()
+      )}`,
+      priority: "high",
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
+    },
+    data: {
+      document_type: documentType.toUpperCase(),
+      type: "REPORT",
+      priority: "high",
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
+    },
+  };
+
+  return await fcm.sendToDevice(tokens, payload);
 }
 
 exports.reportQuestionPaper = functions.firestore
@@ -53,45 +141,32 @@ exports.reportQuestionPaper = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/question_paper/{year}/versions/{version}"
   )
   .onUpdate(async (change, context) => {
+    const questionPaperId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
+    // Add document to admin if limit exceeds
+    if (totalReports >= (await maxReports())) {
+      await admin
+        .firestore()
+        .collection(reportsQuestionPaperCollectionLabel)
+        .doc(questionPaperId)
+        .set({
+          ref: change.after.ref,
+        });
 
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
-
-    // Delete document if limit exceeds
-    if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
-
-      functions.logger.log("DELETING FILE FROM STORAGE");
-
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/question_paper/${context.params.year}/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
-
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "QUESTION_PAPER",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     }
   });
 
@@ -100,45 +175,32 @@ exports.reportJournal = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/journal/{version}"
   )
   .onUpdate(async (change, context) => {
+    const journalId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
+    // Add document to admin if limit exceeds
+    if (totalReports >= (await maxReports())) {
+      await admin
+        .firestore()
+        .collection(reportsJournalsCollectionLabel)
+        .doc(journalId)
+        .set({
+          ref: change.after.ref,
+        });
 
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
-
-    // Delete document if limit exceeds
-    if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
-
-      functions.logger.log("DELETING FILE FROM STORAGE");
-
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/journals/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
-
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "JOURNAL",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     }
   });
 
@@ -147,45 +209,32 @@ exports.reportSyllabusCopy = functions.firestore
     "/courses_new/{course}/semesters/{semester}/syllabus_copy/{version}"
   )
   .onUpdate(async (change, context) => {
+    const syllabusCopyId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
+    // Add document to admin if limit exceeds
+    if (totalReports >= (await maxReports())) {
+      await admin
+        .firestore()
+        .collection(reportsSyllabusCopyCollectionLabel)
+        .doc(syllabusCopyId)
+        .set({
+          ref: change.after.ref,
+        });
 
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
-
-    // Delete document if limit exceeds
-    if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
-
-      functions.logger.log("DELETING FILE FROM STORAGE");
-
-      const path = `courses/${context.params.course}/${context.params.semester}/syllabus_copy/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
-
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "SYLLABUS_COPY",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        null
+      );
     }
   });
 
@@ -194,45 +243,32 @@ exports.reportTextBook = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/text_book/{version}"
   )
   .onUpdate(async (change, context) => {
+    const textBookId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
+    // Add document to admin if limit exceeds
+    if (totalReports >= (await maxReports())) {
+      await admin
+        .firestore()
+        .collection(reportsTextBookCollectionLabel)
+        .doc(textBookId)
+        .set({
+          ref: change.after.ref,
+        });
 
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
-
-    // Delete document if limit exceeds
-    if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await change.after.ref.delete();
-
-      functions.logger.log("DELETING FILE FROM STORAGE");
-
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/text_book/${context.params.version}.pdf`;
-      await bucket.file(path).delete();
-
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "TEXT_BOOK",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     }
   });
 
@@ -241,44 +277,31 @@ exports.reportNotes = functions.firestore
     "/courses_new/{course}/semesters/{semester}/subjects/{subject}/notes/{noteId}"
   )
   .onUpdate(async (change, context) => {
+    const noteId = change.after.id;
     const newValue = change.after.data();
     const previousValue = change.before.data();
     const totalUsers = Object.keys(newValue["reports"]).length;
-    functions.logger.log("TOTAL USERS: ", totalUsers);
 
-    // merge array of array into single array
-    const mergedValues = getMergedReportValues(
+    const totalReports = await getTotalReports(
       Object.values(newValue["reports"])
     );
-    functions.logger.log("MERGEDValues: ", mergedValues);
 
-    // Count the number of occurances of reports
-    const reportCounts = getReportCounts(mergedValues);
-    functions.logger.log("reportCounts: ", reportCounts);
+    // Add document to admin if limit exceeds
+    if (totalReports >= (await maxReports())) {
+      await admin
+        .firestore()
+        .collection(reportsNotesCollectionLabel)
+        .doc(noteId)
+        .set({
+          ref: change.after.ref,
+        });
 
-    // multiply : report counts * report values (if key is not present put 0)
-    const weightedReportCounts = getWeightedReportCounts(
-      reportCounts,
-      reportWeights
-    );
-    functions.logger.log("COUNTS AFTER MULTIPLYING: ", weightedReportCounts);
-
-    // find total report count
-    const totalReports = getTotalReports(weightedReportCounts);
-    functions.logger.log("TOTAL REPORTS: ", totalReports);
-
-    // Delete document if limit exceeds
-    if (totalReports >= maxReports) {
-      functions.logger.log("DELETING DOCUMENT");
-      await firestore.recursiveDelete(change.after.ref);
-
-      functions.logger.log("DELETING FILE FROM STORAGE");
-
-      const path = `courses/${context.params.course}/${context.params.semester}/${context.params.subject}/notes/${context.params.noteId}.pdf`;
-      await bucket.file(path).delete();
-
-      functions.logger.log("DOCUMENT DELETED: ", totalReports, maxReports);
-    } else {
-      functions.logger.log("DOCUMENT NOT DELETED: ", totalReports, maxReports);
+      await sendReportNotificationToAdmins(
+        "NOTES",
+        newValue["uploaded_by"],
+        context.params.course,
+        context.params.semester,
+        context.params.subject
+      );
     }
   });

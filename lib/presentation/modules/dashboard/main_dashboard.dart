@@ -8,7 +8,7 @@ import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/semester.dart';
-import 'package:papers_for_peers/data/repositories/auth/auth_repository.dart';
+import 'package:papers_for_peers/data/models/user_model/user_model.dart';
 import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -112,7 +112,7 @@ class _MainDashboardState extends State<MainDashboard> {
     print("EXTERNAL WALLET: ${response}");
   }
 
-  Future<void> initiatePayment({required double amount, required BuildContext context, required bool isDarkTheme}) async {
+  Future<void> initiatePayment({required UserModel userModel, required double amount, required BuildContext context, required bool isDarkTheme}) async {
 
     final String apiKey = await context.read<FirebaseRemoteConfigRepository>().getRazorPayApiKey();
 
@@ -123,8 +123,7 @@ class _MainDashboardState extends State<MainDashboard> {
         'name': "Paper For Peers",
         // 'description': "DESC",
         'prefill': {
-          'contact': '8888888888', // todo user name and email
-          'email': 'test@razorpay.com'
+          'email': userModel.email,
         },
         "theme": {
           "color": isDarkTheme ? CustomColors.ratingBackgroundColor.toHex() : CustomColors.lightModeRatingBackgroundColor.toHex(),
@@ -138,7 +137,7 @@ class _MainDashboardState extends State<MainDashboard> {
     }
   }
 
-  Widget _buildAmountDialog({required bool isDarkTheme}) {
+  Widget _buildAmountDialog({required bool isDarkTheme, required UserState userState}) {
     TextEditingController _amountController = TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -182,11 +181,15 @@ class _MainDashboardState extends State<MainDashboard> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     print("AMOUNT: ${_amountController.text}");
-                    await initiatePayment(
-                      amount: double.parse(_amountController.text),
-                      context: context,
-                      isDarkTheme: isDarkTheme,
-                    );
+
+                    if (userState is UserLoaded) {
+                      await initiatePayment(
+                        userModel: userState.userModel,
+                        amount: double.parse(_amountController.text),
+                        context: context,
+                        isDarkTheme: isDarkTheme,
+                      );
+                    }
                   }
                 },
                 child: Text("DONATE", style: TextStyle(fontSize: 18),),
@@ -199,6 +202,9 @@ class _MainDashboardState extends State<MainDashboard> {
   }
 
   Drawer getDrawer({required bool isDarkTheme, required BuildContext context}) {
+
+    UserState userState = context.watch<UserCubit>().state;
+
     return Drawer(
       child: Container(
         color: isDarkTheme ? CustomColors.drawerColor : CustomColors.lightModeRatingBackgroundColor,
@@ -236,7 +242,6 @@ class _MainDashboardState extends State<MainDashboard> {
             SizedBox(height: 10,),
             Builder(
               builder: (context) {
-                UserState userState = context.watch<UserCubit>().state;
 
                 if (userState is UserLoaded) {
                   return SizedBox(
@@ -280,7 +285,7 @@ class _MainDashboardState extends State<MainDashboard> {
                 ),
                 onPressed: () async {
                   showDialog(context: context, builder: (context) {
-                    return _buildAmountDialog(isDarkTheme: isDarkTheme);
+                    return _buildAmountDialog(isDarkTheme: isDarkTheme, userState: userState);
                   },);
                 },
                 child: Text("Donate", style: TextStyle(fontSize: 18),),
@@ -314,12 +319,14 @@ class _MainDashboardState extends State<MainDashboard> {
                     )
                 ),
                 onPressed: () async {
-                  if (mounted) {
-                    setState(() { _isLoading = true; _loadingText = "Logging out.."; });
-                  }
-                  await context.read<AuthRepository>().logoutUser();
-                  if (mounted) {
-                    setState(() { _isLoading = false; });
+                  if (userState is UserLoaded) {
+                    if (mounted) {
+                      setState(() { _isLoading = true; _loadingText = "Logging out.."; });
+                    }
+                    await context.read<UserCubit>().logoutUser(userState.userModel);
+                    if (mounted) {
+                      setState(() { _isLoading = false; });
+                    }
                   }
                 },
                 child: Text("Log Out", style: TextStyle(fontSize: 18),),
@@ -394,8 +401,7 @@ class _MainDashboardState extends State<MainDashboard> {
                   ) : Container(),
                 ],
               ),
-            )
-            ),
+            )),
           );
         },
       ),

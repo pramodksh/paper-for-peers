@@ -30,7 +30,7 @@ class NotesModel {
   static final String documentUrlFieldKey = "document_url";
 
   static Map<String, dynamic> toFirestoreMap({
-    required String? documentUrl, required UserModel user,
+    String? documentUrl, required UserModel user,
     required String title, required String description,
   }) {
     return {

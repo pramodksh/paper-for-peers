@@ -1,39 +1,44 @@
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:papers_for_peers/config/app_theme.dart';
+import 'package:papers_for_peers/config/text_styles.dart';
 import 'package:papers_for_peers/data/models/document_models/question_paper_model.dart';
+import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class VariantGenerator {
 
   final List<QuestionPaperYearModel> questionPaperYears;
-  int? selectedVariant;
+  String? selectedVariantId;
   int? selectedYear;
+  int? currentPageNumber = 0;
+  int? totalPages = 0;
+
+  void setPageCount(current, total) {
+    this.currentPageNumber = current;
+    this.totalPages = total;
+  }
 
   void resetVariant() {
-    this.selectedVariant = null;
+    this.selectedVariantId = null;
     this.selectedYear = null;
   }
 
   bool isShowPdf() {
-    return selectedYear != null && selectedVariant != null;
+    return selectedYear != null && selectedVariantId != null;
   }
 
-  String? getSelectedDocumentUrl() {
-    if (isShowPdf()) {
-      return this.questionPaperYears.firstWhere((element) => element.year == this.selectedYear)
-          .questionPaperModels.firstWhere((element) => element.version == this.selectedVariant).documentUrl;
-    } else {
-      return null;
-    }
+  String getSelectedDocumentUrl() {
+    return this.questionPaperYears.firstWhere((element) => element.year == this.selectedYear)
+        .questionPaperModels.firstWhere((element) => element.id == this.selectedVariantId).documentUrl;
   }
 
-  Future<PDFDocument> loadDocumentFromURL({required pdfURL}) async => await PDFDocument.fromURL(pdfURL);
-
-  VariantGenerator({required this.questionPaperYears});
+  VariantGenerator({required this.questionPaperYears,});
 
   @override
   String toString() {
-    return 'VariantGenerator{questionPaperYears: $questionPaperYears, selectedVariant: $selectedVariant, selectedYear: $selectedYear}';
+    return 'VariantGenerator{questionPaperYears: $questionPaperYears, selectedVariant: $selectedVariantId, selectedYear: $selectedYear}';
   }
 }
 
@@ -60,7 +65,7 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
     super.initState();
   }
 
-  Widget getExpandedPDFView({required int index, required List<VariantGenerator> variants}) {
+  Widget getExpandedPDFView({required int index, required List<VariantGenerator> variants, required bool isDarkTheme}) {
 
     return StatefulBuilder(
       builder: (context, setState) {
@@ -85,79 +90,74 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
                 variants[index].selectedYear == null ? Container() : Builder(
                     builder: (context) {
                       QuestionPaperYearModel selectedYearModel = variants[index].questionPaperYears.firstWhere((element) => element.year == variants[index].selectedYear!);
-                      print("SEE: ${selectedYearModel.questionPaperModels.map((e) => e.version).toList()}");
-
-                      return Utils.getCustomDropDown<int>(
+                      return Utils.getCustomDropDown<String>(
                         context: context,
                         dropDownHint: "Variant",
-                        dropDownItems: selectedYearModel.questionPaperModels.map((e) => e.version).toList(),
-                        dropDownValue: variants[index].selectedVariant,
+                        dropDownItems: selectedYearModel.questionPaperModels.map((e) => e.id).toList(),
+                        dropDownValue: variants[index].selectedVariantId,
                         onDropDownChanged: (val) {
                           setState(() {
-                            variants[index].selectedVariant = val;
+                            variants[index].selectedVariantId = val;
                           });
                         },
+                        items: List.generate(selectedYearModel.questionPaperModels.length, (index) {
+                          return DropdownMenuItem<String>(
+                            value: selectedYearModel.questionPaperModels[index].id,
+                            child: Text((index+1).toString(), style: CustomTextStyle.bodyTextStyle.copyWith(
+                              fontSize: 18,
+                              color: isDarkTheme ? Colors.white60 : Colors.black,
+                            ),),
+                          );
+                        }),
                       );
                     }
                 ),
               ],
             ),
-          ): FutureBuilder(
-              future: variants[index].loadDocumentFromURL(pdfURL: variants[index].getSelectedDocumentUrl()),
-              builder: (context, snapshot) {
-
-                if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator.adaptive(),);
-                }
-
-                PDFDocument document = snapshot.data as PDFDocument;
-
-                return Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      child: PDFViewer(
-                        document: document,
-                        zoomSteps: 3,
-                        panLimit: 20,
-                        showNavigation: false,
-                        showPicker: false,
-                        pickerButtonColor: Colors.black,
-                        pickerIconColor: Colors.red,
-
-                        enableSwipeNavigation: true,
-
-                        progressIndicator: Text("Loading", style: TextStyle(fontSize: 20),),
-
-
-                        indicatorPosition: IndicatorPosition.topLeft,
-                        indicatorBackground: Colors.black,
-                        indicatorText: Colors.white,
-                        // showIndicator: false,
-
-                        lazyLoad: true,
-
-                        scrollDirection: Axis.vertical,
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
+          ) : Stack(
+            children: [
+              Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: PDF(
+                    onPageChanged: (page, total) {
+                      setState(() {
+                        variants[index].setPageCount(page, total);
+                      });
+                    },
+                  ).cachedFromUrl(
+                    variants[index].getSelectedDocumentUrl(),
+                    placeholder: (progress) => Center(child: Text("Loading", style: TextStyle(fontSize: 20),)),
+                    errorWidget: (error) => Center(child: Text("There was an error while loading pdf", style: TextStyle(fontSize: 20),)),
+                  ),
+              ),
+              Builder(
+                builder: (context) {
+                  if (variants[index].currentPageNumber != null && variants[index].totalPages != null) {
+                    return Positioned(
                       top: 10,
-                      child: IconButton(
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onPressed: () {
-                          print("CLOSE $index");
-                          setState(() {
-                            variants[index].resetVariant();
-                          });
-                        },
-                        icon: Icon(Icons.close, size: 30, color: Colors.indigo,),
-                      ),
-                    ),
-                  ],
-                );
-              }
+                      right: 10,
+                      child: Text("${variants[index].currentPageNumber! + 1} / ${variants[index].totalPages}", style: TextStyle(fontSize: 16, color: Colors.black),),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+              Positioned(
+                right: 0,
+                top: 20,
+                child: IconButton(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onPressed: () {
+                    setState(() {
+                      variants[index].resetVariant();
+                    });
+                  },
+                  icon: Icon(Icons.close, size: 30, color: Colors.indigo,),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -166,12 +166,16 @@ class _ShowSplitPdfState extends State<ShowSplitPdf> {
 
   @override
   Widget build(BuildContext context) {
+
+    final AppThemeType appThemeType = context.select((AppThemeCubit cubit) => cubit.state.appThemeType);
+
     return Scaffold(
       body:  SafeArea(
         child: Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: List.generate(widget.numberOfSplits, (index) => getExpandedPDFView(
+              isDarkTheme: appThemeType.isDarkTheme(),
               index: index, variants: variants,
             )),
             // children: List.generate( (index) => getExpandedPDFView(index: index)),

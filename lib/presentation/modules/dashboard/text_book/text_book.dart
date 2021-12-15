@@ -15,34 +15,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
 
-extension ToSubjectExtension on String {
-
-  String toTitleCase() {
-
-    if (this.length <= 1) {
-      return this.toUpperCase();
-    }
-    final List<String> words = this.split(' ');
-
-    final capitalizedWords = words.map((word) {
-      if (word.trim().isNotEmpty) {
-        final String firstLetter = word.trim().substring(0, 1).toUpperCase();
-        final String remainingLetters = word.trim().substring(1);
-
-        return '$firstLetter$remainingLetters';
-      }
-      return '';
-    });
-
-    return capitalizedWords.join(' ');
-  }
-
-  Text toSubjectText() {
-    return Text(this.replaceAll("_", " ").toTitleCase(), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500));
-  }
-}
-
-
 class TextBook extends StatelessWidget {
 
   final DateFormat dateFormat = DateFormat("dd MMMM yyyy");
@@ -97,83 +69,86 @@ class TextBook extends StatelessWidget {
     required BuildContext context, required int maxTextBooks
   }) {
 
-    List<Widget> gridChildren = List.generate(maxTextBooks, (index) {
-      int currentVersion = index + 1;
-      bool isShow = textBooks.any((element) => element.version == currentVersion);
-
-      if (isShow) {
-        TextBookModel currentTextBookModel = textBooks.firstWhere((element) => element.version == currentVersion);
-        return _getTextBookVariantDetailsTile(
-            appThemeType: appThemeType,
-            nVariant: currentVersion,
-            profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
-            uploadedOn: currentTextBookModel.uploadedOn,
-            uploadedBy: currentTextBookModel.uploadedBy,
-            onTap: isWidgetLoading ? () {} : () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
-                  onReportPressed: (values) {
-                    if (userState is UserLoaded) {
-                      context.read<TextBookBloc>().add(TextBookReportAdd(
-                        reportValues: values,
-                        textBookSubjects: textBookSubjects,
-                        uploadedBy: userState.userModel.displayName!,
-                        course: userState.userModel.course!.courseName!,
-                        semester: userState.userModel.semester!.nSemester!,
-                        subject: subject,
-                        nVersion: currentVersion,
-                        user: userState.userModel,
-                      ));
-                    }
-                  },
-                  documentUrl: currentTextBookModel.documentUrl,
-                  screenLabel: "Text Book",
-                  parameter: PDFScreenSimpleBottomSheet(
-                      profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
-                      nVariant: currentTextBookModel.version,
-                      uploadedBy: currentTextBookModel.uploadedBy,
-                      title: subject
-                  ),
+    List<Widget> children = List.generate(textBooks.length, (index) {
+      TextBookModel currentTextBookModel = textBooks[index];
+      return _getTextBookVariantDetailsTile(
+          appThemeType: appThemeType,
+          nVariant: index+1,
+          profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
+          uploadedOn: currentTextBookModel.uploadedOn,
+          uploadedBy: currentTextBookModel.uploadedBy,
+          onTap: isWidgetLoading ? () {} : () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
+                onReportPressed: (values) {
+                  if (userState is UserLoaded) {
+                    context.read<TextBookBloc>().add(TextBookReportAdd(
+                      reportValues: values,
+                      textBookSubjects: textBookSubjects,
+                      uploadedBy: userState.userModel.displayName!,
+                      course: userState.userModel.course!.courseName!,
+                      semester: userState.userModel.semester!.nSemester!,
+                      subject: subject,
+                      textBookId: currentTextBookModel.id,
+                      user: userState.userModel,
+                    ));
+                  }
+                },
+                documentUrl: currentTextBookModel.documentUrl,
+                screenLabel: "Text Book",
+                parameter: PDFScreenSimpleBottomSheet(
+                    profilePhotoUrl: currentTextBookModel.userProfilePhotoUrl,
+                    nVariant: index+1,
+                    uploadedBy: currentTextBookModel.uploadedBy,
+                    title: Utils.toSubject(subject)
                 ),
-              ));
-            }
-        );
-      } else {
-        return Utils.getAddPostContainer(
-          isDarkTheme: appThemeType.isDarkTheme(),
-          onPressed: isAddTextBookLoading || isWidgetLoading ? () {} : () {
-            if (userState is UserLoaded) {
-              context.read<TextBookBloc>().add(TextBookAdd(
-                textBookSubjects: textBookSubjects,
-                uploadedBy: userState.userModel.displayName!,
-                course: userState.userModel.course!.courseName!,
-                semester: userState.userModel.semester!.nSemester!,
-                subject: subject,
-                nVersion: currentVersion,
-                user: userState.userModel,
-              ));
-            }
-          },
-          label: isAddTextBookLoading ? "Loading" : "Add Text Book",
-        );
-      }
+              ),
+            ));
+          }
+      );
     });
 
+    if (textBooks.length < maxTextBooks) {
+      children.add(Utils.getAddPostContainer(
+        isDarkTheme: appThemeType.isDarkTheme(),
+        onPressed: isAddTextBookLoading || isWidgetLoading ? () {} : () {
+          if (userState is UserLoaded) {
+            context.read<TextBookBloc>().add(TextBookAdd(
+              textBookSubjects: textBookSubjects,
+              uploadedBy: userState.userModel.displayName!,
+              course: userState.userModel.course!.courseName!,
+              semester: userState.userModel.semester!.nSemester!,
+              subject: subject,
+              user: userState.userModel,
+            ));
+          }
+        },
+        label: isAddTextBookLoading ? "Loading" : "Add Text Book",
+      ));
+    }
+
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          subject.toSubjectText(),
-          SizedBox(height: 20,),
-          GridView.count(
-            crossAxisSpacing: 10,
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            physics: NeverScrollableScrollPhysics(),
-            childAspectRatio: 16/10,
-            children: gridChildren,
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AutoSizeText(
+              Utils.toSubject(subject),
+              maxLines: 2,
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(height: 20,),
+            GridView.count(
+              crossAxisSpacing: 10,
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              physics: NeverScrollableScrollPhysics(),
+              childAspectRatio: 16/10,
+              children: children,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -231,7 +206,7 @@ class TextBook extends StatelessWidget {
         } else if (state is TextBookAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
         } else if (state is TextBookAddSuccess) {
-          Utils.showAlertDialog(context: context, text: "Text Book Added Successfully");
+          Utils.showAlertDialog(context: context, text: "Text Book Successfully Submitted");
         } else if (state is TextBookReportSuccess) {
           Utils.showAlertDialog(context: context, text: "Text Book Reported Successfully");
         } else if (state is TextBookReportError) {
@@ -279,12 +254,12 @@ class TextBook extends StatelessWidget {
                           textBookSubjects: List.generate(2, (index) => TextBookSubjectModel(
                             subject: "",
                             textBookModels: List.generate(2, (index) => TextBookModel(
+                              id: "",
                               uploadedOn: DateTime.now(),
                               userEmail: "",
                               userProfilePhotoUrl: "",
                               userUid: "",
                               uploadedBy: "",
-                              version: index,
                               documentUrl: "",
                             ))
                           )),

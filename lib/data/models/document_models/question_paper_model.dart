@@ -13,7 +13,7 @@ class QuestionPaperYearModel {
 
 class QuestionPaperModel {
 
-  final int version;
+  final String id;
   final String documentUrl;
   final String uploadedBy;
   final String? userProfilePhotoUrl;
@@ -21,8 +21,10 @@ class QuestionPaperModel {
   final String userUid;
   final DateTime uploadedOn;
 
+  static final String documentUrlFieldKey = "document_url";
+
   const QuestionPaperModel({
-    required this.version,
+    required this.id,
     required this.documentUrl,
     required this.uploadedBy,
     required this.userUid,
@@ -31,9 +33,9 @@ class QuestionPaperModel {
     required this.uploadedOn,
   });
 
-  factory QuestionPaperModel.fromFirestoreMap({required Map<String, dynamic> map, required int version}) {
+  factory QuestionPaperModel.fromFirestoreMap({required Map<String, dynamic> map, required String id}) {
     return QuestionPaperModel(
-      version: version,
+      id: id,
       documentUrl: map['document_url'] as String,
       uploadedBy: map['uploaded_by'] as String,
       userProfilePhotoUrl: map['user_profile_photo_url'] as String?,
@@ -43,13 +45,13 @@ class QuestionPaperModel {
     );
   }
 
-  static Map<String, dynamic> toFirestoreMap({required String documentUrl, required UserModel user}) {
+  static Map<String, dynamic> toFirestoreMap({String? documentUrl, required UserModel user}) {
     return {
       "uploaded_by": user.displayName,
-      "document_url": documentUrl,
+      "user_uid": user.uid,
       "user_profile_photo_url": user.photoUrl,
       "user_email": user.email,
-      "user_uid": user.uid,
+      "document_url": documentUrl,
       "uploaded_on": DateTime.now(),
     };
   }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -293,20 +294,40 @@ class Notes extends StatelessWidget {
                             Expanded(flex: 2,child: Utils.getCourseAndSemesterText(context: context,)),
                             Expanded(
                               flex: 3,
-                              child: Utils.getCustomDropDown<String>(
-                                context: context,
-                                dropDownHint: "Subject",
-                                dropDownItems: userState.userModel.semester!.subjects,
-                                dropDownValue: notesState.selectedSubject,
-                                onDropDownChanged: (val) {
-                                  context.read<NotesBloc>().add(
-                                      NotesFetch(
-                                          course: userState.userModel.course!.courseName!,
-                                          semester: userState.userModel.semester!.nSemester!,
-                                          subject: val!
-                                      )
-                                  );
-                                },
+                              child: SizedBox(
+                                height: 50,
+                                child: Utils.getCustomDropDown<String>(
+                                  context: context,
+                                  dropDownHint: "Subject",
+                                  dropDownItems: userState.userModel.semester!.subjects,
+                                  dropDownValue: notesState.selectedSubject,
+                                  onDropDownChanged: (val) {
+                                    context.read<NotesBloc>().add(
+                                        NotesFetch(
+                                            course: userState.userModel.course!.courseName!,
+                                            semester: userState.userModel.semester!.nSemester!,
+                                            subject: val!
+                                        )
+                                    );
+                                  },
+                                  items: List.generate(userState.userModel.semester!.subjects.length, (index) {
+                                    String subjectValue = userState.userModel.semester!.subjects[index];
+                                    return DropdownMenuItem<String>(
+                                      value: subjectValue,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: AutoSizeText(
+                                          Utils.toSubject(subjectValue),
+                                          style: CustomTextStyle.bodyTextStyle.copyWith(
+                                            fontSize: 18,
+                                            color: appThemeType.isDarkTheme() ? Colors.white60 : Colors.black,
+                                          ),
+                                          maxLines: 2,
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ),
                             ),
                           ],

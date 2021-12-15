@@ -84,7 +84,7 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
                 Icon(Icons.mark_email_read_outlined, size: 60, color: Colors.white,),
                 SizedBox(height: 50,),
                 Text(
-                  "Send Verification Email",
+                  "Verification Email Sent",
                   style: TextStyle(
                       fontSize: 25,
                       color: Colors.white,
@@ -94,7 +94,7 @@ class _SendVerificationEmailState extends State<SendVerificationEmail> {
                   height: 70,
                 ),
                 Text(
-                  'We will send you a verification link to\n\"${widget.user!.email}\"',
+                  'We have sent a verification link to\n\"${widget.user!.email}\"',
                   style: CustomTextStyle.bodyTextStyle.copyWith(fontSize: 18),
                   // style: TextStyle(fontSize: 15,),
                   textAlign: TextAlign.center,

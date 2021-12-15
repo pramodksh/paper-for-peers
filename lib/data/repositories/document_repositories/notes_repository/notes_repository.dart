@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:collection/collection.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
-import 'package:papers_for_peers/config/app_constants.dart';
 import 'package:papers_for_peers/config/firebase_collection_config.dart';
 import 'package:papers_for_peers/data/models/api_response.dart';
 import 'package:papers_for_peers/data/models/document_models/notes_model.dart';
@@ -13,15 +12,19 @@ class NotesRepository {
 
   final firestore.FirebaseFirestore _firebaseFirestore;
   final storage.FirebaseStorage _firebaseStorage;
-  static late final firestore.CollectionReference coursesCollection;
 
   NotesRepository({
     firestore.FirebaseFirestore? firebaseFirestore,
     storage.FirebaseStorage? firebaseStorage,
   }) : _firebaseFirestore = firebaseFirestore ?? firestore.FirebaseFirestore.instance,
         _firebaseStorage = firebaseStorage ?? storage.FirebaseStorage.instance {
-    coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _coursesCollection =  _firebaseFirestore.collection(FirebaseCollectionConfig.coursesCollectionLabel);
+    _notesUploadsAdminCollection = _firebaseFirestore.collection(FirebaseCollectionConfig.adminNotesUploadsCollectionLabel);
   }
+
+  static late final firestore.CollectionReference _coursesCollection;
+  static late final firestore.CollectionReference _notesUploadsAdminCollection;
+
 
   Future<ApiResponse> _deleteNotesFromStorage({
     required String course, required int semester,
@@ -61,7 +64,7 @@ class NotesRepository {
     required String subject, required String noteId,
   }) async {
     try {
-      firestore.DocumentSnapshot notesSnapshot = await coursesCollection.doc(course)
+      firestore.DocumentSnapshot notesSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
@@ -80,7 +83,9 @@ class NotesRepository {
     }
   }
 
-  Future<ApiResponse> uploadAndAddNotes({
+
+
+  Future<ApiResponse> uploadAndAddNotesToAdmin({
     required String course, required int semester,
     required String subject, required UserModel user,
     required File document, required String title,
@@ -89,20 +94,15 @@ class NotesRepository {
   }) async {
 
     try {
-      firestore.CollectionReference notesCollection = coursesCollection.doc(course)
-          .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
-          .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
-          .collection(FirebaseCollectionConfig.notesCollectionLabel);
-
-      firestore.QuerySnapshot notesSnapshot = await notesCollection.get();
-
-      if (notesSnapshot.docs.length >= maxNotesPerSubject) {
-        return ApiResponse.error(errorMessage: "The subject $subject has maximum notes. So you cannot upload.");
-      }
-
-      firestore.DocumentReference noteRef = await notesCollection.add(NotesModel.toFirestoreMap(
-          documentUrl: null, user: user, title: title, description: description
-      ));
+      Map<String, dynamic> notesDetails = NotesModel.toFirestoreMap(
+        user: user, description: description, title: title,
+      );
+      notesDetails.addAll({
+        "course": course,
+        "semester": semester,
+        "subject": subject,
+      });
+      firestore.DocumentReference noteRef = await _notesUploadsAdminCollection.add(notesDetails);
 
       ApiResponse uploadResponse = await _uploadNotesToStorage(
         document: document, course: course, semester: semester, subject: subject,
@@ -112,17 +112,64 @@ class NotesRepository {
       if (uploadResponse.isError) {
         await noteRef.delete();
         return uploadResponse;
-      } else {
-        String documentUrl = uploadResponse.data;
-        await noteRef.update({
-          NotesModel.documentUrlFieldKey: documentUrl,
-        });
-        return ApiResponse.success();
       }
-    } catch (err) {
-      return ApiResponse.error(errorMessage: "There was an error while setting notes: $err");
+
+      String documentUrl = uploadResponse.data;
+      noteRef.update({
+        NotesModel.documentUrlFieldKey: documentUrl,
+      });
+
+      return ApiResponse.success();
+    } on Exception catch (e) {
+      return ApiResponse.error(errorMessage: "There was an error while uploading notes");
     }
+
   }
+
+
+  // Future<ApiResponse> uploadAndAddNotes({
+  //   required String course, required int semester,
+  //   required String subject, required UserModel user,
+  //   required File document, required String title,
+  //   required String description,
+  //   required maxNotesPerSubject,
+  // }) async {
+  //
+  //   try {
+  //     firestore.CollectionReference notesCollection = _coursesCollection.doc(course)
+  //         .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
+  //         .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
+  //         .collection(FirebaseCollectionConfig.notesCollectionLabel);
+  //
+  //     firestore.QuerySnapshot notesSnapshot = await notesCollection.get();
+  //
+  //     if (notesSnapshot.docs.length >= maxNotesPerSubject) {
+  //       return ApiResponse.error(errorMessage: "The subject $subject has maximum notes. So you cannot upload.");
+  //     }
+  //
+  //     firestore.DocumentReference noteRef = await notesCollection.add(NotesModel.toFirestoreMap(
+  //         documentUrl: null, user: user, title: title, description: description
+  //     ));
+  //
+  //     ApiResponse uploadResponse = await _uploadNotesToStorage(
+  //       document: document, course: course, semester: semester, subject: subject,
+  //       noteId: noteRef.id,
+  //     );
+  //
+  //     if (uploadResponse.isError) {
+  //       await noteRef.delete();
+  //       return uploadResponse;
+  //     } else {
+  //       String documentUrl = uploadResponse.data;
+  //       await noteRef.update({
+  //         NotesModel.documentUrlFieldKey: documentUrl,
+  //       });
+  //       return ApiResponse.success();
+  //     }
+  //   } catch (err) {
+  //     return ApiResponse.error(errorMessage: "There was an error while setting notes: $err");
+  //   }
+  // }
 
   Future<ApiResponse> reportNotes({
     required String course, required int semester,
@@ -130,7 +177,7 @@ class NotesRepository {
     required String noteId, required List<String> reportValues,
   }) async {
     try {
-      firestore.DocumentSnapshot notesSnapshot = await coursesCollection.doc(course)
+      firestore.DocumentSnapshot notesSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId).get();
@@ -163,7 +210,7 @@ class NotesRepository {
 
     try {
 
-      firestore.DocumentSnapshot starsSnapshot = await coursesCollection.doc(course)
+      firestore.DocumentSnapshot starsSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.notesCollectionLabel).doc(noteId)
@@ -218,7 +265,7 @@ class NotesRepository {
   }) async {
     try {
 
-      firestore.QuerySnapshot notesSnapshot = await coursesCollection.doc(course)
+      firestore.QuerySnapshot notesSnapshot = await _coursesCollection.doc(course)
           .collection(FirebaseCollectionConfig.semestersCollectionLabel).doc(semester.toString())
           .collection(FirebaseCollectionConfig.subjectsCollectionLabel).doc(subject)
           .collection(FirebaseCollectionConfig.notesCollectionLabel).get();

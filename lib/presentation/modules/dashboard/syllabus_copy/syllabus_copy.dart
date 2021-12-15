@@ -32,74 +32,70 @@ class SyllabusCopy extends StatelessWidget {
           Text("Syllabus Copy", style: TextStyle(fontSize: 25),),
           SizedBox(height: 20,),
 
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: maxSyllabusCopy,
-            itemBuilder: (context, index) {
-              int currentVersion = index + 1;
-              bool isShow = syllabusCopies.any((element) => element.version == currentVersion);
-
-              return Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: Builder(
-                  builder: (context) {
-                    if (isShow) {
-                      SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies.firstWhere((element) => element.version == currentVersion);
-                      return GestureDetector(
-                        onTap: isWidgetLoading ? () {} : () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
-                              onReportPressed: (values) {
-                                if (userState is UserLoaded) {
-                                  context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
-                                    reportValues: values,
-                                    syllabusCopies: syllabusCopies,
-                                    version: currentVersion,
-                                    user: userState.userModel,
-                                  ));
-                                }
-                              },
-                              documentUrl: currentSyllabusCopyModel.documentUrl,
-                              screenLabel: "Syllabus Copy",
-                              isShowBottomSheet: false,
-                              parameter: PDFScreenSyllabusCopy(
-                                profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
-                                uploadedBy: currentSyllabusCopyModel.uploadedBy,
-                                nVariant: currentSyllabusCopyModel.version,
-                              ),
-                            ),
-                          ));
+          Builder(
+            builder: (context) {
+              List<Widget> children = List.generate(syllabusCopies.length, (index) {
+                SyllabusCopyModel currentSyllabusCopyModel = syllabusCopies[index];
+                return GestureDetector(
+                  onTap: isWidgetLoading ? () {} : () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PDFViewerScreen<PDFScreenSyllabusCopy>(
+                        onReportPressed: (values) {
+                          if (userState is UserLoaded) {
+                            context.read<SyllabusCopyBloc>().add(SyllabusCopyReportAdd(
+                              reportValues: values,
+                              syllabusCopies: syllabusCopies,
+                              syllabusCopyId: currentSyllabusCopyModel.id,
+                              user: userState.userModel,
+                            ));
+                          }
                         },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                          decoration: BoxDecoration(
-                            color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: Text("Variant: ${currentSyllabusCopyModel.version}", style: TextStyle(fontSize: 20),),
+                        documentUrl: currentSyllabusCopyModel.documentUrl,
+                        screenLabel: "Syllabus Copy",
+                        isShowBottomSheet: false,
+                        parameter: PDFScreenSyllabusCopy(
+                          profilePhotoUrl: currentSyllabusCopyModel.userProfilePhotoUrl,
+                          uploadedBy: currentSyllabusCopyModel.uploadedBy,
+                          nVariant: index+1,
                         ),
-                      );
-                    } else {
-                      return SizedBox(
-                        height: 100,
-                        child: Utils.getAddPostContainer(
-                          isDarkTheme: isDarkTheme,
-                          label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
-                          onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
-                            if (userState is UserLoaded) {
-                              context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
-                                syllabusCopies: syllabusCopies,
-                                version: currentVersion,
-                                user: userState.userModel,
-                              ));
-                            }
-                          },
-                        ),
-                      );
-                    }
+                      ),
+                    ));
                   },
-                ),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                    decoration: BoxDecoration(
+                      color: isDarkTheme ? CustomColors.bottomNavBarColor : CustomColors.lightModeBottomNavBarColor,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Text("Variant: ${index+1}", style: TextStyle(fontSize: 20),),
+                  ),
+                );
+              });
+
+              if (syllabusCopies.length < maxSyllabusCopy) {
+                children.add(SizedBox(
+                  height: 100,
+                  child: Utils.getAddPostContainer(
+                    isDarkTheme: isDarkTheme,
+                    label: syllabusCopyState is SyllabusCopyAddLoading ? "Loading" : "Add Syllabus Copy",
+                    onPressed: syllabusCopyState is SyllabusCopyAddLoading || isWidgetLoading ? () {} :  () {
+                      if (userState is UserLoaded) {
+                        context.read<SyllabusCopyBloc>().add(SyllabusCopyAdd(
+                          syllabusCopies: syllabusCopies,
+                          user: userState.userModel,
+                        ));
+                      }
+                    },
+                  ),
+                ));
+              }
+
+              return ListView.separated(
+                separatorBuilder: (context, index) => SizedBox(height: 20,),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: children.length,
+                itemBuilder: (context, index) => children[index],
               );
             },
           ),
@@ -128,7 +124,7 @@ class SyllabusCopy extends StatelessWidget {
         if (state is SyllabusCopyAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
         } else if (state is SyllabusCopyAddSuccess) {
-          Utils.showAlertDialog(context: context, text: "Syllabus Copy successfully updated");
+          Utils.showAlertDialog(context: context, text: "Syllabus Copy Successfully Submitted");
         } else if (state is SyllabusCopyReportSuccess) {
           Utils.showAlertDialog(context: context, text: "Syllabus Copy reported successfully");
         } else if (state is SyllabusCopyReportError) {
@@ -146,6 +142,11 @@ class SyllabusCopy extends StatelessWidget {
         },
         child: ListView(
           children: [
+            SizedBox(height: 20,),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Utils.getCourseAndSemesterText(context: context),
+            ),
             Builder(
               builder: (context) {
                 if (syllabusCopyState is SyllabusCopyFetchLoading) {
@@ -155,7 +156,7 @@ class SyllabusCopy extends StatelessWidget {
                       maxSyllabusCopy: syllabusCopyState.maxSyllabusCopy,
                       isWidgetLoading: true,
                       syllabusCopies: List.generate(2, (index) => SyllabusCopyModel(
-                        version: index,
+                        id: '',
                         uploadedBy: "",
                         userUid: "",
                         userProfilePhotoUrl: "",

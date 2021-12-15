@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,42 @@ import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
 import 'package:provider/provider.dart';
 
+extension ToSubjectExtension on String {
+
+  String toTitleCase() {
+
+    if (this.length <= 1) {
+      return this.toUpperCase();
+    }
+    final List<String> words = this.split(' ');
+
+    final capitalizedWords = words.map((word) {
+      if (word.trim().isNotEmpty) {
+        final String firstLetter = word.trim().substring(0, 1).toUpperCase();
+        final String remainingLetters = word.trim().substring(1);
+
+        return '$firstLetter$remainingLetters';
+      }
+      return '';
+    });
+
+    return capitalizedWords.join(' ');
+  }
+
+  String toSubject() {
+    return this.replaceAll("_", " ").toTitleCase();
+  }
+}
+
 class Utils {
+
+  static String toSubject(String str) => str.toSubject();
+
+  static double getFileSizeInMb(File file) {
+    int sizeInBytes = file.lengthSync();
+    double sizeInMb = sizeInBytes / (1024 * 1024);
+    return sizeInMb;
+  }
 
   static Future showAlertDialog({required BuildContext context, required String text}) => showDialog(
     context: context,

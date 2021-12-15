@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intro_slider/dot_animation_enum.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
@@ -20,14 +21,13 @@ class IntroScreenState extends State<IntroScreen> {
   Function? goToTab;
 
   String welcomeText1 =
-      "We Provide you the Feature of Downloading Notes And Question Paper";
+      "Get easy access to all your study materials";
   String welcomeText2 =
-      "2.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
+      "We provide you the feature of downloading all the available documents";
   String welcomeText3 =
-      "3.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
+      "Help others by sharing your Notes along with other study materials";
 
-  Slide getSlide(
-      {required String descriptionText, required String imagePath}) {
+  Slide getSlide({required String descriptionText, required String imagePath}) {
     return Slide(
       description: descriptionText,
       backgroundColor: Color(0xfff5a623),
@@ -35,7 +35,6 @@ class IntroScreenState extends State<IntroScreen> {
         color: Color(0xfffe9c8f),
         fontSize: 20.0,
         fontStyle: FontStyle.italic,
-        // fontFamily: 'Raleway'
       ),
       pathImage: imagePath,
       colorBegin: Color(0xffFFFACD),
@@ -56,12 +55,12 @@ class IntroScreenState extends State<IntroScreen> {
     slides.add(
       getSlide(
           descriptionText: welcomeText2,
-          imagePath: DefaultAssets.welcomeScreen2Path),
+          imagePath: DefaultAssets.welcomeScreen1Path),
     );
     slides.add(
       getSlide(
           descriptionText: welcomeText3,
-          imagePath: DefaultAssets.welcomeScreen1Path),
+          imagePath: DefaultAssets.welcomeScreen2Path),
     );
   }
 
@@ -97,6 +96,30 @@ class IntroScreenState extends State<IntroScreen> {
   }
 
 
+  Widget getBottomNavBarRow(int index) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            AppConstants.bottomNavBarIcons[index]["icon"],
+            width: 80,
+            height: 80,
+            color: Colors.white,
+          ),
+          SizedBox(height: 5,),
+          Text(
+            AppConstants.bottomNavBarIcons[index]["label"],
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,35 +129,68 @@ class IntroScreenState extends State<IntroScreen> {
       for (int i = 0; i < slides.length; i++) {
         Slide currentSlide = slides[i];
         tabs.add(Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Container(
-            margin: EdgeInsets.only(bottom: 60.0, top: 100.0),
-            child: ListView(
-              children: <Widget>[
-                SizedBox(height: 50,),
-                GestureDetector(
-                    child: Image.asset(
-                      currentSlide.pathImage!,
-                      width: 280.0,
-                      height: 280.0,
-                      fit: BoxFit.contain,
-                    )),
-                SizedBox(height: 100,),
-                Container(
-                  child: Text(
-                    currentSlide.description!,
-                    style: currentSlide.styleDescription,
-                    textAlign: TextAlign.center,
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
+            width: double.infinity,
+            height: double.infinity,
+            child: Container(
+              margin: EdgeInsets.only(bottom: 60.0, top: 60.0),
+              child: ListView(
+                children: <Widget>[
+                  SizedBox(height: 50,),
+                  Builder(
+                    builder: (context) {
+                      if (i==0) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [0,1].map((index) {
+                                  return getBottomNavBarRow(index);
+                                }).toList(),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [2,3].map((index) {
+                                  return getBottomNavBarRow(index);
+                                }).toList(),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [4].map((index) {
+                                  return getBottomNavBarRow(index);
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return GestureDetector(
+                            child: Image.asset(
+                              currentSlide.pathImage!,
+                              width: 280.0,
+                              height: 280.0,
+                              fit: BoxFit.contain,
+                            ));
+                      }
+                    },
                   ),
-                  margin: EdgeInsets.only(top: 20.0),
-                ),
-              ],
+                  SizedBox(height: i==0 ? 10 : 100,),
+                  Container(
+                    child: Text(
+                      currentSlide.description!,
+                      style: currentSlide.styleDescription,
+                      textAlign: TextAlign.center,
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    margin: EdgeInsets.only(top: 20.0),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ));
+          ));
       }
       return tabs;
     }

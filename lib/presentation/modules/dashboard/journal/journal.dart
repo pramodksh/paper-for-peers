@@ -7,7 +7,6 @@ import 'package:papers_for_peers/config/app_theme.dart';
 import 'package:papers_for_peers/config/export_config.dart';
 import 'package:papers_for_peers/data/models/document_models/journal_model.dart';
 import 'package:papers_for_peers/data/models/pdf_screen_parameters.dart';
-import 'package:papers_for_peers/data/repositories/firebase_remote_config/firebase_remote_config_repository.dart';
 import 'package:papers_for_peers/logic/blocs/journal/journal_bloc.dart';
 import 'package:papers_for_peers/logic/cubits/app_theme/app_theme_cubit.dart';
 import 'package:papers_for_peers/logic/cubits/user/user_cubit.dart';
@@ -15,33 +14,6 @@ import 'package:papers_for_peers/presentation/modules/dashboard/shared/PDF_viewe
 import 'package:papers_for_peers/presentation/modules/dashboard/shared/skeleton_loader.dart';
 import 'package:papers_for_peers/presentation/modules/utils/utils.dart';
 import 'package:provider/provider.dart';
-
-extension ToSubjectExtension on String {
-
-  String toTitleCase() {
-
-    if (this.length <= 1) {
-      return this.toUpperCase();
-    }
-    final List<String> words = this.split(' ');
-
-    final capitalizedWords = words.map((word) {
-      if (word.trim().isNotEmpty) {
-        final String firstLetter = word.trim().substring(0, 1).toUpperCase();
-        final String remainingLetters = word.trim().substring(1);
-
-        return '$firstLetter$remainingLetters';
-      }
-      return '';
-    });
-
-    return capitalizedWords.join(' ');
-  }
-
-  Text toSubjectText() {
-    return Text(this.replaceAll("_", " ").toTitleCase(), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500));
-  }
-}
 
 class Journal extends StatelessWidget {
 
@@ -98,18 +70,14 @@ class Journal extends StatelessWidget {
     required int maxJournals,
   }) {
 
-    List<Widget> gridChildren = List.generate(maxJournals, (index) {
-      int currentVersion = index + 1;
-      bool isShow = journals.any((element) => element.version == currentVersion);
-
-      if (isShow) {
-        JournalModel currentJournalModel = journals.firstWhere((element) => element.version == currentVersion);
-        return _getJournalVariantDetailsTile(
+    List<Widget> children = List.generate(journals.length, (index) {
+      JournalModel currentJournalModel = journals[index];
+      return _getJournalVariantDetailsTile(
           appThemeType: appThemeType,
           profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
           uploadedBy: currentJournalModel.uploadedBy,
           uploadedOn: currentJournalModel.uploadedOn,
-          nVariant: currentVersion,
+          nVariant: index+1,
           onTap: isWidgetLoading ? () {} : () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PDFViewerScreen<PDFScreenSimpleBottomSheet>(
@@ -122,7 +90,7 @@ class Journal extends StatelessWidget {
                       course: userState.userModel.course!.courseName!,
                       semester: userState.userModel.semester!.nSemester!,
                       subject: subject,
-                      nVersion: currentVersion,
+                      journalId: currentJournalModel.id,
                       user: userState.userModel,
                     ));
                   }
@@ -131,40 +99,40 @@ class Journal extends StatelessWidget {
                 screenLabel: "Journal",
                 parameter: PDFScreenSimpleBottomSheet(
                   profilePhotoUrl: currentJournalModel.userProfilePhotoUrl,
-                  nVariant: currentVersion,
+                  nVariant: index+1,
                   uploadedBy: currentJournalModel.uploadedBy,
-                  title: subject,
+                  title: Utils.toSubject(subject),
                 ),
               ),
             ));
           }
-        );
-      } else {
-       return Utils.getAddPostContainer(
-         isDarkTheme: appThemeType.isDarkTheme(),
-         onPressed: isAddJournalLoading || isWidgetLoading ? () {} : () {
-           if (userState is UserLoaded) {
-             context.read<JournalBloc>().add(JournalAdd(
-               journalSubjects: journalSubjects,
-               uploadedBy: userState.userModel.displayName!,
-               course: userState.userModel.course!.courseName!,
-               semester: userState.userModel.semester!.nSemester!,
-               subject: subject,
-               nVersion: currentVersion,
-               user: userState.userModel,
-             ));
-           }
-         },
-         label: isAddJournalLoading ? "Loading" : "Add Journal",
-       );
-      }
+      );
     });
+
+    if (journals.length < maxJournals) {
+      children.add(Utils.getAddPostContainer(
+        isDarkTheme: appThemeType.isDarkTheme(),
+        onPressed: isAddJournalLoading || isWidgetLoading ? () {} : () {
+          if (userState is UserLoaded) {
+            context.read<JournalBloc>().add(JournalAdd(
+              journalSubjects: journalSubjects,
+              uploadedBy: userState.userModel.displayName!,
+              course: userState.userModel.course!.courseName!,
+              semester: userState.userModel.semester!.nSemester!,
+              subject: subject,
+              user: userState.userModel,
+            ));
+          }
+        },
+        label: isAddJournalLoading ? "Loading" : "Add Journal",
+      ));
+    }
 
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          subject.toSubjectText(),
+          Text(Utils.toSubject(subject), style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
           SizedBox(height: 20,),
           GridView.count(
             crossAxisSpacing: 10,
@@ -172,7 +140,7 @@ class Journal extends StatelessWidget {
             crossAxisCount: 2,
             physics: NeverScrollableScrollPhysics(),
             childAspectRatio: 16/10,
-            children: gridChildren,
+            children: children,
           ),
         ],
       ),
@@ -233,7 +201,7 @@ class Journal extends StatelessWidget {
         } else if (state is JournalAddError) {
           Utils.showAlertDialog(context: context, text: state.errorMessage);
         } else if (state is JournalAddSuccess) {
-          Utils.showAlertDialog(context: context, text: "Journal Added Successfully");
+          Utils.showAlertDialog(context: context, text: "Journal Successfully Submitted");
         } else if (state is JournalReportSuccess) {
           Utils.showAlertDialog(context: context, text: "Journal Reported Successfully");
         } else if (state is JournalReportError) {
@@ -287,7 +255,7 @@ class Journal extends StatelessWidget {
                               userProfilePhotoUrl: "",
                               userUid: "",
                               uploadedBy: "",
-                              version: index,
+                              id: '',
                             )),
                           )),
                           appThemeType: appThemeType,

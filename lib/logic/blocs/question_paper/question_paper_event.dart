@@ -33,11 +33,10 @@ class QuestionPaperAdd extends QuestionPaperEvent {
   final String course;
   final String subject;
   final int semester;
-  final int nVersion;
   final UserModel user;
 
   @override
-  List<Object?> get props => [uploadedBy, year, course, subject, semester, nVersion, user, questionPaperYears];
+  List<Object?> get props => [uploadedBy, year, course, subject, semester, user, questionPaperYears];
 
 
   const QuestionPaperAdd({
@@ -46,14 +45,13 @@ class QuestionPaperAdd extends QuestionPaperEvent {
     required this.course,
     required this.subject,
     required this.semester,
-    required this.nVersion,
     required this.user,
     required this.questionPaperYears,
   });
 
   @override
   String toString() {
-    return 'QuestionPaperAdd{uploadedBy: $uploadedBy, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion}';
+    return 'QuestionPaperAdd{uploadedBy: $uploadedBy, year: $year, course: $course, subject: $subject, semester: $semester,}';
   }
 }
 
@@ -65,11 +63,11 @@ class QuestionPaperAddReport extends QuestionPaperEvent {
   final String course;
   final String subject;
   final int semester;
-  final int nVersion;
+  final String questionPaperId;
   final String userId;
 
   @override
-  List<Object?> get props => [questionPaperYears, reportValues, year, course, subject, semester, nVersion, userId];
+  List<Object?> get props => [questionPaperYears, reportValues, year, course, subject, semester, questionPaperId, userId];
 
   const QuestionPaperAddReport({
     required this.questionPaperYears,
@@ -78,13 +76,13 @@ class QuestionPaperAddReport extends QuestionPaperEvent {
     required this.course,
     required this.subject,
     required this.semester,
-    required this.nVersion,
+    required this.questionPaperId,
     required this.userId,
   });
 
   @override
   String toString() {
-    return 'QuestionPaperAddReport{reportValues: $reportValues, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $nVersion}';
+    return 'QuestionPaperAddReport{reportValues: $reportValues, year: $year, course: $course, subject: $subject, semester: $semester, nVersion: $questionPaperId}';
   }
 }
 
