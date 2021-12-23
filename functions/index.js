@@ -52,8 +52,8 @@ function getReportCounts(mergedValues) {
   return reportCounts;
 }
 
-function getMergedReportValues(reports) {
-  const mergedValues = [].concat.apply([], reports);
+function getMergedArray(array) {
+  const mergedValues = [].concat.apply([], array);
   return mergedValues;
 }
 
@@ -74,7 +74,7 @@ async function getWeightedReportCounts(reportCounts) {
 
 async function getTotalReports(reports) {
   // merge array of array into single array
-  const mergedValues = getMergedReportValues(reports);
+  const mergedValues = getMergedArray(reports);
 
   // Count the number of occurances of reports
   const reportCounts = getReportCounts(mergedValues);
@@ -100,7 +100,10 @@ async function sendReportNotificationToAdmins(
   const adminSnapshot = await firestore.collection(adminCollectionLabel).get();
 
   // Get tokens list from admin
-  let tokens = adminSnapshot.docs.map((snap) => snap.data()["fcm_token"]);
+  let tokensList = adminSnapshot.docs.map(
+    (snap) => snap.data()["fcm_token_list"]
+  );
+  let tokens = getMergedArray(tokensList);
 
   // Remove all undefined values from token
   tokens = tokens.filter(function (element) {
@@ -205,9 +208,7 @@ exports.reportJournal = functions.firestore
   });
 
 exports.reportSyllabusCopy = functions.firestore
-  .document(
-    "/courses/{course}/semesters/{semester}/syllabus_copy/{version}"
-  )
+  .document("/courses/{course}/semesters/{semester}/syllabus_copy/{version}")
   .onUpdate(async (change, context) => {
     const syllabusCopyId = change.after.id;
     const newValue = change.after.data();
