@@ -11,17 +11,17 @@ class UserModel {
   final Course? course;
   final int? totalRating;
   final double? avgRating;
-  final String? fcmToken;
+  final List<String> fcmTokenList;
 
   static String courseLabel = "course";
   static String semesterLabel = "semester";
-  static String fcmTokenLabel = "fcm_token";
+  static String fcmTokenListLabel = "fcm_token_list";
 
   static Future<UserModel> getUserModelByMap({
     required Map userMap, required String userId,
     required Function(String) getCourse,
     required int totalRatings, required double avgRating,
-    required String? fcmToken,
+    required List<String> fcmTokenList,
   }) async {
     Course? course;
     Semester? semester;
@@ -34,7 +34,7 @@ class UserModel {
     }
 
     return UserModel(
-      fcmToken: fcmToken,
+      fcmTokenList: fcmTokenList,
       uid: userId,
       displayName: userMap['displayName'],
       email: userMap['email'],
@@ -47,7 +47,7 @@ class UserModel {
   }
 
   UserModel({
-    this.fcmToken,
+    required this.fcmTokenList,
     required this.email,
     required this.displayName,
     required this.photoUrl,
@@ -67,7 +67,7 @@ class UserModel {
     Course? course,
     int? totalRating,
     double? avgRating,
-    String? fcmToken,
+    List<String>? fcmTokenList,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -78,7 +78,7 @@ class UserModel {
       course: course ?? this.course,
       totalRating: totalRating ?? this.totalRating,
       avgRating: avgRating ?? this.avgRating,
-      fcmToken: fcmToken ?? this.fcmToken,
+      fcmTokenList: fcmTokenList ?? this.fcmTokenList,
     );
   }
 

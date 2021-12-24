@@ -33,6 +33,7 @@ class AuthRepository extends BaseAuthRepository {
         email: userCredential.user!.email,
         photoUrl: userCredential.user!.photoURL,
         displayName: userCredential.user!.displayName,
+        fcmTokenList: []
       ));
     } on auth.FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -60,6 +61,7 @@ class AuthRepository extends BaseAuthRepository {
         email: userCredential.user!.email,
         photoUrl: userCredential.user!.photoURL,
         displayName: userCredential.user!.displayName,
+        fcmTokenList: [],
       ));
     } on auth.FirebaseAuthException catch (e) {
       print("SIGN In ERROR: $e");
@@ -88,6 +90,7 @@ class AuthRepository extends BaseAuthRepository {
         email: userCredential.user!.email,
         displayName: userCredential.user!.displayName,
         photoUrl: userCredential.user!.photoURL,
+        fcmTokenList: [],
       ));
     } catch (e) {
       print("GOOGLE AUTH ERROR: $e");
@@ -102,6 +105,7 @@ class AuthRepository extends BaseAuthRepository {
       displayName: user.displayName,
       email: user.email,
       photoUrl: user.photoURL,
+      fcmTokenList: [],
     ) : null;
   }
 

@@ -46,11 +46,13 @@ class FirestoreRepository {
   }
 
   Future<bool> deleteFcmTokenOfUser(UserModel user) async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    if (token == null) return false;
     try {
       await _usersCollection.doc(user.uid)
-        .update({"fcm_token": firestore.FieldValue.delete()});
+          .update({UserModel.fcmTokenListLabel: firestore.FieldValue.arrayRemove([token])});
       return true;
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       return false;
     }
   }
@@ -67,46 +69,73 @@ class FirestoreRepository {
     });
 
     Map<String, dynamic> userData = userDocumentSnapshot.data() as Map<String, dynamic>;
-
     String? token = await FirebaseMessaging.instance.getToken();
 
-    if (userData.containsKey(UserModel.fcmTokenLabel) && userData[UserModel.fcmTokenLabel] == token) {
+    if (userData.containsKey(UserModel.fcmTokenListLabel)) {
+      if (token == null) {
+        return await UserModel.getUserModelByMap(
+          fcmTokenList: userData[UserModel.fcmTokenListLabel],
+          userMap: userData,
+          userId: userId, getCourse: getCourse,
+          avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
+          totalRatings: totalRatings.length,
+        );
+      }
 
-      return await UserModel.getUserModelByMap(
-        fcmToken: userData[UserModel.fcmTokenLabel],
-        userMap: userData,
-        userId: userId, getCourse: getCourse,
-        avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
-        totalRatings: totalRatings.length,
-      );
+
+      List<String> fcmTokenList =  (userData[AdminModel.fcmTokenListLabel] as List).map((e) => e.toString()).toList();
+      if (fcmTokenList.contains(token)) {
+        return await UserModel.getUserModelByMap(
+          fcmTokenList: fcmTokenList,
+          userMap: userData,
+          userId: userId, getCourse: getCourse,
+          avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
+          totalRatings: totalRatings.length,
+        );
+      } else {
+        fcmTokenList.add(token);
+        UserModel userModel =  await UserModel.getUserModelByMap(
+          fcmTokenList: fcmTokenList,
+          userMap: userData,
+          userId: userId, getCourse: getCourse,
+          avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
+          totalRatings: totalRatings.length,
+        );
+        addUser(user: userModel);
+        return userModel;
+      }
+
     } else {
-      UserModel userModel = await UserModel.getUserModelByMap(
-        fcmToken: token,
+      UserModel userModel =  await UserModel.getUserModelByMap(
+        fcmTokenList: [token!],
         userMap: userData,
         userId: userId, getCourse: getCourse,
         avgRating: totalRatings.length == 0 ? 0 : totalRatings.average,
         totalRatings: totalRatings.length,
       );
-
       addUser(user: userModel);
-
       return userModel;
     }
-
-
   }
 
   Future<ApiResponse> addUser({required UserModel user}) async {
 
     try {
-      await _usersCollection.doc(user.uid).set({
+
+      firestore.DocumentReference userDocRef = _usersCollection.doc(user.uid);
+
+      await userDocRef.set({
         'displayName': user.displayName,
         'email': user.email,
         'photoUrl': user.photoUrl,
         UserModel.courseLabel: user.course?.courseName,
         UserModel.semesterLabel: user.semester?.nSemester,
-        UserModel.fcmTokenLabel: user.fcmToken,
       });
+
+      await userDocRef.update({
+        UserModel.fcmTokenListLabel: firestore.FieldValue.arrayUnion(user.fcmTokenList),
+      });
+
       return ApiResponse.success();
     } catch (err) {
       return ApiResponse.error(errorMessage: "Failed to add user: ERR: $err");
