@@ -134,18 +134,15 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
                 description: event.description, file: event.file,
               ));
 
-              List<AdminModel> admins = _firestoreRepository.admins;
-              Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
-                  documentType: DocumentType.NOTES,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  course: event.user.course!.courseName!,
-                  semester: event.user.semester!.nSemester!,
-                  subject: event.subject,
-                );
-              });
+              await _firebaseMessagingRepository.sendNotificationIfTokenExists(
+                documentType: DocumentType.NOTES,
+                tokens: _firestoreRepository.adminTokens,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                course: event.user.course!.courseName!,
+                semester: event.user.semester!.nSemester!,
+                subject: event.subject,
+              );
             }
           }
         }

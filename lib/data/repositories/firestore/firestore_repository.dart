@@ -34,6 +34,12 @@ class FirestoreRepository {
   static late final firestore.CollectionReference _adminCollection;
   static late final firestore.CollectionReference _coursesCollection;
 
+  List<String> get adminTokens {
+    List<List<String>> tokensList = admins.map((e) => e.fcmTokenList).toList();
+    List<String> tokens = tokensList.expand((i) => i).toList();
+    return tokens;
+  }
+
   Future<bool> isUserExists({required String userId}) async {
     firestore.DocumentSnapshot userDocumentSnapshot = await _usersCollection.doc(userId).get();
     return userDocumentSnapshot.exists;

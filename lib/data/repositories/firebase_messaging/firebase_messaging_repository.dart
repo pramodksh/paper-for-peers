@@ -12,16 +12,15 @@ class FirebaseMessagingRepository {
   FirebaseMessagingRepository({firebaseMessaging.FirebaseMessaging? fcm})
       : _fcm = fcm ?? firebaseMessaging.FirebaseMessaging.instance;
 
-  Future<bool> sendNotificationIfTokenExists({
+  Future<void> sendNotificationIfTokenExists({
     required DocumentType documentType,
     required UserModel userModel,
-    required String? token,
+    required List<String> tokens,
     required Function getFireBaseKey,
     required String course,
     required int semester,
     Subject? subject,
   }) async {
-    if (token == null) return true;
 
     String url = "https://fcm.googleapis.com/fcm/send";
     String _firebaseKey = await getFireBaseKey();
@@ -31,27 +30,28 @@ class FirebaseMessagingRepository {
       "Authorization": "key=$_firebaseKey"
     };
 
-    Map body = {
-      "to": token,
-      "notification": {
+    for (var token in tokens) {
+      Map body = {
+        "to": token,
+        "notification": {
           "body": "${userModel.displayName} has uploaded a new ${documentType.capitalized}",
           "priority": "high",
           "title": "New ${documentType.capitalized} of ${course.toUpperCase()} $semester ${subject != null ? subject.label : ""}",
           "click_action": "FLUTTER_NOTIFICATION_CLICK",
-      },
-      "data": {
+        },
+        "data": {
           "click_action": "FLUTTER_NOTIFICATION_CLICK",
           "document_type": documentType.toUpper,
           "type": "UPLOAD",
-      }
-    };
+        }
+      };
 
-    await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: json.encode(body),
-    );
-    return true;
+      await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: json.encode(body),
+      );
+    }
   }
 
 }

@@ -131,21 +131,15 @@ class QuestionPaperBloc extends Bloc<QuestionPaperEvent, QuestionPaperState> {
                   selectedSubject: event.subject,
                   maxQuestionPapers: maxQuestionPapers));
 
-              List<AdminModel> admins = _firestoreRepository.admins;
-              Future.forEach<AdminModel>(admins, (admin) async {
-
-                log("CHECK TOKEN, ${admin.fcmToken}");
-
-                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
-                  documentType: DocumentType.QUESTION_PAPER,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  semester: event.semester,
-                  course: event.course,
-                  subject: event.subject,
-                );
-              });
+              await _firebaseMessagingRepository.sendNotificationIfTokenExists(
+                documentType: DocumentType.QUESTION_PAPER,
+                tokens: _firestoreRepository.adminTokens,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.semester,
+                course: event.course,
+                subject: event.subject,
+              );
             }
           }
         }

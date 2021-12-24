@@ -78,18 +78,15 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
             } else {
               emit(JournalAddSuccess(journalSubjects: event.journalSubjects, maxJournals: maxJournals));
 
-              List<AdminModel> admins = _firestoreRepository.admins;
-              Future.forEach<AdminModel>(admins, (admin) async{
-                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
-                  documentType: DocumentType.JOURNAL,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
-                  semester: event.semester,
-                  course: event.course,
-                  subject: event.subject,
-                );
-              });
+              await _firebaseMessagingRepository.sendNotificationIfTokenExists(
+                documentType: DocumentType.JOURNAL,
+                tokens: _firestoreRepository.adminTokens,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.semester,
+                course: event.course,
+                subject: event.subject,
+              );
             }
           }
         }

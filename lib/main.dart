@@ -131,6 +131,7 @@ class _MyAppState extends State<MyApp> {
           create: (context) => AuthRepository(),
         ),
         RepositoryProvider<FirestoreRepository>(
+          lazy: false,
           create: (context) => FirestoreRepository(),
         ),
         RepositoryProvider<FirebaseRemoteConfigRepository>(

@@ -86,19 +86,15 @@ class TextBookBloc extends Bloc<TextBookEvent, TextBookState> {
               emit(TextBookAddSuccess(textBookSubjects: event.textBookSubjects,
                   maxTextBooks: maxTextBooks));
 
-              List<AdminModel> admins = _firestoreRepository.admins;
-              Future.forEach<AdminModel>(admins, (admin) async {
-                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
-                  documentType: DocumentType.TEXT_BOOK,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository
-                      .getFirebaseKey,
-                  semester: event.semester,
-                  course: event.course,
-                  subject: event.subject,
-                );
-              });
+              await _firebaseMessagingRepository.sendNotificationIfTokenExists(
+                documentType: DocumentType.TEXT_BOOK,
+                tokens: _firestoreRepository.adminTokens,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.semester,
+                course: event.course,
+                subject: event.subject,
+              );
             }
           }
         }

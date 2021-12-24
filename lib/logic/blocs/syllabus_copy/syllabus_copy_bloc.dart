@@ -86,18 +86,14 @@ class SyllabusCopyBloc extends Bloc<SyllabusCopyEvent, SyllabusCopyState> {
               emit(SyllabusCopyAddSuccess(syllabusCopies: event.syllabusCopies,
                   maxSyllabusCopy: maxSyllabusCopy));
 
-              List<AdminModel> admins = _firestoreRepository.admins;
-              Future.forEach<AdminModel>(admins, (admin) async {
-                await _firebaseMessagingRepository.sendNotificationIfTokenExists(
-                  documentType: DocumentType.SYLLABUS_COPY,
-                  token: admin.fcmToken,
-                  userModel: event.user,
-                  getFireBaseKey: _firebaseRemoteConfigRepository
-                      .getFirebaseKey,
-                  semester: event.user.semester!.nSemester!,
-                  course: event.user.course!.courseName!,
-                );
-              });
+              await _firebaseMessagingRepository.sendNotificationIfTokenExists(
+                documentType: DocumentType.SYLLABUS_COPY,
+                tokens: _firestoreRepository.adminTokens,
+                userModel: event.user,
+                getFireBaseKey: _firebaseRemoteConfigRepository.getFirebaseKey,
+                semester: event.user.semester!.nSemester!,
+                course: event.user.course!.courseName!,
+              );
             }
           }
         }

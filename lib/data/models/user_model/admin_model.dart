@@ -3,25 +3,17 @@ class AdminModel {
   final String displayName;
   final String email;
   final String photoUrl;
-  final String? fcmToken;
+  final List<String> fcmTokenList;
 
   const AdminModel({
     required this.adminId,
     required this.displayName,
     required this.email,
     required this.photoUrl,
-    required this.fcmToken,
+    required this.fcmTokenList,
   });
 
-  Map<String, dynamic> toMap() {
-    return {
-      'uid': this.adminId,
-      'displayName': this.displayName,
-      'email': this.email,
-      'photoUrl': this.photoUrl,
-      'fcmToken': this.fcmToken,
-    };
-  }
+  static String fcmTokenListLabel = "fcm_token_list";
 
   factory AdminModel.getAdminByFirestoreMap({
     required Map<String, dynamic> map,
@@ -32,7 +24,7 @@ class AdminModel {
       displayName: map['displayName'] as String,
       email: map['email'] as String,
       photoUrl: map['photoUrl'] as String,
-      fcmToken: map['fcm_token'] == null ? null : map['fcm_token'] as String,
+      fcmTokenList: map[fcmTokenListLabel] == null ? [] : List<String>.from(map[fcmTokenListLabel]),
     );
   }
 }
